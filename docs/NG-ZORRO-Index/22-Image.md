@@ -45,6 +45,24 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/image/en) 查看詳細用法和示例。
 
+## API
+
+### nz-image 組件
+
+圖片組件，用於展示圖片並支持預覽功能。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzSrc]` | 圖片地址 | `string` | `-` |
+| `[nzFallback]` | 加載失敗時的佔位圖 | `string` | `-` |
+| `[nzPlaceholder]` | 加載中時的佔位圖 | `string` | `-` |
+| `[nzDisablePreview]` | 是否禁用預覽 | `boolean` | `false` |
+| `[nzCloseOnNavigation]` | 導航歷史變化時是否關閉預覽 | `boolean` | `false` |
+| `[nzDirection]` | 組件的文本方向 | `Direction` | `'ltr'` |
+| `[nzScaleStep]` | 縮放時的步長倍數 | `number` | `0.5` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/image/en)

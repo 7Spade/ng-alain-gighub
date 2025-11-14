@@ -157,6 +157,11 @@
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-項目結構重構規劃)
 - **代碼庫內容**：→ [fyi-codebase.md](./fyi-codebase.md)
 
+#### 賬戶系統開發
+- **架構決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15賬戶系統架構決策反覆)
+- **結構評估**：→ [賬戶系統開發-結構評估總結.md](./賬戶系統開發-結構評估總結.md)
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15賬戶系統架構評估與基礎結構創建)
+
 #### 資料庫安全（RLS）
 - **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-基礎-rls-策略實施)
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-基礎-rls-策略實施)
@@ -180,6 +185,12 @@
 - 完成所有 51 張表的 RLS 啟用
 - 建立基礎安全策略
 - 為後續細化策略留下空間
+
+**2025-01-15**：賬戶系統架構評估
+- 完成代碼結構評估和基礎目錄創建
+- 重新評估 Repository 和 Service 位置
+- 確定採用 Repository 模式，充分利用現有基礎設施
+- 記錄決策反覆過程，為後續開發提供參考
 
 ---
 

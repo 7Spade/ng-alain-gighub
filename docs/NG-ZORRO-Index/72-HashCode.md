@@ -45,6 +45,28 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/hash-code/en) 查看詳細用法和示例。
 
+## API
+
+### nz-hash-code 組件
+
+哈希碼組件，用於顯示區塊鏈數據的哈希值。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzValue]` | 哈希碼的值 | `string` | `-` |
+| `[nzTitle]` | 左上角內容的描述 | `string` | `'HashCode'` |
+| `[nzLogo]` | 右上角顯示的內容 | `TemplateRef<void> \| string` | `-` |
+| `[nzMode]` | 演示模式 | `'single' \| 'double' \| 'strip' \| 'rect'` | `'double'` |
+| `[nzType]` | 組件的樣式 | `'default' \| 'primary'` | `'primary'` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(nzOnCopy)` | 點擊複製按鈕時觸發，發出複製的哈希字符串 | `EventEmitter<string>` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/hash-code/en)

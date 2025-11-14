@@ -45,6 +45,26 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/back-top/en) 查看詳細用法和示例。
 
+## API
+
+### nz-back-top 組件
+
+返回頂部組件，用於快速返回頁面頂部。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 | 全局配置 |
+|------|------|------|--------|----------|
+| `[nzVisibilityHeight]` | 滾動高度達到此值時才顯示 `nz-back-top` | `number` | `400` | ✅ |
+| `[nzTarget]` | 設置需要監聽其滾動事件的元素，值為一個返回對應 DOM 元素的函數 | `string \| Element` | `window` | `-` |
+| `[nzDuration]` | 回到頂部所需時間（毫秒） | `number` | `450` | `-` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(nzClick)` | 點擊按鈕時觸發 | `EventEmitter<boolean>` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/back-top/en)

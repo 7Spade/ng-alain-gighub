@@ -45,6 +45,40 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/space/en) 查看詳細用法和示例。
 
+## API
+
+### nz-space 組件
+
+間距組件，設置元素之間的間距。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzSize]` | 間距大小 | `NzSpaceSize \| NzSpaceSize[]` | `'small'` |
+| `[nzDirection]` | 間距方向 | `'vertical' \| 'horizontal'` | `'horizontal'` |
+| `[nzAlign]` | 對齊方式 | `'start' \| 'end' \| 'baseline' \| 'center'` | `-` |
+| `[nzWrap]` | 是否自動換行，當 `horizontal` 時有效 | `boolean` | `false` |
+| `[nzSplit]` | 設置分隔符 | `TemplateRef \| string` | `-` |
+
+#### 類型定義
+
+```typescript
+type NzSpaceSize = 'small' | 'middle' | 'large' | number;
+```
+
+### nz-space-compact 組件
+
+緊湊間距組件，用於緊密連接子表單組件。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzBlock]` | 將寬度調整為父元素的寬度 | `boolean` | `false` |
+| `[nzDirection]` | 設置佈局方向 | `'vertical' \| 'horizontal'` | `'horizontal'` |
+| `[nzSize]` | 設置子組件大小 | `'large' \| 'small' \| 'default'` | `'default'` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/space/en)

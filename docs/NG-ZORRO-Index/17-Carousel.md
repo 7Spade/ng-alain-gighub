@@ -45,6 +45,33 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/carousel/en) 查看詳細用法和示例。
 
+## API
+
+### nz-carousel 組件
+
+走馬燈組件，用於輪播展示內容。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzAutoPlay]` | 是否自動切換 | `boolean` | `false` |
+| `[nzAutoPlaySpeed]` | 自動切換的間隔時間（毫秒），設置為 0 時不自動切換 | `number` | `3000` |
+| `[nzDotRender]` | 自定義指示點的渲染模板 | `TemplateRef<{ $implicit: number }>` | `-` |
+| `[nzDotPosition]` | 指示點位置 | `'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom'` |
+| `[nzDots]` | 是否顯示指示點 | `boolean` | `true` |
+| `[nzEffect]` | 切換效果 | `'scrollx' \| 'fade'` | `'scrollx'` |
+| `[nzEnableSwipe]` | 是否支持手勢劃動 | `boolean` | `true` |
+| `[nzLoop]` | 是否循環播放 | `boolean` | `true` |
+| `[nzArrows]` | 是否顯示箭頭按鈕 | `boolean` | `false` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(nzAfterChange)` | 切換面板後的回調 | `EventEmitter<number>` |
+| `(nzBeforeChange)` | 切換面板前的回調 | `EventEmitter<{ from: number; to: number }>` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/carousel/en)

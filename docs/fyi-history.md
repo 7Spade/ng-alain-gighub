@@ -305,9 +305,12 @@
 
 ### 核心模組
 - [ ] **賬戶系統開發**（Phase 1 MVP - 優先）
-  - [ ] 數據模型層（shared/models/account/）
-  - [ ] 服務層 - AccountService
-  - [ ] 服務層 - TeamService
+  - [x] 基礎目錄結構創建（shared/models/, shared/services/）
+  - [x] 架構決策確認（Repository 位置、Service 位置）
+  - [ ] 數據模型層（shared/models/account/types.ts）
+  - [ ] Repository 層（core/infra/repositories/account.repository.ts）
+  - [ ] 服務層 - AccountService（shared/services/account/）
+  - [ ] 服務層 - TeamService（shared/services/account/）
   - [ ] 路由層 - 賬戶列表/詳情/編輯頁面
   - [ ] 路由層 - 團隊管理頁面
   - [ ] 路由配置
@@ -339,6 +342,29 @@
 - [PRD 文檔](./PRD.md) - 產品需求文檔
 - [完整架構流程圖](./27-完整架構流程圖.mermaid.md) - 系統架構圖
 - [架構審查報告](./28-架構審查報告.md) - 架構設計說明
+
+---
+
+---
+
+## 2025-01-15：賬戶系統架構評估與基礎結構創建
+
+### 完成工作
+- ✅ 代碼結構評估（BaseRepository、數據轉換工具、錯誤處理）
+- ✅ 基礎目錄結構創建（shared/models/, shared/services/）
+- ✅ 架構決策重新評估（Repository 和 Service 位置確認）
+- ✅ 實施計劃調整（採用 Repository 模式）
+
+### 關鍵決策
+- **Repository 位置**：`core/infra/repositories/`（基礎設施層）
+- **Service 位置**：`shared/services/account/`（共享層，使用 Repository）
+- **Models 位置**：`shared/models/account/`（共享層）
+
+### 決策反覆過程
+經過三次評估，最終確定採用 Repository 模式，充分利用現有基礎設施。詳細過程見 [開發脈絡記錄](./fyi-development.md#2025-01-15賬戶系統架構決策反覆)。
+
+### 相關文檔
+- [結構評估總結](./賬戶系統開發-結構評估總結.md) - 詳細的評估過程和決策記錄
 
 ---
 

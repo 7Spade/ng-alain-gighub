@@ -45,6 +45,24 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/divider/en) 查看詳細用法和示例。
 
+## API
+
+### nz-divider 組件
+
+分割線組件，用於分隔內容。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 | 版本 |
+|------|------|------|--------|------|
+| `[nzDashed]` | 是否虛線 | `boolean` | `false` | - |
+| `[nzType]` | 分割線方向類型 | `'horizontal' \| 'vertical'` | `'horizontal'` | - |
+| `[nzText]` | 分割線中間的文字 | `string \| TemplateRef<void>` | `-` | - |
+| `[nzPlain]` | 文字是否顯示為普通文字樣式 | `boolean` | `false` | - |
+| `[nzOrientation]` | 分割線中間文字的位置 | `'center' \| 'left' \| 'right'` | `'center'` | - |
+| `[nzVariant]` | 分割線的樣式 | `'dashed' \| 'dotted' \| 'solid'` | `'solid'` | - |
+| `[nzSize]` | 分割線的大小 | `'small' \| 'middle' \| 'large'` | `'-'` | 20.2.0 |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/divider/en)

@@ -378,5 +378,73 @@ WHERE schemaname = 'public'
 
 ---
 
+## 2025-01-15：賬戶系統架構決策反覆
+
+### 背景
+在開始實施賬戶系統開發前，需要確定 Repository 和 Service 的正確位置，確保符合項目架構規範。
+
+### 決策反覆過程
+
+#### 第一次評估（初始計劃）
+- **假設**：Service 直接使用 SupabaseService（參考 PermissionService 模式）
+- **問題**：未充分利用已有的 BaseRepository 基礎設施
+- **狀態**：❌ 未採用
+
+#### 第二次評估（發現 Repository）
+- **發現**：項目已有完整的 Repository 模式實現（`core/infra/repositories/`）
+- **考慮**：是否應該使用 Repository 模式？
+- **狀態**：🤔 評估中
+
+#### 第三次評估（架構對齊）
+- **分析**：
+  - Repository 屬於基礎設施層（core）
+  - Service 屬於共享層（shared）
+  - 分層架構：routes → shared → core
+- **確認**：Service → Repository → SupabaseService 符合分層架構
+- **狀態**：✅ 最終決策
+
+### 最終決策
+
+#### Repository 位置
+- **位置**：`core/infra/repositories/account.repository.ts`
+- **理由**：屬於基礎設施層，已有 BaseRepository 實現
+- **優勢**：
+  - 自動數據轉換（snake_case ↔ camelCase）
+  - 統一錯誤處理
+  - 復用通用 CRUD 操作
+
+#### Models 位置
+- **位置**：`shared/models/account/types.ts`
+- **理由**：類型定義屬於共享層
+- **內容**：Account, Team, TeamMember 接口（camelCase）
+
+#### Service 位置
+- **位置**：`shared/services/account/account.service.ts`
+- **理由**：業務邏輯屬於共享層
+- **依賴**：使用 AccountRepository（符合 shared → core 依賴方向）
+
+### 實施順序調整
+
+**原計劃**：
+1. Models → Service（直接使用 SupabaseService）
+
+**新計劃**：
+1. Models（類型定義）
+2. Repository（數據訪問層，使用 BaseRepository）
+3. Service（業務邏輯層，使用 Repository）
+
+### 經驗教訓
+
+1. **先評估現有代碼**：在制定計劃前，先全面了解現有代碼結構
+2. **文檔與代碼對齊**：文檔規劃可能與實際代碼不一致，應以實際代碼為準
+3. **分層架構的重要性**：明確各層的職責和依賴關係
+4. **決策反覆的價值**：通過多次評估，找到最佳方案
+
+### 相關文檔
+- [結構評估總結](./賬戶系統開發-結構評估總結.md) - 詳細的評估過程和決策記錄
+- [Core 基礎設施 README](../src/app/core/infra/README.md) - Repository 模式使用指南
+
+---
+
 **最後更新**：2025-01-15  
 **維護者**：開發團隊

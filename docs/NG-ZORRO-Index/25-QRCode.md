@@ -45,6 +45,29 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/qr-code/en) 查看詳細用法和示例。
 
+## API
+
+### nz-qrcode 組件
+
+二維碼組件，用於生成和顯示 QR 碼。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzValue]` | 二維碼的值 | `string` | `-` |
+| `[nzBgColor]` | 背景顏色 | `string` | `'#ffffff'` |
+| `[nzColor]` | 前景顏色 | `string` | `'#000000'` |
+| `[nzLevel]` | 錯誤校正級別 | `'L' \| 'M' \| 'Q' \| 'H'` | `'L'` |
+| `[nzSize]` | 二維碼大小（像素） | `number` | `160` |
+| `[nzPadding]` | 內邊距（像素） | `number` | `0` |
+
+> **注意**：錯誤校正級別說明：
+> - `L` - 約 7% 的錯誤可以被校正
+> - `M` - 約 15% 的錯誤可以被校正
+> - `Q` - 約 25% 的錯誤可以被校正
+> - `H` - 約 30% 的錯誤可以被校正
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/qr-code/en)

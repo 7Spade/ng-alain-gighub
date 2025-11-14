@@ -45,6 +45,33 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/calendar/en) 查看詳細用法和示例。
 
+## API
+
+### nz-calendar 組件
+
+日曆組件，用於顯示和選擇日期。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzDateCell]` | 自定義日期單元格的渲染，追加內容 | `TemplateRef<Date>` | `-` |
+| `[nzDateFullCell]` | 自定義日期單元格的渲染，覆蓋內容 | `TemplateRef<Date>` | `-` |
+| `[nzMonthCell]` | 自定義月份單元格的渲染，追加內容 | `TemplateRef<Date>` | `-` |
+| `[nzMonthFullCell]` | 自定義月份單元格的渲染，覆蓋內容 | `TemplateRef<Date>` | `-` |
+| `[nzCustomHeader]` | 自定義頭部內容 | `string \| TemplateRef<void>` | `-` |
+| `[nzDisabledDate]` | 不可選擇的日期 | `(current: Date) => boolean` | `-` |
+| `[nzFullscreen]` | 是否全屏顯示 | `boolean` | `true` |
+| `[(ngModel)]` | 當前顯示的日期，雙向綁定 | `Date` | 當前日期 |
+| `[(nzMode)]` | 顯示模式，雙向綁定 | `'month' \| 'year'` | `'month'` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(nzPanelChange)` | 面板狀態變化時觸發 | `EventEmitter<{ date: Date, mode: 'month' \| 'year' }>` |
+| `(nzSelectChange)` | 選擇日期時觸發 | `EventEmitter<Date>` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/calendar/en)

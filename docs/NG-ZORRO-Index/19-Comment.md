@@ -45,6 +45,31 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/comment/en) 查看詳細用法和示例。
 
+## API
+
+### nz-comment 組件
+
+評論組件，用於展示評論列表。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzAuthor]` | 要顯示為評論作者的內容 | `string \| TemplateRef<void>` | `-` |
+| `[nzDatetime]` | 要顯示為評論時間的內容 | `string \| TemplateRef<void>` | `-` |
+
+### nz-comment-avatar 指令
+
+用於顯示評論頭像的元素。
+
+### nz-comment-content 指令
+
+評論的主要內容。
+
+### nz-comment-action 指令
+
+顯示在評論內容下方的操作項。
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/comment/en)

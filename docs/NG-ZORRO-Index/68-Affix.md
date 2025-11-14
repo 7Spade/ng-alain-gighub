@@ -45,6 +45,28 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/affix/en) 查看詳細用法和示例。
 
+## API
+
+### nz-affix 組件
+
+固釘組件，用於將元素固定在可滾動區域的特定位置。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzOffsetBottom]` | 距離窗口底部達到指定偏移量後觸發 | `number` | `-` |
+| `[nzOffsetTop]` | 距離窗口頂部達到指定偏移量後觸發 | `number` | `0` |
+| `[nzTarget]` | 設置 `nz-affix` 需要監聽其滾動事件的元素，值為一個返回對應 DOM 元素的函數 | `string \| HTMLElement` | `window` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(nzChange)` | 固定狀態改變時的回調 | `EventEmitter<boolean>` |
+
+> **注意**：`nz-affix` 的子元素不能是 `position: absolute`，但 `nz-affix` 本身可以設置 `position: absolute`。
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/affix/en)

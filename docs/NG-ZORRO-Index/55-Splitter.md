@@ -45,6 +45,42 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/splitter/en) 查看詳細用法和示例。
 
+## API
+
+### nz-splitter 組件
+
+分隔面板組件，用於將區域分割成多個水平或垂直的面板。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzDirection]` | 分割方向 | `'horizontal' \| 'vertical'` | `'horizontal'` |
+| `[nzDisabledBarSize]` | 禁用拖動條的大小 | `number` | `-` |
+| `[nzSplitBarSize]` | 拖動條的大小 | `number` | `-` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(nzResizeEnd)` | 調整大小結束時觸發 | `EventEmitter<{ sizes: number[] }>` |
+| `(nzResizeMove)` | 調整大小移動時觸發 | `EventEmitter<{ sizes: number[] }>` |
+| `(nzResizeStart)` | 調整大小開始時觸發 | `EventEmitter<{ sizes: number[] }>` |
+
+### nz-splitter-pane 組件
+
+分隔面板中的單個面板。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzSize]` | 面板大小（百分比） | `number` | `-` |
+| `[nzMinSize]` | 面板最小大小（百分比） | `number` | `-` |
+| `[nzMaxSize]` | 面板最大大小（百分比） | `number` | `-` |
+| `[nzCollapsible]` | 是否可摺疊 | `boolean` | `false` |
+| `[nzCollapsedSize]` | 摺疊時的大小（百分比） | `number` | `-` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/splitter/en)

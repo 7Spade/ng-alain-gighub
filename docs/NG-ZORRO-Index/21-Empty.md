@@ -45,6 +45,20 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/empty/en) 查看詳細用法和示例。
 
+## API
+
+### nz-empty 組件
+
+空狀態組件，用於顯示空數據時的友好提示。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzNotFoundImage]` | 設置顯示圖片，字符串值表示自定義圖片 URL | `string \| TemplateRef<void>` | `-` |
+| `[nzNotFoundContent]` | 自定義描述內容 | `string \| TemplateRef<void> \| null` | `-` |
+| `[nzNotFoundFooter]` | 自定義底部內容 | `string \| TemplateRef<void>` | `-` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/empty/en)

@@ -45,6 +45,34 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/timeline/en) 查看詳細用法和示例。
 
+## API
+
+### nz-timeline 組件
+
+時間軸組件，用於展示時間軸信息。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzPending]` | 指定最後一個"幽靈"節點是否存在及其內容 | `string \| boolean \| TemplateRef<void>` | `-` |
+| `[nzPendingDot]` | 當最後一個"幽靈"節點存在時，指定其時間圖標 | `string \| TemplateRef<void>` | `-` |
+| `[nzReverse]` | 節點的排序 | `boolean` | `false` |
+| `[nzMode]` | 通過設置 `mode` 可以改變時間軸和內容的相對位置 | `'left' \| 'alternate' \| 'right' \| 'custom'` | `-` |
+
+### nz-timeline-item 組件
+
+時間軸中的單個節點。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzColor]` | 指定圓圈標記的顏色，可選值為 'blue'、'red'、'green'、'gray' 或自定義顏色值 | `string` | `-` |
+| `[nzDot]` | 自定義時間軸節點標記 | `string \| TemplateRef<void>` | `-` |
+| `[nzPosition]` | 自定義節點的位置，僅在 `nzMode` 為 'custom' 時有效 | `'left' \| 'right'` | `-` |
+| `[nzLabel]` | 設置時間軸節點的標籤 | `string \| TemplateRef<void>` | `-` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/timeline/en)
