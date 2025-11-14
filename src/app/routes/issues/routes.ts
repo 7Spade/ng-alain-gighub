@@ -15,12 +15,28 @@ export const ISSUE_ROUTES: Routes = [
     loadComponent: () => import('./form/issue-form.component').then(m => m.IssueFormComponent)
   },
   {
-    path: ':id',
-    loadComponent: () => import('./detail/issue-detail.component').then(m => m.IssueDetailComponent)
+    path: 'detail',
+    loadComponent: () => import('./detail-static/issue-detail-static.component').then(m => m.IssueDetailStaticComponent)
+  },
+  {
+    path: 'handle',
+    loadComponent: () => import('./handle-center/issue-handle-center.component').then(m => m.IssueHandleCenterComponent)
+  },
+  {
+    path: 'photos',
+    loadComponent: () => import('./photos-wall/issue-photos-wall.component').then(m => m.IssuePhotosWallComponent)
+  },
+  {
+    path: 'close',
+    loadComponent: () => import('./close-summary/issue-close-summary.component').then(m => m.IssueCloseSummaryComponent)
   },
   {
     path: 'assignments',
     loadComponent: () => import('./assignments/issue-assignments.component').then(m => m.IssueAssignmentsComponent)
+  },
+  {
+    path: ':id',
+    loadComponent: () => import('./detail/issue-detail.component').then(m => m.IssueDetailComponent)
   },
   {
     path: ':id/handle',
@@ -35,4 +51,3 @@ export const ISSUE_ROUTES: Routes = [
     loadComponent: () => import('./close/issue-close.component').then(m => m.IssueCloseComponent)
   }
 ];
-

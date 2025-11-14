@@ -19,15 +19,16 @@ export const TASK_ROUTES: Routes = [
     loadComponent: () => import('./calendar/task-calendar.component').then(m => m.TaskCalendarComponent)
   },
   {
+    path: 'detail',
+    loadComponent: () =>
+      import('./detail-shell/task-detail-shell.component').then(m => m.TaskDetailShellComponent)
+  },
+  {
+    path: 'form',
+    loadComponent: () => import('./form-hub/task-form-hub.component').then(m => m.TaskFormHubComponent)
+  },
+  {
     path: 'create',
-    loadComponent: () => import('./form/task-form.component').then(m => m.TaskFormComponent)
-  },
-  {
-    path: ':id',
-    loadComponent: () => import('./detail/task-detail.component').then(m => m.TaskDetailComponent)
-  },
-  {
-    path: ':id/edit',
     loadComponent: () => import('./form/task-form.component').then(m => m.TaskFormComponent)
   },
   {
@@ -53,6 +54,14 @@ export const TASK_ROUTES: Routes = [
   {
     path: 'weather',
     loadComponent: () => import('./weather/task-weather.component').then(m => m.TaskWeatherComponent)
+  },
+  {
+    path: ':id',
+    loadComponent: () => import('./detail/task-detail.component').then(m => m.TaskDetailComponent)
+  },
+  {
+    path: ':id/edit',
+    loadComponent: () => import('./form/task-form.component').then(m => m.TaskFormComponent)
   }
 ];
 

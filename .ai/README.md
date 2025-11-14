@@ -14,19 +14,22 @@
 ├── project-idea.md              # 項目概念和願景 ✅ 已填充
 ├── database-overview.md         # 數據庫概覽 ✅ 已創建
 ├── api-overview.md              # API 概覽 ✅ 已創建
-├── prd.md                       # 產品需求文檔（待填充）
+├── prd.md                       # 產品需求摘要 ✅
 │
 ├── user-stories/                # 用戶故事
-│   ├── story-cert-upload.md     # 證書上傳故事（待填充）
-│   ├── story-cert-list.md       # 證書列表故事（待填充）
+│   ├── story-cert-upload.md     # 證書上傳故事 ✅
+│   ├── story-cert-list.md       # 證書列表故事 ✅
 │   └── README.md                # 用戶故事說明
 │
 ├── epics/                       # Epic 文檔
-│   └── epic-training/           # 培訓 Epic
+│   └── epic-training/           # 培訓 Epic ✅
 │       └── README.md            # Epic 說明
 │
 └── development/                 # 開發相關文檔
-    └── README.md                # 開發文檔說明
+    ├── README.md                # 開發文檔說明
+    ├── api-spec.md              # API 規範摘要 ✅
+    ├── database-schema.md       # 數據庫摘要 ✅
+    └── decision-records/README.md # ADR 流程 ✅
 ```
 
 ## 📄 文件說明
@@ -46,7 +49,7 @@
   - Git-like 分支模型
   - 51 張資料表架構
   - 核心設計原則
-- **狀態**：⏳ 待填充
+- **狀態**：✅ 已填充
 - **參考**：`docs/27-完整架構流程圖.mermaid.md`, `docs/28-架構審查報告.md`, `docs/10-系統架構思維導圖.mermaid.md`
 
 #### `prd.md`
@@ -56,7 +59,7 @@
   - 功能需求
   - 用戶角色和用例
   - 業務流程
-- **狀態**：⏳ 待填充
+- **狀態**：✅ 已填充
 - **參考**：`docs/PRD.md`（如果存在）
 
 #### `tech-stack.md`
@@ -116,7 +119,7 @@
 - **用途**：存放用戶故事和功能需求
 - **格式**：遵循 User Story 格式（As a... I want... So that...）
 - **文件命名**：`story-{feature-name}.md`
-- **狀態**：部分文件已創建，待填充內容
+- **現況**：`story-cert-upload.md`、`story-cert-list.md` 已提供完整描述、驗收標準、技術要求；後續故事請沿用同一模板新增
 
 ### Epic 文檔
 
@@ -124,17 +127,25 @@
 - **用途**：存放 Epic 級別的功能文檔
 - **格式**：Epic 描述、相關用戶故事、驗收標準
 - **文件命名**：`epic-{epic-name}/`
-- **狀態**：`epic-training/` 目錄已存在
+- **現況**：`epic-training/` 已記錄目標、範圍、驗收標準、KPI 並連結證書相關 user stories
 
 ### 開發文檔
 
 > **注意**：`api-overview.md` 和 `database-overview.md` 已移至根目錄，作為基礎參考文件。
 
+#### `development/`
+- **用途**：提供 AI 開發模式所需的技術摘要與 ADR 框架
+- **內容**：
+  - `api-spec.md`：認證、主要 REST／Storage／Realtime 端點、錯誤處理策略
+  - `database-schema.md`：十一大資料模組、關聯重點、RLS 與一致性要求
+  - `decision-records/README.md`：ADR 流程說明與命名規則
+- **狀態**：✅ 已建立基礎內容，可依需要新增更多專題文件
+
 #### `development/decision-records/`
 - **用途**：架構決策記錄（Architecture Decision Records, ADR）
-- **格式**：遵循 ADR 格式
+- **格式**：遵循 ADR 模板（Context / Decision / Consequences / Alternatives / References）
 - **內容**：重要技術決策、決策背景、影響分析
-- **狀態**：⏳ 待創建
+- **現況**：`README.md` 已提供流程指引，實際 ADR 將以 `ADR-yyyymmdd-<topic>.md` 追加
 
 ## 🔗 與其他目錄的關係
 
@@ -169,7 +180,7 @@
 
 1. **保持簡潔**：`.ai/` 目錄的文件應該精簡，便於 AI 快速理解
 2. **定期更新**：當架構或需求變更時，同步更新 `.ai/` 目錄的文件
-3. **引用詳細文檔**：在 `.ai/` 文件中引用 `docs/` 中的詳細文檔
+3. **引用詳細文檔**：在 `.ai/` 文件中引用 `docs/` 中的詳細文檔（例如 `docs/PRD.md`, `docs/47-DELON-Index-索引.md`, `docs/46-ng-zorro-antd-組件清單與CLI指令.md`）
 4. **結構化組織**：按照功能模組或業務領域組織文件
 5. **與 modes.json 配合**：確保 `modes.json` 中引用的文件都存在且內容完整
 
@@ -202,6 +213,6 @@
 
 ---
 
-**最後更新**：2025-01-15  
+**最後更新**：2025-11-14  
 **維護者**：開發團隊
 
