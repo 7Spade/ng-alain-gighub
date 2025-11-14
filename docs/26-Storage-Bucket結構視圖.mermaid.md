@@ -138,6 +138,52 @@ graph TD
         Avatars --> AV1 & AV2
     end
 
+    subgraph "Bucket: blueprint-assets/ (公開只讀)"
+        BlueprintAssets[blueprint-assets/]
+        BA1["{blueprint_id}/covers/hero.png"]
+        BA2["{blueprint_id}/thumbnails/{uuid}.jpg"]
+        BA3["lifecycle: 30 days"]
+        BlueprintAssets --> BA1 & BA2 & BA3
+    end
+
+    subgraph "Bucket: task-attachments/ (私有)"
+        TaskAttachments[task-attachments/]
+        TA1["{blueprint_id}/{task_id}/"]
+        TA2["photos/{uuid}.jpg"]
+        TA3["docs/{uuid}.pdf"]
+        TA4["lifecycle: 180 days"]
+        TA1 --> TA2 & TA3
+        TaskAttachments --> TA1 & TA4
+    end
+
+    subgraph "Bucket: qa-evidence/ (私有)"
+        QAEvidence[qa-evidence/]
+        QE1["{blueprint_id}/{quality_check_id}/"]
+        QE2["before/*.jpg"]
+        QE3["after/*.jpg"]
+        QE4["defects/*.mp4"]
+        QE1 --> QE2 & QE3 & QE4
+        QAEvidence --> QE1
+    end
+
+    subgraph "Bucket: issue-attachments/ (私有)"
+        IssueAttachments[issue-attachments/]
+        IA1["{blueprint_id}/{issue_id}/"]
+        IA2["evidence/*.jpg"]
+        IA3["resolution/*.jpg"]
+        IA4["report/*.pdf"]
+        IA1 --> IA2 & IA3 & IA4
+        IssueAttachments --> IA1
+    end
+
+    subgraph "Bucket: public-assets/ (CDN 發佈)"
+        PublicAssets[public-assets/]
+        PA1["ui/icons/*.svg"]
+        PA2["docs/manuals/*.pdf"]
+        PA3["cache-control: 1d"]
+        PublicAssets --> PA1 & PA2 & PA3
+    end
+
     subgraph "Bucket: exports/ (私有,暫存)"
         Exports[exports/]
         EX1["{blueprint_id}/"]
@@ -148,7 +194,7 @@ graph TD
         EX1 --> EX2 & EX3 & EX4
     end
 
-    Storage --> Images & Documents & Drawings & Avatars & Exports
+    Storage --> Images & Documents & Drawings & Avatars & Exports & BlueprintAssets & TaskAttachments & QAEvidence & IssueAttachments & PublicAssets
 
     subgraph "CDN 層"
         CDN[Cloudflare CDN]
@@ -181,7 +227,13 @@ graph TD
         
         R4["avatars/:<br/>- 讀取: public<br/>- 上傳: 帳戶擁有者<br/>- 刪除: 帳戶擁有者"]
         
-        RLS --> R1 & R2 & R3 & R4
+        R5["task-attachments/:<br/>- 讀取: 任務相關成員<br/>- 上傳: 指派者/承攬分支<br/>- 刪除: 任務擁有者"]
+        R6["qa-evidence/:<br/>- 讀取: 品管/擁有者<br/>- 上傳: 驗收人員<br/>- 刪除: 品管主管"]
+        R7["issue-attachments/:<br/>- 讀取: 問題相關成員<br/>- 上傳: 回報人/處理人<br/>- 刪除: 問題管理員"]
+        R8["blueprint-assets/:<br/>- 讀取: public (只讀)<br/>- 上傳: 擁有者<br/>- 刪除: 擁有者"]
+        R9["public-assets/:<br/>- 讀取: public<br/>- 上傳: DevOps<br/>- 刪除: DevOps"]
+        
+        RLS --> R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9
     end
 
     Images -.權限控制.-> R1
@@ -191,6 +243,8 @@ graph TD
 
     Images --> CDN
     Avatars --> CDN
+    BlueprintAssets --> CDN
+    PublicAssets --> CDN
 
     %% 樣式
     classDef bucketStyle fill:#2196F3,stroke:#1565C0,color:#fff,stroke-width:3px

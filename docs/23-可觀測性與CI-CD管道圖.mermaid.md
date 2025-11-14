@@ -26,7 +26,11 @@ flowchart TD
     BuildCheck -->|否| NotifyDev[通知開發者<br/>Email/Slack]
     
     BuildApp --> BuildSuccess{建置成功?}
-    BuildSuccess -->|是| Deploy[部署到 Supabase<br/>- 上傳前端檔案<br/>- 執行資料庫遷移<br/>- 驗證部署]
+    BuildSuccess -->|是| SupabaseMigrate[執行 Supabase Migrations<br/>- schema sync<br/>- RLS 驗證]
+    SupabaseMigrate --> MigrationCheck{遷移成功?}
+    MigrationCheck -->|否| Rollback
+    MigrationCheck -->|是| EdgeDeploy[部署 Edge Functions<br/>- branch-merge<br/>- webhook]
+    EdgeDeploy --> Deploy[部署到 Supabase<br/>- 上傳前端檔案<br/>- 設定 CDN<br/>- 版本標記]
     BuildSuccess -->|否| BuildFail[❌ 建置失敗<br/>阻擋合併]
     
     Deploy --> SmokeTest[Smoke Test<br/>- 任務列表<br/>- 任務詳情<br/>- 變更流程]
@@ -37,7 +41,7 @@ flowchart TD
     
     subgraph "監控與可觀測性"
         Monitoring --> LogCollection[日誌收集<br/>- 前端錯誤<br/>- Edge Functions 日誌<br/>- 資料庫查詢日誌]
-        Monitoring --> MetricsCollection[指標收集<br/>- Core Web Vitals<br/>- API 回應時間<br/>- 業務指標]
+        Monitoring --> MetricsCollection[指標收集<br/>- Core Web Vitals<br/>- API 回應時間<br/>- 業務指標<br/>- Branch PR SLA]
         Monitoring --> EventTracking[事件追蹤<br/>- 領域事件<br/>- 系統事件<br/>- 審計日誌]
         
         LogCollection --> AlertSystem[告警系統]

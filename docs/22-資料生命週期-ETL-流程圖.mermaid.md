@@ -24,6 +24,9 @@ flowchart TD
     
     %% ==================== Realtime 訂閱 ====================
     DataSourceDecision -->|即時訂閱| RealtimeSubscribe[⚡ Realtime 訂閱<br/>- WebSocket 連線<br/>- Database 變更<br/>- Broadcast 廣播]
+    DataSourceDecision -->|Git-like 分支事件| BranchEvents[🔀 分支事件<br/>- branch_forks<br/>- blueprint_branches<br/>- pull_requests]
+    BranchEvents --> BranchProcessor[⚙️ Edge branch-webhook<br/>- 合併檢核<br/>- 欄位遮罩]
+    BranchProcessor --> APICall
     
     %% ==================== Extract: 資料擷取 ====================
     APICall --> BackendValidation[🔍 後端驗證<br/>- PostgreSQL Constraints<br/>- RLS Policy 檢查<br/>- Trigger 前驗證]
@@ -41,6 +44,10 @@ flowchart TD
     RLSCheck -->|有權限| DataOperation{資料操作類型}
     
     DataOperation -->|INSERT| InsertData[📝 插入資料<br/>- 自動生成 UUID<br/>- 設定預設值<br/>- 時間戳記]
+    InsertData --> StagingQueue{需要暫存?}
+    StagingQueue -->|是| StagingRecord[📦 寫入暫存區<br/>- staging_submissions<br/>- 48h TTL<br/>- 可撤回]
+    StagingQueue -->|否| DBTrigger
+    StagingRecord --> DBTrigger
     
     DataOperation -->|UPDATE| UpdateData[✏️ 更新資料<br/>- 樂觀鎖檢查<br/>- 更新時間戳記<br/>- 版本號遞增]
     
@@ -196,6 +203,10 @@ flowchart TD
   - 自動生成 UUID (gen_random_uuid())
   - 預設值填充 (created_at, updated_at)
   - 關聯資料建立
+- **暫存提交 (staging_submissions)**:
+  - INSERT 先寫入暫存區，設定 `expires_at = now() + interval '48 hours'`
+  - 使用者可在 48h 內撤回，撤回後不會落盤到實際表
+  - 確認提交後再進入正式 INSERT 流程
 - **UPDATE**: 
   - 樂觀鎖 (version 欄位)
   - 更新時間戳記

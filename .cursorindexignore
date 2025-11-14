@@ -10,6 +10,7 @@ node_modules/
 # ============================================================================
 # Build outputs
 # ============================================================================
+public/
 dist/
 tmp/
 out-tsc/
@@ -34,6 +35,7 @@ jasmine-*.log
 # ============================================================================
 # Yarn cache and build files (Yarn 4.9.2 PnP)
 # ============================================================================
+.yarn/
 .yarn/cache/
 .yarn/unplugged/
 .yarn/build-state.yml
@@ -92,6 +94,7 @@ connect.lock
 # ============================================================================
 # E2E test artifacts
 # ============================================================================
+e2e/
 e2e/screenshots/
 e2e/videos/
 
@@ -106,7 +109,17 @@ repomix-output.*
 source-map-explorer-report.*
 
 # Husky files (git hooks)
+.husky/
 .husky/_/
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Documentation (exclude large markdown sets)
+docs/
+
+# ============================================================================
+# Project scripts and templates
+# ============================================================================
+scripts/
+_cli-tpl/

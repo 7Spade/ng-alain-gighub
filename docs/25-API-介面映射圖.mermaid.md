@@ -43,6 +43,8 @@ graph TB
         T5[DELETE /rest/v1/tasks?id=eq.{id}<br/>刪除任務]
         T6[POST /rest/v1/task_assignments<br/>指派任務]
         T7[GET /rest/v1/tasks?status=in.⭐pending,in_progress⭐<br/>篩選狀態]
+        T8[POST /rest/v1/staging_submissions<br/>建立暫存提交]
+        T9[PATCH /rest/v1/staging_submissions?id=eq.{id}<br/>撤回/確認暫存]
     end
 
     subgraph "每日報表 APIs"
@@ -73,6 +75,18 @@ graph TB
         I5[POST /rest/v1/issue_assignments<br/>指派問題]
         I6[POST /functions/v1/notify-issue<br/>問題通知 Edge]
         I7[GET /rest/v1/issues?status=eq.open&severity=eq.high<br/>篩選高優先級問題]
+    end
+
+    subgraph "分支治理 APIs"
+        direction LR
+        G1[POST /rest/v1/branch_forks<br/>建立 Fork 任務]
+        G2[POST /rest/v1/blueprint_branches<br/>建立承攬分支]
+        G3[POST /rest/v1/organization_collaborations<br/>發送協作邀請]
+        G4[GET /rest/v1/blueprint_branches?blueprint_id=eq.{id}<br/>查詢分支列表]
+        G5[POST /rest/v1/pull_requests<br/>提交 PR]
+        G6[POST /rest/v1/pull_request_reviews<br/>審查 PR]
+        G7[POST /functions/v1/branch-merge<br/>Edge 合併主分支]
+        G8[GET /rest/v1/branch_metrics?blueprint_id=eq.{id}<br/>查詢承攬績效]
     end
 
     subgraph "協作通訊 APIs"
@@ -137,7 +151,7 @@ graph TB
 
     AuthGW --> A1 & A2 & A3 & A4 & A5 & A6 & A7
     PostgREST --> B1 & B2 & B3 & B4 & B5 & B6
-    PostgREST --> T1 & T2 & T3 & T4 & T5 & T6 & T7
+    PostgREST --> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9
     PostgREST --> R1 & R2 & R3 & R5
     StorageGW --> R4
     EdgeGW --> R6
@@ -158,6 +172,9 @@ graph TB
     EdgeGW --> N2 & N4
     
     PostgREST --> S1 & S2 & S3 & S4 & S5
+    
+    PostgREST --> G1 & G2 & G3 & G4 & G5 & G6 & G8
+    EdgeGW --> G7
     
     RealtimeGW --> RT1 & RT2 & RT3 & RT4 & RT5
 

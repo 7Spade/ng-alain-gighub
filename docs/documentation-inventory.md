@@ -13,21 +13,21 @@
 | 04 | `docs/04-重構後結構樹.md` | Guide | 2025-11-14 01:36 | ✅ Active | 與 19 模組視圖對齊 |
 | 10 | `docs/10-系統架構思維導圖.mermaid.md` | Diagram | 2025-11-14 11:34 | ✅ Active | 下次版本審查前再更新 |
 | 11 | `docs/11-Supabase架構流程圖.mermaid.md` | Diagram | 2025-11-14 15:40 | ✅ Active | 新增 Git-like branch tables、branch-merge Edge Function |
-| 12 | `docs/12-實體關係圖.mermaid.md` | Diagram | 2025-11-13 07:54 | ⚠️ Update | 對齊 30-0 SQL 結構 |
-| 13 | `docs/13-帳戶層流程圖.mermaid.md` | Diagram | 2025-11-14 11:34 | ✅ Active | 保留 |
-| 14 | `docs/14-業務流程圖.mermaid.md` | Diagram | 2025-11-13 07:51 | ⚠️ Update | 更新至 Git-like 新節點 |
-| 15 | `docs/15-序列圖.mermaid.md` | Diagram | 2025-11-13 07:54 | ⚠️ Update | 新增 Signals/暫存區流程 |
+| 12 | `docs/12-實體關係圖.mermaid.md` | Diagram | 2025-11-14 15:45 | ✅ Active | 新增 branch_forks / staging_submissions 等資料表 |
+| 13 | `docs/13-帳戶層流程圖.mermaid.md` | Diagram | 2025-11-14 15:47 | ✅ Active | 加入 BranchPolicy + RLS 權限層 |
+| 14 | `docs/14-業務流程圖.mermaid.md` | Diagram | 2025-11-14 15:48 | ✅ Active | 補 Git-like 分支與暫存撤回流程 |
+| 15 | `docs/15-序列圖.mermaid.md` | Diagram | 2025-11-14 15:49 | ✅ Active | 新增 fork/PR、暫存提交流程 |
 | 16 | `docs/16-狀態圖.mermaid.md` | Diagram | 2025-11-14 12:32 | ✅ Active | 與 43 狀態值同步 |
 | 17 | `docs/17-系統上下文圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 保留 |
 | 18 | `docs/18-容器圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 保留 |
 | 19 | `docs/19-元件模組視圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 保留 |
 | 20 | `docs/20-部署基礎設施視圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 與 39 互相參照 |
 | 21 | `docs/21-安全與-RLS-權限矩陣.md` | Guide | 2025-11-14 12:09 | ✅ Active | 補充最新 policy 變更 |
-| 22 | `docs/22-資料生命週期-ETL-流程圖.mermaid.md` | Diagram | 2025-11-13 09:13 | ⚠️ Update | 確認資料湖/ETL 最新節點 |
-| 23 | `docs/23-可觀測性與CI-CD管道圖.mermaid.md` | Diagram | 2025-11-13 09:13 | ⚠️ Update | 對齊當前 CI/CD pipeline |
-| 24 | `docs/24-領域事件時間軸圖.mermaid.md` | Diagram | 2025-11-13 09:13 | ⚠️ Update | 補近期事件 |
-| 25 | `docs/25-API-介面映射圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 與 33 保持一致 |
-| 26 | `docs/26-Storage-Bucket結構視圖.mermaid.md` | Diagram | 2025-11-13 09:20 | ⚠️ Update | 補增新 bucket / lifecycle |
+| 22 | `docs/22-資料生命週期-ETL-流程圖.mermaid.md` | Diagram | 2025-11-14 15:52 | ✅ Active | 加入 branch events 與暫存隊列 |
+| 23 | `docs/23-可觀測性與CI-CD管道圖.mermaid.md` | Diagram | 2025-11-14 15:53 | ✅ Active | 增 Supabase migration / Edge deploy 節點 |
+| 24 | `docs/24-領域事件時間軸圖.mermaid.md` | Diagram | 2025-11-14 15:54 | ✅ Active | 新增 fork/PR/暫存等領域事件 |
+| 25 | `docs/25-API-介面映射圖.mermaid.md` | Diagram | 2025-11-14 15:55 | ✅ Active | 補分支治理 / 暫存 API |
+| 26 | `docs/26-Storage-Bucket結構視圖.mermaid.md` | Diagram | 2025-11-14 15:56 | ✅ Active | 新增 blueprint-assets / task-attachments 等 bucket |
 | 27 | `docs/27-完整架構流程圖.mermaid.md` | Diagram | 2025-11-14 11:04 | ✅ Active | 下一版審查同步 |
 | 28 | `docs/28-架構審查報告.md` | Report | 2025-11-14 11:04 | ✅ Active | 最新審查基準 |
 | 30-0 | `docs/30-0-完整SQL表結構定義.md` | Reference | 2025-11-14 11:04 | ✅ Active | 建 migration 時引用 |
