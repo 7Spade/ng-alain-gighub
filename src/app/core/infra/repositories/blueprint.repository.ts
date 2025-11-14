@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BaseRepository, QueryOptions } from './base.repository';
 import { Database } from '../types/database.types';
+import { BlueprintStatus } from '../types/blueprint.types';
 
 /**
  * Blueprint 实体类型（camelCase）
@@ -58,11 +59,11 @@ export class BlueprintRepository extends BaseRepository<Blueprint, BlueprintInse
   /**
    * 根据状态查询蓝图
    * 
-   * @param status 状态
+   * @param status 蓝图状态
    * @param options 查询选项
    * @returns Observable<Blueprint[]>
    */
-  findByStatus(status: string, options?: QueryOptions): Observable<Blueprint[]> {
+  findByStatus(status: BlueprintStatus, options?: QueryOptions): Observable<Blueprint[]> {
     return this.findAll({
       ...options,
       filters: {
@@ -95,7 +96,7 @@ export class BlueprintRepository extends BaseRepository<Blueprint, BlueprintInse
    * @returns Observable<Blueprint[]>
    */
   findActive(options?: QueryOptions): Observable<Blueprint[]> {
-    return this.findByStatus('active', options);
+    return this.findByStatus(BlueprintStatus.ACTIVE, options);
   }
 }
 

@@ -29,6 +29,10 @@ export const routes: Routes = [
       {
         path: 'collaboration',
         loadChildren: () => import('./collaboration/routes').then(m => m.COLLABORATION_ROUTES)
+      },
+      {
+        path: 'blueprints',
+        loadChildren: () => import('./blueprints/routes').then(m => m.BLUEPRINT_ROUTES)
       }
     ]
   },

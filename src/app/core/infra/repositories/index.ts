@@ -3,6 +3,10 @@
  */
 export * from './base.repository';
 export * from './blueprint.repository';
+export * from './blueprint-config.repository';
+export * from './blueprint-branch.repository';
+export * from './branch-fork.repository';
+export * from './pull-request.repository';
 export * from './account.repository';
 export * from './team.repository';
 export * from './team-member.repository';

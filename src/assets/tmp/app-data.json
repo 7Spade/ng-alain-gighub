@@ -37,13 +37,23 @@
           "children": [
             {
               "text": "账户列表",
-              "link": "/accounts",
+              "link": "/accounts/list",
               "i18n": "menu.development.account.list"
             },
             {
-              "text": "账户详情",
-              "link": "/accounts/detail",
-              "i18n": "menu.development.account.detail"
+              "text": "创建账户",
+              "link": "/accounts/create",
+              "i18n": "menu.development.account.create"
+            },
+            {
+              "text": "团队管理",
+              "link": "/accounts/teams",
+              "i18n": "menu.development.account.teams"
+            },
+            {
+              "text": "排班管理",
+              "link": "/accounts/schedules",
+              "i18n": "menu.development.account.schedules"
             }
           ]
         },
@@ -53,14 +63,227 @@
           "icon": "anticon-team",
           "children": [
             {
-              "text": "组织列表",
-              "link": "/organizations",
-              "i18n": "menu.development.collaboration.organizations"
+              "text": "协作关系列表",
+              "link": "/collaboration/list",
+              "i18n": "menu.development.collaboration.list"
             },
             {
-              "text": "团队管理",
-              "link": "/teams",
-              "i18n": "menu.development.collaboration.teams"
+              "text": "创建协作关系",
+              "link": "/collaboration/create",
+              "i18n": "menu.development.collaboration.create"
+            },
+            {
+              "text": "协作邀请",
+              "link": "/collaboration/invitations",
+              "i18n": "menu.development.collaboration.invitations"
+            }
+          ]
+        },
+        {
+          "text": "蓝图系统",
+          "i18n": "menu.development.blueprint",
+          "icon": "anticon-file-text",
+          "children": [
+            {
+              "text": "蓝图列表",
+              "link": "/blueprints",
+              "i18n": "menu.development.blueprint.list"
+            },
+            {
+              "text": "创建蓝图",
+              "link": "/blueprints/create",
+              "i18n": "menu.development.blueprint.create"
+            },
+            {
+              "text": "分支管理",
+              "link": "/blueprints/branches",
+              "i18n": "menu.development.blueprint.branches"
+            },
+            {
+              "text": "Pull Request",
+              "link": "/blueprints/pull-requests",
+              "i18n": "menu.development.blueprint.pullRequests"
+            }
+          ]
+        },
+        {
+          "text": "任务执行",
+          "i18n": "menu.development.task",
+          "icon": "anticon-check-square",
+          "children": [
+            {
+              "text": "任务树视图",
+              "link": "/tasks",
+              "i18n": "menu.development.task.tree"
+            },
+            {
+              "text": "任务指派",
+              "link": "/tasks/assignments",
+              "i18n": "menu.development.task.assignments"
+            },
+            {
+              "text": "待办列表",
+              "link": "/tasks/todo",
+              "i18n": "menu.development.task.todo"
+            },
+            {
+              "text": "暂存区",
+              "link": "/tasks/staging",
+              "i18n": "menu.development.task.staging"
+            },
+            {
+              "text": "施工日志",
+              "link": "/tasks/daily-reports",
+              "i18n": "menu.development.task.dailyReports"
+            }
+          ]
+        },
+        {
+          "text": "品质验收",
+          "i18n": "menu.development.quality",
+          "icon": "anticon-check-circle",
+          "children": [
+            {
+              "text": "品管检查",
+              "link": "/quality/checks",
+              "i18n": "menu.development.quality.checks"
+            },
+            {
+              "text": "验收管理",
+              "link": "/quality/inspections",
+              "i18n": "menu.development.quality.inspections"
+            },
+            {
+              "text": "照片管理",
+              "link": "/quality/photos",
+              "i18n": "menu.development.quality.photos"
+            }
+          ]
+        },
+        {
+          "text": "问题追踪",
+          "i18n": "menu.development.issue",
+          "icon": "anticon-exclamation-circle",
+          "children": [
+            {
+              "text": "问题列表",
+              "link": "/issues",
+              "i18n": "menu.development.issue.list"
+            },
+            {
+              "text": "问题指派",
+              "link": "/issues/assignments",
+              "i18n": "menu.development.issue.assignments"
+            }
+          ]
+        },
+        {
+          "text": "协作沟通",
+          "i18n": "menu.development.communication",
+          "icon": "anticon-message",
+          "children": [
+            {
+              "text": "留言管理",
+              "link": "/communication/comments",
+              "i18n": "menu.development.communication.comments"
+            },
+            {
+              "text": "通知中心",
+              "link": "/communication/notifications",
+              "i18n": "menu.development.communication.notifications"
+            },
+            {
+              "text": "待办中心",
+              "link": "/communication/todos",
+              "i18n": "menu.development.communication.todos"
+            }
+          ]
+        },
+        {
+          "text": "数据分析",
+          "i18n": "menu.development.analytics",
+          "icon": "anticon-bar-chart",
+          "children": [
+            {
+              "text": "进度追踪",
+              "link": "/analytics/progress",
+              "i18n": "menu.development.analytics.progress"
+            },
+            {
+              "text": "活动记录",
+              "link": "/analytics/activity-logs",
+              "i18n": "menu.development.analytics.activityLogs"
+            },
+            {
+              "text": "数据报表",
+              "link": "/analytics/reports",
+              "i18n": "menu.development.analytics.reports"
+            }
+          ]
+        },
+        {
+          "text": "文件管理",
+          "i18n": "menu.development.document",
+          "icon": "anticon-file",
+          "children": [
+            {
+              "text": "文件列表",
+              "link": "/documents",
+              "i18n": "menu.development.document.list"
+            },
+            {
+              "text": "文件上传",
+              "link": "/documents/upload",
+              "i18n": "menu.development.document.upload"
+            },
+            {
+              "text": "版本管理",
+              "link": "/documents/versions",
+              "i18n": "menu.development.document.versions"
+            }
+          ]
+        },
+        {
+          "text": "机器人系统",
+          "i18n": "menu.development.bot",
+          "icon": "anticon-robot",
+          "children": [
+            {
+              "text": "机器人列表",
+              "link": "/bots",
+              "i18n": "menu.development.bot.list"
+            },
+            {
+              "text": "机器人配置",
+              "link": "/bots/config",
+              "i18n": "menu.development.bot.config"
+            },
+            {
+              "text": "执行日志",
+              "link": "/bots/executions",
+              "i18n": "menu.development.bot.executions"
+            }
+          ]
+        },
+        {
+          "text": "系统管理",
+          "i18n": "menu.development.system",
+          "icon": "anticon-setting",
+          "children": [
+            {
+              "text": "系统设置",
+              "link": "/system/settings",
+              "i18n": "menu.development.system.settings"
+            },
+            {
+              "text": "功能开关",
+              "link": "/system/feature-flags",
+              "i18n": "menu.development.system.featureFlags"
+            },
+            {
+              "text": "角色管理",
+              "link": "/system/roles",
+              "i18n": "menu.development.system.roles"
             }
           ]
         }
