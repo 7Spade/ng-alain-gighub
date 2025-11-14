@@ -26,10 +26,7 @@ type Checklist = {
 
     <div class="page-section">
       <nz-card nzTitle="任務 Metadata">
-        <nz-descriptions
-          nzBordered
-          [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }"
-        >
+        <nz-descriptions nzBordered [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }">
           <nz-descriptions-item nzTitle="名稱">示意任務</nz-descriptions-item>
           <nz-descriptions-item nzTitle="狀態">
             <nz-tag nzColor="processing">進行中</nz-tag>

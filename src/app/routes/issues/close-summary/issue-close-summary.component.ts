@@ -40,9 +40,7 @@ type SummaryCard = {
 
       <nz-card nzTitle="結案說明">
         <nz-typography>
-          <p>
-            這裡提供靜態說明文本，用於開發時快速確認佈局。可加入 Markdown、富文字或表格等自訂內容。
-          </p>
+          <p> 這裡提供靜態說明文本，用於開發時快速確認佈局。可加入 Markdown、富文字或表格等自訂內容。 </p>
         </nz-typography>
       </nz-card>
     </div>
@@ -86,4 +84,3 @@ export class IssueCloseSummaryComponent {
     { title: '重現次數', value: '0', note: '已確認修復' }
   ];
 }
-

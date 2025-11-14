@@ -27,10 +27,7 @@ type Timeline = {
 
     <div class="page-section">
       <nz-card nzTitle="基本資訊">
-        <nz-descriptions
-          nzBordered
-          [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }"
-        >
+        <nz-descriptions nzBordered [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }">
           <nz-descriptions-item nzTitle="問題標題">示意頁面：設備配寘錯誤</nz-descriptions-item>
           <nz-descriptions-item nzTitle="狀態">
             <nz-tag nzColor="orange">進行中</nz-tag>
@@ -86,4 +83,3 @@ export class IssueDetailStaticComponent {
     { title: '等待資料回填', description: '需系統紀錄', color: 'orange' }
   ];
 }
-
