@@ -89,6 +89,79 @@ export class ExampleComponent {}
 </nz-tree>
 ```
 
+## API
+
+### nz-tree 組件
+
+提供層次結構數據顯示，支持展開、折疊和選擇等功能。適合表示組織結構、文件系統等。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzData]` | 樹形數據源 | `NzTreeNodeOptions[]` | `-` |
+| `[nzAsyncData]` | 是否異步加載數據 | `boolean` | `false` |
+| `[nzCheckable]` | 節點前添加 Checkbox 複選框 | `boolean` | `false` |
+| `[nzCheckedKeys]` | 指定默認選中的樹節點 | `string[]` | `[]` |
+| `[nzSelectedKeys]` | 指定默認選中的樹節點 | `string[]` | `[]` |
+| `[nzDefaultExpandAll]` | 默認展開所有樹節點 | `boolean` | `false` |
+| `[nzDefaultExpandedKeys]` | 默認展開指定的樹節點 | `string[]` | `[]` |
+| `[nzShowExpand]` | 是否顯示展開/收起圖標 | `boolean` | `true` |
+| `[nzExpandAll]` | 是否展開所有節點 | `boolean` | `false` |
+| `[nzTreeTemplate]` | 自定義樹節點模板 | `TemplateRef<void>` | `-` |
+| `[nzSearchValue]` | 過濾（高亮）樹節點 | `string` | `null` |
+| `[nzSearchFunc]` | 自定義匹配方法，與 `nzSearchValue` 一起使用 | `(node: NzTreeNodeOptions) => boolean` | `null` |
+| `[nzBeforeDrop]` | 拖拽前二次確認，允許用戶決定是否允許放置 | `(confirm: NzFormatBeforeDropEvent) => Observable<boolean>` | `-` |
+| `[nzVirtualHeight]` | 虛擬滾動的高度 | `string` | `-` |
+| `[nzVirtualItemSize]` | 列表中項目的尺寸，與 [cdk itemSize](https://material.angular.io/cdk/scrolling/api) 相同 | `number` | `28` |
+| `[nzVirtualMaxBufferPx]` | 渲染新項目時要渲染的緩衝區像素數，與 [cdk maxBufferPx](https://material.angular.io/cdk/scrolling/api) 相同 | `number` | `500` |
+| `[nzVirtualMinBufferPx]` | 視口外渲染的最小緩衝區（以像素為單位），與 [cdk minBufferPx](https://material.angular.io/cdk/scrolling/api) 相同 | `number` | `28` |
+| `[nzBackdrop]` | 是否為覆蓋層附加背景 | `boolean` | `false` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(nzClick)` | 點擊樹節點觸發 | `EventEmitter<NzFormatEmitEvent>` |
+| `(nzCheckBoxChange)` | 點擊複選框觸發 | `EventEmitter<NzFormatEmitEvent>` |
+| `(nzExpandChange)` | 展開/收起節點時觸發 | `EventEmitter<NzFormatEmitEvent>` |
+| `(nzSearchValueChange)` | 搜索值改變時觸發 | `EventEmitter<string>` |
+
+#### 方法
+
+通過 `ViewChild` 獲取組件實例後可調用以下方法：
+
+| 方法 | 說明 | 返回值 |
+|------|------|--------|
+| `getTreeNodes()` | 獲取所有節點 | `NzTreeNode[]` |
+| `getTreeNodeByKey(key: string)` | 根據 key 獲取指定節點 | `NzTreeNode` |
+| `getCheckedNodeList()` | 獲取選中的節點列表（合併） | `NzTreeNode[]` |
+| `getSelectedNodeList()` | 獲取選中的節點列表 | `NzTreeNode[]` |
+| `getHalfCheckedNodeList()` | 獲取半選中的節點列表 | `NzTreeNode[]` |
+| `getExpandedNodeList()` | 獲取展開的節點列表 | `NzTreeNode[]` |
+| `getMatchedNodeList()` | 獲取匹配的節點列表（如果 `nzSearchValue` 不為 null） | `NzTreeNode[]` |
+
+### 數據結構示例
+
+```json
+[
+  {
+    "title": "parent 1",
+    "key": "1",
+    "children": [
+      {
+        "title": "child 1.1",
+        "key": "1-1"
+      },
+      {
+        "title": "child 1.2",
+        "key": "1-2"
+      }
+    ]
+  }
+]
+```
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/tree/en)

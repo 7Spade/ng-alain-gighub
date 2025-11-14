@@ -4,3 +4,4 @@ export * from './startup/startup.service';
 export * from './start-page.guard';
 export * from './supabase';
 export * from './permissions';
+export * from './infra';

@@ -5,7 +5,7 @@ import { ACLService } from '@delon/acl';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { ALAIN_I18N_TOKEN, MenuService, SettingsService, TitleService } from '@delon/theme';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
-import { Observable, zip, catchError, map, switchMap, of } from 'rxjs';
+import { Observable, zip, catchError, map, switchMap, of, from } from 'rxjs';
 
 import { I18NService } from '../i18n/i18n.service';
 import { PermissionService } from '../permissions/permission.service';
@@ -48,7 +48,7 @@ export class StartupService {
     return this.supabaseAuthAdapter.restoreSession().pipe(
       switchMap(() => {
         // 同步用户权限（如果已登录）
-        const currentUser = this.tokenService.get()?.user;
+        const currentUser = this.tokenService.get()?.['user'];
         const syncPermissions$ = currentUser?.id
           ? from(this.permissionService.syncRolesFromDatabase(currentUser.id)).pipe(
               catchError(error => {

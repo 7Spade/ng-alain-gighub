@@ -84,6 +84,53 @@ export class ExampleComponent {}
 </form>
 ```
 
+## API
+
+### nz-form 組件
+
+表單容器組件，支持 Angular Reactive Forms 和 Template-driven Forms。
+
+### nz-form-item 組件
+
+表單項容器，用於包裹表單標籤和表單控件。
+
+### nz-form-label 組件
+
+表單項標籤，可選。所有 `nz-col` 的 API 都可以在 `nz-form-label` 中使用。
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzRequired]` | 為當前項添加必填樣式 | `boolean` | `false` |
+| `[nzNoColon]` | 是否不顯示標籤文本後的 `:` | `boolean` | `false` |
+| `[nzFor]` | `label` 的 `for` 屬性 | `string` | `-` |
+| `[nzTooltipTitle]` | 設置提示信息 | `string \| TemplateRef<void>` | `-` |
+| `[nzTooltipIcon]` | 設置提示信息的圖標 | `string \| NzFormTooltipIcon` | `-` |
+| `[nzLabelAlign]` | 標籤文本對齊方式 | `'left' \| 'right'` | `'right'` |
+| `[nzLabelWrap]` | 標籤是否可以換行 | `boolean` | `false` |
+
+### nz-form-control 組件
+
+表單控件容器，用於結構化和驗證表單元素。
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzValidateStatus]` | 根據輸入的 `FormControl`、`NgModel` 或字符串值生成狀態。默認為 `nz-form-control` 內找到的第一個 `FormControl` 或 `NgModel` | `string \| FormControl \| NgModel` | 第一個 `FormControl` 或 `NgModel` |
+| `[nzHasFeedback]` | 與 `nzValidateStatus` 一起使用以顯示驗證狀態圖標。建議僅與 `Input` 元素一起使用 | `boolean` | `false` |
+| `[nzExtra]` | 為表單控件提供額外的提示消息 | `string \| TemplateRef<void>` | `-` |
+| `[nzSuccessTip]` | 驗證成功時顯示的自定義提示消息 | `string \| TemplateRef<{ $implicit: FormControl \| NgModel }>` | `-` |
+| `[nzWarningTip]` | 驗證結果為警告時顯示的自定義提示消息 | `string \| TemplateRef<{ $implicit: FormControl \| NgModel }>` | `-` |
+| `[nzErrorTip]` | 驗證結果為錯誤時顯示的自定義提示消息 | `string \| TemplateRef<{ $implicit: FormControl \| NgModel }>` | `-` |
+| `[nzValidatingTip]` | 表單控件正在驗證時顯示的自定義提示消息 | `string \| TemplateRef<{ $implicit: FormControl \| NgModel }>` | `-` |
+| `[nzAutoTips]` | 配置自動提示消息的對象 | `Record<string, string \| Record<string, string>>` | `-` |
+| `[nzDisableAutoTips]` | 禁用自動提示消息的顯示 | `boolean` | `false` |
+
+> **注意**：由於 Angular Forms 在部分 Observable 支持方面的限制，在更新表單控件的狀態（例如使用 `markAsDirty`）時，必須手動調用 `updateValueAndValidity` 以確保 `nz-form-control` 反映這些更改。
+
+### 相關組件
+
+- **`nz-form-split`**：顯示分隔符圖標（'-'）
+- **`nz-form-text`**：用於在 `nz-form-control` 內顯示純文本
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/form/en)

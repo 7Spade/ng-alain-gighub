@@ -45,6 +45,23 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/input/en) 查看詳細用法和示例。
 
+## API
+
+### nz-input 組件
+
+`nz-input` 組件是最基本的表單欄位包裝器，支持所有標準 HTML input 屬性和 Ng-Zorro 特定屬性。
+
+| 參數 | 說明 | 類型 | 默認值 | 版本 |
+|------|------|------|--------|------|
+| `[nzSize]` | 輸入框大小 | `'large' \| 'small' \| 'default'` | `'default'` | - |
+| `[nzAutosize]` | 高度自動調整功能，僅用於 `textarea` | `boolean \| { minRows: number, maxRows: number }` | `false` | - |
+| `[nzVariant]` | Input 變體 | `'outlined' \| 'borderless' \| 'filled' \| 'underlined'` | `'outlined'` | 20.0.0 |
+| `[nzStatus]` | 設置驗證狀態 | `'error' \| 'warning'` | `-` | - |
+
+### 標準 HTML 屬性
+
+`nz-input` 組件支持所有標準 HTML input 屬性，如 `type`、`placeholder`、`disabled`、`readonly` 等。
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/input/en)

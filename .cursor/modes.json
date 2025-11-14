@@ -9,7 +9,10 @@
         ".ai/architecture.md",
         ".ai/tech-stack.md",
         ".ai/business-context.md",
-        "AGENTS.md"
+        "AGENTS.md",
+        "docs/fyi.md",
+        "docs/fyi-context.md",
+        "docs/fyi-development.md"
       ],
       "rules": [
         ".cursor/rules/angular.mdc",
@@ -25,9 +28,14 @@
         ".ai/architecture.md",
         ".ai/database-overview.md",
         ".ai/api-overview.md",
-        "docs/13-1-完整架構流程圖.mermaid.md",
-        "docs/13-2-架構審查報告.md",
-        "docs/30-資料表清單總覽.md"
+        "docs/27-完整架構流程圖.mermaid.md",
+        "docs/28-架構審查報告.md",
+        "docs/30-資料表清單總覽.md",
+        "docs/fyi.md",
+        "docs/fyi-architecture.md",
+        "docs/fyi-development.md",
+        "docs/fyi-history.md",
+        "docs/fyi-challenges.md"
       ],
       "rules": [
         ".cursor/rules/architecture.mdc",
@@ -71,7 +79,10 @@
         ".ai/database-overview.md",
         ".ai/architecture.md",
         "docs/33-API-接口詳細文檔.md",
-        "docs/30-資料表清單總覽.md"
+        "docs/30-資料表清單總覽.md",
+        "docs/fyi.md",
+        "docs/fyi-context.md",
+        "docs/fyi-architecture.md"
       ],
       "rules": [
         ".cursor/rules/api-design.mdc",

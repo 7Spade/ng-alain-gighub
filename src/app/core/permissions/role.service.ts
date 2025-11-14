@@ -33,7 +33,7 @@ export class RoleService {
    */
   private getCurrentUserId(): string | null {
     const token = this.tokenService.get();
-    return token?.user?.id || null;
+    return token?.['user']?.id || null;
   }
 
   /**

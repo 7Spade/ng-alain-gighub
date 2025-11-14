@@ -43,6 +43,11 @@ Layout 模組提供應用程式的佈局結構，包括：
 - [SHARED_IMPORTS 使用指南](../../../docs/45-SHARED_IMPORTS-使用指南.md) ⭐ 必讀
 - [開發工作流程](../../../docs/35-開發工作流程.md)
 
+### 開發脈絡文檔（FYI）
+- [架構說明](../../../docs/fyi-architecture.md) - 系統架構設計、模組職責
+- [開發脈絡](../../../docs/fyi-development.md) - 技術選型、設計決策
+- [上下文脈絡](../../../docs/fyi-context.md) - Domain 用語、業務背景
+
 ---
 
 **最後更新**：2025-01-15  

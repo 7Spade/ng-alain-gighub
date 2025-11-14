@@ -45,6 +45,44 @@ export class ExampleComponent {}
 
 請參考 [官方文檔](https://ng.ant.design/components/rate/en) 查看詳細用法和示例。
 
+## API
+
+### nz-rate 組件
+
+評分組件，用於對事物進行評級操作。
+
+#### 輸入屬性
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzAllowClear]` | 是否允許再次點擊後清除 | `boolean` | `true` |
+| `[nzAllowHalf]` | 是否允許半選 | `boolean` | `false` |
+| `[nzAutoFocus]` | 自動獲得焦點 | `boolean` | `false` |
+| `[nzCharacter]` | 自定義字符 | `TemplateRef<void>` | `<nz-icon nzType="star" />` |
+| `[nzCount]` | star 總數 | `number` | `5` |
+| `[nzDisabled]` | 只讀，無法進行交互 | `boolean` | `false` |
+| `[nzTooltips]` | 自定義每項的提示信息 | `string[]` | `[]` |
+| `[ngModel]` | 當前數值，支持雙向綁定 | `number` | `-` |
+
+#### 輸出事件
+
+| 事件 | 說明 | 類型 |
+|------|------|------|
+| `(ngModelChange)` | 選擇時的觸發的回調函數 | `EventEmitter<number>` |
+| `(nzOnBlur)` | 失去焦點時的觸發的回調函數 | `EventEmitter<FocusEvent>` |
+| `(nzOnFocus)` | 獲得焦點時的觸發的回調函數 | `EventEmitter<FocusEvent>` |
+| `(nzOnHoverChange)` | 鼠標經過時數值變化時的觸發的回調函數 | `EventEmitter<number>` |
+| `(nzOnKeyDown)` | 鍵盤按下時的觸發的回調函數 | `EventEmitter<KeyboardEvent>` |
+
+#### 方法
+
+通過 `ViewChild` 獲取組件實例後可調用以下方法：
+
+| 方法 | 說明 |
+|------|------|
+| `blur()` | 移除焦點 |
+| `focus()` | 獲得焦點 |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/rate/en)

@@ -203,6 +203,88 @@
 
 ---
 
+## 2025-01-15: 基礎 RLS 策略實施
+
+### 背景
+根據開發前檢查清單，所有 51 張資料表的 RLS 都是 `false`，需要啟用 RLS 確保基本安全性。考慮到開發過程會不斷調整，決定先建立基礎 RLS 策略，後續再逐步完善。
+
+### 設計決策
+
+#### 分階段實施策略
+- **先建立基礎 RLS**：確保基本安全性，不阻塞後續開發
+  - **原因**：完整的 RLS 策略需要對業務邏輯有深入理解，開發過程中會不斷調整
+  - **優勢**：快速建立安全基礎（1-2 天），保持開發靈活性
+  - **權衡**：策略較為寬鬆，但為後續細化留下空間
+
+#### 基礎策略設計原則
+- **最小權限原則**：只給必要的權限
+- **已認證用戶基礎**：所有策略基於 `auth.uid()` 和 `auth.role()`
+- **策略命名規範**：`[操作]_[表名]_[描述]`，便於維護
+- **註釋說明**：標註 `TODO` 後續調整點
+
+#### 策略分類
+1. **accounts 表**：用戶只能操作自己的帳戶
+2. **blueprints 表**：擁有者可以操作，已認證用戶可以查看
+3. **其他核心表**：先建立最基礎的 SELECT 策略（已認證用戶）
+4. **個人資料表**（notifications, personal_todos）：用戶只能查看自己的資料
+
+### 實施細節
+
+#### 遷移腳本結構
+```sql
+-- 1. 啟用所有 51 張表的 RLS
+ALTER TABLE accounts ENABLE ROW LEVEL SECURITY;
+-- ... 其他 50 張表
+
+-- 2. 建立基礎策略
+-- accounts 表：用戶只能操作自己的帳戶
+CREATE POLICY "Users can view own account"
+ON accounts FOR SELECT
+TO authenticated
+USING (auth.uid() = auth_user_id);
+
+-- blueprints 表：基礎策略
+CREATE POLICY "Authenticated users can view blueprints"
+ON blueprints FOR SELECT
+TO authenticated
+USING (true);
+-- TODO: 後續根據業務需求調整為更細粒度的權限控制
+```
+
+#### 策略覆蓋範圍
+- ✅ 所有 51 張表已啟用 RLS
+- ✅ 核心表（accounts, blueprints, tasks 等）建立基礎策略
+- ✅ 個人資料表建立用戶級別策略
+- ⏳ INSERT/UPDATE/DELETE 策略將在開發過程中逐步添加
+
+### 後續完善計劃
+- 參考 `docs/21-安全與-RLS-權限矩陣.md` 建立詳細策略
+- 整合角色系統（user_roles 表）
+- 實現 Git-like 分支權限控制
+- 測試和驗證策略正確性
+
+### 技術細節
+
+#### 使用工具
+- **Supabase MCP 工具**：執行遷移腳本
+- **Context7**：查詢 Supabase RLS 最佳實踐
+- **Sequential Thinking**：分析策略設計
+- **Software Planning Tool**：規劃實施步驟
+
+#### 驗證方式
+```sql
+-- 驗證 RLS 是否已啟用
+SELECT 
+  schemaname,
+  tablename,
+  rowsecurity as rls_enabled
+FROM pg_tables
+WHERE schemaname = 'public'
+  AND tablename IN ('accounts', 'blueprints', 'tasks', 'roles', 'permissions');
+```
+
+---
+
 ## 技術選型總結
 
 ### 為什麼選擇 @delon/acl？
@@ -224,6 +306,75 @@
 - 簡化認證流程，降低維護成本
 - 與 Supabase Auth 深度整合
 - 減少安全風險
+
+---
+
+## 2025-01-15: 開發順序決策 - 先開發賬戶系統而非藍圖系統
+
+### 背景
+在規劃 Phase 1 MVP 開發時，需要決定先開發賬戶系統（Accounts）還是藍圖系統（Blueprints）。使用 Sequential Thinking 和 Software Planning Tool 進行分析，確定最平坦的開發路徑。
+
+### 設計決策
+
+#### 依賴關係分析
+- **賬戶系統（Accounts）**：
+  - 基礎表，不依賴其他業務模組
+  - 被多個系統依賴：
+    - `blueprints.owner_id` → `accounts.id`（必須）
+    - `teams.organization_id` → `accounts.id`
+    - `team_members.account_id` → `accounts.id`
+    - 權限系統、協作系統等都依賴 `accounts.id`
+
+- **藍圖系統（Blueprints）**：
+  - 依賴賬戶系統：
+    - `blueprints.owner_id` → `accounts.id`（外鍵，必須）
+    - 創建藍圖時必須提供有效的 `owner_id`
+  - 約束：`owner_id` 必須是 `Organization` 類型的賬戶
+
+#### 決策：先開發賬戶系統
+
+**原因**：
+1. **依賴方向**：賬戶是底層基礎，藍圖是上層業務
+2. **平坦開發**：從基礎到業務，減少依賴複雜度
+3. **測試便利**：賬戶系統可獨立測試，藍圖需要賬戶數據
+4. **開發效率**：先完成賬戶後，藍圖可直接使用
+
+**權衡**：
+- 失去先開發核心業務功能的機會
+- 但換來更穩固的基礎和更順暢的後續開發
+
+### 實施計劃
+
+#### 使用工具
+- **Sequential Thinking**：分析依賴關係和開發順序
+- **Software Planning Tool**：創建詳細實施計劃
+- **Context7**：查詢 Angular 20 和 ng-alain 最佳實踐
+
+#### 實施步驟（10 個任務）
+1. **數據模型層**（shared/models/account/）- 複雜度：3/10
+2. **服務層 - AccountService** - 複雜度：5/10
+3. **服務層 - TeamService** - 複雜度：5/10
+4. **路由層 - 賬戶列表頁面** - 複雜度：6/10
+5. **路由層 - 賬戶詳情/編輯頁面** - 複雜度：5/10
+6. **路由層 - 團隊管理頁面** - 複雜度：6/10
+7. **路由配置** - 複雜度：3/10
+8. **RLS 權限驗證** - 複雜度：4/10
+9. **單元測試** - 複雜度：5/10
+10. **集成測試和文檔更新** - 複雜度：4/10
+
+**總複雜度**：平均 4.6/10  
+**預計時間**：2-3 周
+
+#### 技術要點
+- Angular 20 Standalone Components
+- Signals 狀態管理
+- Repository 模式
+- Typed Forms
+- RLS 安全策略
+- 分層架構（routes → shared → core）
+
+### 後續計劃
+完成賬戶系統後，將繼續開發藍圖系統，屆時可直接使用已完成的賬戶服務和數據模型。
 
 ---
 

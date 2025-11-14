@@ -157,6 +157,11 @@
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-項目結構重構規劃)
 - **代碼庫內容**：→ [fyi-codebase.md](./fyi-codebase.md)
 
+#### 資料庫安全（RLS）
+- **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-基礎-rls-策略實施)
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-基礎-rls-策略實施)
+- **詳細策略**：→ [21-安全與-RLS-權限矩陣.md](./21-安全與-RLS-權限矩陣.md)
+
 #### 代碼庫
 - **完整代碼庫**：→ [fyi-codebase.md](./fyi-codebase.md)
 - **生成配置**：→ [repomix.config.json](../repomix.config.json)
@@ -170,6 +175,11 @@
 - 保持所有歷史記錄完整
 - 提升文檔可讀性和查找效率
 - 新增代碼庫索引（fyi-codebase.md）
+
+**2025-01-15**：基礎 RLS 策略實施
+- 完成所有 51 張表的 RLS 啟用
+- 建立基礎安全策略
+- 為後續細化策略留下空間
 
 ---
 

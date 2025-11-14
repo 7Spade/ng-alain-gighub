@@ -53,6 +53,24 @@ export class ExampleComponent {}
 </nz-alert>
 ```
 
+## API
+
+### nz-alert 組件
+
+警告提示組件，用於顯示重要的警告信息。
+
+| 參數 | 說明 | 類型 | 默認值 |
+|------|------|------|--------|
+| `[nzType]` | 指定警告的樣式類型 | `'success' \| 'info' \| 'warning' \| 'error'` | `'info'` |
+| `[nzMessage]` | 警告提示內容 | `string \| TemplateRef<void>` | `-` |
+| `[nzDescription]` | 警告提示的輔助性文字介紹 | `string \| TemplateRef<void>` | `-` |
+| `[nzShowIcon]` | 是否顯示輔助圖標 | `boolean` | `false` |
+| `[nzCloseable]` | 是否顯示關閉按鈕 | `boolean` | `false` |
+| `[nzCloseText]` | 自定義關閉按鈕文字 | `string \| TemplateRef<void>` | `-` |
+| `[nzIconType]` | 自定義圖標類型 | `string` | `-` |
+| `[nzBanner]` | 是否用作頂部公告 | `boolean` | `false` |
+| `(nzOnClose)` | 關閉時觸發的回調 | `EventEmitter<boolean>` | `-` |
+
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/alert/en)
