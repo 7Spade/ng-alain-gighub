@@ -16,6 +16,63 @@
       "hideInBreadcrumb": true,
       "children": [
         {
+          "text": "快捷菜单",
+          "i18n": "menu.shortcut",
+          "icon": "anticon-rocket",
+          "shortcutRoot": true,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "开发中",
+      "i18n": "menu.development",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "账户系统",
+          "i18n": "menu.development.account",
+          "icon": "anticon-user",
+          "children": [
+            {
+              "text": "账户列表",
+              "link": "/accounts",
+              "i18n": "menu.development.account.list"
+            },
+            {
+              "text": "账户详情",
+              "link": "/accounts/detail",
+              "i18n": "menu.development.account.detail"
+            }
+          ]
+        },
+        {
+          "text": "组织协作",
+          "i18n": "menu.development.collaboration",
+          "icon": "anticon-team",
+          "children": [
+            {
+              "text": "组织列表",
+              "link": "/organizations",
+              "i18n": "menu.development.collaboration.organizations"
+            },
+            {
+              "text": "团队管理",
+              "link": "/teams",
+              "i18n": "menu.development.collaboration.teams"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "演示/示例",
+      "i18n": "menu.demos",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
           "text": "仪表盘",
           "i18n": "menu.dashboard",
           "icon": "anticon-dashboard",
@@ -43,27 +100,12 @@
           ]
         },
         {
-          "text": "快捷菜单",
-          "i18n": "menu.shortcut",
-          "icon": "anticon-rocket",
-          "shortcutRoot": true,
-          "children": []
-        },
-        {
           "text": "小部件",
           "i18n": "menu.widgets",
           "link": "/widgets",
           "icon": "anticon-appstore",
           "badge": 2
-        }
-      ]
-    },
-    {
-      "text": "NG-ALAIN",
-      "i18n": "menu.alain",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
+        },
         {
           "text": "样式",
           "i18n": "menu.style",
@@ -150,15 +192,7 @@
               "i18n": "menu.delon.zip"
             }
           ]
-        }
-      ]
-    },
-    {
-      "text": "Pro",
-      "i18n": "menu.pro",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
+        },
         {
           "text": "Form Page",
           "i18n": "menu.form",
@@ -302,15 +336,7 @@
               "i18n": "menu.account.settings"
             }
           ]
-        }
-      ]
-    },
-    {
-      "text": "More",
-      "i18n": "menu.more",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
+        },
         {
           "text": "Report",
           "i18n": "menu.report",
