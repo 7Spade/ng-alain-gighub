@@ -7,28 +7,29 @@
 ```
 development/
 ├── README.md              # 本文件
-├── api-spec.md            # API 規範摘要（待創建）
-├── database-schema.md     # 數據庫架構摘要（待創建）
+├── api-spec.md            # API 規範摘要 ✅
+├── database-schema.md     # 數據庫架構摘要 ✅
 └── decision-records/      # 架構決策記錄（ADR）
-    └── README.md          # ADR 說明
+    └── README.md          # ADR 說明 ✅
 ```
 
 ## 📄 文件說明
 
 ### `api-spec.md`
 - **用途**：API 規範摘要
-- **內容**：主要 API 端點、請求/響應格式、認證方式
-- **參考**：`docs/33-API-接口詳細文檔.md`
+- **內容**：認證流程、主要 REST/Storage/Realtime 端點、錯誤處理方針
+- **參考**：`docs/33-API-接口詳細文檔.md`, `docs/25-API-介面映射圖.mermaid.md`
 
 ### `database-schema.md`
 - **用途**：數據庫架構摘要
-- **內容**：51 張資料表概述、主要實體關係、關鍵表說明
-- **參考**：`docs/30-資料表清單總覽.md`, `docs/30-1.md`
+- **內容**：11 大模組、關鍵關聯、RLS 與一致性要求
+- **參考**：`docs/30-資料表清單總覽.md`, `docs/30-0-完整SQL表結構定義.md`, `docs/12-實體關係圖.mermaid.md`
 
 ### `decision-records/`
 - **用途**：架構決策記錄（Architecture Decision Records, ADR）
-- **格式**：遵循 ADR 格式
+- **格式**：遵循 ADR 模板（Context/Decision/Consequences/Alternatives/References）
 - **內容**：重要技術決策、決策背景、影響分析
+- **當前狀態**：`README.md` 已建立流程指引，後續決策請新增 `ADR-yyyymmdd-*.md`
 
 ## 🔗 相關文檔
 
@@ -38,5 +39,5 @@ development/
 
 ---
 
-**最後更新**：2025-01-15
+**最後更新**：2025-11-14
 

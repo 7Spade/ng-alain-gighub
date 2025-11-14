@@ -34,15 +34,15 @@
 | 30 | `docs/30-資料表清單總覽.md` | Guide | 2025-11-14 10:49 | ✅ Active | 與 30-0、34 交叉 |
 | 31 | `docs/31-開發前檢查清單.md` | Checklist | 2025-11-14 11:14 | ✅ Active | 連結 Archive，續維 |
 | 32 | `docs/32-快速開始指南.md` | Guide | 2025-11-14 12:32 | ✅ Active | 保留 |
-| 33 | `docs/33-API-接口詳細文檔.md` | Reference | 2025-11-13 10:26 | ⚠️ Update | 對齊最新 API schema |
+| 33 | `docs/33-API-接口詳細文檔.md` | Reference | 2025-11-14 15:58 | ✅ Active | 補 Git-like / 暫存 REST 端點與範例 |
 | 34 | `docs/34-資料模型對照表.md` | Reference | 2025-11-14 12:32 | ✅ Active | 與 30-0、Shared models 同步 |
 | 35 | `docs/35-開發工作流程.md` | Guide | 2025-11-14 12:32 | ✅ Active | 定期 review |
-| 36 | `docs/36-常見問題-FAQ.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 補 Angular 20 / Signals FAQ |
-| 37 | `docs/37-錯誤處理指南.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 對齊 core/net 實作 |
-| 38 | `docs/38-測試指南.md` | Guide | 2025-11-13 11:19 | ⚠️ Update | 補 Playwright / signal 測試策略 |
-| 39 | `docs/39-部署指南.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 依新部署流程更新 |
-| 40 | `docs/40-效能優化指南.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 補 Angular 20 perf 手法 |
-| 41 | `docs/41-安全檢查清單.md` | Checklist | 2025-11-13 10:26 | ⚠️ Update | 與 21、Supabase 安全同步 |
+| 36 | `docs/36-常見問題-FAQ.md` | Guide | 2025-11-14 16:00 | ✅ Active | 新增 Git-like / 暫存使用者 FAQ |
+| 37 | `docs/37-錯誤處理指南.md` | Guide | 2025-11-14 16:00 | ✅ Active | 補 branch/staging 錯誤碼與 Edge Function 流程 |
+| 38 | `docs/38-測試指南.md` | Guide | 2025-11-14 16:00 | ✅ Active | 新增 Git-like / 暫存測試場景＋Playwright 範例 |
+| 39 | `docs/39-部署指南.md` | Guide | 2025-11-14 16:00 | ✅ Active | 部署清單含 Supabase migration/Edge deploy |
+| 40 | `docs/40-效能優化指南.md` | Guide | 2025-11-14 16:00 | ✅ Active | 新增 branch/staging 索引與監控重點 |
+| 41 | `docs/41-安全檢查清單.md` | Checklist | 2025-11-14 16:00 | ✅ Active | 加入 branch_roles / staging / bucket 安全檢查 |
 | 42 | `docs/42-詞彙表.md` | Reference | 2025-11-14 10:49 | ✅ Active | 定期新增術語 |
 | 43 | `docs/43-狀態枚舉值定義.md` | Reference | 2025-11-14 10:49 | ✅ Active | 與狀態圖、Shared enums 對齊 |
 | 44 | `docs/44-專案路線圖.md` | Guide | 2025-11-14 11:18 | ✅ Active | 保持最新里程碑 |

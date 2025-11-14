@@ -192,6 +192,87 @@ Authorization: Bearer {access_token}
 
 PostgREST 自動為資料庫表生成 REST API。所有端點遵循相同的模式。
 
+### Git-like 分支 / Pull Request API
+
+> 應用 Git-like 承攬模型時，需要透過以下 REST 端點維護 fork、分支與 PR 生命週期；所有端點均受 RLS + branch_roles 控制。
+
+#### 1. 建立 Fork 與分支
+
+```http
+POST /rest/v1/branch_forks
+Prefer: return=representation
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "blueprint_id": "1ef42d70-b8fb-4a75-9bb5-6dc4bdcf2d30",
+  "contractor_org_id": "7b0b8f54-5f4d-4dd7-8f0f-1fd7e7934c1e",
+  "scope": "結構體驗收/水電項"
+}
+```
+
+建立 fork 後，再呼叫 `POST /rest/v1/blueprint_branches` 建立承攬分支：
+
+```http
+POST /rest/v1/blueprint_branches
+Content-Type: application/json
+Authorization: Bearer {access_token}
+
+{
+  "fork_id": "4fae1c6c-6c6f-4f74-8df1-7d3aa4d8b5b3",
+  "organization_id": "7b0b8f54-5f4d-4dd7-8f0f-1fd7e7934c1e",
+  "branch_type": "org"
+}
+```
+
+#### 2. 提交 Pull Request
+
+```http
+POST /rest/v1/pull_requests
+Prefer: return=representation
+
+{
+  "branch_id": "2d9a8c9d-4e0c-4ad3-8a6c-0a5f6fd3acb5",
+  "blueprint_id": "1ef42d70-b8fb-4a75-9bb5-6dc4bdcf2d30",
+  "payload": {
+    "daily_reports": [...],
+    "quality_checks": [...]
+  }
+}
+```
+
+審查時使用 `POST /rest/v1/pull_request_reviews`，若審核通過會呼叫 Edge Function `POST /functions/v1/branch-merge` 合併承攬欄位。
+
+#### 3. 查詢分支績效
+
+```http
+GET /rest/v1/branch_metrics?blueprint_id=eq.{id}
+```
+
+回應包含 PR SLA、通過率、撤回次數等資料，用於營運儀表板。
+
+### 暫存區 (staging_submissions) API
+
+> 所有任務輸入先寫入 `staging_submissions`，48h 內可撤回，確認後才寫入正式表。
+
+- 建立暫存提交：`POST /rest/v1/staging_submissions`
+- 撤回或確認：`PATCH /rest/v1/staging_submissions?id=eq.{id}`
+- 查詢待決提交：`GET /rest/v1/staging_submissions?submitter_id=eq.{uid}&finalized=is.false`
+
+範例：
+
+```http
+PATCH /rest/v1/staging_submissions?id=eq.480dd7b3-5aa3-4d6b-a70a-4c7ac9b7f05e
+Prefer: return=representation
+
+{
+  "finalized": true,
+  "expires_at": null
+}
+```
+
+RLS 確保只有提交者或 Blueprint 擁有者能操作該筆暫存資料；Edge Function 會輪詢逾時紀錄並自動標記 `recalled=true`。
+
 ### 基本查詢語法
 
 #### 1. 查詢列表
