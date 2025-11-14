@@ -1,316 +1,131 @@
-# 開發脈絡記錄 (FYI)
+# 開發脈絡記錄索引 (FYI Index)
 
-## 2025-11-14: Supabase 與 @delon/auth 整合
+> 本文檔已按分類重新組織，請參考對應的分類文檔。
 
-### 背景
-專案需要整合 Supabase 作為後端服務，同時保留現有的 `@delon/auth` 認證系統，確保零破壞性整合。
+## 📋 文檔分類
 
-### 設計決策
-- **適配器模式**：創建 `SupabaseAuthAdapterService` 作為 Supabase Auth 與 `@delon/auth` 之間的橋樑
-- **Session 同步**：自動將 Supabase Session 轉換為 `@delon/auth` Token 格式並同步到 `TokenService`
-- **零破壞性**：保留所有現有的 `@delon/auth` 使用方式，無需修改業務代碼
+### 📄 1. 專案背景（Background）
+➡ [fyi-background.md](./fyi-background.md)
 
-### 實施內容
-
-#### 新創建的檔案
-1. **src/app/core/supabase/supabase.service.ts**
-   - Supabase 客戶端服務
-   - 初始化 SupabaseClient 單例
-   - 配置 Session 持久化和自動刷新
-
-2. **src/app/core/supabase/supabase-auth-adapter.service.ts**
-   - Supabase Auth 適配器服務
-   - 實現 `signIn()`, `signUp()`, `signOut()`, `refreshSession()` 方法
-   - Session 格式轉換（Supabase Session → @delon/auth Token 格式）
-   - 自動同步 Session 到 TokenService
-   - 監聽 Auth 狀態變化並自動同步
-
-3. **src/app/core/supabase/index.ts**
-   - 導出 Supabase 相關服務
-
-#### 修改的檔案
-1. **src/app/core/index.ts**
-   - 添加 `export * from './supabase'` 導出
-
-2. **src/app/core/startup/startup.service.ts**
-   - 在 `load()` 方法中添加 `restoreSession()` 調用
-   - 應用啟動時自動恢復 Supabase Session
-
-3. **src/app/routes/passport/login/login.component.ts**
-   - 修改 `submit()` 方法使用 `SupabaseAuthAdapterService.signIn()`
-   - 保持現有的響應處理邏輯（tokenService.set() 和 startupSrv.load()）
-   - 目前僅支持帳號密碼登入（type === 0），手機驗證碼登入保持原有邏輯
-
-4. **src/app/core/net/refresh-token.ts**
-   - 修改 `refreshTokenRequest()` 使用 `SupabaseAuthAdapterService.refreshSession()`
-   - 保持相同的返回格式，確保 `tryRefreshToken()` 邏輯不變
-
-5. **src/environments/environment.ts** 和 **environment.prod.ts**
-   - 已添加 Supabase 配置（url, anonKey, storage）
-
-### 整合流程
-
-```
-用戶登入
-  ↓
-SupabaseAuthAdapter.signIn()
-  ↓
-Supabase Auth API
-  ↓
-獲得 Supabase Session
-  ↓
-適配器轉換為 @delon/auth 格式
-  ↓
-TokenService.set() ← 現有代碼繼續工作
-  ↓
-HTTP 攔截器自動添加 Authorization: Bearer {token}
-```
-
-### 關鍵特性
-- **自動 Session 恢復**：應用啟動時自動檢查並恢復 Supabase Session
-- **自動狀態同步**：監聽 Supabase Auth 狀態變化，自動同步到 TokenService
-- **Token 自動刷新**：使用 Supabase 的 `refreshSession()` 方法
-- **類型安全**：完整的 TypeScript 類型支持
-
-### 技術細節
-- 使用 Angular 20 的 `inject()` 進行依賴注入
-- 使用 RxJS Observable 處理異步操作
-- Session 格式轉換包含：`access_token` → `token`, `refresh_token`, `expired` 計算
-- 適配器在構造函數中自動初始化 Auth 監聽器（僅在瀏覽器環境）
-
-### 後續工作
-- [ ] 創建 Repository 基礎類（shared/repositories/base.repository.ts）
-- [ ] 實作資料表相關的 Repository
-- [ ] 整合 Supabase Realtime 訂閱功能
-- [ ] 整合 Supabase Storage 功能
-
-### 參考文檔
-- [Supabase Auth 文檔](https://supabase.com/docs/guides/auth)
-- [@delon/auth 文檔](https://ng-alain.com/auth/getting-started)
-- [專案架構文檔](./13-1.md)
-- [API 接口文檔](./33-API-接口詳細文檔.md)
+說明專案存在的原因、需求來源、使用者痛點、商業或技術動機、問題定義與目標。
 
 ---
 
-## 2025-11-14: 註冊功能改為 Supabase Auth，移除手機號登入
+### 📄 2. 開發脈絡（Development）
+➡ [fyi-development.md](./fyi-development.md)
 
-### 背景
-將註冊功能改為使用 Supabase Auth，並移除登入頁面的手機號登入功能，統一使用 Email/Password 認證方式。
+記錄開發過程中所有重要思考：
+- 技術選型理由
+- 解法評估
+- 架構或模組設計背後的原則
+- 取捨、權衡、背後原因
 
-### 設計決策
-- **統一認證方式**：僅使用 Email/Password 認證，移除手機號登入
-- **簡化 UI**：移除登入頁面的 Tab 切換，簡化表單結構
-- **保持一致性**：註冊和登入都使用 Supabase Auth
-
-### 實施內容
-
-#### 修改的檔案
-
-1. **src/app/routes/passport/register/register.component.ts**
-   - 移除表單中的 `mobilePrefix`, `mobile`, `captcha` 欄位
-   - 移除 `getCaptcha()` 方法和相關計數器邏輯
-   - 修改 `submit()` 方法使用 `SupabaseAuthAdapterService.signUp()`
-   - 移除未使用的 `_HttpClient` 和 `ALLOW_ANONYMOUS` 導入
-
-2. **src/app/routes/passport/register/register.component.html**
-   - 移除手機號輸入欄位（包含 mobilePrefix select）
-   - 移除驗證碼輸入欄位和獲取驗證碼按鈕
-
-3. **src/app/routes/passport/login/login.component.ts**
-   - 移除 `type` 切換邏輯
-   - 移除 `mobile`, `captcha` 表單欄位
-   - 移除 `getCaptcha()` 方法和 `switch()` 方法
-   - 移除 `count` 和 `interval$` 變數
-   - 簡化 `submit()` 方法，只處理 Email/Password 登入
-   - 將 `userName` 欄位驗證改為 `Validators.email`
-   - 移除未使用的 `HttpContext`, `ALLOW_ANONYMOUS`, `_HttpClient`, `NzTabsModule` 導入
-
-4. **src/app/routes/passport/login/login.component.html**
-   - 移除 `nz-tabs` 組件和 Tab 切換
-   - 移除手機號登入 Tab 的整個表單區塊
-   - 簡化為單一 Email/Password 登入表單
-   - 更新表單驗證錯誤提示
-
-### 變更摘要
-
-#### 註冊組件
-- **移除欄位**：手機號前綴、手機號、驗證碼
-- **保留欄位**：郵箱、密碼、確認密碼
-- **認證方式**：使用 Supabase Auth `signUp()` 方法
-
-#### 登入組件
-- **移除功能**：手機號登入 Tab、驗證碼獲取
-- **簡化表單**：單一 Email/Password 登入表單
-- **驗證規則**：Email 格式驗證、密碼最小長度 6 字符
-
-### 技術細節
-- 使用 `String()` 轉換確保類型安全
-- 保持現有的錯誤處理和用戶體驗
-- 註冊成功後導航到註冊結果頁面（支援 Email 驗證流程）
-
-### 驗證結果
-- ✅ 編譯成功：`yarn build` 通過
-- ✅ 無 Lint 錯誤：所有檔案通過 ESLint 檢查
-- ✅ 類型安全：完整的 TypeScript 類型支持
+**主要內容**：
+- 權限服務模組設計決策
+- Supabase 與 @delon/auth 整合決策
+- 認證方式統一決策
+- 項目結構重構規劃
 
 ---
 
-## 2025-11-14: 移除社交登入功能（其他登入方式、Auth0）
+### 📄 3. 架構說明（Architecture）
+➡ [fyi-architecture.md](./fyi-architecture.md)
 
-### 背景
-移除登入頁面的社交登入功能，包括"其他登入方式"區塊和 Auth0、GitHub、Weibo 等第三方登入選項，統一使用 Supabase Auth 的 Email/Password 認證。
+描述系統整體設計：
+- 系統架構圖
+- 模組切分與責任界線
+- 資料流、事件流
+- 使用到的技術與模式
 
-### 設計決策
-- **簡化認證流程**：僅保留 Supabase Auth 的 Email/Password 認證
-- **移除社交登入**：移除所有第三方登入選項（Auth0、GitHub、Weibo）
-- **保留註冊連結**：保留註冊頁面連結，方便新用戶註冊
-
-### 實施內容
-
-#### 修改的檔案
-
-1. **src/app/routes/passport/login/login.component.ts**
-   - 移除 `open()` 方法（處理社交登入）
-   - 移除 `SocialService` 注入和相關導入
-   - 移除 `SocialOpenType` 導入
-   - 移除 `SettingsService` 注入（僅用於社交登入）
-   - 移除 `environment` 導入（僅用於社交登入回調 URL）
-   - 移除 `NzToolTipModule` 和 `NzIconModule` 導入（僅用於社交登入圖標）
-   - 移除 `providers: [SocialService]` 配置
-
-2. **src/app/routes/passport/login/login.component.html**
-   - 移除 `<div class="other">` 區塊（包含"其他登入方式"文字）
-   - 移除所有社交登入圖標（Auth0、GitHub、Weibo）
-   - 保留註冊連結，移至表單底部並居中顯示
-
-### 變更摘要
-
-#### 移除的功能
-- **社交登入選項**：Auth0、GitHub、Weibo
-- **"其他登入方式"區塊**：整個社交登入 UI 區塊
-- **相關服務**：`SocialService`、`SettingsService`（社交登入相關部分）
-
-#### 保留的功能
-- **註冊連結**：移至表單底部，方便新用戶註冊
-- **Email/Password 登入**：核心認證功能保持不變
-
-### 技術細節
-- 移除未使用的導入和服務，減少代碼複雜度
-- 保持組件結構清晰，僅保留必要的功能
-- 註冊連結使用 `RouterLink` 導航，保持路由一致性
-
-### 驗證結果
-- ✅ 編譯成功：`yarn build` 通過
-- ✅ 無 Lint 錯誤：所有檔案通過 ESLint 檢查
-- ✅ UI 簡化：登入頁面更加簡潔，專注於核心認證功能
-
-### 備註
-- `callback.component.ts` 組件仍保留在路由中，但由於已移除社交登入功能，該路由將不會被使用
-- 如需完全清理，可考慮在後續版本中移除 `callback` 路由和組件
+**主要內容**：
+- 分層架構設計
+- 權限系統架構
+- 認證系統架構
+- 模組依賴關係
+- 緩存架構
 
 ---
 
-## 2025-01-15: 項目結構重構規劃 - 基礎文件夾結構樹
+### 📄 4. 上下文（Context）
+➡ [fyi-context.md](./fyi-context.md)
 
-### 背景
-基於 51 張資料表的 11 個業務模組分類、業務流程圖、帳戶層流程圖和實體關係圖，需要重構項目文件夾結構，使其符合 Angular 20 + ng-alain 最佳實踐，並反映 Git-like 分支模型架構。
+跨領域共用脈絡：
+- Domain 用語
+- 模組之間的關係
+- 業務背景
+- 需跨團隊理解的重要知識
 
-### 設計決策
-- **分層架構**：嚴格遵循 `routes` → `shared` → `core` 的依賴方向
-- **業務領域驅動**：按 11 個業務模組組織文件夾結構
-- **Angular 20 最佳實踐**：使用 Standalone Components、SHARED_IMPORTS、Signals
-- **資料表映射**：每個業務模組對應相應的資料表集合和數據模型
+**主要內容**：
+- Git-like 分支模型用語
+- 權限系統用語
+- 業務邏輯背景
+- 技術上下文
+- 業務規則
 
-### 實施內容
+---
 
-#### 創建的文檔
-1. **docs/04-重構後結構樹.md**
-   - 完整的項目文件夾結構樹文檔
-   - 包含 Core、Shared、Routes、Layout 四個主要模組的詳細結構
-   - 51 張資料表映射到 11 個業務模組的 Models 路徑
-   - 業務模組與 Routes 路徑的對應關係表
-   - 設計原則和命名規範說明
+### 📄 5. 歷史紀錄（History）
+➡ [fyi-history.md](./fyi-history.md)
 
-### 結構設計
+專案已經完成、已經發生的累積紀錄：
+- 版本演進
+- 已做的重大決策
+- 改動歷史與重構紀錄
+- 完成的里程碑
+- 不再使用的舊方案與原因（Why dropped）
 
-#### Core 模組（核心基礎設施層）
-- `auth/` - 認證服務
-- `supabase/` - Supabase 數據庫服務
-- `net/` - HTTP 攔截器
-- `i18n/` - 國際化
-- `startup/` - 啟動服務
-- `permissions/` - 權限服務
-- `guards/` - 路由守衛
-- `interceptors/` - HTTP 攔截器
+**主要內容**：
+- 時間線總覽
+- 版本演進
+- 里程碑紀錄
+- 重大改動
+- 技術重構歷史
+- 已完成事項
+- 待完成事項
 
-#### Shared 模組（共享層）
-- `models/` - 數據模型（按 11 個業務模組分類）
-  - `account/` - 🔐 帳戶與身份系統（4 張表）
-  - `collaboration/` - 🤝 組織協作系統（3 張表）
-  - `permission/` - 🔒 權限系統（5 張表）
-  - `blueprint/` - 🎯 藍圖/專案系統（5 張表）
-  - `task/` - 📋 任務執行系統（9 張表）
-  - `quality/` - ✅ 品質驗收系統（4 張表）
-  - `issue/` - ⚠️ 問題追蹤系統（4 張表）
-  - `communication/` - 💬 協作溝通系統（6 張表）
-  - `data/` - 📊 資料分析系統（6 張表）
-  - `bot/` - 🤖 機器人系統（3 張表）
-  - `system/` - ⚙️ 系統管理（2 張表）
-- `services/` - 共享服務（Repository 模式、Storage 服務）
-- `components/` - 共享組件（UI 組件、小工具）
-- `utils/` - 工具函數
-- `pipes/` - 管道
-- `directives/` - 指令
-- `interfaces/` - 接口定義
-- `constants/` - 常量定義
+---
 
-#### Routes 模組（業務層）
-按業務領域劃分：
-- `accounts/` - 🔐 帳戶管理
-- `blueprints/` - 🎯 藍圖管理（Git-like 分支模型）
-- `tasks/` - 📋 任務執行
-- `quality/` - ✅ 品質驗收
-- `issues/` - ⚠️ 問題追蹤
-- `collaboration/` - 💬 協作溝通
-- `documents/` - 📁 文件管理
-- `analytics/` - 📊 數據分析
-- `system/` - ⚙️ 系統管理
-- `dashboard/` - 📊 儀表板
+### 📄 6. 備忘 / 雜項筆記（Notes）
+➡ [fyi-notes.md](./fyi-notes.md)
 
-### 模組映射關係
-文檔包含完整的模組映射表，清晰展示：
-- 11 個業務模組
-- 對應的資料表數量
-- Models 路徑（`shared/models/{module}/`）
-- Routes 路徑（`routes/{module}/`）
+放置：
+- 未分類資訊
+- 中間過程筆記
+- 研究結果
+- 不適合放在正式文件中的暫存點
 
-### 設計原則
-1. **分層架構**：Core（基礎設施）→ Shared（共享層）→ Routes（業務層）→ Layout（布局層）
-2. **業務領域驅動**：按 11 個業務模組組織文件夾
-3. **Angular 20 最佳實踐**：Standalone Components、SHARED_IMPORTS、Signals、inject()
-4. **命名規範**：kebab-case（文件夾、組件、服務、模型）
+---
 
-### 技術細節
-- 使用 Context7 查詢 Angular 20 和 ng-alain 最佳實踐
-- 使用 Sequential Thinking 分析項目結構和業務需求
-- 使用 Software Planning Tool 創建重構計劃
-- 基於業務流程圖、帳戶層流程圖、實體關係圖進行設計
+## 🔍 快速查找
 
-### 後續工作
-- [ ] 實際創建 Core 模組文件夾結構
-- [ ] 實際創建 Shared 模組文件夾結構（特別是 models/ 下的 11 個業務模組）
-- [ ] 實際創建 Routes 模組文件夾結構
-- [ ] 創建對應的數據模型文件（51 張表的 TypeScript 模型）
-- [ ] 創建 Repository 服務（對應各業務模組）
-- [ ] 創建路由配置和組件骨架
+### 按主題查找
 
-### 參考文檔
-- **結構樹文檔**：`04-重構後結構樹.md` ⭐ 新創建
-- **完整 SQL 表結構**：`30-0-完整SQL表結構定義.md`
-- **資料表清單總覽**：`30-資料表清單總覽.md`
-- **業務流程圖**：`14-業務流程圖.mermaid.md`
-- **帳戶層流程圖**：`13-帳戶層流程圖.mermaid.md`
-- **實體關係圖**：`12-實體關係圖.mermaid.md`
-- **架構流程圖**：`27-完整架構流程圖.mermaid.md`
-- **SHARED_IMPORTS 使用指南**：`45-SHARED_IMPORTS-使用指南.md`
+#### 權限系統
+- **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-實施階段-1---權限服務模組corepermissions)
+- **架構設計**：→ [fyi-architecture.md](./fyi-architecture.md#權限系統架構)
+- **使用說明**：→ [fyi-context.md](./fyi-context.md#權限系統用語)
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-實施階段-1---權限服務模組)
 
+#### 認證系統
+- **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-11-14-supabase-與-delonauth-整合)
+- **架構設計**：→ [fyi-architecture.md](./fyi-architecture.md#認證系統架構)
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-11-14-supabase-與-delonauth-整合)
+
+#### 項目結構
+- **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-項目結構重構規劃)
+- **架構設計**：→ [fyi-architecture.md](./fyi-architecture.md#項目結構設計)
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-項目結構重構規劃)
+
+---
+
+## 📝 更新說明
+
+**2025-01-15**：按分類重新組織文檔結構
+- 將原 `fyi.md` 內容拆分到 6 個分類文檔
+- 保持所有歷史記錄完整
+- 提升文檔可讀性和查找效率
+
+---
+
+**最後更新**：2025-01-15  
+**維護者**：開發團隊

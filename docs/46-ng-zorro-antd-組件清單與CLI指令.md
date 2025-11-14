@@ -15,119 +15,663 @@
 
 ## 組件清單
 
+> **說明**：每個組件都有獨立的詳細文檔，點擊組件名稱查看詳細信息。使用方式：`ng g ng-zorro-antd:[schematic] <name>`
+
+> **📁 詳細文檔位置**：所有組件詳細文檔位於 [`NG-ZORRO-Index/`](./NG-ZORRO-Index/) 資料夾
+
 ### 反饋類組件 (Feedback)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **Alert** | `NzAlertModule` | [Alert](https://ng.ant.design/components/alert/en) | 警告提示 |
-| **Result** | `NzResultModule` | [Result](https://ng.ant.design/components/result/en) | 結果頁面 |
-| **Skeleton** | `NzSkeletonModule` | [Skeleton](https://ng.ant.design/components/skeleton/en) | 骨架屏 |
-| **Spin** | `NzSpinModule` | [Spin](https://ng.ant.design/components/spin/en) | 加載中 |
-| **Progress** | `NzProgressModule` | [Progress](https://ng.ant.design/components/progress/en) | 進度條 |
-| **Drawer** | `NzDrawerModule` | [Drawer](https://ng.ant.design/components/drawer/en) | 抽屜 |
-| **Modal** | `NzModalModule` | [Modal](https://ng.ant.design/components/modal/en) | 對話框 |
-| **Popconfirm** | `NzPopconfirmModule` | [Popconfirm](https://ng.ant.design/components/popconfirm/en) | 氣泡確認框 |
-| **Message** | `NzMessageService` | [Message](https://ng.ant.design/components/message/en) | 全局提示（服務） |
-| **Notification** | `NzNotificationService` | [Notification](https://ng.ant.design/components/notification/en) | 通知提醒框（服務） |
+#### [Alert - 警告提示](./NG-ZORRO-Index/01-Alert.md)
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzAlertModule` |
+| **官方文檔** | [Alert](https://ng.ant.design/components/alert/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+| **詳細文檔** | [查看詳細文檔](./NG-ZORRO-Index/01-Alert.md) |
+
+#### Result - 結果頁面
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzResultModule` |
+| **官方文檔** | [Result](https://ng.ant.design/components/result/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Skeleton - 骨架屏
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSkeletonModule` |
+| **官方文檔** | [Skeleton](https://ng.ant.design/components/skeleton/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Spin - 加載中
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSpinModule` |
+| **官方文檔** | [Spin](https://ng.ant.design/components/spin/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Progress - 進度條
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzProgressModule` |
+| **官方文檔** | [Progress](https://ng.ant.design/components/progress/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Drawer - 抽屜
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzDrawerModule` |
+| **官方文檔** | [Drawer](https://ng.ant.design/components/drawer/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Modal - 對話框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzModalModule` |
+| **官方文檔** | [Modal](https://ng.ant.design/components/modal/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Popconfirm - 氣泡確認框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzPopconfirmModule` |
+| **官方文檔** | [Popconfirm](https://ng.ant.design/components/popconfirm/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Message - 全局提示（服務）
+
+| 項目 | 內容 |
+|------|------|
+| **服務導入** | `NzMessageService` |
+| **官方文檔** | [Message](https://ng.ant.design/components/message/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Notification - 通知提醒框（服務）
+
+| 項目 | 內容 |
+|------|------|
+| **服務導入** | `NzNotificationService` |
+| **官方文檔** | [Notification](https://ng.ant.design/components/notification/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 > **注意**：`Message` 和 `Notification` 在 ng-zorro-antd v20+ 中通過服務提供，不需要導入模組，可直接注入使用。
 
 ### 數據展示類組件 (Data Display)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **Avatar** | `NzAvatarModule` | [Avatar](https://ng.ant.design/components/avatar/en) | 頭像 |
-| **Badge** | `NzBadgeModule` | [Badge](https://ng.ant.design/components/badge/en) | 徽標數 |
-| **Calendar** | `NzCalendarModule` | [Calendar](https://ng.ant.design/components/calendar/en) | 日曆 |
-| **Card** | `NzCardModule` | [Card](https://ng.ant.design/components/card/en) | 卡片 |
-| **Carousel** | `NzCarouselModule` | [Carousel](https://ng.ant.design/components/carousel/en) | 走馬燈 |
-| **Collapse** | `NzCollapseModule` | [Collapse](https://ng.ant.design/components/collapse/en) | 折疊面板 |
-| **Comment** | `NzCommentModule` | [Comment](https://ng.ant.design/components/comment/en) | 評論 |
-| **Descriptions** | `NzDescriptionsModule` | [Descriptions](https://ng.ant.design/components/descriptions/en) | 描述列表 |
-| **Empty** | `NzEmptyModule` | [Empty](https://ng.ant.design/components/empty/en) | 空狀態 |
-| **Image** | `NzImageModule` | [Image](https://ng.ant.design/components/image/en) | 圖片 |
-| **List** | `NzListModule` | [List](https://ng.ant.design/components/list/en) | 列表 |
-| **Popover** | `NzPopoverModule` | [Popover](https://ng.ant.design/components/popover/en) | 氣泡卡片 |
-| **QRCode** | `NzQRCodeModule` | [QRCode](https://ng.ant.design/components/qr-code/en) | 二維碼 |
-| **Segmented** | `NzSegmentedModule` | [Segmented](https://ng.ant.design/components/segmented/en) | 分段控制器 |
-| **Statistic** | `NzStatisticModule` | [Statistic](https://ng.ant.design/components/statistic/en) | 統計數值 |
-| **Table** | `NzTableModule` | [Table](https://ng.ant.design/components/table/en) | 表格 |
-| **Tag** | `NzTagModule` | [Tag](https://ng.ant.design/components/tag/en) | 標籤 |
-| **Timeline** | `NzTimelineModule` | [Timeline](https://ng.ant.design/components/timeline/en) | 時間軸 |
-| **Tooltip** | `NzTooltipModule` | [Tooltip](https://ng.ant.design/components/tooltip/en) | 文字提示 |
-| **Tree** | `NzTreeModule` | [Tree](https://ng.ant.design/components/tree/en) | 樹形控件 |
-| **TreeView** | `NzTreeViewModule` | [TreeView](https://ng.ant.design/components/tree-view/en) | 樹視圖 |
+#### Avatar - 頭像
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzAvatarModule` |
+| **官方文檔** | [Avatar](https://ng.ant.design/components/avatar/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Badge - 徽標數
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzBadgeModule` |
+| **官方文檔** | [Badge](https://ng.ant.design/components/badge/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Calendar - 日曆
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCalendarModule` |
+| **官方文檔** | [Calendar](https://ng.ant.design/components/calendar/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Card - 卡片
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCardModule` |
+| **官方文檔** | [Card](https://ng.ant.design/components/card/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Carousel - 走馬燈
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCarouselModule` |
+| **官方文檔** | [Carousel](https://ng.ant.design/components/carousel/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Collapse - 折疊面板
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCollapseModule` |
+| **官方文檔** | [Collapse](https://ng.ant.design/components/collapse/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Comment - 評論
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCommentModule` |
+| **官方文檔** | [Comment](https://ng.ant.design/components/comment/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Descriptions - 描述列表
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzDescriptionsModule` |
+| **官方文檔** | [Descriptions](https://ng.ant.design/components/descriptions/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Empty - 空狀態
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzEmptyModule` |
+| **官方文檔** | [Empty](https://ng.ant.design/components/empty/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Image - 圖片
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzImageModule` |
+| **官方文檔** | [Image](https://ng.ant.design/components/image/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### List - 列表
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzListModule` |
+| **官方文檔** | [List](https://ng.ant.design/components/list/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Popover - 氣泡卡片
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzPopoverModule` |
+| **官方文檔** | [Popover](https://ng.ant.design/components/popover/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### QRCode - 二維碼
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzQRCodeModule` |
+| **官方文檔** | [QRCode](https://ng.ant.design/components/qr-code/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Segmented - 分段控制器
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSegmentedModule` |
+| **官方文檔** | [Segmented](https://ng.ant.design/components/segmented/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Statistic - 統計數值
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzStatisticModule` |
+| **官方文檔** | [Statistic](https://ng.ant.design/components/statistic/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Table - 表格
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTableModule` |
+| **官方文檔** | [Table](https://ng.ant.design/components/table/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Tag - 標籤
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTagModule` |
+| **官方文檔** | [Tag](https://ng.ant.design/components/tag/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Timeline - 時間軸
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTimelineModule` |
+| **官方文檔** | [Timeline](https://ng.ant.design/components/timeline/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Tooltip - 文字提示
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTooltipModule` |
+| **官方文檔** | [Tooltip](https://ng.ant.design/components/tooltip/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Tree - 樹形控件
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTreeModule` |
+| **官方文檔** | [Tree](https://ng.ant.design/components/tree/en) |
+| **Schematics 命令** | 詳見下方命令列表 |
+
+**Tree 組件 Schematics 命令：**
+
+```bash
+# 基本樹形控件
+ng g ng-zorro-antd:tree-basic <name>
+
+# 受控樹形控件
+ng g ng-zorro-antd:tree-basic-controlled <name>
+
+# 可拖拽樹形控件
+ng g ng-zorro-antd:tree-draggable <name>
+
+# 帶確認的可拖拽樹形控件
+ng g ng-zorro-antd:tree-draggable-confirm <name>
+
+# 動態加載數據的樹形控件
+ng g ng-zorro-antd:tree-dynamic <name>
+
+# 可搜索的樹形控件
+ng g ng-zorro-antd:tree-search <name>
+
+# 自定義圖標的樹形控件
+ng g ng-zorro-antd:tree-customized-icon <name>
+
+# 帶連接線的樹形控件
+ng g ng-zorro-antd:tree-line <name>
+
+# 目錄樹形控件
+ng g ng-zorro-antd:tree-directory <name>
+
+# 虛擬滾動樹形控件
+ng g ng-zorro-antd:tree-virtual-scroll <name>
+```
+
+#### TreeView - 樹視圖
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTreeViewModule` |
+| **官方文檔** | [TreeView](https://ng.ant.design/components/tree-view/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 ### 數據錄入類組件 (Data Entry)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **AutoComplete** | `NzAutocompleteModule` | [AutoComplete](https://ng.ant.design/components/auto-complete/en) | 自動完成 |
-| **Cascader** | `NzCascaderModule` | [Cascader](https://ng.ant.design/components/cascader/en) | 級聯選擇 |
-| **Checkbox** | `NzCheckboxModule` | [Checkbox](https://ng.ant.design/components/checkbox/en) | 多選框 |
-| **ColorPicker** | `NzColorPickerModule` | [ColorPicker](https://ng.ant.design/components/color-picker/en) | 顏色選擇器 |
-| **DatePicker** | `NzDatePickerModule` | [DatePicker](https://ng.ant.design/components/date-picker/en) | 日期選擇框 |
-| **Form** | `NzFormModule` | [Form](https://ng.ant.design/components/form/en) | 表單 |
-| **Input** | `NzInputModule` | [Input](https://ng.ant.design/components/input/en) | 輸入框 |
-| **InputNumber** | `NzInputNumberModule` | [InputNumber](https://ng.ant.design/components/input-number/en) | 數字輸入框 |
-| **Mention** | `NzMentionModule` | [Mention](https://ng.ant.design/components/mention/en) | 提及 |
-| **Radio** | `NzRadioModule` | [Radio](https://ng.ant.design/components/radio/en) | 單選框 |
-| **Rate** | `NzRateModule` | [Rate](https://ng.ant.design/components/rate/en) | 評分 |
-| **Select** | `NzSelectModule` | [Select](https://ng.ant.design/components/select/en) | 選擇器 |
-| **Slider** | `NzSliderModule` | [Slider](https://ng.ant.design/components/slider/en) | 滑動輸入條 |
-| **Switch** | `NzSwitchModule` | [Switch](https://ng.ant.design/components/switch/en) | 開關 |
-| **TimePicker** | `NzTimePickerModule` | [TimePicker](https://ng.ant.design/components/time-picker/en) | 時間選擇框 |
-| **Transfer** | `NzTransferModule` | [Transfer](https://ng.ant.design/components/transfer/en) | 穿梭框 |
-| **TreeSelect** | `NzTreeSelectModule` | [TreeSelect](https://ng.ant.design/components/tree-select/en) | 樹選擇 |
-| **Upload** | `NzUploadModule` | [Upload](https://ng.ant.design/components/upload/en) | 上傳 |
+#### AutoComplete - 自動完成
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzAutocompleteModule` |
+| **官方文檔** | [AutoComplete](https://ng.ant.design/components/auto-complete/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Cascader - 級聯選擇
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCascaderModule` |
+| **官方文檔** | [Cascader](https://ng.ant.design/components/cascader/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Checkbox - 多選框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCheckboxModule` |
+| **官方文檔** | [Checkbox](https://ng.ant.design/components/checkbox/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### ColorPicker - 顏色選擇器
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzColorPickerModule` |
+| **官方文檔** | [ColorPicker](https://ng.ant.design/components/color-picker/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### DatePicker - 日期選擇框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzDatePickerModule` |
+| **官方文檔** | [DatePicker](https://ng.ant.design/components/date-picker/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Form - 表單
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzFormModule` |
+| **官方文檔** | [Form](https://ng.ant.design/components/form/en) |
+| **Schematics 命令** | 詳見下方命令列表 |
+
+**Form 組件 Schematics 命令：**
+
+```bash
+# 標準登入表單
+ng g ng-zorro-antd:form-normal-login <name>
+
+# 標準註冊表單
+ng g ng-zorro-antd:form-normal-register <name>
+
+# 標準表單驗證
+ng g ng-zorro-antd:form-normal-validation <name>
+
+# 高級搜索表單
+ng g ng-zorro-antd:form-advanced-search <name>
+
+# 動態表單
+ng g ng-zorro-antd:form-dynamic-form <name>
+
+# 動態表單項目
+ng g ng-zorro-antd:form-dynamic-form-item <name>
+
+# 動態表單規則
+ng g ng-zorro-antd:form-dynamic-form-rule <name>
+```
+
+#### Input - 輸入框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzInputModule` |
+| **官方文檔** | [Input](https://ng.ant.design/components/input/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### InputNumber - 數字輸入框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzInputNumberModule` |
+| **官方文檔** | [InputNumber](https://ng.ant.design/components/input-number/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Mention - 提及
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzMentionModule` |
+| **官方文檔** | [Mention](https://ng.ant.design/components/mention/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Radio - 單選框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzRadioModule` |
+| **官方文檔** | [Radio](https://ng.ant.design/components/radio/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Rate - 評分
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzRateModule` |
+| **官方文檔** | [Rate](https://ng.ant.design/components/rate/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Select - 選擇器
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSelectModule` |
+| **官方文檔** | [Select](https://ng.ant.design/components/select/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Slider - 滑動輸入條
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSliderModule` |
+| **官方文檔** | [Slider](https://ng.ant.design/components/slider/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Switch - 開關
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSwitchModule` |
+| **官方文檔** | [Switch](https://ng.ant.design/components/switch/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### TimePicker - 時間選擇框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTimePickerModule` |
+| **官方文檔** | [TimePicker](https://ng.ant.design/components/time-picker/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Transfer - 穿梭框
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTransferModule` |
+| **官方文檔** | [Transfer](https://ng.ant.design/components/transfer/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### TreeSelect - 樹選擇
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTreeSelectModule` |
+| **官方文檔** | [TreeSelect](https://ng.ant.design/components/tree-select/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Upload - 上傳
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzUploadModule` |
+| **官方文檔** | [Upload](https://ng.ant.design/components/upload/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 ### 佈局類組件 (Layout)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **Divider** | `NzDividerModule` | [Divider](https://ng.ant.design/components/divider/en) | 分割線 |
-| **Flex** | `NzFlexModule` | [Flex](https://ng.ant.design/components/flex/en) | 彈性佈局 |
-| **Grid** | `NzGridModule` | [Grid](https://ng.ant.design/components/grid/en) | 柵格 |
-| **Layout** | `NzLayoutModule` | [Layout](https://ng.ant.design/components/layout/en) | 佈局 |
-| **Space** | `NzSpaceModule` | [Space](https://ng.ant.design/components/space/en) | 間距 |
-| **Splitter** | `NzSplitterModule` | [Splitter](https://ng.ant.design/components/splitter/en) | 分隔面板 |
+#### Divider - 分割線
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzDividerModule` |
+| **官方文檔** | [Divider](https://ng.ant.design/components/divider/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Flex - 彈性佈局
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzFlexModule` |
+| **官方文檔** | [Flex](https://ng.ant.design/components/flex/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Grid - 柵格
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzGridModule` |
+| **官方文檔** | [Grid](https://ng.ant.design/components/grid/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Layout - 佈局
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzLayoutModule` |
+| **官方文檔** | [Layout](https://ng.ant.design/components/layout/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Space - 間距
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSpaceModule` |
+| **官方文檔** | [Space](https://ng.ant.design/components/space/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Splitter - 分隔面板
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzSplitterModule` |
+| **官方文檔** | [Splitter](https://ng.ant.design/components/splitter/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 ### 通用類組件 (General)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **Button** | `NzButtonModule` | [Button](https://ng.ant.design/components/button/en) | 按鈕 |
-| **FloatButton** | `NzFloatButtonModule` | [FloatButton](https://ng.ant.design/components/float-button/en) | 懸浮按鈕 |
-| **Icon** | `NzIconModule` | [Icon](https://ng.ant.design/components/icon/en) | 圖標 |
-| **Typography** | `NzTypographyModule` | [Typography](https://ng.ant.design/components/typography/en) | 排版 |
+#### Button - 按鈕
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzButtonModule` |
+| **官方文檔** | [Button](https://ng.ant.design/components/button/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### FloatButton - 懸浮按鈕
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzFloatButtonModule` |
+| **官方文檔** | [FloatButton](https://ng.ant.design/components/float-button/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Icon - 圖標
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzIconModule` |
+| **官方文檔** | [Icon](https://ng.ant.design/components/icon/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Typography - 排版
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTypographyModule` |
+| **官方文檔** | [Typography](https://ng.ant.design/components/typography/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 ### 導航類組件 (Navigation)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **Anchor** | `NzAnchorModule` | [Anchor](https://ng.ant.design/components/anchor/en) | 錨點 |
-| **Breadcrumb** | `NzBreadCrumbModule` | [Breadcrumb](https://ng.ant.design/components/breadcrumb/en) | 麵包屑 |
-| **Dropdown** | `NzDropDownModule` | [Dropdown](https://ng.ant.design/components/dropdown/en) | 下拉菜單 |
-| **Menu** | `NzMenuModule` | [Menu](https://ng.ant.design/components/menu/en) | 導航菜單 |
-| **PageHeader** | `NzPageHeaderModule` | [PageHeader](https://ng.ant.design/components/page-header/en) | 頁頭 |
-| **Pagination** | `NzPaginationModule` | [Pagination](https://ng.ant.design/components/pagination/en) | 分頁 |
-| **Steps** | `NzStepsModule` | [Steps](https://ng.ant.design/components/steps/en) | 步驟條 |
-| **Tabs** | `NzTabsModule` | [Tabs](https://ng.ant.design/components/tabs/en) | 標籤頁 |
+#### Anchor - 錨點
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzAnchorModule` |
+| **官方文檔** | [Anchor](https://ng.ant.design/components/anchor/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Breadcrumb - 麵包屑
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzBreadCrumbModule` |
+| **官方文檔** | [Breadcrumb](https://ng.ant.design/components/breadcrumb/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Dropdown - 下拉菜單
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzDropDownModule` |
+| **官方文檔** | [Dropdown](https://ng.ant.design/components/dropdown/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Menu - 導航菜單
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzMenuModule` |
+| **官方文檔** | [Menu](https://ng.ant.design/components/menu/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### PageHeader - 頁頭
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzPageHeaderModule` |
+| **官方文檔** | [PageHeader](https://ng.ant.design/components/page-header/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Pagination - 分頁
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzPaginationModule` |
+| **官方文檔** | [Pagination](https://ng.ant.design/components/pagination/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Steps - 步驟條
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzStepsModule` |
+| **官方文檔** | [Steps](https://ng.ant.design/components/steps/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### Tabs - 標籤頁
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzTabsModule` |
+| **官方文檔** | [Tabs](https://ng.ant.design/components/tabs/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 ### 其他類組件 (Other)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **Affix** | `NzAffixModule` | [Affix](https://ng.ant.design/components/affix/en) | 固釘 |
-| **BackTop** | `NzBackTopModule` | [BackTop](https://ng.ant.design/components/back-top/en) | 返回頂部 |
-| **WaterMark** | `NzWaterMarkModule` | [WaterMark](https://ng.ant.design/components/water-mark/en) | 水印 |
+#### Affix - 固釘
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzAffixModule` |
+| **官方文檔** | [Affix](https://ng.ant.design/components/affix/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### BackTop - 返回頂部
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzBackTopModule` |
+| **官方文檔** | [BackTop](https://ng.ant.design/components/back-top/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### WaterMark - 水印
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzWaterMarkModule` |
+| **官方文檔** | [WaterMark](https://ng.ant.design/components/water-mark/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 ### 特色組件 (Special)
 
-| 組件名稱 | 模組導入 | 官方文檔 | 說明 |
-|---------|---------|---------|------|
-| **CheckList** | `NzCheckListModule` | [CheckList](https://ng.ant.design/components/check-list/en) | 任務清單 |
-| **HashCode** | `NzHashCodeModule` | [HashCode](https://ng.ant.design/components/hash-code/en) | 哈希碼 |
+#### CheckList - 任務清單
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzCheckListModule` |
+| **官方文檔** | [CheckList](https://ng.ant.design/components/check-list/en) |
+| **Schematics 命令** | 暫無專用 schematics |
+
+#### HashCode - 哈希碼
+
+| 項目 | 內容 |
+|------|------|
+| **模組導入** | `NzHashCodeModule` |
+| **官方文檔** | [HashCode](https://ng.ant.design/components/hash-code/en) |
+| **Schematics 命令** | 暫無專用 schematics |
 
 ---
 
@@ -209,32 +753,73 @@ ng g ng-zorro-antd:component user-profile
 ng g ng-zorro-antd:[schematic] <name> [options]
 ```
 
-#### 常用組件模板
+#### 完整 Schematics 命令列表
+
+> **說明**：以下列出所有已知的組件 Schematics 命令。每個組件的詳細命令請參考上方「組件清單」章節。
+
+**Form 組件 Schematics：**
 
 ```bash
-# 生成表單登入組件
-ng g ng-zorro-antd:form-normal-login login
+# 標準登入表單
+ng g ng-zorro-antd:form-normal-login <name>
 
-# 生成表單註冊組件
-ng g ng-zorro-antd:form-normal-register register
+# 標準註冊表單
+ng g ng-zorro-antd:form-normal-register <name>
 
-# 生成表單驗證組件
-ng g ng-zorro-antd:form-normal-validation validation
+# 標準表單驗證
+ng g ng-zorro-antd:form-normal-validation <name>
 
-# 生成表單高級搜索組件
-ng g ng-zorro-antd:form-advanced-search search
+# 高級搜索表單
+ng g ng-zorro-antd:form-advanced-search <name>
 
-# 生成表單動態表單組件
-ng g ng-zorro-antd:form-dynamic-form dynamic-form
+# 動態表單
+ng g ng-zorro-antd:form-dynamic-form <name>
 
-# 生成表單動態表單項目組件
-ng g ng-zorro-antd:form-dynamic-form-item dynamic-form-item
+# 動態表單項目
+ng g ng-zorro-antd:form-dynamic-form-item <name>
 
-# 生成表單動態表單規則組件
-ng g ng-zorro-antd:form-dynamic-form-rule dynamic-form-rule
+# 動態表單規則
+ng g ng-zorro-antd:form-dynamic-form-rule <name>
 ```
 
-> **注意**：更多組件模板請參考 [NG-ZORRO Schematics 文檔](https://ng.ant.design/docs/schematics/en)
+**Tree 組件 Schematics：**
+
+```bash
+# 基本樹形控件
+ng g ng-zorro-antd:tree-basic <name>
+
+# 受控樹形控件
+ng g ng-zorro-antd:tree-basic-controlled <name>
+
+# 可拖拽樹形控件
+ng g ng-zorro-antd:tree-draggable <name>
+
+# 帶確認的可拖拽樹形控件
+ng g ng-zorro-antd:tree-draggable-confirm <name>
+
+# 動態加載數據的樹形控件
+ng g ng-zorro-antd:tree-dynamic <name>
+
+# 可搜索的樹形控件
+ng g ng-zorro-antd:tree-search <name>
+
+# 自定義圖標的樹形控件
+ng g ng-zorro-antd:tree-customized-icon <name>
+
+# 帶連接線的樹形控件
+ng g ng-zorro-antd:tree-line <name>
+
+# 目錄樹形控件
+ng g ng-zorro-antd:tree-directory <name>
+
+# 虛擬滾動樹形控件
+ng g ng-zorro-antd:tree-virtual-scroll <name>
+```
+
+> **注意**：
+> - 更多組件模板請參考 [NG-ZORRO Schematics 文檔](https://ng.ant.design/docs/schematics/en)
+> - 每個組件的官方文檔頁面通常會列出該組件可用的 Schematics 命令
+> - 並非所有組件都有 Schematics，大部分組件需要手動編寫代碼
 
 ### 開發與調試指令
 
@@ -399,5 +984,20 @@ export class ExampleComponent {
 
 **最後更新**：2025-01-15  
 **維護者**：開發團隊  
-**版本**：v1.0
+**版本**：v1.1
+
+---
+
+## 更新日誌
+
+### v1.1 (2025-01-15)
+- ✅ 完善所有組件的 Schematics 命令列表
+- ✅ 為 Tree 組件添加 10 個詳細的 Schematics 命令
+- ✅ 為 Form 組件添加 7 個詳細的 Schematics 命令
+- ✅ 優化文檔結構，每個組件獨立章節，更易查找
+- ✅ 在 CLI Schematics 指令章節添加完整命令列表
+
+### v1.0 (2025-01-15)
+- ✅ 初始版本，包含 72 個組件清單
+- ✅ 基本 CLI 指令說明
 
