@@ -47,6 +47,14 @@ export const routes: Routes = [
         loadChildren: () => import('./issues/routes').then(m => m.ISSUE_ROUTES)
       },
       {
+        path: 'analytics',
+        loadChildren: () => import('./analytics/routes').then(m => m.ANALYTICS_ROUTES)
+      },
+      {
+        path: 'documents',
+        loadChildren: () => import('./documents/routes').then(m => m.DOCUMENT_ROUTES)
+      },
+      {
         path: 'communication',
         loadChildren: () => import('./communication/routes').then(m => m.COMMUNICATION_ROUTES)
       }
