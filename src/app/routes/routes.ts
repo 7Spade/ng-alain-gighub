@@ -55,6 +55,14 @@ export const routes: Routes = [
         loadChildren: () => import('./documents/routes').then(m => m.DOCUMENT_ROUTES)
       },
       {
+        path: 'bots',
+        loadChildren: () => import('./bots/routes').then(m => m.BOT_ROUTES)
+      },
+      {
+        path: 'system',
+        loadChildren: () => import('./system/routes').then(m => m.SYSTEM_ROUTES)
+      },
+      {
         path: 'communication',
         loadChildren: () => import('./communication/routes').then(m => m.COMMUNICATION_ROUTES)
       }
