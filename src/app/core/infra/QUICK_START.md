@@ -29,8 +29,8 @@
 // 1. 导入基础类和类型
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BaseRepository, QueryOptions } from '@core/infra';
-import { Database } from '@core/infra/types';
+import { BaseRepository, QueryOptions } from '@core';
+import { Database } from '@core';
 
 // 2. 定义类型（从数据库类型中提取）
 type Task = Database['public']['Tables']['tasks']['Row'];
@@ -76,7 +76,7 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
 ```typescript
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BlueprintRepository } from '@core/infra';
+import { BlueprintRepository } from '@core';
 
 @Injectable({ providedIn: 'root' })
 export class BlueprintService {
@@ -98,7 +98,7 @@ export class BlueprintService {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { BlueprintRepository } from '@core/infra';
+import { BlueprintRepository } from '@core';
 
 @Component({
   selector: 'app-blueprint-list',

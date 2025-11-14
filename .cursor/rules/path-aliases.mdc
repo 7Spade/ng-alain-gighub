@@ -1,0 +1,171 @@
+---
+description: 路径别名使用规范
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# 路径别名使用规范
+
+> **相關規則**：參考 [類型安全](./typescript.mdc)、[架構規範](./architecture.mdc)、[共享模組優先使用](./shared-imports.mdc)
+
+## 基本原則
+
+- **路径别名不支持深层路径**，只能从根导出文件导入
+- 优先使用路径别名（`@core`、`@shared`）而非相对路径
+- 确保所有需要的类型和类都从根导出文件导出
+- 禁止使用深层路径别名如 `@core/infra/types` 或 `@shared/services/account`
+
+## 路径别名配置
+
+项目配置的路径别名（`tsconfig.json`）：
+
+```json
+{
+  "paths": {
+    "@shared": ["src/app/shared/index"],
+    "@core": ["src/app/core/index"],
+    "@env/*": ["src/environments/*"],
+    "@_mock": ["_mock/index"]
+  }
+}
+```
+
+## 正确使用方式
+
+### ✅ 正确：从根导出导入
+
+```typescript
+// ✅ 正确：从 @core 根导出导入
+import { Database, TeamMemberRole, AccountRepository } from '@core';
+
+// ✅ 正确：从 @shared 根导出导入
+import { AccountService, Account, AccountType, AccountStatus } from '@shared';
+
+// ✅ 正确：从 @shared 导入 SHARED_IMPORTS
+import { SHARED_IMPORTS } from '@shared';
+```
+
+### ❌ 错误：使用深层路径别名
+
+```typescript
+// ❌ 错误：不支持深层路径别名
+import { Database } from '@core/infra/types/database.types';
+import { AccountRepository } from '@core/infra/repositories/account.repository';
+import { AccountService } from '@shared/services/account';
+import { Account } from '@shared/models/account';
+```
+
+## 跨层依赖处理
+
+### Core 层不应依赖 Shared 层
+
+当 core 层需要使用 shared 层定义的类型时：
+
+1. **优先方案**：将类型定义移到 core 层
+2. **临时方案**：使用相对路径导入（需添加 TODO 注释）
+
+```typescript
+// ❌ 错误：core 层使用路径别名依赖 shared 层
+import { AccountType, AccountStatus } from '@shared/models/account';
+
+// ✅ 正确：使用相对路径（临时方案）
+// 注意：core 层不应依赖 shared 层，使用相对路径导入
+// TODO: 考虑将 AccountType 和 AccountStatus 移到 core 层定义
+import { AccountType, AccountStatus } from '../../../../shared/models/account/types';
+```
+
+## 导出结构要求
+
+### Core 模块导出结构
+
+确保 `src/app/core/index.ts` 导出所有需要的类型和类：
+
+```typescript
+// src/app/core/index.ts
+export * from './i18n/i18n.service';
+export * from './net/index';
+export * from './startup/startup.service';
+export * from './start-page.guard';
+export * from './supabase';
+export * from './permissions';
+export * from './infra'; // 导出所有 infra 模块的内容
+```
+
+### Shared 模块导出结构
+
+确保 `src/app/shared/index.ts` 导出所有需要的类型和类：
+
+```typescript
+// src/app/shared/index.ts
+export * from './utils/yuan';
+export * from './models'; // 导出所有模型
+export * from './services'; // 导出所有服务
+export * from './shared-imports';
+export * from './json-schema/index';
+export * from './st-widget/index';
+export * from './cell-widget/index';
+```
+
+## 子模块导出要求
+
+### 确保子模块正确导出
+
+每个子模块的 `index.ts` 必须正确导出所有内容：
+
+```typescript
+// src/app/core/infra/index.ts
+export * from './repositories'; // 导出所有 repositories
+export * from './types'; // 导出所有类型
+export * from './errors'; // 导出所有错误处理
+export * from './utils'; // 导出所有工具函数
+
+// src/app/shared/services/index.ts
+export * from './account'; // 导出所有账户相关服务
+
+// src/app/shared/models/index.ts
+export * from './account'; // 导出所有账户相关模型
+```
+
+## 常见问题
+
+### 问题 1：找不到导出的类型
+
+**原因**：类型未从根导出文件导出
+
+**解决**：
+1. 检查类型是否在子模块的 `index.ts` 中导出
+2. 检查子模块是否在根 `index.ts` 中导出
+3. 确保导出链完整：`具体文件` → `子模块 index.ts` → `根 index.ts`
+
+### 问题 2：TypeScript 编译错误
+
+**原因**：使用了深层路径别名
+
+**解决**：
+1. 改为从根导出导入：`@core` 或 `@shared`
+2. 如果类型未导出，添加到相应的 `index.ts` 文件中
+
+### 问题 3：循环依赖
+
+**原因**：模块间相互导入
+
+**解决**：
+1. 检查架构设计，确保依赖方向正确：`routes` → `shared` → `core`
+2. 将共享类型移到 core 层
+3. 使用相对路径导入（临时方案）
+
+## 检查清单
+
+在提交代码前，确保：
+
+- [ ] 所有导入都使用路径别名（`@core`、`@shared`）或相对路径
+- [ ] 没有使用深层路径别名（如 `@core/infra/types`）
+- [ ] 所有需要的类型和类都从根导出文件导出
+- [ ] core 层没有使用路径别名依赖 shared 层
+- [ ] 导出链完整且正确
+
+## 参考文档
+
+- [TypeScript 路径映射](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping)
+- [架構規範](./architecture.mdc)
+- [類型安全規範](./typescript.mdc)

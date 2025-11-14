@@ -17,6 +17,6 @@
  * @module shared/models
  */
 
-// 暂时为空，后续按模块导出
-// export * from './account';
+// 按模块导出
+export * from './account';
 

@@ -13,7 +13,11 @@
 - ✅ 文檔一致性更新 v2.0
 - ✅ 基礎 RLS 策略實施（51 張表）
 - ✅ 開發順序決策 - 先開發賬戶系統（使用 Sequential Thinking + Software Planning Tool）
-- ⏳ 規劃階段 - 賬戶系統實施計劃（10 個任務，預計 2-3 周）
+- ✅ 基礎設施模組實施（core/infra/）- Repository 模式、類型定義、錯誤處理、數據轉換
+- ✅ 賬戶系統實施（9 個任務）- 數據模型層、Repository 層、Service 層、路由層
+- ✅ 賬戶系統架構違規修復 - 修復 core 依賴 shared 的架構違規，修復路徑別名使用錯誤
+- ⏳ 規劃階段 - 賬戶系統後續完善（詳情、編輯、創建頁面）
+- ✅ 專案路線圖建立（[44-專案路線圖.md](./44-專案路線圖.md)）- 記錄開發計劃與里程碑
 
 ### 2025-11-14
 - ✅ Supabase 與 @delon/auth 整合
@@ -54,6 +58,15 @@
 - ✅ 決策先開發賬戶系統（基礎層）而非藍圖系統（業務層）
 - ✅ 使用 Software Planning Tool 創建賬戶系統實施計劃
 - ⏳ 待實施：賬戶系統開發（10 個任務）
+
+### 里程碑 5：基礎設施模組建立 (2025-01-15)
+- ✅ 完成 TypeScript 類型定義生成（51 張表）
+- ✅ 建立統一錯誤處理機制
+- ✅ 建立數據轉換工具（snake_case ↔ camelCase）
+- ✅ 建立基礎 Repository 類（BaseRepository）
+- ✅ 建立 BlueprintRepository 示例
+- ✅ 完成模組導出和文檔編寫
+- ✅ 構建驗證通過
 
 ---
 
@@ -336,6 +349,7 @@
 
 ## 📚 相關文檔
 
+- [專案路線圖](./44-專案路線圖.md) - **專案開發路線圖與里程碑** ⭐ 新增
 - [開發脈絡記錄](./fyi-development.md) - 詳細的開發決策記錄
 - [架構說明](./fyi-architecture.md) - 系統架構設計
 - [上下文](./fyi-context.md) - Domain 用語和業務背景
@@ -365,6 +379,51 @@
 
 ### 相關文檔
 - [結構評估總結](./賬戶系統開發-結構評估總結.md) - 詳細的評估過程和決策記錄
+
+---
+
+## 2025-01-15: 賬戶系統架構違規修復
+
+### 背景
+在賬戶系統實施過程中，發現了架構依賴違規和路徑別名使用錯誤的問題。這些問題違反了項目的分層架構原則，需要立即修復。
+
+### 問題描述
+1. **架構依賴違規**：
+   - `core/infra/repositories/account.repository.ts` 導入 `@shared` 的 `AccountType` 和 `AccountStatus`
+   - `core/infra/repositories/team-member.repository.ts` 導入 `@shared` 的 `TeamMemberRole`
+   - 違反了分層架構：`routes → shared → core`，`core` 不應該依賴 `shared`
+
+2. **路徑別名使用錯誤**：
+   - 使用 `@core/infra/repositories/team.repository` 深層路徑
+   - 路徑別名只配置到 `@core` 和 `@shared`，不支持深層路徑
+   - 導致 TypeScript 編譯錯誤
+
+### 修復方案
+1. **將枚舉類型移到 core 層**：
+   - 創建 `core/infra/types/account.types.ts`
+   - 將 `AccountType`、`AccountStatus`、`TeamMemberRole` 移到 core 層
+   - Repository 層使用相對路徑導入
+
+2. **修復路徑別名使用**：
+   - 統一使用根導出：`import { TeamRepository } from '@core'`
+   - core 層內部使用相對路徑
+   - 確保所有類型都從根導出文件導出
+
+3. **保持向後兼容**：
+   - 在 `shared/models/account/types.ts` 重新導出 core 層的類型
+   - 現有代碼無需修改
+
+### 修復結果
+- ✅ 架構合規：core 不依賴 shared
+- ✅ 路徑別名：所有導入使用根導出
+- ✅ 類型安全：無類型錯誤
+- ✅ Lint 檢查：無錯誤
+- ✅ 向後兼容：現有代碼無需修改
+
+### 相關文檔
+- [賬戶系統架構違規修復總結](./賬戶系統架構違規修復總結.md) ⭐ 詳細修復記錄
+- [問題與挑戰記錄](./fyi-challenges.md#2025-01-15-賬戶系統架構違規修復)
+- [開發脈絡記錄](./fyi-development.md#2025-01-15-賬戶系統架構違規修復)
 
 ---
 

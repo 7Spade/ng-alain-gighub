@@ -22,7 +22,7 @@
 ### 快速开始
 
 ```typescript
-import { BlueprintRepository } from '@core/infra';
+import { BlueprintRepository } from '@core';
 
 const blueprintRepo = inject(BlueprintRepository);
 blueprintRepo.findAll().subscribe(blueprints => {

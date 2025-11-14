@@ -42,12 +42,18 @@ core/
 │   ├── types.ts
 │   ├── permission.service.ts
 │   └── role.service.ts
+├── infra/             # 基礎設施模組 ⭐ 新增
+│   ├── types/         # TypeScript 類型定義（51 張表）
+│   ├── repositories/  # Repository 模式實現
+│   ├── errors/        # 統一錯誤處理
+│   └── utils/         # 工具函數
 ├── guards/            # 路由守衛（規劃中）
 └── interceptors/      # HTTP 攔截器（規劃中）
 ```
 
 #### 職責界線
 - **supabase/**：Supabase 客戶端管理、認證適配
+- **infra/**：數據訪問層基礎設施（Repository 模式、類型定義、錯誤處理、數據轉換）⭐ 新增
 - **net/**：HTTP 請求攔截、錯誤處理、Token 刷新
 - **permissions/**：權限檢查、角色管理、權限同步
 - **startup/**：應用啟動初始化、Session 恢復、權限同步
@@ -277,6 +283,114 @@ Service 處理
   ↓
 Component 更新 UI
 ```
+
+---
+
+## 基礎設施模組架構
+
+### 模組結構
+
+```
+core/infra/
+├── types/              # 類型定義
+│   ├── database.types.ts    # Supabase 生成的類型定義（51 張表）
+│   └── index.ts
+├── repositories/       # Repository 模式實現
+│   ├── base.repository.ts   # 基礎 Repository 類
+│   ├── blueprint.repository.ts  # Blueprint Repository 示例
+│   └── index.ts
+├── errors/            # 錯誤處理
+│   ├── error.types.ts       # 錯誤類型定義
+│   ├── supabase-error.transformer.ts  # Supabase 錯誤轉換工具
+│   └── index.ts
+├── utils/             # 工具函數
+│   ├── transformers.ts      # 數據轉換工具（snake_case ↔ camelCase）
+│   └── index.ts
+└── index.ts           # 統一導出
+```
+
+### 數據訪問架構
+
+```
+Service (shared/services/)
+  ↓ 使用
+Repository (core/infra/repositories/)
+  ↓ 封裝
+SupabaseService (core/supabase/)
+  ↓ 調用
+Supabase Client
+  ↓ 查詢
+PostgreSQL Database
+```
+
+### Repository 模式設計
+
+#### BaseRepository
+- **抽象類**：提供通用 CRUD 操作
+- **泛型支持**：確保類型安全
+- **自動轉換**：自動處理 snake_case ↔ camelCase 轉換
+- **統一錯誤處理**：自動轉換 Supabase 錯誤為應用錯誤
+
+#### 擴展方式
+- **繼承 BaseRepository**：只需設置 `tableName` 即可獲得所有 CRUD 操作
+- **添加特定方法**：可以添加特定查詢方法
+- **三步完成**：定義類型 → 繼承類 → 設置表名
+
+### 類型安全架構
+
+```
+Supabase Database Schema
+  ↓ (Supabase MCP 工具生成)
+TypeScript Types (database.types.ts)
+  ↓ (類型提取)
+Repository Generic Types
+  ↓ (自動轉換)
+Application Types (camelCase)
+```
+
+### 錯誤處理架構
+
+```
+Supabase Error (PostgrestError)
+  ↓ (transformSupabaseError)
+AppError (統一錯誤類型)
+  ↓ (錯誤分類)
+ErrorType (http | network | validation | business | permission | unknown)
+  ↓ (錯誤嚴重程度)
+ErrorSeverity (critical | error | warning | info)
+```
+
+### 數據轉換架構
+
+```
+Database Data (snake_case)
+  ↓ (toCamelCaseData)
+Application Data (camelCase)
+  ↓ (業務邏輯處理)
+Application Data (camelCase)
+  ↓ (toSnakeCaseData)
+Database Data (snake_case)
+```
+
+### 依賴關係
+
+```
+BaseRepository
+  ├── SupabaseService (core/supabase/)
+  ├── Error Transformer (core/infra/errors/)
+  └── Data Transformer (core/infra/utils/)
+
+Service (shared/services/)
+  └── Repository (core/infra/repositories/)
+      └── BaseRepository (core/infra/repositories/)
+```
+
+### 設計原則
+
+1. **先做基礎**：只提供必要的通用功能，不包含業務邏輯
+2. **方便擴展**：通過繼承輕鬆添加新 Repository
+3. **開發平順**：自動處理數據轉換和錯誤處理
+4. **避免錯誤**：類型安全和統一錯誤處理機制
 
 ---
 

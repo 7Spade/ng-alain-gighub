@@ -10,6 +10,5 @@
  * @module shared/models/account
  */
 
-// 类型定义将在 types.ts 中实现
-// export * from './types';
+export * from './types';
 

@@ -159,13 +159,24 @@
 
 #### 賬戶系統開發
 - **架構決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15賬戶系統架構決策反覆)
+- **架構違規修復**：→ [賬戶系統架構違規修復總結.md](./賬戶系統架構違規修復總結.md) ⭐ 新增
 - **結構評估**：→ [賬戶系統開發-結構評估總結.md](./賬戶系統開發-結構評估總結.md)
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15賬戶系統架構評估與基礎結構創建)
+- **修復記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-賬戶系統架構違規修復)
+- **問題挑戰**：→ [fyi-challenges.md](./fyi-challenges.md#2025-01-15-賬戶系統架構違規修復)
 
 #### 資料庫安全（RLS）
 - **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-基礎-rls-策略實施)
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-基礎-rls-策略實施)
 - **詳細策略**：→ [21-安全與-RLS-權限矩陣.md](./21-安全與-RLS-權限矩陣.md)
+
+#### 基礎設施模組（Infrastructure）
+- **實施總結**：→ [基礎設施模組實施總結.md](./基礎設施模組實施總結.md) ⭐ 新增
+- **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-基礎設施模組實施)
+- **架構設計**：→ [fyi-architecture.md](./fyi-architecture.md#基礎設施模組架構)
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-基礎設施模組實施)
+- **使用指南**：→ [src/app/core/infra/README.md](../src/app/core/infra/README.md)
+- **快速開始**：→ [src/app/core/infra/QUICK_START.md](../src/app/core/infra/QUICK_START.md)
 
 #### 代碼庫
 - **完整代碼庫**：→ [fyi-codebase.md](./fyi-codebase.md)
@@ -191,6 +202,29 @@
 - 重新評估 Repository 和 Service 位置
 - 確定採用 Repository 模式，充分利用現有基礎設施
 - 記錄決策反覆過程，為後續開發提供參考
+
+**2025-01-15**：基礎設施模組實施
+- 完成 TypeScript 類型定義生成（51 張表）
+- 建立統一錯誤處理機制
+- 建立數據轉換工具（snake_case ↔ camelCase）
+- 建立基礎 Repository 類（BaseRepository）
+- 建立 BlueprintRepository 示例
+- 完成模組導出和文檔編寫
+- 構建驗證通過，所有代碼編譯成功
+
+**2025-01-15**：賬戶系統架構違規修復
+- 修復 core 依賴 shared 的架構違規
+- 將 `AccountType`、`AccountStatus`、`TeamMemberRole` 枚舉移到 core 層
+- 修復路徑別名使用錯誤，統一使用根導出
+- 保持向後兼容，現有代碼無需修改
+- 建立架構違規修復總結文檔
+
+**2025-01-15**：專案路線圖建立
+- 建立專案路線圖文檔（[44-專案路線圖.md](./44-專案路線圖.md)）
+- 記錄當前狀態、開發計劃和里程碑
+- 規劃 Phase 1 MVP（3 個月）和 Phase 2 功能增強（3 個月）
+- 定義開發優先級和 9 個關鍵里程碑
+- 在文檔索引和脈絡文檔中建立引用
 
 ---
 

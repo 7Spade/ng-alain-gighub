@@ -34,7 +34,7 @@ infra/
 
 **使用方式**：
 ```typescript
-import { Database, Tables } from '@core/infra';
+import { Database, Tables } from '@core';
 
 // 使用 Tables 类型辅助工具
 type Blueprint = Tables<'blueprints'>;
@@ -53,7 +53,7 @@ type BlueprintUpdate = TablesUpdate<'blueprints'>;
 基础 Repository 类，提供通用 CRUD 操作：
 
 ```typescript
-import { BaseRepository } from '@core/infra';
+import { BaseRepository } from '@core';
 
 @Injectable({ providedIn: 'root' })
 export class MyRepository extends BaseRepository<MyEntity, MyEntityInsert, MyEntityUpdate> {
@@ -87,7 +87,7 @@ export class MyRepository extends BaseRepository<MyEntity, MyEntityInsert, MyEnt
 蓝图 Repository 示例，展示如何扩展 BaseRepository：
 
 ```typescript
-import { BlueprintRepository } from '@core/infra';
+import { BlueprintRepository } from '@core';
 
 const blueprintRepo = inject(BlueprintRepository);
 
@@ -118,7 +118,7 @@ blueprintRepo.findActive().subscribe(blueprints => {
 
 **使用方式**：
 ```typescript
-import { transformSupabaseError, handleSupabaseResponse } from '@core/infra/errors';
+import { transformSupabaseError, handleSupabaseResponse } from '@core';
 
 // 转换 Supabase 错误
 try {
@@ -143,7 +143,7 @@ const data = handleSupabaseResponse(response, 'MyService');
 
 **使用方式**：
 ```typescript
-import { toCamelCaseData, toSnakeCaseData } from '@core/infra/utils';
+import { toCamelCaseData, toSnakeCaseData } from '@core';
 
 // 数据库数据（snake_case）→ 应用数据（camelCase）
 const dbData = { user_id: '123', created_at: '2025-01-01' };
@@ -167,8 +167,8 @@ const dbData = toSnakeCaseData(appData);
 ```typescript
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BaseRepository, QueryOptions } from '@core/infra';
-import { Database } from '@core/infra/types';
+import { BaseRepository, QueryOptions } from '@core';
+import { Database } from '@core';
 
 type Task = Database['public']['Tables']['tasks']['Row'];
 type TaskInsert = Database['public']['Tables']['tasks']['Insert'];
@@ -211,7 +211,7 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
 ```typescript
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BlueprintRepository } from '@core/infra';
+import { BlueprintRepository } from '@core';
 
 @Injectable({ providedIn: 'root' })
 export class BlueprintService {

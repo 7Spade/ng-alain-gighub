@@ -8,7 +8,6 @@
  * @module shared/services/account
  */
 
-// 服务将在后续实现
-// export * from './account.service';
-// export * from './team.service';
+export * from './account.service';
+export * from './team.service';
 

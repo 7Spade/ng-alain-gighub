@@ -6,7 +6,7 @@ alwaysApply: true
 
 # TypeScript 類型安全規範
 
-> **相關規則**：參考 [代碼質量](./code-quality.mdc)、[API 設計](./api-design.mdc)、[架構規範](./architecture.mdc)
+> **相關規則**：參考 [代碼質量](./code-quality.mdc)、[API 設計](./api-design.mdc)、[架構規範](./architecture.mdc)、[路徑別名規範](./path-aliases.mdc)
 
 ## 類型安全原則
 
@@ -31,6 +31,7 @@ alwaysApply: true
 - 使用泛型約束（`T extends {}`）確保類型安全
 - 使用 `readonly` 修飾符保護不可變屬性
 - 導入清理：提交前檢查並移除未使用的導入，使用 ESLint 規則自動檢測（參考 [代碼檢查](./linting.mdc)）
+- 路徑別名使用：禁止使用深層路徑別名，只能從根導出文件導入（參考 [路徑別名規範](./path-aliases.mdc)）
 - 避免在嚴格模式下使用 `with` 語句、舊式八進制字面量等已棄用特性
 
 ## 模型定義對齊數據庫

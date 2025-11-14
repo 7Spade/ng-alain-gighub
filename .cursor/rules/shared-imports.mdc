@@ -18,7 +18,7 @@ alwaysApply: true
 ## 使用方式
 
 ```typescript
-import { SHARED_IMPORTS } from '@shared/shared-imports';
+import { SHARED_IMPORTS } from '@shared';
 
 @Component({
   selector: 'app-example',
