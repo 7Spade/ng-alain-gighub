@@ -46,6 +46,21 @@
               "i18n": "menu.development.account.create"
             },
             {
+              "text": "用户管理",
+              "link": "/accounts/users",
+              "i18n": "menu.development.account.users"
+            },
+            {
+              "text": "组织管理",
+              "link": "/accounts/organizations",
+              "i18n": "menu.development.account.organizations"
+            },
+            {
+              "text": "机器人管理",
+              "link": "/accounts/bots",
+              "i18n": "menu.development.account.bots"
+            },
+            {
               "text": "团队管理",
               "link": "/accounts/teams",
               "i18n": "menu.development.account.teams"
@@ -95,14 +110,39 @@
               "i18n": "menu.development.blueprint.create"
             },
             {
+              "text": "蓝图详情",
+              "link": "/blueprints/detail",
+              "i18n": "menu.development.blueprint.detail"
+            },
+            {
+              "text": "蓝图设置",
+              "link": "/blueprints/settings",
+              "i18n": "menu.development.blueprint.settings"
+            },
+            {
+              "text": "主分支",
+              "link": "/blueprints/main-branch",
+              "i18n": "menu.development.blueprint.mainBranch"
+            },
+            {
               "text": "分支管理",
               "link": "/blueprints/branches",
               "i18n": "menu.development.blueprint.branches"
             },
             {
+              "text": "Fork 任务",
+              "link": "/blueprints/fork",
+              "i18n": "menu.development.blueprint.fork"
+            },
+            {
               "text": "Pull Request",
               "link": "/blueprints/pull-requests",
               "i18n": "menu.development.blueprint.pullRequests"
+            },
+            {
+              "text": "PR 审查",
+              "link": "/blueprints/review",
+              "i18n": "menu.development.blueprint.review"
             }
           ]
         },
@@ -112,9 +152,34 @@
           "icon": "anticon-check-square",
           "children": [
             {
+              "text": "任务看板",
+              "link": "/tasks/board",
+              "i18n": "menu.development.task.board"
+            },
+            {
+              "text": "任务日历",
+              "link": "/tasks/calendar",
+              "i18n": "menu.development.task.calendar"
+            },
+            {
               "text": "任务树视图",
               "link": "/tasks",
               "i18n": "menu.development.task.tree"
+            },
+            {
+              "text": "创建任务",
+              "link": "/tasks/create",
+              "i18n": "menu.development.task.create"
+            },
+            {
+              "text": "任务详情",
+              "link": "/tasks/detail",
+              "i18n": "menu.development.task.detail"
+            },
+            {
+              "text": "任务表单",
+              "link": "/tasks/form",
+              "i18n": "menu.development.task.form"
             },
             {
               "text": "任务指派",
@@ -135,6 +200,16 @@
               "text": "施工日志",
               "link": "/tasks/daily-reports",
               "i18n": "menu.development.task.dailyReports"
+            },
+            {
+              "text": "施工照片",
+              "link": "/tasks/photos",
+              "i18n": "menu.development.task.photos"
+            },
+            {
+              "text": "天气记录",
+              "link": "/tasks/weather",
+              "i18n": "menu.development.task.weather"
             }
           ]
         },
@@ -149,14 +224,24 @@
               "i18n": "menu.development.quality.checks"
             },
             {
+              "text": "提交验收",
+              "link": "/quality/submit",
+              "i18n": "menu.development.quality.submit"
+            },
+            {
               "text": "验收管理",
               "link": "/quality/inspections",
               "i18n": "menu.development.quality.inspections"
             },
             {
-              "text": "照片管理",
+              "text": "验收照片",
               "link": "/quality/photos",
               "i18n": "menu.development.quality.photos"
+            },
+            {
+              "text": "验收结果",
+              "link": "/quality/results",
+              "i18n": "menu.development.quality.results"
             }
           ]
         },
@@ -171,9 +256,34 @@
               "i18n": "menu.development.issue.list"
             },
             {
+              "text": "开立问题",
+              "link": "/issues/create",
+              "i18n": "menu.development.issue.create"
+            },
+            {
+              "text": "问题详情",
+              "link": "/issues/detail",
+              "i18n": "menu.development.issue.detail"
+            },
+            {
               "text": "问题指派",
               "link": "/issues/assignments",
               "i18n": "menu.development.issue.assignments"
+            },
+            {
+              "text": "问题处理",
+              "link": "/issues/handle",
+              "i18n": "menu.development.issue.handle"
+            },
+            {
+              "text": "处理照片",
+              "link": "/issues/photos",
+              "i18n": "menu.development.issue.photos"
+            },
+            {
+              "text": "关闭问题",
+              "link": "/issues/close",
+              "i18n": "menu.development.issue.close"
             }
           ]
         },
@@ -183,9 +293,19 @@
           "icon": "anticon-message",
           "children": [
             {
+              "text": "讨论区",
+              "link": "/communication/discussions",
+              "i18n": "menu.development.communication.discussions"
+            },
+            {
               "text": "留言管理",
               "link": "/communication/comments",
               "i18n": "menu.development.communication.comments"
+            },
+            {
+              "text": "发布留言",
+              "link": "/communication/comments/create",
+              "i18n": "menu.development.communication.commentsCreate"
             },
             {
               "text": "通知中心",
@@ -193,9 +313,19 @@
               "i18n": "menu.development.communication.notifications"
             },
             {
+              "text": "实时通知",
+              "link": "/communication/realtime",
+              "i18n": "menu.development.communication.realtime"
+            },
+            {
               "text": "待办中心",
               "link": "/communication/todos",
               "i18n": "menu.development.communication.todos"
+            },
+            {
+              "text": "团队通知",
+              "link": "/communication/team-notify",
+              "i18n": "menu.development.communication.teamNotify"
             }
           ]
         },
@@ -205,9 +335,34 @@
           "icon": "anticon-bar-chart",
           "children": [
             {
+              "text": "数据统计",
+              "link": "/analytics/statistics",
+              "i18n": "menu.development.analytics.statistics"
+            },
+            {
               "text": "进度追踪",
               "link": "/analytics/progress",
               "i18n": "menu.development.analytics.progress"
+            },
+            {
+              "text": "进度更新",
+              "link": "/analytics/progress-update",
+              "i18n": "menu.development.analytics.progressUpdate"
+            },
+            {
+              "text": "主分支报表",
+              "link": "/analytics/main-reports",
+              "i18n": "menu.development.analytics.mainReports"
+            },
+            {
+              "text": "分支报表",
+              "link": "/analytics/branch-reports",
+              "i18n": "menu.development.analytics.branchReports"
+            },
+            {
+              "text": "跨分支总览",
+              "link": "/analytics/cross-branch",
+              "i18n": "menu.development.analytics.crossBranch"
             },
             {
               "text": "活动记录",
@@ -218,6 +373,16 @@
               "text": "数据报表",
               "link": "/analytics/reports",
               "i18n": "menu.development.analytics.reports"
+            },
+            {
+              "text": "导出报表",
+              "link": "/analytics/export",
+              "i18n": "menu.development.analytics.export"
+            },
+            {
+              "text": "图表生成",
+              "link": "/analytics/charts",
+              "i18n": "menu.development.analytics.charts"
             }
           ]
         },
@@ -237,9 +402,34 @@
               "i18n": "menu.development.document.upload"
             },
             {
+              "text": "文件浏览器",
+              "link": "/documents/browser",
+              "i18n": "menu.development.document.browser"
+            },
+            {
+              "text": "文件预览",
+              "link": "/documents/preview",
+              "i18n": "menu.development.document.preview"
+            },
+            {
+              "text": "图纸检视",
+              "link": "/documents/drawings",
+              "i18n": "menu.development.document.drawings"
+            },
+            {
+              "text": "文件元数据",
+              "link": "/documents/metadata",
+              "i18n": "menu.development.document.metadata"
+            },
+            {
               "text": "版本管理",
               "link": "/documents/versions",
               "i18n": "menu.development.document.versions"
+            },
+            {
+              "text": "权限设置",
+              "link": "/documents/permissions",
+              "i18n": "menu.development.document.permissions"
             }
           ]
         },
@@ -284,6 +474,31 @@
               "text": "角色管理",
               "link": "/system/roles",
               "i18n": "menu.development.system.roles"
+            },
+            {
+              "text": "权限分配",
+              "link": "/system/permissions",
+              "i18n": "menu.development.system.permissions"
+            },
+            {
+              "text": "权限矩阵",
+              "link": "/system/permission-matrix",
+              "i18n": "menu.development.system.permissionMatrix"
+            },
+            {
+              "text": "分支权限管理",
+              "link": "/system/branch-permissions",
+              "i18n": "menu.development.system.branchPermissions"
+            },
+            {
+              "text": "天气 API 配置",
+              "link": "/system/weather-api",
+              "i18n": "menu.development.system.weatherApi"
+            },
+            {
+              "text": "活动记录查看",
+              "link": "/system/activity-logs",
+              "i18n": "menu.development.system.activityLogs"
             }
           ]
         }
