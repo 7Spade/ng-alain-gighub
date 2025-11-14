@@ -1,0 +1,94 @@
+---
+description: Git 工作流和提交規範
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Git 工作流和提交規範
+
+> **相關規則**：參考 [Git-like 分支模型](./git-model.mdc)、[代碼檢查](./linting.mdc)、[代碼格式化](./formatting.mdc)、[測試規範](./testing.mdc)
+
+## 基本原則
+
+- 使用 Conventional Commits 格式提交訊息
+- 提交前必須通過所有檢查（lint、test）
+- 使用 Husky 和 lint-staged 確保代碼質量
+- 遵循 Git Flow 或類似分支策略
+
+## 提交訊息格式
+
+遵循 Conventional Commits 規範：
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Type 類型
+
+- `feat`: 新功能
+- `fix`: 修復 bug
+- `docs`: 文檔更新
+- `style`: 代碼格式調整（不影響功能）
+- `refactor`: 重構
+- `perf`: 性能優化
+- `test`: 測試相關
+- `chore`: 構建過程或輔助工具的變動
+- `ci`: CI 配置變更
+
+### 範例
+
+```
+feat(auth): add login functionality
+
+Implement user authentication with JWT tokens.
+Add login and logout methods to AuthService.
+
+Closes #123
+```
+
+## Husky Git Hooks
+
+- `prepare` 腳本自動安裝 Husky
+- 配置 pre-commit hook 執行 lint-staged
+- 配置 commit-msg hook 驗證提交訊息格式（如需要）
+
+## lint-staged 配置
+
+- 僅檢查已修改的文件
+- TypeScript/HTML 文件執行 ESLint（參考 [代碼檢查](./linting.mdc)）
+- Less 文件執行 Stylelint（參考 [樣式規範](./styling.mdc)）
+- 自動修復可修復的問題
+
+## 分支策略
+
+- `main` - 主分支，生產環境代碼
+- `develop` - 開發分支
+- `feature/*` - 功能分支
+- `fix/*` - 修復分支
+- `hotfix/*` - 緊急修復分支
+
+## 提交前檢查
+
+提交前必須確保：
+1. 代碼通過 ESLint 檢查（參考 [代碼檢查](./linting.mdc)）
+2. 樣式通過 Stylelint 檢查（參考 [樣式規範](./styling.mdc)）
+3. 代碼已格式化（Prettier）（參考 [代碼格式化](./formatting.mdc)）
+4. 測試通過（如適用）（參考 [測試規範](./testing.mdc)）
+5. 提交訊息符合規範
+
+## 禁止事項
+
+- 禁止跳過 Git Hooks（`--no-verify`）
+- 禁止提交未格式化的代碼
+- 禁止提交包含 lint 錯誤的代碼
+- 禁止使用模糊的提交訊息
+
+## 參考文檔
+
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [Husky 文檔](https://typicode.github.io/husky/)
+- [lint-staged 文檔](https://github.com/okonet/lint-staged)

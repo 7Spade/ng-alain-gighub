@@ -1,0 +1,89 @@
+---
+description: Layout 模組特定開發規範
+globs: ["src/app/layout/**/*.ts", "src/app/layout/**/*.html"]
+alwaysApply: false
+---
+
+# Layout 模組特定規範
+
+> **相關規則**：參考 [架構規範](./architecture.mdc)、[Angular 20 最佳實踐](./angular.mdc)、[性能優化](./performance.mdc)
+
+## 模組職責
+
+Layout 模組提供應用程式的佈局結構，包括：
+- 基本佈局（Basic Layout）- 包含側邊欄、頂部導航、內容區域
+- 空白佈局（Blank Layout）- 無側邊欄的簡潔佈局
+- 認證佈局（Passport Layout）- 登入、註冊等認證頁面佈局
+
+## 依賴關係
+
+- ✅ **可依賴**：`layout` 可以依賴 `shared` 和 `core`
+- ❌ **禁止依賴**：`layout` 不能依賴 `routes`
+- 使用 `inject()` 進行依賴注入
+- 詳細規範參考 [架構規範](./architecture.mdc)
+
+## 響應式設計
+
+- 支援桌面、平板、手機等不同螢幕尺寸
+- 使用 ng-zorro-antd 的 Grid 系統實現響應式佈局
+- 側邊欄在小螢幕上自動收起
+- 使用 `@media` 查詢處理響應式樣式
+
+## 佈局狀態管理
+
+- 使用 Signals 管理佈局狀態（如側邊欄展開/收起）（參考 [Angular 20 最佳實踐](./angular.mdc)）
+- 狀態應該持久化到 localStorage 或服務中
+- 使用 `computed()` 創建派生狀態（如根據屏幕尺寸計算佈局）
+
+### 佈局狀態範例
+
+```typescript
+export class BasicLayoutComponent {
+  private readonly _collapsed = signal<boolean>(false);
+  readonly collapsed = this._collapsed.asReadonly();
+  
+  toggleCollapsed(): void {
+    this._collapsed.update(v => !v);
+  }
+}
+```
+
+## 導航結構
+
+- 導航菜單應該可配置，使用路由配置生成
+- 支持多級菜單結構
+- 當前路由應該高亮顯示
+- 支持麵包屑導航
+
+## 可訪問性要求
+
+- 側邊欄切換按鈕需提供清晰的視覺反饋
+- 鍵盤導航支持（Tab 鍵切換，Enter 鍵激活）
+- 使用 ARIA 標籤標識佈局區域
+- 確保焦點管理正確
+- 詳細規範參考 [可訪問性規範](./accessibility.mdc)
+
+## 性能優化
+
+- 佈局組件應該使用 OnPush 變更檢測策略
+- 避免在佈局組件中進行複雜計算
+- 使用 `trackBy` 優化導航菜單渲染
+- 延遲加載非關鍵內容
+- 更多性能優化策略參考 [性能優化規範](./performance.mdc)
+
+## 測試要求
+
+- 每個佈局組件至少 80% 程式碼覆蓋率
+- 測試響應式佈局在不同螢幕尺寸下的表現
+- 測試鍵盤導航功能
+- 測試側邊欄展開/收起功能
+- 詳細規範參考 [測試規範](./testing.mdc)
+
+## 通用規範
+
+以下規範已在通用規則文件中定義，請參考：
+- [Angular 20 最佳實踐](./angular.mdc)
+- [TypeScript 類型安全](./typescript.mdc)
+- [共享模組優先使用](./shared-imports.mdc)
+- [可訪問性](./accessibility.mdc)
+- [性能優化](./performance.mdc)

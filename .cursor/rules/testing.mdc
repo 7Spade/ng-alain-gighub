@@ -1,0 +1,85 @@
+---
+description: 測試規範與覆蓋率要求
+globs: ["**/*.spec.ts", "**/*.test.ts", "e2e/**/*.ts"]
+alwaysApply: false
+---
+
+# 測試規範
+
+> **相關規則**：參考 [代碼質量](./code-quality.mdc)、[錯誤處理](./error-handling.mdc)、[架構規範](./architecture.mdc)
+
+## 覆蓋率要求
+
+- 每個服務至少 80% 程式碼覆蓋率
+- 關鍵業務邏輯需 100% 覆蓋率（Git-like 分支模型、PR 機制、暫存區、問題同步等）
+- 定期執行 `yarn test-coverage` 驗證覆蓋率
+
+## 測試類型
+
+- 使用 Angular Testing Utilities 進行組件測試
+- 使用 Karma + Jasmine 進行單元測試
+- E2E 測試覆蓋關鍵用戶流程（藍圖建立、Fork、PR、任務執行等）
+
+## Karma + Jasmine 配置
+
+### 執行測試
+
+```bash
+# 開發模式（監聽模式）
+yarn test
+
+# 單次運行並生成覆蓋率報告
+yarn test-coverage
+
+# E2E 測試
+yarn e2e
+```
+
+### 測試文件結構
+
+- 測試文件命名：`*.spec.ts`
+- 測試文件與源文件放在同一目錄
+- 使用 `describe` 和 `it` 組織測試用例
+
+### Jasmine 語法
+
+- 使用 `describe` 組織測試套件
+- 使用 `it` 定義測試用例
+- 使用 `beforeEach` 和 `afterEach` 設置和清理
+- 使用 `expect` 進行斷言
+
+### Angular Testing Utilities
+
+- 使用 `TestBed` 配置測試環境
+- 使用 `ComponentFixture` 訪問組件實例
+- 使用 `DebugElement` 查詢 DOM 元素
+- 使用 `async` 和 `fakeAsync` 處理異步操作
+
+### 測試覆蓋率
+
+- 使用 `karma-coverage` 生成覆蓋率報告
+- 覆蓋率報告輸出到 `coverage/` 目錄
+- 定期檢查覆蓋率報告識別未測試代碼
+
+## 業務邏輯測試重點
+
+- 分支權限控制（參考 [安全規範](./security.mdc)）
+- PR 審核與合併流程（參考 [Git-like 分支模型](./git-model.mdc)）
+- 暫存區 48 小時撤回機制
+- 問題跨分支同步
+- 待辦中心五種狀態聚合
+
+## 測試最佳實踐
+
+- 編寫可讀的測試用例名稱
+- 每個測試用例只測試一個功能點
+- 使用 Mock 和 Spy 隔離依賴
+- 測試邊界條件和錯誤情況（參考 [錯誤處理規範](./error-handling.mdc)）
+- 保持測試獨立性，不依賴執行順序
+
+## 參考文檔
+
+- [測試指南](../../docs/38-測試指南.md)
+- [Jasmine 文檔](https://jasmine.github.io/)
+- [Karma 文檔](https://karma-runner.github.io/)
+- [Angular 測試文檔](https://angular.dev/guide/testing)

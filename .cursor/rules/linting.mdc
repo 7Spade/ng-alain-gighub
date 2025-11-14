@@ -1,0 +1,58 @@
+---
+description: ESLint 代碼檢查規範
+globs: ["**/*.ts", "**/*.html"]
+alwaysApply: true
+---
+
+# ESLint 代碼檢查規範
+
+> **相關規則**：參考 [代碼格式化](./formatting.mdc)、[類型安全](./typescript.mdc)、[代碼質量](./code-quality.mdc)、[Git 工作流](./git-workflow.mdc)
+
+## 基本原則
+
+- 所有 TypeScript 和 HTML 文件必須通過 ESLint 檢查
+- 提交前必須執行 `yarn lint` 或 `npm run lint`
+- 使用 `--cache` 選項提高檢查速度
+- 使用 `--fix` 選項自動修復可修復的問題
+
+## 執行方式
+
+```bash
+# 檢查所有文件
+yarn lint
+
+# 僅檢查 TypeScript
+yarn lint:ts
+
+# 自動修復問題
+npx eslint --cache --fix
+```
+
+## 配置要求
+
+- 使用 `@typescript-eslint/parser` 解析 TypeScript
+- 使用 `@typescript-eslint/eslint-plugin` 提供 TypeScript 規則
+- 使用 `eslint-plugin-import` 檢查導入順序
+- 使用 `eslint-plugin-unused-imports` 檢測未使用的導入
+- 使用 `eslint-plugin-jsdoc` 檢查 JSDoc 註釋
+- 使用 `eslint-plugin-prefer-arrow` 優先使用箭頭函數
+- 使用 `eslint-config-prettier` 避免與 Prettier 衝突（參考 [代碼格式化](./formatting.mdc)）
+
+## 規則重點
+
+- 禁止使用 `any` 類型（除非必要且明確標註）（參考 [類型安全](./typescript.mdc)）
+- 強制使用箭頭函數（當適用時）
+- 檢查未使用的導入和變數
+- 強制 JSDoc 註釋（對於公共 API）
+- 檢查導入順序和分組
+
+## Git Hooks 集成
+
+- 通過 `lint-staged` 在提交前自動檢查（參考 [Git 工作流](./git-workflow.mdc)）
+- 僅檢查已修改的文件以提高速度
+- 檢查失敗時阻止提交
+
+## 參考文檔
+
+- [ESLint 官方文檔](https://eslint.org/)
+- [TypeScript ESLint](https://typescript-eslint.io/)

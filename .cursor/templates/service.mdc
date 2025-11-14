@@ -1,0 +1,76 @@
+---
+description: Angular Service 模板（使用 Signals）
+globs: ["src/app/**/*.service.ts"]
+alwaysApply: false
+---
+
+# Angular Service 模板
+
+## Service 結構
+
+```typescript
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ExampleService {
+  // 使用 inject() 注入依賴
+  private readonly http = inject(HttpClient);
+  private readonly repository = inject(ExampleRepository);
+  
+  // 使用 signal() 創建私有狀態
+  private readonly _state = signal<StateType>(initialValue);
+  
+  // 暴露 ReadonlySignal 給組件
+  readonly state = this._state.asReadonly();
+  
+  // 使用 computed() 創建派生狀態
+  readonly derivedState = computed(() => {
+    return this._state().someProperty;
+  });
+  
+  // 方法更新狀態
+  updateState(newValue: StateType): void {
+    this._state.set(newValue);
+  }
+  
+  // 使用 update() 方法進行複雜狀態更新
+  updateStatePartial(partial: Partial<StateType>): void {
+    this._state.update(current => ({ ...current, ...partial }));
+  }
+}
+```
+
+## Repository 模式
+
+```typescript
+import { Injectable, inject } from '@angular/core';
+import { SupabaseClient } from '@supabase/supabase-js';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ExampleRepository {
+  private readonly supabase = inject(SupabaseClient);
+  
+  async findAll(): Promise<Example[]> {
+    const { data, error } = await this.supabase
+      .from('examples')
+      .select('*');
+    
+    if (error) throw error;
+    return data;
+  }
+}
+```
+
+## 注意事項
+
+- 使用 `inject()` 進行依賴注入（避免 constructor injection）
+- 使用 Signals 管理狀態
+- 暴露 `ReadonlySignal` 給組件
+- 使用 `readonly` 修飾符保護不可變屬性
+- 使用 `update()` 方法進行複雜狀態更新
+- 資料庫操作通過 Supabase MCP 工具

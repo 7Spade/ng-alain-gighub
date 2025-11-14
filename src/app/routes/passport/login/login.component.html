@@ -1,0 +1,53 @@
+<form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
+  @if (error) {
+    <nz-alert [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg" />
+  }
+  <nz-form-item>
+    <nz-form-control [nzErrorTip]="emailErrorTip">
+      <nz-input-group nzSize="large" nzPrefixIcon="user">
+        <input nz-input formControlName="userName" type="email" placeholder="Email" />
+      </nz-input-group>
+      <ng-template #emailErrorTip let-i>
+        @if (i.errors?.required) {
+          {{ 'validation.email.required' | i18n }}
+        }
+        @if (i.errors?.email) {
+          {{ 'validation.email.wrong-format' | i18n }}
+        }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzErrorTip]="passwordErrorTip">
+      <nz-input-group nzSize="large" nzPrefixIcon="lock">
+        <input nz-input type="password" formControlName="password" placeholder="Password" />
+      </nz-input-group>
+      <ng-template #passwordErrorTip let-i>
+        @if (i.errors?.required) {
+          {{ 'validation.password.required' | i18n }}
+        }
+        @if (i.errors?.minlength) {
+          {{ 'validation.password.minlength' | i18n }}
+        }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-col [nzSpan]="12">
+      <label nz-checkbox formControlName="remember">{{ 'app.login.remember-me' | i18n }}</label>
+    </nz-col>
+    <nz-col [nzSpan]="12" class="text-right">
+      <a class="forgot" routerLink="/passport/register">{{ 'app.login.forgot-password' | i18n }}</a>
+    </nz-col>
+  </nz-form-item>
+  <nz-form-item>
+    <button nz-button type="submit" nzType="primary" nzSize="large" [nzLoading]="loading" nzBlock>
+      {{ 'app.login.login' | i18n }}
+    </button>
+  </nz-form-item>
+  <nz-form-item>
+    <div class="text-center">
+      <a class="register" routerLink="/passport/register">{{ 'app.login.signup' | i18n }}</a>
+    </div>
+  </nz-form-item>
+</form>

@@ -1,0 +1,39 @@
+---
+description: 安全規範與最佳實踐
+globs: ["**/*.ts", "**/*.tsx", "**/*.json"]
+alwaysApply: true
+---
+
+# 安全規範
+
+> **相關規則**：參考 [API 設計](./api-design.mdc)、[錯誤處理](./error-handling.mdc)、[MCP 工具](./mcp-tools.mdc)、[依賴管理](./dependency-management.mdc)
+
+## 資料庫安全
+
+- 所有資料庫操作必須通過 Supabase MCP 工具（參考 [MCP 工具](./mcp-tools.mdc)）
+- 啟用 Supabase RLS (Row Level Security) 檢查
+- 分支權限必須在資料庫層（RLS）與應用層雙重驗證
+- API 層權限驗證參考 [API 設計規範](./api-design.mdc)
+
+## 敏感資料處理
+
+- 敏感資料不在前端儲存或傳輸
+- 使用環境變數管理 API Keys 與敏感配置
+- 不在代碼中硬編碼敏感信息
+
+## 權限驗證
+
+- PR 合併操作必須驗證擁有者權限
+- 暫存區撤回操作必須驗證提交者身份
+- 所有權限驗證必須在服務層實現
+
+## 安全檢查
+
+- 定期檢查依賴套件的安全漏洞（參考 [依賴管理](./dependency-management.mdc)）
+- 使用 `yarn audit` 檢查安全漏洞
+- 參考 `docs/41-安全檢查清單.md` 進行安全檢查
+
+## 參考文檔
+
+- [安全檢查清單](../../docs/41-安全檢查清單.md)
+- [Core 模組規範](./core-specific.mdc)

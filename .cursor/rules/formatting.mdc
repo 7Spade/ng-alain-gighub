@@ -1,0 +1,61 @@
+---
+description: Prettier 代碼格式化規範
+globs: ["**/*.ts", "**/*.html", "**/*.json", "**/*.md"]
+alwaysApply: true
+---
+
+# Prettier 代碼格式化規範
+
+> **相關規則**：參考 [代碼檢查](./linting.mdc)、[Git 工作流](./git-workflow.mdc)
+
+## 基本原則
+
+- 所有代碼必須使用 Prettier 進行格式化
+- 提交前必須確保代碼已格式化
+- 使用統一的格式化配置確保團隊一致性
+- Prettier 配置優先於編輯器設置
+
+## 執行方式
+
+```bash
+# 檢查格式化（通常通過 ESLint 集成）
+yarn lint
+
+# 手動格式化（如果配置了 Prettier CLI）
+npx prettier --write "src/**/*.{ts,html,json}"
+```
+
+## 配置要求
+
+- 使用 `eslint-config-prettier` 禁用與 Prettier 衝突的 ESLint 規則（參考 [代碼檢查](./linting.mdc)）
+- 使用 `eslint-plugin-prettier` 將 Prettier 作為 ESLint 規則運行
+- 確保 `.prettierrc.js` 或 `.prettierrc` 配置文件存在
+
+## 格式化規則
+
+- 使用 2 空格縮進（通常）
+- 使用單引號（通常）
+- 尾隨逗號（ES5+）
+- 行寬限制（通常 80 或 100 字符）
+- 分號使用（根據項目配置）
+
+## 編輯器集成
+
+- 配置編輯器在保存時自動格式化
+- 使用 Prettier 擴展插件
+- 確保編輯器使用項目根目錄的 Prettier 配置
+
+## Git Hooks 集成
+
+- 通過 `lint-staged` 在提交前自動格式化（參考 [Git 工作流](./git-workflow.mdc)）
+- 確保提交的代碼已格式化
+
+## 注意事項
+
+- Prettier 只負責格式化，不負責代碼質量
+- 與 ESLint 配合使用，ESLint 負責代碼質量檢查（參考 [代碼檢查](./linting.mdc)）
+- 不要手動調整 Prettier 已格式化的代碼
+
+## 參考文檔
+
+- [Prettier 官方文檔](https://prettier.io/)

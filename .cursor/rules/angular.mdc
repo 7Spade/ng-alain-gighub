@@ -1,0 +1,58 @@
+---
+description: Angular 20 最佳實踐與現代語法規範
+globs: ["**/*.ts", "**/*.html", "src/app/**"]
+alwaysApply: true
+---
+
+# Angular 20 最佳實踐規範
+
+> **相關規則**：參考 [Angular 20 現代化特性](./modern-angular.mdc)、[共享模組優先使用](./shared-imports.mdc)、[類型安全](./typescript.mdc)、[性能優化](./performance.mdc)
+
+## Standalone Components
+
+- 優先使用 Standalone Components，避免使用 NgModules（除非必要）
+- 使用 `inject()` 進行依賴注入，避免 constructor injection
+- 使用 `bootstrapApplication()` 替代 `bootstrapModule()` 進行應用啟動
+- 移除未使用的 standalone imports（Angular 會自動檢測）
+
+## Signals 狀態管理
+
+- 使用 `signal()` 創建響應式狀態
+- 使用 `computed()` 創建派生狀態
+- 使用 `effect()` 處理副作用（謹慎使用）
+- 組件狀態優先使用 Signal，避免使用 `@Input()` 和 `@Output()` 的舊模式
+- 使用 `input()` 替代 `@Input()` 裝飾器（參考 [現代化特性](./modern-angular.mdc)）
+- 使用 `output()` 替代 `@Output()` 裝飾器
+- 使用 `viewChild()` 和 `contentChild()` 替代 `@ViewChild()` 和 `@ContentChild()` 裝飾器
+- 服務狀態使用 Signal 暴露 `ReadonlySignal` 給組件
+- 在模板中調用 Signal 時必須使用括號：`mySignal()`
+
+## 現代控制流程
+
+- 優先使用 `@if`、`@for`、`@switch` 替代 `*ngIf`、`*ngFor`、`[ngSwitch]`
+- 使用 `track` 函數優化 `@for` 迴圈性能
+- 使用 `@empty` 塊處理空列表情況
+- 避免在模板中使用複雜表達式，優先使用 `computed()` Signal
+- 在模板中調用 Signal 時必須使用括號：`{{ mySignal() }}`
+
+## Typed Forms
+
+- 使用 Typed Forms 確保表單類型安全
+- 所有表單欄位必須有明確的類型定義
+
+## 變更檢測策略
+
+- 使用 `OnPush` 變更檢測策略（預設）
+- 避免在變更檢測期間直接修改 Signal/狀態
+
+## 效能優化
+
+- 使用 `trackBy` 函數優化 `@for` 迴圈
+- 大型列表使用虛擬滾動（Virtual Scrolling）
+- 圖片使用 `loading="lazy"` 延遲載入
+- 更多性能優化策略參考 [性能優化規範](./performance.mdc)
+
+## 參考文檔
+
+- [Angular 官方文檔](https://angular.dev/)
+- [SHARED_IMPORTS 使用指南](../../docs/45-SHARED_IMPORTS-使用指南.md)

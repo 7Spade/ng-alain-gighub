@@ -1,0 +1,44 @@
+---
+description: 共享模組優先使用規範
+globs: ["src/app/**/*.ts", "src/app/**/*.html"]
+alwaysApply: true
+---
+
+# 共享模組優先使用規範
+
+> **相關規則**：參考 [Angular 20 最佳實踐](./angular.mdc)、[Shared 模組特定規範](./shared-specific.mdc)
+
+## 基本原則
+
+- 所有 UI 層組件必須優先使用 `SHARED_IMPORTS`
+- 禁止零碎引入 Angular、ng-zorro-antd、@delon 模組
+- 僅在 `SHARED_IMPORTS` 無法滿足需求時才個別導入
+- 保持模組導入的一致性與可維護性
+
+## 使用方式
+
+```typescript
+import { SHARED_IMPORTS } from '@shared/shared-imports';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [SHARED_IMPORTS], // 優先使用 SHARED_IMPORTS
+  // ...
+})
+export class ExampleComponent {}
+```
+
+- 從 `src/app/shared/shared-imports.ts` 導入 `SHARED_IMPORTS`
+- 在組件的 `imports` 陣列中使用 `SHARED_IMPORTS`
+- 參考 `docs/45-SHARED_IMPORTS-使用指南.md` 了解完整用法
+
+## 例外情況
+
+- 僅在 `SHARED_IMPORTS` 確實無法滿足需求時才個別導入
+- 個別導入時必須在代碼中註明原因
+
+## 參考文檔
+
+- [SHARED_IMPORTS 使用指南](../../docs/45-SHARED_IMPORTS-使用指南.md) ⭐ 必讀
+- [Shared 模組特定規範](./shared-specific.mdc)

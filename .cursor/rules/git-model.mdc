@@ -1,0 +1,34 @@
+---
+description: Git-like 分支模型與版本控制規範
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Git-like 分支模型規範
+
+> **相關規則**：參考 [架構規範](./architecture.mdc)、[Git 工作流](./git-workflow.mdc)、[安全規範](./security.mdc)
+
+## 禁止違反分支模型
+
+- 禁止協作組織修改任務結構（只能填寫承攬欄位）
+- 禁止繞過 PR 機制直接更新主分支數據
+- 禁止在分支中修改不屬於承攬欄位的資料
+
+## 版本控制規範
+
+- 使用語意化版本（Semantic Versioning）
+- 提交訊息遵循 Conventional Commits 格式（參考 [Git 工作流](./git-workflow.mdc)）
+- 重大變更需更新 CHANGELOG.md
+- 分支命名遵循規範（feature/、fix/、refactor/）
+- 提交前執行 lint 與 type-check（參考 [代碼檢查](./linting.mdc)、[類型安全](./typescript.mdc)）
+
+## 分支權限
+
+- 分支權限必須在資料庫層（RLS）與應用層雙重驗證（參考 [安全規範](./security.mdc)）
+- PR 合併操作必須驗證擁有者權限
+- 暫存區撤回操作必須驗證提交者身份
+
+## 參考文檔
+
+- [完整架構流程圖](../../docs/13-1.md) ⭐⭐⭐⭐⭐
+- [架構審查報告](../../docs/13-2.md) ⭐⭐⭐⭐⭐

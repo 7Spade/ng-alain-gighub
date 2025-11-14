@@ -1,0 +1,63 @@
+---
+description: Stylelint 和 Less 樣式規範
+globs: ["**/*.less", "**/*.css", "**/*.scss"]
+alwaysApply: true
+---
+
+# Stylelint 和 Less 樣式規範
+
+> **相關規則**：參考 [主題定制](./theming.mdc)、[Git 工作流](./git-workflow.mdc)
+
+## 基本原則
+
+- 所有 Less 文件必須通過 Stylelint 檢查
+- 使用 Less 作為 CSS 預處理器
+- 遵循 BEM 命名規範（如適用）
+- 保持樣式代碼整潔和可維護
+
+## 執行方式
+
+```bash
+# 檢查所有樣式文件
+yarn lint:style
+
+# 檢查特定文件
+npx stylelint 'src/**/*.less'
+```
+
+## 配置要求
+
+- 使用 `stylelint-config-standard` 作為基礎配置
+- 使用 `stylelint-config-clean-order` 規範屬性順序
+- 使用 `stylelint-declaration-block-no-ignored-properties` 檢測無效屬性
+
+## Less 使用規範
+
+- 使用變數定義顏色、字體、間距等
+- 使用嵌套保持樣式層級清晰
+- 使用 Mixin 重用樣式代碼
+- 避免過度嵌套（建議不超過 3 層）
+
+## 樣式組織
+
+- 按照邏輯順序組織樣式屬性
+- 使用 `stylelint-config-clean-order` 規範的屬性順序
+- 相關樣式屬性分組
+
+## ng-alain 主題集成
+
+- 使用 ng-alain 主題變數
+- 遵循 ng-alain 主題定制規範（參考 [主題定制規範](./theming.mdc)）
+- 參考 `docs/` 中的主題相關文檔
+
+## Git Hooks 集成
+
+- 通過 `lint-staged` 在提交前自動檢查樣式（參考 [Git 工作流](./git-workflow.mdc)）
+- 僅檢查已修改的樣式文件
+
+## 參考文檔
+
+- [Stylelint 官方文檔](https://stylelint.io/)
+- [Less 官方文檔](https://lesscss.org/)
+- [ng-alain 主題文檔](https://ng-alain.com/theme)
+- [主題定制規範](./theming.mdc)

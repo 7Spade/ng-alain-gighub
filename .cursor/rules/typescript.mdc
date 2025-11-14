@@ -1,0 +1,46 @@
+---
+description: TypeScript 類型安全與最佳實踐規範
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# TypeScript 類型安全規範
+
+> **相關規則**：參考 [代碼質量](./code-quality.mdc)、[API 設計](./api-design.mdc)、[架構規範](./architecture.mdc)
+
+## 類型安全原則
+
+- 使用嚴格模式（strict mode）與明確類型標註
+- 啟用所有 strict 編譯選項：`strict`, `strictNullChecks`, `strictFunctionTypes`, `strictBindCallApply`, `strictPropertyInitialization`
+- 避免使用 `any`，優先使用具體類型或 `unknown`
+- 利用類型推斷與類型守衛確保型別安全
+- 使用 `readonly` 修飾符保護不可變數據
+- 定期執行 `yarn type-check` 驗證類型一致性
+
+## 類型匹配檢查
+
+- 傳入參數前確認類型匹配，嵌套對象訪問正確屬性路徑
+- API 簽名驗證：調用服務方法前確認方法簽名，參數數量與類型完全匹配
+- 屬性路徑驗證：訪問嵌套屬性前確認路徑正確，參考模型定義避免假設
+- 明確類型標註：禁止隱含 `any` 類型，所有函數參數必須明確類型
+
+## 類型定義一致性
+
+- 確保類型定義與實際使用一致
+- 使用 `extends` 時確保父類型包含所需屬性
+- 使用泛型約束（`T extends {}`）確保類型安全
+- 使用 `readonly` 修飾符保護不可變屬性
+- 導入清理：提交前檢查並移除未使用的導入，使用 ESLint 規則自動檢測（參考 [代碼檢查](./linting.mdc)）
+- 避免在嚴格模式下使用 `with` 語句、舊式八進制字面量等已棄用特性
+
+## 模型定義對齊數據庫
+
+- TypeScript 模型應該精確反映數據庫結構
+- 51 張資料表的模型定義需與 `docs/30-1.md` 保持一致
+- 使用 Supabase MCP 工具生成 TypeScript 類型定義（參考 [MCP 工具](./mcp-tools.mdc)）
+
+## 參考文檔
+
+- [TypeScript 官方文檔](https://www.typescriptlang.org/docs/)
+- [專案架構文檔](../../docs/13-1.md)
+- [資料表結構定義](../../docs/30-1.md)

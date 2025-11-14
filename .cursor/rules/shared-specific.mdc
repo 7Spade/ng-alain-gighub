@@ -1,0 +1,66 @@
+---
+description: Shared 模組特定開發規範
+globs: ["src/app/shared/**/*.ts", "src/app/shared/**/*.html"]
+alwaysApply: false
+---
+
+# Shared 模組特定規範
+
+> **相關規則**：參考 [架構規範](./architecture.mdc)、[共享模組優先使用](./shared-imports.mdc)、[Angular 20 最佳實踐](./angular.mdc)
+
+## 模組職責
+
+Shared 模組提供可重用的組件、服務和工具，包括：
+- UI 組件（使用 `SHARED_IMPORTS`）
+- 工具函數
+- 共享服務
+- 通用 Widget
+
+## SHARED_IMPORTS 優先使用 ⭐
+
+- **所有 UI 層組件必須優先使用 `SHARED_IMPORTS`**
+- 禁止零碎引入 Angular、ng-zorro-antd、@delon 模組
+- 僅在 `SHARED_IMPORTS` 無法滿足需求時才個別導入
+- 詳細規範參考 [共享模組優先使用](./shared-imports.mdc)
+
+## 依賴關係
+
+- ✅ **可被依賴**：`routes` 可以依賴 `shared`
+- ✅ **可依賴**：`shared` 可以依賴 `core`
+- ❌ **禁止依賴**：`shared` 不能依賴 `routes`
+- 使用 `inject()` 進行依賴注入
+- 詳細規範參考 [架構規範](./architecture.mdc)
+
+## 可重用組件設計
+
+- 組件應該高度可重用，避免業務邏輯耦合
+- 使用 Props/Inputs 傳遞配置，而非硬編碼
+- 提供合理的默認值
+- 組件應該獨立且可測試（參考 [測試規範](./testing.mdc)）
+
+## 工具函數
+
+- 工具函數應該是純函數（Pure Functions）
+- 提供完整的 TypeScript 類型定義（參考 [類型安全](./typescript.mdc)）
+- 編寫單元測試確保正確性
+- 使用 JSDoc 註釋說明函數用途
+
+## 共享服務
+
+- 服務應該是無狀態的（Stateless）
+- 使用 Signals 管理可變狀態（參考 [Angular 20 最佳實踐](./angular.mdc)）
+- 暴露 `ReadonlySignal` 給組件
+- 提供清晰的 API 接口
+
+## 通用規範
+
+以下規範已在通用規則文件中定義，請參考：
+- [Angular 20 最佳實踐](./angular.mdc)
+- [TypeScript 類型安全](./typescript.mdc)
+- [共享模組優先使用](./shared-imports.mdc)
+- [代碼質量](./code-quality.mdc)
+- [可訪問性](./accessibility.mdc)
+
+## 參考文檔
+
+- [SHARED_IMPORTS 使用指南](../../docs/45-SHARED_IMPORTS-使用指南.md) ⭐ 必讀
