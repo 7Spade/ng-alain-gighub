@@ -10,13 +10,13 @@
   },
   "menu": [
     {
-      "text": "主导航",
+      "text": "Main Navigation",
       "i18n": "menu.main",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "快捷菜单",
+          "text": "Shortcut Menu",
           "i18n": "menu.shortcut",
           "icon": "anticon-rocket",
           "shortcutRoot": true,
@@ -25,112 +25,112 @@
       ]
     },
     {
-      "text": "开发中",
+      "text": "Development",
       "i18n": "menu.development",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "账户系统",
+          "text": "Account System",
           "i18n": "menu.development.account",
           "icon": "anticon-user",
           "children": [
             {
-              "text": "账户列表",
+              "text": "Account List",
               "link": "/accounts/list",
               "i18n": "menu.development.account.list"
             },
             {
-              "text": "创建账户",
+              "text": "Create Account",
               "link": "/accounts/create",
               "i18n": "menu.development.account.create"
             },
             {
-              "text": "用户管理",
+              "text": "User Management",
               "link": "/accounts/users",
               "i18n": "menu.development.account.users"
             },
             {
-              "text": "组织管理",
+              "text": "Organization Management",
               "link": "/accounts/organizations",
               "i18n": "menu.development.account.organizations"
             },
             {
-              "text": "机器人管理",
+              "text": "Bot Management",
               "link": "/accounts/bots",
               "i18n": "menu.development.account.bots"
             },
             {
-              "text": "团队管理",
+              "text": "Team Management",
               "link": "/accounts/teams",
               "i18n": "menu.development.account.teams"
             },
             {
-              "text": "排班管理",
+              "text": "Schedule Management",
               "link": "/accounts/schedules",
               "i18n": "menu.development.account.schedules"
             }
           ]
         },
         {
-          "text": "组织协作",
+          "text": "Organization Collaboration",
           "i18n": "menu.development.collaboration",
           "icon": "anticon-team",
           "children": [
             {
-              "text": "协作关系列表",
+              "text": "Collaboration List",
               "link": "/collaboration/list",
               "i18n": "menu.development.collaboration.list"
             },
             {
-              "text": "创建协作关系",
+              "text": "Create Collaboration",
               "link": "/collaboration/create",
               "i18n": "menu.development.collaboration.create"
             },
             {
-              "text": "协作邀请",
+              "text": "Collaboration Invitations",
               "link": "/collaboration/invitations",
               "i18n": "menu.development.collaboration.invitations"
             }
           ]
         },
         {
-          "text": "蓝图系统",
+          "text": "Blueprint System",
           "i18n": "menu.development.blueprint",
           "icon": "anticon-file-text",
           "children": [
             {
-              "text": "蓝图列表",
+              "text": "Blueprint List",
               "link": "/blueprints",
               "i18n": "menu.development.blueprint.list"
             },
             {
-              "text": "创建蓝图",
+              "text": "Create Blueprint",
               "link": "/blueprints/create",
               "i18n": "menu.development.blueprint.create"
             },
             {
-              "text": "蓝图详情",
+              "text": "Blueprint Detail",
               "link": "/blueprints/detail",
               "i18n": "menu.development.blueprint.detail"
             },
             {
-              "text": "蓝图设置",
+              "text": "Blueprint Settings",
               "link": "/blueprints/settings",
               "i18n": "menu.development.blueprint.settings"
             },
             {
-              "text": "主分支",
+              "text": "Main Branch",
               "link": "/blueprints/main-branch",
               "i18n": "menu.development.blueprint.mainBranch"
             },
             {
-              "text": "分支管理",
+              "text": "Branch Management",
               "link": "/blueprints/branches",
               "i18n": "menu.development.blueprint.branches"
             },
             {
-              "text": "Fork 任务",
+              "text": "Fork Task",
               "link": "/blueprints/fork",
               "i18n": "menu.development.blueprint.fork"
             },
@@ -140,363 +140,363 @@
               "i18n": "menu.development.blueprint.pullRequests"
             },
             {
-              "text": "PR 审查",
+              "text": "PR Review",
               "link": "/blueprints/review",
               "i18n": "menu.development.blueprint.review"
             }
           ]
         },
         {
-          "text": "任务执行",
+          "text": "Task Execution",
           "i18n": "menu.development.task",
           "icon": "anticon-check-square",
           "children": [
             {
-              "text": "任务看板",
+              "text": "Task Board",
               "link": "/tasks/board",
               "i18n": "menu.development.task.board"
             },
             {
-              "text": "任务日历",
+              "text": "Task Calendar",
               "link": "/tasks/calendar",
               "i18n": "menu.development.task.calendar"
             },
             {
-              "text": "任务树视图",
+              "text": "Task Tree View",
               "link": "/tasks",
               "i18n": "menu.development.task.tree"
             },
             {
-              "text": "创建任务",
+              "text": "Create Task",
               "link": "/tasks/create",
               "i18n": "menu.development.task.create"
             },
             {
-              "text": "任务详情",
+              "text": "Task Detail",
               "link": "/tasks/detail",
               "i18n": "menu.development.task.detail"
             },
             {
-              "text": "任务表单",
+              "text": "Task Form",
               "link": "/tasks/form",
               "i18n": "menu.development.task.form"
             },
             {
-              "text": "任务指派",
+              "text": "Task Assignment",
               "link": "/tasks/assignments",
               "i18n": "menu.development.task.assignments"
             },
             {
-              "text": "待办列表",
+              "text": "Todo List",
               "link": "/tasks/todo",
               "i18n": "menu.development.task.todo"
             },
             {
-              "text": "暂存区",
+              "text": "Staging Area",
               "link": "/tasks/staging",
               "i18n": "menu.development.task.staging"
             },
             {
-              "text": "施工日志",
+              "text": "Daily Reports",
               "link": "/tasks/daily-reports",
               "i18n": "menu.development.task.dailyReports"
             },
             {
-              "text": "施工照片",
+              "text": "Construction Photos",
               "link": "/tasks/photos",
               "i18n": "menu.development.task.photos"
             },
             {
-              "text": "天气记录",
+              "text": "Weather Records",
               "link": "/tasks/weather",
               "i18n": "menu.development.task.weather"
             }
           ]
         },
         {
-          "text": "品质验收",
+          "text": "Quality Acceptance",
           "i18n": "menu.development.quality",
           "icon": "anticon-check-circle",
           "children": [
             {
-              "text": "品管检查",
+              "text": "Quality Check",
               "link": "/quality/checks",
               "i18n": "menu.development.quality.checks"
             },
             {
-              "text": "提交验收",
+              "text": "Submit Acceptance",
               "link": "/quality/submit",
               "i18n": "menu.development.quality.submit"
             },
             {
-              "text": "验收管理",
+              "text": "Acceptance Management",
               "link": "/quality/inspections",
               "i18n": "menu.development.quality.inspections"
             },
             {
-              "text": "验收照片",
+              "text": "Acceptance Photos",
               "link": "/quality/photos",
               "i18n": "menu.development.quality.photos"
             },
             {
-              "text": "验收结果",
+              "text": "Acceptance Results",
               "link": "/quality/results",
               "i18n": "menu.development.quality.results"
             }
           ]
         },
         {
-          "text": "问题追踪",
+          "text": "Issue Tracking",
           "i18n": "menu.development.issue",
           "icon": "anticon-exclamation-circle",
           "children": [
             {
-              "text": "问题列表",
+              "text": "Issue List",
               "link": "/issues",
               "i18n": "menu.development.issue.list"
             },
             {
-              "text": "开立问题",
+              "text": "Create Issue",
               "link": "/issues/create",
               "i18n": "menu.development.issue.create"
             },
             {
-              "text": "问题详情",
+              "text": "Issue Detail",
               "link": "/issues/detail",
               "i18n": "menu.development.issue.detail"
             },
             {
-              "text": "问题指派",
+              "text": "Issue Assignment",
               "link": "/issues/assignments",
               "i18n": "menu.development.issue.assignments"
             },
             {
-              "text": "问题处理",
+              "text": "Issue Handling",
               "link": "/issues/handle",
               "i18n": "menu.development.issue.handle"
             },
             {
-              "text": "处理照片",
+              "text": "Handling Photos",
               "link": "/issues/photos",
               "i18n": "menu.development.issue.photos"
             },
             {
-              "text": "关闭问题",
+              "text": "Close Issue",
               "link": "/issues/close",
               "i18n": "menu.development.issue.close"
             }
           ]
         },
         {
-          "text": "协作沟通",
+          "text": "Collaboration & Communication",
           "i18n": "menu.development.communication",
           "icon": "anticon-message",
           "children": [
             {
-              "text": "讨论区",
+              "text": "Discussion Area",
               "link": "/communication/discussions",
               "i18n": "menu.development.communication.discussions"
             },
             {
-              "text": "留言管理",
+              "text": "Comment Management",
               "link": "/communication/comments",
               "i18n": "menu.development.communication.comments"
             },
             {
-              "text": "发布留言",
+              "text": "Post Comment",
               "link": "/communication/comments/create",
               "i18n": "menu.development.communication.commentsCreate"
             },
             {
-              "text": "通知中心",
+              "text": "Notification Center",
               "link": "/communication/notifications",
               "i18n": "menu.development.communication.notifications"
             },
             {
-              "text": "实时通知",
+              "text": "Realtime Notifications",
               "link": "/communication/realtime",
               "i18n": "menu.development.communication.realtime"
             },
             {
-              "text": "待办中心",
+              "text": "Todo Center",
               "link": "/communication/todos",
               "i18n": "menu.development.communication.todos"
             },
             {
-              "text": "团队通知",
+              "text": "Team Notifications",
               "link": "/communication/team-notify",
               "i18n": "menu.development.communication.teamNotify"
             }
           ]
         },
         {
-          "text": "数据分析",
+          "text": "Data Analytics",
           "i18n": "menu.development.analytics",
           "icon": "anticon-bar-chart",
           "children": [
             {
-              "text": "数据统计",
+              "text": "Statistics",
               "link": "/analytics/statistics",
               "i18n": "menu.development.analytics.statistics"
             },
             {
-              "text": "进度追踪",
+              "text": "Progress Tracking",
               "link": "/analytics/progress",
               "i18n": "menu.development.analytics.progress"
             },
             {
-              "text": "进度更新",
+              "text": "Progress Update",
               "link": "/analytics/progress-update",
               "i18n": "menu.development.analytics.progressUpdate"
             },
             {
-              "text": "主分支报表",
+              "text": "Main Branch Reports",
               "link": "/analytics/main-reports",
               "i18n": "menu.development.analytics.mainReports"
             },
             {
-              "text": "分支报表",
+              "text": "Branch Reports",
               "link": "/analytics/branch-reports",
               "i18n": "menu.development.analytics.branchReports"
             },
             {
-              "text": "跨分支总览",
+              "text": "Cross-Branch Overview",
               "link": "/analytics/cross-branch",
               "i18n": "menu.development.analytics.crossBranch"
             },
             {
-              "text": "活动记录",
+              "text": "Activity Logs",
               "link": "/analytics/activity-logs",
               "i18n": "menu.development.analytics.activityLogs"
             },
             {
-              "text": "数据报表",
+              "text": "Data Reports",
               "link": "/analytics/reports",
               "i18n": "menu.development.analytics.reports"
             },
             {
-              "text": "导出报表",
+              "text": "Export Reports",
               "link": "/analytics/export",
               "i18n": "menu.development.analytics.export"
             },
             {
-              "text": "图表生成",
+              "text": "Chart Generation",
               "link": "/analytics/charts",
               "i18n": "menu.development.analytics.charts"
             }
           ]
         },
         {
-          "text": "文件管理",
+          "text": "Document Management",
           "i18n": "menu.development.document",
           "icon": "anticon-file",
           "children": [
             {
-              "text": "文件列表",
+              "text": "Document List",
               "link": "/documents",
               "i18n": "menu.development.document.list"
             },
             {
-              "text": "文件上传",
+              "text": "Upload Document",
               "link": "/documents/upload",
               "i18n": "menu.development.document.upload"
             },
             {
-              "text": "文件浏览器",
+              "text": "Document Browser",
               "link": "/documents/browser",
               "i18n": "menu.development.document.browser"
             },
             {
-              "text": "文件预览",
+              "text": "Document Preview",
               "link": "/documents/preview",
               "i18n": "menu.development.document.preview"
             },
             {
-              "text": "图纸检视",
+              "text": "Drawing Viewer",
               "link": "/documents/drawings",
               "i18n": "menu.development.document.drawings"
             },
             {
-              "text": "文件元数据",
+              "text": "Document Metadata",
               "link": "/documents/metadata",
               "i18n": "menu.development.document.metadata"
             },
             {
-              "text": "版本管理",
+              "text": "Version Management",
               "link": "/documents/versions",
               "i18n": "menu.development.document.versions"
             },
             {
-              "text": "权限设置",
+              "text": "Permission Settings",
               "link": "/documents/permissions",
               "i18n": "menu.development.document.permissions"
             }
           ]
         },
         {
-          "text": "机器人系统",
+          "text": "Bot System",
           "i18n": "menu.development.bot",
           "icon": "anticon-robot",
           "children": [
             {
-              "text": "机器人列表",
+              "text": "Bot List",
               "link": "/bots",
               "i18n": "menu.development.bot.list"
             },
             {
-              "text": "机器人配置",
+              "text": "Bot Configuration",
               "link": "/bots/config",
               "i18n": "menu.development.bot.config"
             },
             {
-              "text": "执行日志",
+              "text": "Execution Logs",
               "link": "/bots/executions",
               "i18n": "menu.development.bot.executions"
             }
           ]
         },
         {
-          "text": "系统管理",
+          "text": "System Management",
           "i18n": "menu.development.system",
           "icon": "anticon-setting",
           "children": [
             {
-              "text": "系统设置",
+              "text": "System Settings",
               "link": "/system/settings",
               "i18n": "menu.development.system.settings"
             },
             {
-              "text": "功能开关",
+              "text": "Feature Flags",
               "link": "/system/feature-flags",
               "i18n": "menu.development.system.featureFlags"
             },
             {
-              "text": "角色管理",
+              "text": "Role Management",
               "link": "/system/roles",
               "i18n": "menu.development.system.roles"
             },
             {
-              "text": "权限分配",
+              "text": "Permission Assignment",
               "link": "/system/permissions",
               "i18n": "menu.development.system.permissions"
             },
             {
-              "text": "权限矩阵",
+              "text": "Permission Matrix",
               "link": "/system/permission-matrix",
               "i18n": "menu.development.system.permissionMatrix"
             },
             {
-              "text": "分支权限管理",
+              "text": "Branch Permission Management",
               "link": "/system/branch-permissions",
               "i18n": "menu.development.system.branchPermissions"
             },
             {
-              "text": "天气 API 配置",
+              "text": "Weather API Configuration",
               "link": "/system/weather-api",
               "i18n": "menu.development.system.weatherApi"
             },
             {
-              "text": "活动记录查看",
+              "text": "Activity Logs View",
               "link": "/system/activity-logs",
               "i18n": "menu.development.system.activityLogs"
             }
@@ -505,47 +505,47 @@
       ]
     },
     {
-      "text": "演示/示例",
+      "text": "Demos & Examples",
       "i18n": "menu.demos",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "仪表盘",
+          "text": "Dashboard",
           "i18n": "menu.dashboard",
           "icon": "anticon-dashboard",
           "children": [
             {
-              "text": "仪表盘V1",
+              "text": "Dashboard V1",
               "link": "/dashboard/v1",
               "i18n": "menu.dashboard.v1"
             },
             {
-              "text": "分析页",
+              "text": "Analysis",
               "link": "/dashboard/analysis",
               "i18n": "menu.dashboard.analysis"
             },
             {
-              "text": "监控页",
+              "text": "Monitor",
               "link": "/dashboard/monitor",
               "i18n": "menu.dashboard.monitor"
             },
             {
-              "text": "工作台",
+              "text": "Workplace",
               "link": "/dashboard/workplace",
               "i18n": "menu.dashboard.workplace"
             }
           ]
         },
         {
-          "text": "小部件",
+          "text": "Widgets",
           "i18n": "menu.widgets",
           "link": "/widgets",
           "icon": "anticon-appstore",
           "badge": 2
         },
         {
-          "text": "样式",
+          "text": "Style",
           "i18n": "menu.style",
           "icon": "anticon-info",
           "children": [
