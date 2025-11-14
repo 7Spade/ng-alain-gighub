@@ -190,6 +190,9 @@
 - **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-基礎-rls-策略實施)
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-基礎-rls-策略實施)
 - **詳細策略**：→ [21-安全與-RLS-權限矩陣.md](./21-安全與-RLS-權限矩陣.md)
+- **RLS 遞歸問題修復**：→ [fyi-development.md](./fyi-development.md#2025-01-15-accounts-表-rls-遞歸問題修復) ⭐ 新增（2025-01-15）
+- **修復記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-accounts-表-rls-遞歸問題修復) ⭐ 新增（2025-01-15）
+- **官方方法**：→ [Supabase-RLS遞歸問題處理方法.md](./Supabase-RLS遞歸問題處理方法.md) ⭐ 新增（2025-01-15）
 
 #### 基礎設施模組（Infrastructure）
 - **實施總結**：→ [基礎設施模組實施總結.md](./基礎設施模組實施總結.md) ⭐ 新增
@@ -266,6 +269,19 @@
 - 發現 user_roles 查詢問題（400 錯誤）需要修復
 - 發現 i18n 翻譯缺失問題
 - 生成自驗收報告（[工作總結-自驗收-2025-01-15.md](./工作總結-自驗收-2025-01-15.md)）⭐ 新增
+
+**2025-01-15**：accounts 表 RLS 遞歸問題修復
+- 發現並修復 accounts 表 RLS 策略遞歸問題（500 錯誤）
+- 使用 Supabase 官方推薦的 SECURITY DEFINER 函數方法
+- 創建 `private.is_user_org_member` 和 `private.is_user_org_admin` 函數
+- 更新 accounts 表的 SELECT 和 UPDATE 策略
+- 驗證修復成功，查詢返回 200 OK
+- 生成完整修復文檔（[工作總結-完整流程-accounts-RLS修復-2025-01-15.md](./工作總結-完整流程-accounts-RLS修復-2025-01-15.md)）⭐ 新增
+- 相關文檔：
+  - [Supabase-RLS遞歸問題處理方法.md](./Supabase-RLS遞歸問題處理方法.md) ⭐ 新增
+  - [工作總結-修復失敗原因分析-2025-01-15.md](./工作總結-修復失敗原因分析-2025-01-15.md) ⭐ 新增
+  - [工作總結-accounts-RLS修復完成-2025-01-15.md](./工作總結-accounts-RLS修復完成-2025-01-15.md) ⭐ 新增
+  - [工作總結-最終驗證-accounts-RLS修復-2025-01-15.md](./工作總結-最終驗證-accounts-RLS修復-2025-01-15.md) ⭐ 新增
 
 ---
 

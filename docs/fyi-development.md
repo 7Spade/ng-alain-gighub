@@ -896,5 +896,116 @@ export { AccountType, AccountStatus, TeamMemberRole };
 
 ---
 
+## 2025-01-15: accounts 表 RLS 遞歸問題修復
+
+### 背景
+在驗證 accounts 表查詢功能時，發現查詢返回 500 錯誤，錯誤信息為 `"infinite recursion detected in policy for relation \"accounts\""`。這是 RLS 策略設計問題，需要修復。
+
+### 技術選型
+
+#### 解決方案選擇
+- **方案**：使用 SECURITY DEFINER 函數
+- **來源**：Supabase 官方文檔推薦方法
+- **參考**：[Row Level Security 文檔](https://supabase.com/docs/guides/database/postgres/row-level-security#use-security-definer-functions)
+
+#### 為什麼選擇 SECURITY DEFINER 函數？
+1. **官方推薦**：Supabase 官方文檔明確推薦此方法處理 RLS 遞歸問題
+2. **標準做法**：這是 PostgreSQL 處理 RLS 遞歸的標準方法
+3. **安全性**：函數以創建者權限執行，可以繞過 RLS 檢查，但通過 `set search_path = ''` 防止注入攻擊
+4. **性能**：避免重複的 RLS 檢查，提高查詢性能
+
+### 設計決策
+
+#### private schema 設計
+- **位置**：創建 `private` schema 存放安全函數
+- **原因**：private schema 不應該在 "Exposed schemas" 中，確保安全性
+- **優勢**：函數不會被外部直接訪問，只能通過 RLS 策略調用
+
+#### SECURITY DEFINER 函數設計
+- **函數命名**：`is_user_org_member`, `is_user_org_admin`
+- **參數設計**：明確的參數類型（UUID），避免類型轉換
+- **安全措施**：使用 `set search_path = ''` 防止 search_path 注入攻擊
+- **性能優化**：在 RLS 策略中使用 `(select private.function_name())` 包裝，確保函數只執行一次
+
+#### RLS 策略更新
+- **策略更新方式**：先刪除舊策略，再創建新策略
+- **策略表達式**：使用 `(select private.function_name())` 包裝函數調用
+- **向後兼容**：保持策略的邏輯不變，只是實現方式改變
+
+### 權衡與取捨
+
+#### 安全性 vs 性能
+- **選擇**：使用 SECURITY DEFINER 函數，以創建者權限執行
+- **權衡**：函數具有較高權限，但通過 `set search_path = ''` 和放在 private schema 中確保安全
+- **結果**：既解決了遞歸問題，又保證了安全性
+
+#### 策略複雜度 vs 可維護性
+- **選擇**：將複雜的權限檢查邏輯提取到函數中
+- **權衡**：策略變得更簡潔，但需要維護額外的函數
+- **結果**：策略更易讀，函數可以重用
+
+### 實施細節
+
+#### 函數實現
+```sql
+-- 檢查用戶是否是組織成員
+create or replace function private.is_user_org_member(
+  org_account_id UUID, 
+  user_auth_id UUID
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  return exists (
+    select 1
+    from public.team_members tm
+    join public.teams t on tm.team_id = t.id
+    join public.accounts a on tm.account_id = a.id
+    where t.organization_id = org_account_id
+      and a.auth_user_id = user_auth_id
+  );
+end;
+$$;
+```
+
+#### 策略更新
+```sql
+-- 更新 SELECT 策略
+create policy "Users can view own account or organization accounts they belong"
+on accounts for select
+to authenticated
+using (
+  (select auth.uid()) = auth_user_id
+  OR (
+    type = 'Organization'
+    AND (select private.is_user_org_member(id, auth.uid()))
+  )
+);
+```
+
+### 經驗總結
+
+#### 成功經驗
+1. **參考官方文檔**：查閱 Supabase 官方文檔找到標準解決方案
+2. **問題診斷**：正確識別問題根源（RLS 策略遞歸）
+3. **驗證方法**：使用 MCP 工具進行端到端驗證
+
+#### 教訓
+1. **不要復原正確的修復**：如果修復方案是正確的（符合官方最佳實踐），不應該復原
+2. **區分問題和解決方案**：
+   - **問題 1**：註冊時沒有創建 account 記錄（已通過觸發器解決）
+   - **問題 2**：accounts 表的 RLS 策略有遞歸問題（需要 SECURITY DEFINER 函數解決）
+3. **兩個問題是獨立的**：即使 account 記錄已創建，RLS 策略的遞歸問題仍然存在
+
+### 相關文檔
+- [工作總結-完整流程-accounts-RLS修復-2025-01-15.md](./工作總結-完整流程-accounts-RLS修復-2025-01-15.md) ⭐ 詳細記錄
+- [Supabase-RLS遞歸問題處理方法.md](./Supabase-RLS遞歸問題處理方法.md) ⭐ 官方方法
+- [工作總結-修復失敗原因分析-2025-01-15.md](./工作總結-修復失敗原因分析-2025-01-15.md) ⭐ 問題分析
+
+---
+
 **最後更新**：2025-01-15  
 **維護者**：開發團隊

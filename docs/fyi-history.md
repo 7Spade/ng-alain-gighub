@@ -23,6 +23,7 @@
 - ✅ **賬戶系統 RLS 策略驗證和完善**（2025-01-15）- 使用 Supabase MCP 工具驗證和完善 4 張表的 RLS 策略（accounts, teams, team_members, organization_schedules），共創建 15 個策略，構建驗證通過
 - ✅ **組織協作系統 - 數據模型和 Repository 層實施**（2025-01-15）- 完成組織協作系統的數據模型層和 Repository 層開發，包括 3 個 Repository（OrganizationCollaborationRepository, CollaborationInvitationRepository, CollaborationMemberRepository），構建驗證通過
 - ✅ **組織協作系統 - Service 層和 UI 層實施**（2025-01-15）- 完成組織協作系統的 Service 層（CollaborationService, InvitationService）和核心 UI 層（CollaborationListComponent）開發，構建驗證通過
+- ✅ **accounts 表 RLS 遞歸問題修復**（2025-01-15）- 使用 Supabase 官方推薦的 SECURITY DEFINER 函數方法修復 accounts 表 RLS 策略遞歸問題，創建 2 個輔助函數，更新 SELECT 和 UPDATE 策略，驗證修復成功
 
 ### 2025-11-14
 - ✅ Supabase 與 @delon/auth 整合
@@ -559,6 +560,61 @@
 - [實施完成總結](./账户系统MVP实施完成总结.md) ⭐ 詳細記錄
 - [專案路線圖](./44-專案路線圖.md) - 更新狀態
 - Software Planning Tool - 任務完成狀態
+
+---
+
+## 2025-01-15: accounts 表 RLS 遞歸問題修復
+
+### 背景
+在驗證 accounts 表查詢功能時，發現查詢返回 500 錯誤：`"infinite recursion detected in policy for relation \"accounts\""`。這是因為 accounts 表的 RLS 策略中直接查詢 accounts 表，形成循環查詢。
+
+### 問題診斷
+
+#### 問題根源
+accounts 表的 SELECT 策略中存在遞歸查詢：
+```sql
+-- 原始策略（有問題）
+tm.account_id = (
+  SELECT accounts_1.id
+  FROM accounts accounts_1  -- ⚠️ 觸發 RLS 檢查，形成遞歸
+  WHERE accounts_1.auth_user_id = auth.uid()
+)
+```
+
+**遞歸鏈**：
+- 查詢 `accounts` 表 → 觸發 RLS 策略檢查
+- 策略中又查詢 `accounts` 表 → 再次觸發 RLS 策略檢查
+- 無限循環 → 遞歸錯誤
+
+#### 修復過程
+1. **第一次修復**：創建了 SECURITY DEFINER 函數，但後來被復原
+2. **問題重新發現**：重新驗證時發現問題仍然存在
+3. **參考官方文檔**：查閱 Supabase 官方文檔，確認使用 SECURITY DEFINER 函數是標準解決方案
+4. **重新實施修復**：創建 private schema 和 SECURITY DEFINER 函數，更新 RLS 策略
+
+### 實施細節
+
+#### 創建 SECURITY DEFINER 函數
+- **`private.is_user_org_member`**：檢查用戶是否是組織成員
+- **`private.is_user_org_admin`**：檢查用戶是否是組織管理員
+
+#### 更新 RLS 策略
+- 刪除舊的 SELECT 和 UPDATE 策略
+- 創建新策略使用 SECURITY DEFINER 函數
+
+### 驗證結果
+- ✅ 修復前：`GET /rest/v1/accounts?select=*` → 500 Internal Server Error
+- ✅ 修復後：`GET /rest/v1/accounts?select=*` → 200 OK
+- ✅ 成功返回用戶的 account 記錄
+- ✅ 頁面正常顯示數據
+- ✅ 響應時間：4ms（性能良好）
+
+### 相關文檔
+- [工作總結-完整流程-accounts-RLS修復-2025-01-15.md](./工作總結-完整流程-accounts-RLS修復-2025-01-15.md) ⭐ 詳細記錄
+- [Supabase-RLS遞歸問題處理方法.md](./Supabase-RLS遞歸問題處理方法.md) ⭐ 官方方法
+- [工作總結-修復失敗原因分析-2025-01-15.md](./工作總結-修復失敗原因分析-2025-01-15.md) ⭐ 問題分析
+- [工作總結-accounts-RLS修復完成-2025-01-15.md](./工作總結-accounts-RLS修復完成-2025-01-15.md) ⭐ 修復記錄
+- [工作總結-最終驗證-accounts-RLS修復-2025-01-15.md](./工作總結-最終驗證-accounts-RLS修復-2025-01-15.md) ⭐ 驗證記錄
 
 ---
 
