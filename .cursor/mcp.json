@@ -104,6 +104,22 @@
     "supabase": {
       "url": "https://mcp.supabase.com/mcp?project_ref=pfxxjtvnqptdvjfakotc",
       "headers": {}
+    },
+    "mcp-deepwiki": {
+      "command": "npx",
+      "args": ["-y", "mcp-deepwiki@latest"]
+    },
+    "retry": {
+      "maxRetries": null,
+      "retryDelay": 1000,
+      "backoff": "exponential",
+      "maxRetryDelay": 10000
+    },
+    "reconnect": {
+      "enabled": true,
+      "maxReconnectAttempts": 10,
+      "reconnectDelay": 2000,
+      "maxReconnectDelay": 30000
     }
   }
 }

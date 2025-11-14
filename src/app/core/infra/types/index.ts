@@ -3,4 +3,5 @@
  */
 export * from './database.types';
 export * from './account.types';
+export * from './collaboration.types';
 

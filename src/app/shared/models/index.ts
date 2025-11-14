@@ -19,4 +19,5 @@
 
 // 按模块导出
 export * from './account';
+export * from './collaboration';
 

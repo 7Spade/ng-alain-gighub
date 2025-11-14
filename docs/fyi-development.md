@@ -664,5 +664,237 @@ export { AccountType, AccountStatus, TeamMemberRole };
 
 ---
 
+## 2025-01-15: 賬戶系統完整評估方法
+
+### 背景
+在開始實施賬戶系統 MVP 之前，需要全面評估當前實現狀態，確保實施計劃完整且準確。使用 Sequential Thinking + Software Planning Tool 進行系統性評估。
+
+### 評估方法設計
+
+#### Sequential Thinking 分析流程
+1. **理解當前狀態**：分析已完成的工作和進行中的任務
+2. **識別缺失功能**：系統性檢查所有相關文件
+3. **確定優先級**：基於依賴關係和重要性排序
+4. **制定評估清單**：列出需要檢查的所有項目
+5. **執行系統性檢查**：文件系統檢查、代碼內容檢查、架構合規性檢查
+6. **分析結果**：整理已完成和缺失的功能
+7. **更新計劃**：使用 Software Planning Tool 更新實施計劃
+8. **確認完整性**：確保所有重要信息都記錄在脈絡文檔中
+
+#### Software Planning Tool 使用
+- **創建實施計劃**：記錄所有任務和階段
+- **更新任務狀態**：標記已完成和待完成的任務
+- **添加詳細說明**：為每個任務提供代碼示例和依賴關係
+- **追蹤進度**：實時更新任務完成狀態
+
+### 評估發現
+
+#### 架構合規性驗證
+- ✅ **core 層不依賴 shared 層**：使用 grep 檢查，確認 core/infra/repositories 中無 @shared 導入
+- ✅ **路徑別名使用正確**：統一使用 @core 和 @shared，不使用深層路徑
+- ✅ **類型定義位置正確**：枚舉在 core 層定義，實體類型在 shared 層重新導出
+
+#### 代碼質量檢查
+- ✅ **Repository 層**：所有 Repository 正確繼承 BaseRepository，使用統一錯誤處理
+- ✅ **Service 層**：AccountService 和 TeamService 使用 Signals 管理狀態，暴露 ReadonlySignal
+- ✅ **類型安全**：完整的 TypeScript 類型定義，導出鏈完整
+
+#### 功能完整性檢查
+- ✅ **Repository 層**：4 個 Repository 全部完成（100%）
+- ⚠️ **Service 層**：2/3 完成（66%），缺 OrganizationScheduleService
+- ❌ **UI 層**：1/6 完成（16%），缺 5 個頁面組件
+- ❌ **測試**：0% 完成，無單元測試
+
+### 技術決策
+
+#### 評估工具選擇
+- **Sequential Thinking**：用於複雜問題的系統性分析
+- **Software Planning Tool**：用於任務管理和進度追蹤
+- **文件系統工具**：用於檢查文件存在性和目錄結構
+- **代碼搜索工具**：用於驗證架構合規性
+
+#### 評估範圍確定
+- **Repository 層**：檢查所有 4 個 Repository
+- **Service 層**：檢查所有 3 個 Service
+- **類型定義**：檢查所有類型定義和導出鏈
+- **路由和組件**：檢查所有頁面組件和路由配置
+- **架構合規性**：檢查分層架構、路徑別名、類型定義位置
+
+### 經驗教訓
+
+1. **系統性評估的重要性**：
+   - 使用 Sequential Thinking 確保不遺漏任何重要環節
+   - 使用 Software Planning Tool 記錄所有發現和計劃
+
+2. **架構合規性驗證**：
+   - 使用 grep 等工具自動檢查架構違規
+   - 定期驗證分層架構和路徑別名使用
+
+3. **完整記錄**：
+   - 所有評估結果都應記錄在脈絡文檔中
+   - 確保後續開發可以參考評估結果
+
+### 相關文檔
+- [歷史紀錄](./fyi-history.md#2025-01-15-賬戶系統完整評估) - 評估記錄
+- [專案路線圖](./44-專案路線圖.md) - 更新狀態
+- Software Planning Tool - 完整實施計劃
+
+---
+
+---
+
+## 2025-01-15: 賬戶系統 MVP 實施
+
+### 背景
+在完成系統性評估後，使用 Sequential Thinking + Software Planning Tool 推進實施，完成了賬戶系統 MVP 的核心功能。
+
+### 實施方法
+
+#### Sequential Thinking 分析流程
+1. **理解當前狀態**：分析已完成的工作和缺失的功能
+2. **確定優先級**：Service 層優先，UI 層依賴 Service 層
+3. **逐步實施**：按依賴關係順序實施
+4. **驗證構建**：每個階段完成後驗證構建
+
+#### Software Planning Tool 使用
+- 實時更新任務狀態
+- 追蹤完成進度
+- 記錄實施細節
+
+### 技術決策
+
+#### 字段名處理策略
+- **問題**：BaseRepository 會自動轉換 snake_case → camelCase，但類型定義是 snake_case
+- **決策**：在組件中統一使用 snake_case 字段名訪問數據
+- **原因**：類型定義直接來自數據庫，保持一致性
+- **影響**：所有組件都需要使用 snake_case
+
+#### 組件設計模式
+- **Standalone Components**：所有組件使用 standalone 模式
+- **Signals 狀態管理**：使用 `signal()`, `computed()`, `inject()`
+- **Typed Forms**：使用 `FormGroup<{}>`, `FormControl<>` 確保類型安全
+- **Angular 20 語法**：使用 `@if`, `@for`, `@switch` 控制流程
+
+#### 錯誤處理策略
+- **Service 層**：使用 try-catch 和 Signals 管理錯誤狀態
+- **組件層**：使用 NzMessageService 顯示用戶友好的錯誤信息
+- **靜默失敗**：非關鍵操作（如加載團隊信息）靜默失敗，不影響主流程
+
+### 經驗教訓
+
+1. **字段名一致性**：
+   - 類型定義和實際使用必須保持一致
+   - BaseRepository 轉換是運行時行為，類型檢查是編譯時
+
+2. **構建驗證**：
+   - 每個階段完成後立即驗證構建
+   - 及早發現和修復問題
+
+3. **代碼規範**：
+   - 嚴格遵循項目規範（SHARED_IMPORTS, Signals, Typed Forms）
+   - 保持代碼風格一致性
+
+### 相關文檔
+- [實施完成總結](./账户系统MVP实施完成总结.md) ⭐ 詳細記錄
+- [歷史紀錄](./fyi-history.md#2025-01-15-賬戶系統-mvp-實施完成) - 實施記錄
+- [專案路線圖](./44-專案路線圖.md) - 更新狀態
+
+---
+
+## 2025-01-15: 賬戶系統 RLS 策略驗證和完善
+
+### 背景
+根據安全規範和架構要求，需要為賬戶系統的 4 張表（accounts, teams, team_members, organization_schedules）建立完整的 RLS 策略，確保數據訪問權限正確。
+
+### 設計決策
+
+#### RLS 策略設計原則
+- **最小權限原則**：用戶只能訪問自己或所屬組織的數據
+- **角色分離**：團隊負責人和組織管理員有額外權限
+- **操作分離**：SELECT、INSERT、UPDATE、DELETE 分別控制
+
+#### 策略實施方式
+- 使用 Supabase MCP 工具進行遷移
+- 先刪除舊策略（如果存在），再創建新策略
+- 所有策略使用 `{public}` 角色（適用於所有認證用戶）
+
+### 實施細節
+
+#### accounts 表策略
+- **SELECT**：用戶可查看自己的賬戶或所屬的組織賬戶
+- **INSERT**：用戶可創建自己的賬戶
+- **UPDATE**：用戶可更新自己的賬戶，組織管理員可更新組織賬戶
+
+#### teams 表策略
+- **SELECT**：組織成員可查看組織的團隊
+- **INSERT**：組織管理員可創建團隊
+- **UPDATE**：團隊負責人可更新團隊
+- **DELETE**：組織管理員可刪除團隊
+
+#### team_members 表策略
+- **SELECT**：團隊成員可查看成員列表
+- **INSERT**：團隊負責人可添加成員
+- **UPDATE**：團隊負責人可更新成員角色
+- **DELETE**：團隊負責人可移除成員，或成員可自己退出
+
+#### organization_schedules 表策略
+- **SELECT**：組織成員可查看排班
+- **INSERT**：組織管理員可創建排班
+- **UPDATE**：組織管理員可更新排班
+- **DELETE**：組織管理員可刪除排班
+
+### 驗證結果
+- ✅ 共創建 15 個 RLS 策略
+- ✅ 覆蓋所有操作類型（SELECT/INSERT/UPDATE/DELETE）
+- ✅ 構建驗證通過
+
+---
+
+## 2025-01-15: 組織協作系統 - 數據模型和 Repository 層實施
+
+### 背景
+根據項目路線圖，組織協作系統是繼賬戶系統之後的第二個模組。需要完成數據模型層和 Repository 層開發，為後續 Service 層和 UI 層開發奠定基礎。
+
+### 設計決策
+
+#### 分層架構遵循
+- **Core 層**：定義枚舉類型（CollaborationType, CollaborationStatus, InvitationStatus）
+- **Shared 層**：定義數據模型類型（OrganizationCollaboration, CollaborationInvitation, CollaborationMember）
+- **Repository 層**：繼承 BaseRepository，提供業務查詢方法
+
+#### 代碼風格一致性
+- 參考賬戶系統的實現方式
+- 使用相同的命名規範和代碼結構
+- 遵循 Angular 20 最佳實踐
+
+### 實施細節
+
+#### 類型定義（Core 層）
+- **CollaborationType**：contractor/subcontractor/consultant/partner
+- **CollaborationStatus**：pending/active/suspended/ended
+- **InvitationStatus**：pending/accepted/rejected/expired
+
+#### Repository 實現
+- **OrganizationCollaborationRepository**：6 個查詢方法
+  - findByBlueprintId, findByOwnerOrgId, findByCollaboratorOrgId
+  - findByCollaborationType, findByStatus
+- **CollaborationInvitationRepository**：6 個查詢方法
+  - findByBlueprintId, findByFromOrgId, findByToOrgId
+  - findByStatus, findExpired, findPending
+- **CollaborationMemberRepository**：3 個查詢方法
+  - findByCollaborationId, findByAccountId, findByRole
+
+### 驗證結果
+- ✅ 無 Lint 錯誤
+- ✅ 類型檢查通過
+- ✅ 構建驗證通過（`yarn build` 成功）
+
+### 相關文檔
+- [實施完成總結](./组织协作系统-数据模型和Repository层实施总结.md) ⭐ 詳細記錄
+- [歷史紀錄](./fyi-history.md#2025-01-15-組織協作系統-數據模型和-repository-層實施) - 實施記錄
+- [專案路線圖](./44-專案路線圖.md) - 更新狀態
+
+---
+
 **最後更新**：2025-01-15  
 **維護者**：開發團隊

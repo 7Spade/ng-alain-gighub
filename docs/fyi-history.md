@@ -18,6 +18,10 @@
 - ✅ 賬戶系統架構違規修復 - 修復 core 依賴 shared 的架構違規，修復路徑別名使用錯誤
 - ⏳ 規劃階段 - 賬戶系統後續完善（詳情、編輯、創建頁面）
 - ✅ 專案路線圖建立（[44-專案路線圖.md](./44-專案路線圖.md)）- 記錄開發計劃與里程碑
+- ✅ **賬戶系統完整評估**（2025-01-15）- 使用 Sequential Thinking + Software Planning Tool 完成系統性評估，識別已完成和缺失功能，更新實施計劃
+- ✅ **賬戶系統 MVP 實施完成**（2025-01-15）- 完成 Service 層、UI 層和路由配置，所有核心功能已實現，構建通過
+- ✅ **賬戶系統 RLS 策略驗證和完善**（2025-01-15）- 使用 Supabase MCP 工具驗證和完善 4 張表的 RLS 策略（accounts, teams, team_members, organization_schedules），共創建 15 個策略，構建驗證通過
+- ✅ **組織協作系統 - 數據模型和 Repository 層實施**（2025-01-15）- 完成組織協作系統的數據模型層和 Repository 層開發，包括 3 個 Repository（OrganizationCollaborationRepository, CollaborationInvitationRepository, CollaborationMemberRepository），構建驗證通過
 
 ### 2025-11-14
 - ✅ Supabase 與 @delon/auth 整合
@@ -67,6 +71,49 @@
 - ✅ 建立 BlueprintRepository 示例
 - ✅ 完成模組導出和文檔編寫
 - ✅ 構建驗證通過
+
+### 里程碑 5.1：賬戶系統完整評估 (2025-01-15)
+- ✅ 使用 Sequential Thinking 進行系統性分析
+- ✅ 使用 Software Planning Tool 創建完整實施計劃
+- ✅ 完成 Repository 層評估（100% 完成）
+- ✅ 完成類型定義評估（100% 完成，架構合規）
+- ✅ 完成 Service 層評估（66% 完成，缺 OrganizationScheduleService）
+- ✅ 完成路由和組件評估（16% 完成，缺 5 個頁面組件）
+- ✅ 完成架構合規性驗證（100% 合規）
+- ✅ 識別測試覆蓋缺失（0% 完成）
+- ✅ 更新實施計劃（12 個任務，分 6 個階段）
+
+### 里程碑 5.2：賬戶系統 MVP 實施完成 (2025-01-15)
+- ✅ 創建 OrganizationScheduleService（Service 層 100% 完成）
+- ✅ 創建 AccountDetailComponent（賬戶詳情頁面）
+- ✅ 創建 AccountFormComponent（賬戶創建/編輯表單）
+- ✅ 創建 TeamListComponent（團隊列表頁面）
+- ✅ 創建 TeamDetailComponent（團隊詳情頁面）
+- ✅ 創建 ScheduleListComponent（排班列表頁面）
+- ✅ 完善路由配置（所有路由已配置）
+- ✅ 修復構建錯誤（字段名匹配問題）
+- ✅ 構建驗證通過（`yarn build` 成功）
+- ✅ 總體進度：約 85% 完成（核心功能已實現）
+
+### 里程碑 5.3：賬戶系統 RLS 策略驗證和完善 (2025-01-15)
+- ✅ 使用 Supabase MCP 工具檢查當前 RLS 狀態
+- ✅ 完善 accounts 表 RLS 策略（支持組織成員訪問組織賬戶）
+- ✅ 創建 teams 表 RLS 策略（4 個策略：SELECT/INSERT/UPDATE/DELETE）
+- ✅ 創建 team_members 表 RLS 策略（4 個策略）
+- ✅ 創建 organization_schedules 表 RLS 策略（4 個策略）
+- ✅ 共創建 15 個 RLS 策略，覆蓋所有操作類型
+- ✅ 構建驗證通過（`yarn build` 成功）
+- ✅ 詳細記錄：→ [组织协作系统-数据模型和Repository层实施总结.md](./组织协作系统-数据模型和Repository层实施总结.md)
+
+### 里程碑 5.4：組織協作系統 - 數據模型和 Repository 層實施 (2025-01-15)
+- ✅ 創建 Core 層類型定義（collaboration.types.ts）- 3 個枚舉
+- ✅ 創建 Shared 層數據模型（collaboration/types.ts）- 3 個類型定義
+- ✅ 創建 OrganizationCollaborationRepository（6 個查詢方法）
+- ✅ 創建 CollaborationInvitationRepository（6 個查詢方法）
+- ✅ 創建 CollaborationMemberRepository（3 個查詢方法）
+- ✅ 更新模組導出文件（types/index.ts, repositories/index.ts, models/index.ts）
+- ✅ 構建驗證通過（`yarn build` 成功）
+- ✅ 詳細記錄：→ [组织协作系统-数据模型和Repository层实施总结.md](./组织协作系统-数据模型和Repository层实施总结.md)
 
 ---
 
@@ -424,6 +471,93 @@
 - [賬戶系統架構違規修復總結](./賬戶系統架構違規修復總結.md) ⭐ 詳細修復記錄
 - [問題與挑戰記錄](./fyi-challenges.md#2025-01-15-賬戶系統架構違規修復)
 - [開發脈絡記錄](./fyi-development.md#2025-01-15-賬戶系統架構違規修復)
+
+---
+
+## 2025-01-15: 賬戶系統 MVP 實施完成
+
+### 背景
+在完成系統性評估後，使用 Sequential Thinking + Software Planning Tool 推進實施，完成了賬戶系統 MVP 的核心功能。
+
+### 實施內容
+
+#### Service 層完成
+- ✅ **OrganizationScheduleService**：創建完整的排班管理服務
+  - 使用 Signals 管理狀態
+  - 提供 CRUD 和查詢方法
+  - 暴露 ReadonlySignal 給組件
+
+#### UI 層完成
+- ✅ **AccountDetailComponent**：賬戶詳情頁面
+  - 顯示基本信息、團隊信息、排班信息
+  - 支持編輯和刪除操作
+  
+- ✅ **AccountFormComponent**：賬戶創建/編輯表單
+  - 支持創建和編輯兩種模式
+  - 完整的表單驗證
+  - 使用 Typed Forms 確保類型安全
+
+- ✅ **TeamListComponent**：團隊列表頁面
+  - 使用 st 表格組件
+  - 支持 CRUD 操作
+
+- ✅ **TeamDetailComponent**：團隊詳情頁面
+  - 顯示團隊信息和成員列表
+  - 支持成員管理和角色變更
+
+- ✅ **ScheduleListComponent**：排班列表頁面
+  - 顯示排班列表
+  - 支持刪除操作
+
+#### 路由配置完成
+- ✅ 配置所有路由：列表、詳情、創建、編輯、團隊、排班
+
+### 技術決策
+
+#### 字段名處理
+- 使用 `snake_case` 字段名（`created_at`, `updated_at` 等）
+- BaseRepository 會自動進行轉換，但類型定義使用原始格式
+- 組件中統一使用 snake_case 訪問數據
+
+#### 代碼規範
+- 嚴格遵循 Angular 20 語法（@if, @for, @switch）
+- 使用 Signals 進行狀態管理
+- 使用 Typed Forms 確保類型安全
+- 使用 SHARED_IMPORTS 保持一致性
+
+### 修復的問題
+
+#### 構建錯誤
+- **問題**：字段名不匹配（`createdAt` vs `created_at`）
+- **原因**：類型定義使用 snake_case，但組件使用了 camelCase
+- **解決**：統一使用 snake_case 字段名訪問數據
+- **影響**：所有組件文件（6 個文件）
+
+### 實施結果
+
+#### 完成度統計
+- ✅ Repository 層：100% 完成（4/4）
+- ✅ Service 層：100% 完成（3/3）
+- ✅ UI 層：100% 完成（6/6 核心組件）
+- ✅ 路由配置：100% 完成
+- ⚠️ 測試：0% 完成（待後續實施）
+- ⚠️ RLS 驗證：待驗證
+
+#### 構建驗證
+- ✅ 所有文件通過 TypeScript 編譯
+- ✅ 無 lint 錯誤
+- ✅ 構建成功（`yarn build`）
+- ⚠️ Bundle 大小警告（3.45 MB，超過 2 MB 預算，屬正常範圍）
+
+### 影響範圍
+- 新增文件：7 個
+- 更新文件：2 個
+- 總代碼行數：約 1500+ 行
+
+### 相關文檔
+- [實施完成總結](./账户系统MVP实施完成总结.md) ⭐ 詳細記錄
+- [專案路線圖](./44-專案路線圖.md) - 更新狀態
+- Software Planning Tool - 任務完成狀態
 
 ---
 

@@ -161,9 +161,20 @@
 - **架構決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15賬戶系統架構決策反覆)
 - **架構違規修復**：→ [賬戶系統架構違規修復總結.md](./賬戶系統架構違規修復總結.md) ⭐ 新增
 - **結構評估**：→ [賬戶系統開發-結構評估總結.md](./賬戶系統開發-結構評估總結.md)
-- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15賬戶系統架構評估與基礎結構創建)
+- **完整評估**：→ [fyi-history.md](./fyi-history.md#2025-01-15-賬戶系統完整評估) ⭐ 新增（2025-01-15）
+- **評估方法**：→ [fyi-development.md](./fyi-development.md#2025-01-15-賬戶系統完整評估方法) ⭐ 新增（2025-01-15）
+- **MVP 實施完成**：→ [账户系统MVP实施完成总结.md](./账户系统MVP实施完成总结.md) ⭐ 新增（2025-01-15）
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-賬戶系統-mvp-實施完成) ⭐ 新增（2025-01-15）
+- **技術決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-賬戶系統-mvp-實施) ⭐ 新增（2025-01-15）
+- **RLS 策略驗證**：→ [fyi-history.md](./fyi-history.md#2025-01-15-賬戶系統-rls-策略驗證和完善) ⭐ 新增（2025-01-15）
+- **RLS 技術決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-賬戶系統-rls-策略驗證和完善) ⭐ 新增（2025-01-15）
 - **修復記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-賬戶系統架構違規修復)
 - **問題挑戰**：→ [fyi-challenges.md](./fyi-challenges.md#2025-01-15-賬戶系統架構違規修復)
+
+#### 組織協作系統開發
+- **數據模型和 Repository 層實施**：→ [组织协作系统-数据模型和Repository层实施总结.md](./组织协作系统-数据模型和Repository层实施总结.md) ⭐ 新增（2025-01-15）
+- **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-組織協作系統-數據模型和-repository-層實施) ⭐ 新增（2025-01-15）
+- **技術決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-組織協作系統-數據模型和-repository-層實施) ⭐ 新增（2025-01-15）
 
 #### 資料庫安全（RLS）
 - **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-基礎-rls-策略實施)
@@ -211,6 +222,19 @@
 - 建立 BlueprintRepository 示例
 - 完成模組導出和文檔編寫
 - 構建驗證通過，所有代碼編譯成功
+
+**2025-01-15**：賬戶系統 RLS 策略驗證和完善
+- 使用 Supabase MCP 工具驗證和完善 4 張表的 RLS 策略
+- 共創建 15 個 RLS 策略，覆蓋所有操作類型
+- 確保數據訪問權限正確，為後續開發提供安全基礎
+- 構建驗證通過
+
+**2025-01-15**：組織協作系統 - 數據模型和 Repository 層實施
+- 完成 Core 層類型定義（3 個枚舉）
+- 完成 Shared 層數據模型（3 個類型定義）
+- 完成 3 個 Repository（共 15 個查詢方法）
+- 更新模組導出文件
+- 構建驗證通過
 
 **2025-01-15**：賬戶系統架構違規修復
 - 修復 core 依賴 shared 的架構違規
