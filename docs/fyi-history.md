@@ -30,6 +30,12 @@
 - ✅ 註冊功能改為 Supabase Auth，移除手機號登入
 - ✅ 移除社交登入功能（其他登入方式、Auth0）
 - ✅ 項目結構重構規劃
+- ✅ **全站路由骨架鋪設**（2025-11-14）
+  - ✅ 依據 `app-data.json` 建立 communication、analytics、documents、bots、system 等 5 大模組的路由與頁面骨架（共 28 個 Standalone Components）
+  - ✅ 所有頁面採用 `page-header + nz-card + nz-alert + nz-empty` 模板，確保一致的 NG-ALAIN 體驗與可訪問性提示
+  - ✅ 更新 `src/app/routes/routes.ts`，主框架可導航至所有菜單節點，不再出現 404
+  - ✅ 更新 `docs/路由页面创建总结-2025-01-15.md`，同步紀錄骨架狀態
+  - ⚠️ `yarn lint` 仍受舊有 ESLint `project/projectService` 設定衝突阻塞，待後續調整
 - ✅ **藍圖系統完整實施**（2025-11-14）
   - ✅ 數據模型層設計（5 個類型定義、4 個枚舉）
   - ✅ Repository 層實施（5 個 Repository，20+ 個查詢方法）
