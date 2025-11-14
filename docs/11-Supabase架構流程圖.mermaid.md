@@ -33,7 +33,26 @@ flowchart TD
     %% ==================== 藍圖層 ====================
     Blueprint["🎯 藍圖 Blueprint<br/>📊 Table: blueprints<br/>(owner_id: FK accounts)"]
     
+    subgraph Branching["🔀 Git-like Branch / PR 流程"]
+        direction TB
+        BranchFork["Fork 任務<br/>📊 Table: branch_forks"]
+        OrgBranch["組織分支<br/>📊 Table: blueprint_branches"]
+        CollaborationInvite["協作邀請<br/>📊 Table: organization_collaborations"]
+        PullRequestTbl["Pull Requests<br/>📊 Table: pull_requests"]
+        ReviewTbl["審查紀錄<br/>📊 Table: pull_request_reviews"]
+        MergeFunc["Edge Function: branch-merge<br/>⚙️ 合併承攬欄位"]
+    end
+    
+    Blueprint --> BranchFork
+    BranchFork --> OrgBranch
+    CollaborationInvite --> BranchFork
+    OrgBranch --> PullRequestTbl
+    PullRequestTbl --> ReviewTbl
+    ReviewTbl --> MergeFunc
+    
     DB -.存儲.-> Blueprint
+    DB -.存儲.-> Branching
+    EdgeFunc -.PR Merge.-> MergeFunc
     AccountLayer -.外鍵關聯.-> Blueprint
     
     %% ==================== 任務執行流程模組 ====================
@@ -104,12 +123,14 @@ flowchart TD
         R["角色權限<br/>📊 Table: roles<br/>📊 Table: permissions<br/>🔐 RLS Policies"]
         L["系統設定<br/>📊 Table: settings"]
         K["天氣預報<br/>⚙️ Edge Function: API 整合<br/>📊 Table: weather_cache"]
+        BranchPolicy["分支權限<br/>📊 Table: branch_roles<br/>📊 Table: branch_permissions"]
     end
     
     DB -.存儲+RLS.-> R
     DB -.存儲.-> L
     EdgeFunc -.第三方API.-> K
     DB -.快取.-> K
+    DB -.存儲.-> BranchPolicy
     
     %% ==================== 權限控制層 ====================
     subgraph PermissionLayer["🔒 權限控制層 (RLS + DB)"]
@@ -138,6 +159,7 @@ flowchart TD
     PermissionLayer -.RLS 控制.-> Collaboration
     PermissionLayer -.RLS 控制.-> DataLayer
     PermissionLayer -.RLS 控制.-> SystemMgmt
+    PermissionLayer -.RLS 控制.-> Branching
     
     %% ==================== 跨模組關聯 ====================
     B -.FK.-> C
@@ -178,7 +200,7 @@ flowchart TD
     
     class Auth,DB,Storage,Realtime,EdgeFunc supabaseCore
     class Account,User,Bot,Org,Team accountStyle
-    class Blueprint blueprintStyle
+    class Blueprint,Branching blueprintStyle
     class B,E,J,D executionStyle
     class C,C1,C2,C3,C4 exceptionStyle
     class G,Notify,M collabStyle

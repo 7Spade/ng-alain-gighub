@@ -1,24 +1,5 @@
 # 開發脈絡記錄 (FYI - Development)
 
-> 2025-11-14 前的完整決策與階段性紀錄已移至 `docs/Archive/fyi-development.md`，以便保留歷史又保持本頁聚焦於最新開發脈絡。
-
-## 如何新增最新紀錄
-
-1. 使用 Sequential Thinking + Software Planning Tool 梳理任務、決策與權衡。
-2. 在此頁以倒序（最新在前）方式記錄，每個小節包含：
-   - 日期與主題
-   - 背景/問題
-   - 決策與權衡
-   - 實施狀態與下一步
-3. 當內容過舊時，請將整段移至 `docs/Archive/fyi-development.md` 並留下連結。
-
-## 目前狀態
-
-- 尚未新增 2025-11-15 之後的開發紀錄。
-- 如需參考既有決策與教訓，請查閱 Archive 版本或 `docs/44-專案路線圖.md`。
-
-# 開發脈絡記錄 (FYI - Development)
-
 > 參考：[@fyi.md](./fyi.md)
 
 記錄專案在開發過程中的思路、嘗試、技術選型原因、權衡、取捨、重大決策與其背景。

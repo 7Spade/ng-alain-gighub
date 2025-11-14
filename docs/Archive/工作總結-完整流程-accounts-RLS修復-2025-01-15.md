@@ -1,4 +1,4 @@
-# 工作總結 - accounts 表 RLS 遞歸問題修復完整總結
+# 工作總結 - accounts 表 RLS 遞歸問題修復完整流程
 
 > **日期**：2025-01-15  
 > **狀態**：✅ 完成並驗證通過
@@ -179,20 +179,6 @@ create schema if not exists private;
 4. **`docs/工作總結-最終驗證-accounts-RLS修復-2025-01-15.md`**
    - 使用 MCP 工具的最終驗證結果
 
-5. **`docs/工作總結-完整流程-accounts-RLS修復-2025-01-15.md`**
-   - 完整的修復流程總結
-
-### 更新的文檔
-
-1. **`docs/fyi.md`**
-   - 添加 accounts 表 RLS 遞歸問題修復記錄
-
-2. **`docs/fyi-history.md`**
-   - 添加詳細的歷史記錄
-
-3. **`docs/fyi-development.md`**
-   - 添加技術決策記錄
-
 ### 參考資源
 
 - [Supabase RLS 文檔](https://supabase.com/docs/guides/database/postgres/row-level-security)
@@ -225,4 +211,5 @@ create schema if not exists private;
 
 **最後更新**：2025-01-15  
 **維護者**：開發團隊
+
 

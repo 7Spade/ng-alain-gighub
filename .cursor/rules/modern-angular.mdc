@@ -37,6 +37,33 @@ alwaysApply: false
 - 使用 `track` 函數優化 `@for` 循環性能
 - 避免在模板中使用複雜表達式，優先使用 `computed()` Signal
 
+## Deferrable Views（@defer）
+
+- 使用 `@defer { ... }` 延後非關鍵組件載入，預設 `on idle` 觸發可降低首屏 bundle（參考 [Deferrable Views](https://angular.dev/guide/templates/defer)）
+- 依情境選擇觸發條件：`on viewport`（滾到才載）、`on hover`（互動才載）、`hydrate on viewport`（SSR Hydration）等
+- *務必* 搭配 `@placeholder`、`@loading`、`@error` 提供視覺回饋，並運用 `minimum`、`after` 參數避免閃爍
+- 將 `@defer` 套用於大型 lazy component（如 `article-comments`、`large-cmp`），並保留語義化 placeholder 內容
+
+## View Transitions API
+
+- Router 層級啟用 View Transitions：`provideRouter(routes, withViewTransitions())` 或 `RouterModule.forRoot(routes, { enableViewTransitions: true })`
+- 透過 `onViewTransitionCreated` 可檢查 `Router` 導航結果，對僅 fragment/query 變更的情況呼叫 `transition.skipTransition()`，避免多餘動畫
+- 以全域 CSS 客製 `::view-transition-old()`／`::view-transition-new()`，製作進出場動畫，並確保對 `prefers-reduced-motion` 友善
+
+## Resource API 與資料串流
+
+- 使用 `resource({ params, loader })` 管理 async 資料，`params` 讀取 Signals，自動重跑 `loader`
+- 需要 RxJS 時改用 `rxResource({ stream })`，或利用 `resource({ stream })` 逐步產出（支援 `ReadableStream` chunk）
+- `resourceRef.value()` 會回傳 Signal，可透過 `computed()`/模板 `userResource.value()?.name` 直接綁定
+- 透過 `resourceRef.reload()` 觸發重新載入，錯誤狀態須在 UI 中顯示
+
+## Signal Forms 與 Typed Forms
+
+- Reactive Forms 預設啟用 Typed Forms：`new FormControl('', { nonNullable: true })`、`FormRecord<FormControl<string | null>>`
+- 利用 `updateOn: 'blur'` 或 `updateOn: 'submit'` 延後昂貴驗證請求
+- 將表單值映射到 Signals（`const firstName = signalControl(this.form.controls.firstName)`）以便在模板使用 `firstName()`，並保持 `strictNullChecks`
+- 動態欄位使用 `FormArray`/`FormRecord`，新增控制項後需同步更新 UI 輔助文字與驗證訊息
+
 ## 診斷和錯誤處理
 
 - 啟用 `strictTemplates` 以獲得更好的類型檢查（參考 [類型安全](./typescript.mdc)）
@@ -49,3 +76,7 @@ alwaysApply: false
 - [Angular Signal Queries](https://angular.dev/api/core/viewChild)
 - [Angular Standalone Migration](https://angular.dev/reference/migrations/standalone)
 - [Angular 20 最佳實踐](./angular.mdc)
+- [Angular Deferrable Views](https://angular.dev/guide/templates/defer)
+- [Angular View Transitions](https://angular.dev/guide/animations/route-animations)
+- [Angular Signals Resource API](https://angular.dev/guide/signals/resource)
+- [Typed Forms 指南](https://angular.dev/guide/forms/typed-forms)

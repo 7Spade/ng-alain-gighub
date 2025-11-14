@@ -35,6 +35,13 @@ alwaysApply: true
 - 避免在模板中使用複雜表達式，優先使用 `computed()` Signal
 - 在模板中調用 Signal 時必須使用括號：`{{ mySignal() }}`
 
+## Deferrable Views 與 View Transitions
+
+- 步驟化 lazy loading：針對非關鍵內容以 `@defer` 搭配 `@placeholder`、`@loading`、`@error`，並依場景選擇 `on idle`、`on viewport` 等觸發
+- Standalone 應用在 `provideRouter` 中加入 `withViewTransitions()`，或於 `RouterModule.forRoot` 啟用 `enableViewTransitions`
+- 透過 `onViewTransitionCreated` 篩選僅 fragment/query 變更的導航並 `skipTransition()`，確保可用性
+- 自訂 `::view-transition-old/new` CSS 動畫時同步考量 `prefers-reduced-motion`
+
 ## Typed Forms
 
 - 使用 Typed Forms 確保表單類型安全

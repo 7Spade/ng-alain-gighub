@@ -9,7 +9,7 @@ alwaysApply: false
 ## Service 結構
 
 ```typescript
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed, inject, resource } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -39,6 +39,16 @@ export class ExampleService {
   // 使用 update() 方法進行複雜狀態更新
   updateStatePartial(partial: Partial<StateType>): void {
     this._state.update(current => ({ ...current, ...partial }));
+  }
+
+  // 使用 resource() 將 Supabase/HTTP 呼叫封裝為可重載資源
+  readonly profileResource = resource({
+    params: () => ({ id: this.state().activeProfileId }),
+    loader: ({ params }) => this.repository.findById(params.id)
+  });
+
+  refreshProfile(): void {
+    this.profileResource.reload();
   }
 }
 ```
@@ -73,4 +83,5 @@ export class ExampleRepository {
 - 暴露 `ReadonlySignal` 給組件
 - 使用 `readonly` 修飾符保護不可變屬性
 - 使用 `update()` 方法進行複雜狀態更新
+- 非同步資料優先封裝為 `resource()`/`rxResource()`，提供 `reload()` 鉤子給 UI
 - 資料庫操作通過 Supabase MCP 工具

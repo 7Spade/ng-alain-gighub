@@ -9,7 +9,7 @@ alwaysApply: false
 ## 組件結構
 
 ```typescript
-import { Component, signal, computed, inject, input, output, viewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, inject, input, output, viewChild, resource, ChangeDetectionStrategy } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
@@ -41,6 +41,19 @@ export class ExampleComponent {
   readonly derivedState = computed(() => {
     return this.state().someProperty;
   });
+
+  // 使用 resource() 取得 async 資料（會自動追蹤 userId Signal）
+  readonly userId = signal('current-user-id');
+  readonly userResource = resource({
+    params: () => ({ id: this.userId() }),
+    loader: ({ params }) => this.service.fetchProfile(params.id)
+  });
+
+  readonly profile = computed(() => this.userResource.value());
+
+  refreshProfile(): void {
+    this.userResource.reload();
+  }
 }
 ```
 
@@ -68,6 +81,16 @@ export class ExampleComponent {
 
 <!-- 在模板中調用 Signal 時必須使用括號 -->
 <div>{{ mySignal() }}</div>
+
+@defer (on viewport) {
+  <article-comments [userId]="userId()" />
+} @placeholder (minimum 1s) {
+  <p aria-live="polite">Loading comments soon…</p>
+} @loading (minimum 1s; after 500ms) {
+  <p aria-busy="true">Fetching comments…</p>
+} @error {
+  <p role="alert">Unable to load comments</p>
+}
 ```
 
 ## 注意事項
@@ -79,4 +102,6 @@ export class ExampleComponent {
 - 優先使用 Signal Queries (`viewChild()`, `contentChild()`) 而非裝飾器
 - 使用現代控制流程語法（@if、@for、@switch、@empty）
 - 在模板中調用 Signal 時必須使用括號：`{{ mySignal() }}`
+- 使用 `@defer` + `@placeholder/@loading/@error` 組合延後非關鍵內容並維持 UX，善用 `minimum`、`after`
+- 若 Router 啟用 View Transitions，CSS 動畫需支援 `prefers-reduced-motion` 並視情況使用 `skipTransition()`
 - 使用 `readonly` 修飾符保護不可變屬性

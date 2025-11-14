@@ -1,0 +1,63 @@
+# Documentation Inventory (00–47)
+
+> **目的**：提供 00–47 號核心文檔的現況總覽，包含檔案類型、最後更新時間、主要用途及主要依賴／受眾，方便後續決定保留、更新或歸檔。
+
+| #  | File | Type | Last Updated (UTC+8) | Status | Action Notes |
+|----|------|------|----------------------|--------|--------------|
+| 00 | `docs/00-開發作業指引.md` | Guide | 2025-11-14 12:32 | ✅ Active | 每次流程調整後同步 Git/CI 章節 |
+| 01 | `docs/01-專案結構說明.md` | Guide | 2025-11-14 12:32 | ✅ Active | 與 02、04 交叉檢查 |
+| 02a | `docs/02-專案結構樹.md` | Guide | 2025-11-14 09:01 | ✅ Active | 持續同步實際目錄（參考 02b） |
+| 02b | `docs/02-專案結構樹-差異報告.md` | Audit | 2025-11-14 10:49 | 📦 Archive | 歸檔歷史差異報告，主檔僅保留結果 |
+| 02c | `docs/02-專案結構樹-路徑對應檢查.md` | Audit | 2025-11-14 09:04 | 📦 Archive | 歸檔 CI 檢查報告，保留腳本即可 |
+| 03 | `docs/03-專案結構流程圖.mermaid.md` | Diagram | 2025-11-14 15:35 | ✅ Active | 已補 core/infra、permissions、shared/services |
+| 04 | `docs/04-重構後結構樹.md` | Guide | 2025-11-14 01:36 | ✅ Active | 與 19 模組視圖對齊 |
+| 10 | `docs/10-系統架構思維導圖.mermaid.md` | Diagram | 2025-11-14 11:34 | ✅ Active | 下次版本審查前再更新 |
+| 11 | `docs/11-Supabase架構流程圖.mermaid.md` | Diagram | 2025-11-14 15:40 | ✅ Active | 新增 Git-like branch tables、branch-merge Edge Function |
+| 12 | `docs/12-實體關係圖.mermaid.md` | Diagram | 2025-11-13 07:54 | ⚠️ Update | 對齊 30-0 SQL 結構 |
+| 13 | `docs/13-帳戶層流程圖.mermaid.md` | Diagram | 2025-11-14 11:34 | ✅ Active | 保留 |
+| 14 | `docs/14-業務流程圖.mermaid.md` | Diagram | 2025-11-13 07:51 | ⚠️ Update | 更新至 Git-like 新節點 |
+| 15 | `docs/15-序列圖.mermaid.md` | Diagram | 2025-11-13 07:54 | ⚠️ Update | 新增 Signals/暫存區流程 |
+| 16 | `docs/16-狀態圖.mermaid.md` | Diagram | 2025-11-14 12:32 | ✅ Active | 與 43 狀態值同步 |
+| 17 | `docs/17-系統上下文圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 保留 |
+| 18 | `docs/18-容器圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 保留 |
+| 19 | `docs/19-元件模組視圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 保留 |
+| 20 | `docs/20-部署基礎設施視圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 與 39 互相參照 |
+| 21 | `docs/21-安全與-RLS-權限矩陣.md` | Guide | 2025-11-14 12:09 | ✅ Active | 補充最新 policy 變更 |
+| 22 | `docs/22-資料生命週期-ETL-流程圖.mermaid.md` | Diagram | 2025-11-13 09:13 | ⚠️ Update | 確認資料湖/ETL 最新節點 |
+| 23 | `docs/23-可觀測性與CI-CD管道圖.mermaid.md` | Diagram | 2025-11-13 09:13 | ⚠️ Update | 對齊當前 CI/CD pipeline |
+| 24 | `docs/24-領域事件時間軸圖.mermaid.md` | Diagram | 2025-11-13 09:13 | ⚠️ Update | 補近期事件 |
+| 25 | `docs/25-API-介面映射圖.mermaid.md` | Diagram | 2025-11-14 12:09 | ✅ Active | 與 33 保持一致 |
+| 26 | `docs/26-Storage-Bucket結構視圖.mermaid.md` | Diagram | 2025-11-13 09:20 | ⚠️ Update | 補增新 bucket / lifecycle |
+| 27 | `docs/27-完整架構流程圖.mermaid.md` | Diagram | 2025-11-14 11:04 | ✅ Active | 下一版審查同步 |
+| 28 | `docs/28-架構審查報告.md` | Report | 2025-11-14 11:04 | ✅ Active | 最新審查基準 |
+| 30-0 | `docs/30-0-完整SQL表結構定義.md` | Reference | 2025-11-14 11:04 | ✅ Active | 建 migration 時引用 |
+| 30 | `docs/30-資料表清單總覽.md` | Guide | 2025-11-14 10:49 | ✅ Active | 與 30-0、34 交叉 |
+| 31 | `docs/31-開發前檢查清單.md` | Checklist | 2025-11-14 11:14 | ✅ Active | 連結 Archive，續維 |
+| 32 | `docs/32-快速開始指南.md` | Guide | 2025-11-14 12:32 | ✅ Active | 保留 |
+| 33 | `docs/33-API-接口詳細文檔.md` | Reference | 2025-11-13 10:26 | ⚠️ Update | 對齊最新 API schema |
+| 34 | `docs/34-資料模型對照表.md` | Reference | 2025-11-14 12:32 | ✅ Active | 與 30-0、Shared models 同步 |
+| 35 | `docs/35-開發工作流程.md` | Guide | 2025-11-14 12:32 | ✅ Active | 定期 review |
+| 36 | `docs/36-常見問題-FAQ.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 補 Angular 20 / Signals FAQ |
+| 37 | `docs/37-錯誤處理指南.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 對齊 core/net 實作 |
+| 38 | `docs/38-測試指南.md` | Guide | 2025-11-13 11:19 | ⚠️ Update | 補 Playwright / signal 測試策略 |
+| 39 | `docs/39-部署指南.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 依新部署流程更新 |
+| 40 | `docs/40-效能優化指南.md` | Guide | 2025-11-13 10:26 | ⚠️ Update | 補 Angular 20 perf 手法 |
+| 41 | `docs/41-安全檢查清單.md` | Checklist | 2025-11-13 10:26 | ⚠️ Update | 與 21、Supabase 安全同步 |
+| 42 | `docs/42-詞彙表.md` | Reference | 2025-11-14 10:49 | ✅ Active | 定期新增術語 |
+| 43 | `docs/43-狀態枚舉值定義.md` | Reference | 2025-11-14 10:49 | ✅ Active | 與狀態圖、Shared enums 對齊 |
+| 44 | `docs/44-專案路線圖.md` | Guide | 2025-11-14 11:18 | ✅ Active | 保持最新里程碑 |
+| 45 | `docs/45-SHARED_IMPORTS-使用指南.md` | Guide | 2025-11-13 10:55 | ✅ Active | 需於 SHARED_IMPORTS 調整時更新 |
+| 46 | `docs/46-ng-zorro-antd-組件清單與CLI指令.md` | Reference | 2025-11-14 02:30 | ✅ Active | 定期同步 ng-zorro release |
+| 47 | `docs/47-DELON-Index-索引.md` | Reference | 2025-11-14 10:49 | ✅ Active | 保留 |
+
+> 📦 標記的文檔已移至 `docs/Archive/`（例如 `docs/Archive/02-專案結構樹-差異報告.md`）。  
+> 下一步：依此表進行內容更新與剩餘檔案的歸檔動作。
+
+## Summary & Next Steps
+
+1. **Archive complete**：`docs/02-專案結構樹-差異報告.md` 與 `docs/02-專案結構樹-路徑對應檢查.md` 已遷移至 `docs/Archive/`，主結構檔 `docs/02-專案結構樹.md` 加註引用說明。
+2. **Update backlog**：
+   - **架構／流程圖**（03、11–15、22–26）：依最新 Git-like 架構、Supabase RLS、CI/CD pipeline 重新輸出 mermaid 圖。
+   - **技術指南**（33、36–41）：同步 Angular 20 + Signals + Supabase 目前實作，補充 Playwright、perf、安全清單等章節。
+3. **Review cadence**：將每月架構審查與版本規劃加入 `docs/35-開發工作流程.md`，以持續驅動上述更新。
+

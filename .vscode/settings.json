@@ -1,17 +1,36 @@
 {
-  "typescript.tsdk": "./node_modules/typescript/lib",
-  "editor.formatOnSave": true,
+  "chat.editor.fontSize": 15,
+  "chat.editor.wordWrap": "on",
   "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
     "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
+    "source.fixAll.stylelint": "explicit",
+    "source.organizeImports": "explicit"
   },
-  "[typescript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.guides.bracketPairs": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.wordBasedSuggestions": "allDocuments",
+  "explorer.fileNesting.enabled": true,
+  "files.associations": {
+    "*.json": "jsonc",
+    ".prettierrc": "jsonc"
   },
-  "[markdown]": {
-    "editor.formatOnSave": false
+  "files.maxMemoryForLargeFilesMB": 8192,
+  "files.watcherExclude": {
+    "**/.git/*/**": true,
+    "**/node_modules/*/**": true,
+    "**/dist/*/**": true,
+    "**/coverage/*/**": true
   },
+  "search.followSymlinks": false,
+  "search.useIgnoreFiles": false,
+  "typescript.referencesCodeLens.enabled": true,
+  "typescript.suggest.autoImports": true,
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.tsserver.maxTsServerMemory": 8192,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "workbench.editor.enablePreview": false,
   "[javascript]": {
     "editor.formatOnSave": false
   },
@@ -25,15 +44,11 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "stylelint.vscode-stylelint"
   },
-  "files.watcherExclude": {
-    "**/.git/*/**": true,
-    "**/node_modules/*/**": true,
-    "**/dist/*/**": true,
-    "**/coverage/*/**": true
+  "[markdown]": {
+    "editor.formatOnSave": false
   },
-  "files.associations": {
-    "*.json": "jsonc",
-    ".prettierrc": "jsonc"
-  },
-  "typescript.referencesCodeLens.enabled": true
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
