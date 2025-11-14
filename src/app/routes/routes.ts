@@ -45,6 +45,10 @@ export const routes: Routes = [
       {
         path: 'issues',
         loadChildren: () => import('./issues/routes').then(m => m.ISSUE_ROUTES)
+      },
+      {
+        path: 'communication',
+        loadChildren: () => import('./communication/routes').then(m => m.COMMUNICATION_ROUTES)
       }
     ]
   },
