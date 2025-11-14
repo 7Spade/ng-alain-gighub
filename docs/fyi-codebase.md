@@ -162,6 +162,607 @@ src/typings.d.ts
 
 # Files
 
+## File: src/app/app.component.ts
+````typescript
+ 1: import { Component, OnInit, inject } from '@angular/core';
+ 2: import { NavigationEnd, NavigationError, RouteConfigLoadStart, Router, RouterOutlet } from '@angular/router';
+ 3: import { TitleService, VERSION as VERSION_ALAIN, stepPreloader } from '@delon/theme';
+ 4: import { environment } from '@env/environment';
+ 5: import { NzModalService } from 'ng-zorro-antd/modal';
+ 6: import { VERSION as VERSION_ZORRO } from 'ng-zorro-antd/version';
+ 7: 
+ 8: @Component({
+ 9:   selector: 'app-root',
+10:   template: `<router-outlet />`,
+11:   imports: [RouterOutlet],
+12:   host: {
+13:     '[attr.ng-alain-version]': 'ngAlainVersion',
+14:     '[attr.ng-zorro-version]': 'ngZorroVersion'
+15:   }
+16: })
+17: export class AppComponent implements OnInit {
+18:   private readonly router = inject(Router);
+19:   private readonly titleSrv = inject(TitleService);
+20:   private readonly modalSrv = inject(NzModalService);
+21:   ngAlainVersion = VERSION_ALAIN.full;
+22:   ngZorroVersion = VERSION_ZORRO.full;
+23: 
+24:   private donePreloader = stepPreloader();
+25: 
+26:   ngOnInit(): void {
+27:     let configLoad = false;
+28:     this.router.events.subscribe(ev => {
+29:       if (ev instanceof RouteConfigLoadStart) {
+30:         configLoad = true;
+31:       }
+32:       if (configLoad && ev instanceof NavigationError) {
+33:         this.modalSrv.confirm({
+34:           nzTitle: `提醒`,
+35:           nzContent: environment.production ? `应用可能已发布新版本，请点击刷新才能生效。` : `无法加载路由：${ev.url}`,
+36:           nzCancelDisabled: false,
+37:           nzOkText: '刷新',
+38:           nzCancelText: '忽略',
+39:           nzOnOk: () => location.reload()
+40:         });
+41:       }
+42:       if (ev instanceof NavigationEnd) {
+43:         this.donePreloader();
+44:         this.titleSrv.setTitle();
+45:         this.modalSrv.closeAll();
+46:       }
+47:     });
+48:   }
+49: }
+````
+
+## File: src/app/app.config.ts
+````typescript
+ 1: import { provideHttpClient, withInterceptors } from '@angular/common/http';
+ 2: import { default as ngLang } from '@angular/common/locales/zh';
+ 3: import { ApplicationConfig, EnvironmentProviders, Provider } from '@angular/core';
+ 4: import { provideAnimations } from '@angular/platform-browser/animations';
+ 5: import {
+ 6:   provideRouter,
+ 7:   withComponentInputBinding,
+ 8:   withInMemoryScrolling,
+ 9:   withHashLocation,
+10:   RouterFeatures,
+11:   withViewTransitions
+12: } from '@angular/router';
+13: import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
+14: import { provideCellWidgets } from '@delon/abc/cell';
+15: import { provideSTWidgets } from '@delon/abc/st';
+16: import { authSimpleInterceptor, provideAuth } from '@delon/auth';
+17: import { provideSFConfig } from '@delon/form';
+18: import { AlainProvideLang, provideAlain, zh_CN as delonLang } from '@delon/theme';
+19: import { AlainConfig } from '@delon/util/config';
+20: import { environment } from '@env/environment';
+21: import { CELL_WIDGETS, SF_WIDGETS, ST_WIDGETS } from '@shared';
+22: import { zhCN as dateLang } from 'date-fns/locale';
+23: import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
+24: import { zh_CN as zorroLang } from 'ng-zorro-antd/i18n';
+25: 
+26: import { ICONS } from '../style-icons';
+27: import { ICONS_AUTO } from '../style-icons-auto';
+28: import { routes } from './routes/routes';
+29: 
+30: const defaultLang: AlainProvideLang = {
+31:   abbr: 'zh-CN',
+32:   ng: ngLang,
+33:   zorro: zorroLang,
+34:   date: dateLang,
+35:   delon: delonLang
+36: };
+37: 
+38: const alainConfig: AlainConfig = {
+39:   st: { modal: { size: 'lg' } },
+40:   pageHeader: { homeI18n: 'home' },
+41:   lodop: {
+42:     license: `A59B099A586B3851E0F0D7FDBF37B603`,
+43:     licenseA: `C94CEE276DB2187AE6B65D56B3FC2848`
+44:   },
+45:   auth: { login_url: '/passport/login' }
+46: };
+47: 
+48: const ngZorroConfig: NzConfig = {};
+49: 
+50: const routerFeatures: RouterFeatures[] = [
+51:   withComponentInputBinding(),
+52:   withViewTransitions(),
+53:   withInMemoryScrolling({ scrollPositionRestoration: 'top' })
+54: ];
+55: if (environment.useHash) routerFeatures.push(withHashLocation());
+56: 
+57: const providers: Array<Provider | EnvironmentProviders> = [
+58:   provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), authSimpleInterceptor, defaultInterceptor])),
+59:   provideAnimations(),
+60:   provideRouter(routes, ...routerFeatures),
+61:   provideAlain({ config: alainConfig, defaultLang, i18nClass: I18NService, icons: [...ICONS_AUTO, ...ICONS] }),
+62:   provideNzConfig(ngZorroConfig),
+63:   provideAuth(),
+64:   provideCellWidgets(...CELL_WIDGETS),
+65:   provideSTWidgets(...ST_WIDGETS),
+66:   provideSFConfig({ widgets: SF_WIDGETS }),
+67:   provideStartup(),
+68:   ...(environment.providers || [])
+69: ];
+70: 
+71: // If you use `@delon/auth` to refresh the token, additional registration `provideBindAuthRefresh` is required
+72: if (environment.api?.refreshTokenEnabled && environment.api.refreshTokenType === 'auth-refresh') {
+73:   providers.push(provideBindAuthRefresh());
+74: }
+75: 
+76: export const appConfig: ApplicationConfig = {
+77:   providers: providers
+78: };
+````
+
+## File: src/app/core/i18n/i18n.service.spec.ts
+````typescript
+ 1: import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+ 2: import { provideHttpClientTesting } from '@angular/common/http/testing';
+ 3: import { TestBed } from '@angular/core/testing';
+ 4: import { DelonLocaleService, SettingsService } from '@delon/theme';
+ 5: import { NzSafeAny } from 'ng-zorro-antd/core/types';
+ 6: import { NzI18nService } from 'ng-zorro-antd/i18n';
+ 7: 
+ 8: import { I18NService } from './i18n.service';
+ 9: 
+10: describe('Service: I18n', () => {
+11:   let srv: I18NService;
+12:   const MockSettingsService: NzSafeAny = {
+13:     layout: {
+14:       lang: null
+15:     }
+16:   };
+17:   const MockNzI18nService = {
+18:     setLocale: () => {},
+19:     setDateLocale: () => {}
+20:   };
+21:   const MockDelonLocaleService = {
+22:     setLocale: () => {}
+23:   };
+24: 
+25:   function genModule(): void {
+26:     TestBed.configureTestingModule({
+27:       imports: [],
+28:       providers: [
+29:         I18NService,
+30:         { provide: SettingsService, useValue: MockSettingsService },
+31:         { provide: NzI18nService, useValue: MockNzI18nService },
+32:         { provide: DelonLocaleService, useValue: MockDelonLocaleService },
+33:         provideHttpClient(withInterceptorsFromDi()),
+34:         provideHttpClientTesting()
+35:       ]
+36:     });
+37:     srv = TestBed.inject(I18NService);
+38:   }
+39: 
+40:   it('should working', () => {
+41:     spyOnProperty(navigator, 'languages').and.returnValue(['zh-CN']);
+42:     genModule();
+43:     expect(srv).toBeTruthy();
+44:     expect(srv.defaultLang).toBe('zh-CN');
+45:     srv.fanyi('a');
+46:     srv.fanyi('a', {});
+47:   });
+48: 
+49:   it('should be used layout as default language', () => {
+50:     MockSettingsService.layout.lang = 'en-US';
+51:     const navSpy = spyOnProperty(navigator, 'languages');
+52:     genModule();
+53:     expect(navSpy).not.toHaveBeenCalled();
+54:     expect(srv.defaultLang).toBe('en-US');
+55:     MockSettingsService.layout.lang = null;
+56:   });
+57: 
+58:   it('should be used browser as default language', () => {
+59:     spyOnProperty(navigator, 'languages').and.returnValue(['zh-TW']);
+60:     genModule();
+61:     expect(srv.defaultLang).toBe('zh-TW');
+62:   });
+63: 
+64:   it('should be use default language when the browser language is not in the list', () => {
+65:     spyOnProperty(navigator, 'languages').and.returnValue(['es-419']);
+66:     genModule();
+67:     expect(srv.defaultLang).toBe('zh-CN');
+68:   });
+69: 
+70:   it('should be trigger notify when changed language', () => {
+71:     genModule();
+72:     srv.use('en-US', {});
+73:     srv.change.subscribe(lang => {
+74:       expect(lang).toBe('en-US');
+75:     });
+76:   });
+77: });
+````
+
+## File: src/app/core/i18n/i18n.service.ts
+````typescript
+  1: // 请参考：https://ng-alain.com/docs/i18n
+  2: import { Platform } from '@angular/cdk/platform';
+  3: import { registerLocaleData } from '@angular/common';
+  4: import ngEn from '@angular/common/locales/en';
+  5: import ngZh from '@angular/common/locales/zh';
+  6: import ngZhTw from '@angular/common/locales/zh-Hant';
+  7: import { Injectable, inject } from '@angular/core';
+  8: import {
+  9:   DelonLocaleService,
+ 10:   en_US as delonEnUS,
+ 11:   SettingsService,
+ 12:   zh_CN as delonZhCn,
+ 13:   zh_TW as delonZhTw,
+ 14:   _HttpClient,
+ 15:   AlainI18nBaseService
+ 16: } from '@delon/theme';
+ 17: import { enUS as dfEn, zhCN as dfZhCn, zhTW as dfZhTw } from 'date-fns/locale';
+ 18: import { NzSafeAny } from 'ng-zorro-antd/core/types';
+ 19: import { en_US as zorroEnUS, NzI18nService, zh_CN as zorroZhCN, zh_TW as zorroZhTW } from 'ng-zorro-antd/i18n';
+ 20: import { Observable } from 'rxjs';
+ 21: 
+ 22: interface LangConfigData {
+ 23:   abbr: string;
+ 24:   text: string;
+ 25:   ng: NzSafeAny;
+ 26:   zorro: NzSafeAny;
+ 27:   date: NzSafeAny;
+ 28:   delon: NzSafeAny;
+ 29: }
+ 30: 
+ 31: const DEFAULT = 'zh-CN';
+ 32: const LANGS: Record<string, LangConfigData> = {
+ 33:   'zh-CN': {
+ 34:     text: '简体中文',
+ 35:     ng: ngZh,
+ 36:     zorro: zorroZhCN,
+ 37:     date: dfZhCn,
+ 38:     delon: delonZhCn,
+ 39:     abbr: '🇨🇳'
+ 40:   },
+ 41:   'zh-TW': {
+ 42:     text: '繁体中文',
+ 43:     ng: ngZhTw,
+ 44:     zorro: zorroZhTW,
+ 45:     date: dfZhTw,
+ 46:     delon: delonZhTw,
+ 47:     abbr: '🇭🇰'
+ 48:   },
+ 49:   'en-US': {
+ 50:     text: 'English',
+ 51:     ng: ngEn,
+ 52:     zorro: zorroEnUS,
+ 53:     date: dfEn,
+ 54:     delon: delonEnUS,
+ 55:     abbr: '🇬🇧'
+ 56:   }
+ 57: };
+ 58: 
+ 59: @Injectable({ providedIn: 'root' })
+ 60: export class I18NService extends AlainI18nBaseService {
+ 61:   private readonly http = inject(_HttpClient);
+ 62:   private readonly settings = inject(SettingsService);
+ 63:   private readonly nzI18nService = inject(NzI18nService);
+ 64:   private readonly delonLocaleService = inject(DelonLocaleService);
+ 65:   private readonly platform = inject(Platform);
+ 66: 
+ 67:   protected override _defaultLang = DEFAULT;
+ 68:   private _langs = Object.keys(LANGS).map(code => {
+ 69:     const item = LANGS[code];
+ 70:     return { code, text: item.text, abbr: item.abbr };
+ 71:   });
+ 72: 
+ 73:   constructor() {
+ 74:     super();
+ 75: 
+ 76:     const defaultLang = this.getDefaultLang();
+ 77:     this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;
+ 78:   }
+ 79: 
+ 80:   private getDefaultLang(): string {
+ 81:     if (!this.platform.isBrowser) {
+ 82:       return DEFAULT;
+ 83:     }
+ 84:     if (this.settings.layout.lang) {
+ 85:       return this.settings.layout.lang;
+ 86:     }
+ 87:     let res = (navigator.languages ? navigator.languages[0] : null) || navigator.language;
+ 88:     const arr = res.split('-');
+ 89:     return arr.length <= 1 ? res : `${arr[0]}-${arr[1].toUpperCase()}`;
+ 90:   }
+ 91: 
+ 92:   loadLangData(lang: string): Observable<NzSafeAny> {
+ 93:     return this.http.get(`./assets/tmp/i18n/${lang}.json`);
+ 94:   }
+ 95: 
+ 96:   use(lang: string, data: Record<string, unknown>): void {
+ 97:     if (this._currentLang === lang) return;
+ 98: 
+ 99:     this._data = this.flatData(data, []);
+100: 
+101:     const item = LANGS[lang];
+102:     registerLocaleData(item.ng);
+103:     this.nzI18nService.setLocale(item.zorro);
+104:     this.nzI18nService.setDateLocale(item.date);
+105:     this.delonLocaleService.setLocale(item.delon);
+106:     this._currentLang = lang;
+107: 
+108:     this._change$.next(lang);
+109:   }
+110: 
+111:   getLangs(): Array<{ code: string; text: string; abbr: string }> {
+112:     return this._langs;
+113:   }
+114: }
+````
+
+## File: src/app/core/net/default.interceptor.ts
+````typescript
+ 1: import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
+ 2: import { Injector, inject } from '@angular/core';
+ 3: import { IGNORE_BASE_URL } from '@delon/theme';
+ 4: import { environment } from '@env/environment';
+ 5: import { Observable, of, throwError, mergeMap } from 'rxjs';
+ 6: 
+ 7: import { ReThrowHttpError, checkStatus, getAdditionalHeaders, toLogin } from './helper';
+ 8: import { tryRefreshToken } from './refresh-token';
+ 9: 
+10: function handleData(injector: Injector, ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandlerFn): Observable<any> {
+11:   checkStatus(injector, ev);
+12:   // 业务处理：一些通用操作
+13:   switch (ev.status) {
+14:     case 200:
+15:       // 业务层级错误处理，以下是假定restful有一套统一输出格式（指不管成功与否都有相应的数据格式）情况下进行处理
+16:       // 例如响应内容：
+17:       //  错误内容：{ status: 1, msg: '非法参数' }
+18:       //  正确内容：{ status: 0, response: {  } }
+19:       // 则以下代码片断可直接适用
+20:       // if (ev instanceof HttpResponse) {
+21:       //   const body = ev.body;
+22:       //   if (body && body.status !== 0) {
+23:       //     const customError = req.context.get(CUSTOM_ERROR);
+24:       //     if (customError) injector.get(NzMessageService).error(body.msg);
+25:       //     return customError ? throwError(() => ({ body, _throw: true }) as ReThrowHttpError) : of({});
+26:       //   } else {
+27:       //     // 返回原始返回体
+28:       //     if (req.context.get(RAW_BODY) || ev.body instanceof Blob) {
+29:       //       return of(ev);
+30:       //     }
+31:       //     // 重新修改 `body` 内容为 `response` 内容，对于绝大多数场景已经无须再关心业务状态码
+32:       //     return of(new HttpResponse({ ...ev, body: body.response } as any));
+33:       //     // 或者依然保持完整的格式
+34:       //     return of(ev);
+35:       //   }
+36:       // }
+37:       break;
+38:     case 401:
+39:       if (environment.api.refreshTokenEnabled && environment.api.refreshTokenType === 're-request') {
+40:         return tryRefreshToken(injector, ev, req, next);
+41:       }
+42:       toLogin(injector);
+43:       break;
+44:     case 403:
+45:     case 404:
+46:     case 500:
+47:       // goTo(injector, `/exception/${ev.status}?url=${req.urlWithParams}`);
+48:       break;
+49:     default:
+50:       if (ev instanceof HttpErrorResponse) {
+51:         console.warn('未可知错误，大部分是由于后端不支持跨域CORS或无效配置引起，请参考 https://ng-alain.com/docs/server 解决跨域问题', ev);
+52:       }
+53:       break;
+54:   }
+55:   if (ev instanceof HttpErrorResponse) {
+56:     return throwError(() => ev);
+57:   } else if ((ev as unknown as ReThrowHttpError)._throw === true) {
+58:     return throwError(() => (ev as unknown as ReThrowHttpError).body);
+59:   } else {
+60:     return of(ev);
+61:   }
+62: }
+63: 
+64: export const defaultInterceptor: HttpInterceptorFn = (req, next) => {
+65:   // 统一加上服务端前缀
+66:   let url = req.url;
+67:   if (!req.context.get(IGNORE_BASE_URL) && !url.startsWith('https://') && !url.startsWith('http://')) {
+68:     const { baseUrl } = environment.api;
+69:     url = baseUrl + (baseUrl.endsWith('/') && url.startsWith('/') ? url.substring(1) : url);
+70:   }
+71:   const newReq = req.clone({ url, setHeaders: getAdditionalHeaders(req.headers) });
+72:   const injector = inject(Injector);
+73: 
+74:   return next(newReq).pipe(
+75:     mergeMap(ev => {
+76:       // 允许统一对请求错误处理
+77:       if (ev instanceof HttpResponseBase) {
+78:         return handleData(injector, ev, newReq, next);
+79:       }
+80:       // 若一切都正常，则后续操作
+81:       return of(ev);
+82:     })
+83:     // catchError((err: HttpErrorResponse) => handleData(injector, err, newReq, next))
+84:   );
+85: };
+````
+
+## File: src/app/core/net/helper.ts
+````typescript
+ 1: import { HttpHeaders, HttpResponseBase } from '@angular/common/http';
+ 2: import { Injector, inject } from '@angular/core';
+ 3: import { Router } from '@angular/router';
+ 4: import { DA_SERVICE_TOKEN } from '@delon/auth';
+ 5: import { ALAIN_I18N_TOKEN } from '@delon/theme';
+ 6: import { NzNotificationService } from 'ng-zorro-antd/notification';
+ 7: 
+ 8: export interface ReThrowHttpError {
+ 9:   body: any;
+10:   _throw: true;
+11: }
+12: 
+13: export const CODEMESSAGE: Record<number, string> = {
+14:   200: '服务器成功返回请求的数据。',
+15:   201: '新建或修改数据成功。',
+16:   202: '一个请求已经进入后台排队（异步任务）。',
+17:   204: '删除数据成功。',
+18:   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
+19:   401: '用户没有权限（令牌、用户名、密码错误）。',
+20:   403: '用户得到授权，但是访问是被禁止的。',
+21:   404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
+22:   406: '请求的格式不可得。',
+23:   410: '请求的资源被永久删除，且不会再得到的。',
+24:   422: '当创建一个对象时，发生一个验证错误。',
+25:   500: '服务器发生错误，请检查服务器。',
+26:   502: '网关错误。',
+27:   503: '服务不可用，服务器暂时过载或维护。',
+28:   504: '网关超时。'
+29: };
+30: 
+31: export function goTo(injector: Injector, url: string): void {
+32:   setTimeout(() => injector.get(Router).navigateByUrl(url));
+33: }
+34: 
+35: export function toLogin(injector: Injector): void {
+36:   injector.get(NzNotificationService).error(`未登录或登录已过期，请重新登录。`, ``);
+37:   goTo(injector, injector.get(DA_SERVICE_TOKEN).login_url!);
+38: }
+39: 
+40: export function getAdditionalHeaders(headers?: HttpHeaders): Record<string, string> {
+41:   const res: Record<string, string> = {};
+42:   const lang = inject(ALAIN_I18N_TOKEN).currentLang;
+43:   if (!headers?.has('Accept-Language') && lang) {
+44:     res['Accept-Language'] = lang;
+45:   }
+46: 
+47:   return res;
+48: }
+49: 
+50: export function checkStatus(injector: Injector, ev: HttpResponseBase): void {
+51:   if ((ev.status >= 200 && ev.status < 300) || ev.status === 401) {
+52:     return;
+53:   }
+54: 
+55:   const errortext = CODEMESSAGE[ev.status] || ev.statusText;
+56:   injector.get(NzNotificationService).error(`请求错误 ${ev.status}: ${ev.url}`, errortext);
+57: }
+````
+
+## File: src/app/core/net/index.ts
+````typescript
+1: export { provideBindAuthRefresh } from './refresh-token';
+2: export * from './default.interceptor';
+````
+
+## File: src/app/core/net/refresh-token.ts
+````typescript
+  1: import { HttpClient, HttpHandlerFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
+  2: import { EnvironmentProviders, Injector, inject, provideAppInitializer } from '@angular/core';
+  3: import { DA_SERVICE_TOKEN } from '@delon/auth';
+  4: import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError, map } from 'rxjs';
+  5: 
+  6: import { toLogin } from './helper';
+  7: import { SupabaseAuthAdapterService } from '../supabase';
+  8: 
+  9: let refreshToking = false;
+ 10: let refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+ 11: 
+ 12: /**
+ 13:  * 重新附加新 Token 信息
+ 14:  *
+ 15:  * > 由于已经发起的请求，不会再走一遍 `@delon/auth` 因此需要结合业务情况重新附加新的 Token
+ 16:  */
+ 17: function reAttachToken(injector: Injector, req: HttpRequest<any>): HttpRequest<any> {
+ 18:   const token = injector.get(DA_SERVICE_TOKEN).get()?.token;
+ 19:   return req.clone({
+ 20:     setHeaders: {
+ 21:       token: `Bearer ${token}`
+ 22:     }
+ 23:   });
+ 24: }
+ 25: 
+ 26: function refreshTokenRequest(injector: Injector): Observable<any> {
+ 27:   const adapter = injector.get(SupabaseAuthAdapterService);
+ 28:   return adapter.refreshSession().pipe(
+ 29:     map(session => adapter.convertSessionToTokenFormat(session))
+ 30:   );
+ 31: }
+ 32: 
+ 33: /**
+ 34:  * 刷新Token方式一：使用 401 重新刷新 Token
+ 35:  */
+ 36: export function tryRefreshToken(injector: Injector, ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandlerFn): Observable<any> {
+ 37:   // 1、若请求为刷新Token请求，表示来自刷新Token可以直接跳转登录页
+ 38:   if ([`/api/auth/refresh`].some(url => req.url.includes(url))) {
+ 39:     toLogin(injector);
+ 40:     return throwError(() => ev);
+ 41:   }
+ 42:   // 2、如果 `refreshToking` 为 `true` 表示已经在请求刷新 Token 中，后续所有请求转入等待状态，直至结果返回后再重新发起请求
+ 43:   if (refreshToking) {
+ 44:     return refreshToken$.pipe(
+ 45:       filter(v => !!v),
+ 46:       take(1),
+ 47:       switchMap(() => next(reAttachToken(injector, req)))
+ 48:     );
+ 49:   }
+ 50:   // 3、尝试调用刷新 Token
+ 51:   refreshToking = true;
+ 52:   refreshToken$.next(null);
+ 53: 
+ 54:   return refreshTokenRequest(injector).pipe(
+ 55:     switchMap(res => {
+ 56:       // 通知后续请求继续执行
+ 57:       refreshToking = false;
+ 58:       refreshToken$.next(res);
+ 59:       // 重新保存新 token
+ 60:       injector.get(DA_SERVICE_TOKEN).set(res);
+ 61:       // 重新发起请求
+ 62:       return next(reAttachToken(injector, req));
+ 63:     }),
+ 64:     catchError(err => {
+ 65:       refreshToking = false;
+ 66:       toLogin(injector);
+ 67:       return throwError(() => err);
+ 68:     })
+ 69:   );
+ 70: }
+ 71: 
+ 72: function buildAuthRefresh(injector: Injector): void {
+ 73:   const tokenSrv = injector.get(DA_SERVICE_TOKEN);
+ 74:   tokenSrv.refresh
+ 75:     .pipe(
+ 76:       filter(() => !refreshToking),
+ 77:       switchMap(res => {
+ 78:         console.log(res);
+ 79:         refreshToking = true;
+ 80:         return refreshTokenRequest(injector);
+ 81:       })
+ 82:     )
+ 83:     .subscribe({
+ 84:       next: res => {
+ 85:         // TODO: Mock expired value
+ 86:         res.expired = +new Date() + 1000 * 60 * 5;
+ 87:         refreshToking = false;
+ 88:         tokenSrv.set(res);
+ 89:       },
+ 90:       error: () => toLogin(injector)
+ 91:     });
+ 92: }
+ 93: 
+ 94: /**
+ 95:  * 刷新Token方式二：使用 `@delon/auth` 的 `refresh` 接口，需要在 `app.config.ts` 中注册 `provideBindAuthRefresh`
+ 96:  */
+ 97: export function provideBindAuthRefresh(): EnvironmentProviders[] {
+ 98:   return [
+ 99:     provideAppInitializer(() => {
+100:       const initializerFn = (
+101:         (injector: Injector) => () =>
+102:           buildAuthRefresh(injector)
+103:       )(inject(Injector));
+104:       return initializerFn();
+105:     })
+106:   ];
+107: }
+````
+
 ## File: src/app/core/permissions/index.ts
 ````typescript
 1: export * from './types';
@@ -387,325 +988,328 @@ src/typings.d.ts
 214:     // 解析权限格式：resource.action
 215:     const parts = permission.split('.');
 216:     if (parts.length === 2) {
-217:       const [resource, action] = parts;
-218:       // 使用 ACLService.setAbility() 设置权限
-219:       const currentData = this.aclService.data;
-220:       const abilities = currentData.abilities || [];
-221:       if (!abilities.includes(permission)) {
-222:         this.aclService.set({
-223:           ...currentData,
-224:           abilities: [...abilities, permission]
-225:         });
-226:       }
-227:     }
-228:   }
-229: 
-230:   /**
-231:    * 检查蓝图访问权限
-232:    * 
-233:    * @param blueprintId 蓝图 ID
-234:    * @param action 操作类型
-235:    * @returns Observable<boolean>
-236:    */
-237:   canAccessBlueprint(blueprintId: string, action: 'read' | 'write' | 'admin'): Observable<boolean> {
-238:     const userId = this.getCurrentUserId();
-239:     if (!userId) {
-240:       return of(false);
-241:     }
-242: 
-243:     // 查询蓝图拥有者或用户角色
-244:     return from(
-245:       this.supabaseService.client
-246:         .from('blueprints')
-247:         .select('owner_id')
-248:         .eq('id', blueprintId)
-249:         .single()
-250:     ).pipe(
-251:       switchMap(({ data: blueprint, error: blueprintError }) => {
-252:         if (blueprintError || !blueprint) {
-253:           return of(false);
-254:         }
-255: 
-256:         // 如果是拥有者，拥有所有权限
-257:         if (blueprint.owner_id === userId) {
-258:           return of(true);
-259:         }
-260: 
-261:         // 检查用户角色权限
-262:         return from(
-263:           this.supabaseService.client
-264:             .from('user_roles')
-265:             .select('roles(code)')
-266:             .eq('account_id', userId)
-267:             .eq('blueprint_id', blueprintId)
-268:         ).pipe(
-269:           map(({ data: userRoles }) => {
-270:             if (!userRoles || userRoles.length === 0) {
-271:               return false;
-272:             }
-273: 
-274:             // 根据角色代码判断权限
-275:             const roleCodes = userRoles.map(ur => (ur.roles as any).code);
-276:             
-277:             switch (action) {
-278:               case 'read':
-279:                 return roleCodes.some(code => ['blueprint_owner', 'blueprint_admin', 'project_manager', 'viewer'].includes(code));
-280:               case 'write':
-281:                 return roleCodes.some(code => ['blueprint_owner', 'blueprint_admin', 'project_manager'].includes(code));
-282:               case 'admin':
-283:                 return roleCodes.some(code => ['blueprint_owner', 'blueprint_admin'].includes(code));
-284:               default:
-285:                 return false;
-286:             }
-287:           })
-288:         );
-289:       })
-290:     );
-291:   }
-292: 
-293:   /**
-294:    * 检查分支访问权限
-295:    * 
-296:    * @param branchId 分支 ID
-297:    * @param action 操作类型
-298:    * @returns Observable<boolean>
-299:    */
-300:   canAccessBranch(branchId: string, action: 'read' | 'write' | 'admin'): Observable<boolean> {
-301:     const userId = this.getCurrentUserId();
-302:     if (!userId) {
-303:       return of(false);
-304:     }
-305: 
-306:     // 查询分支权限
-307:     return from(
-308:       this.supabaseService.client
-309:         .from('branch_permissions')
-310:         .select('permission_level, blueprint_branches(blueprint_id, blueprints(owner_id))')
-311:         .eq('branch_id', branchId)
-312:         .eq('account_id', userId)
-313:         .single()
-314:     ).pipe(
-315:       switchMap(({ data: branchPerm, error }) => {
-316:         // 如果没有分支权限，检查是否是蓝图拥有者
-317:         if (error || !branchPerm) {
-318:           return from(
-319:             this.supabaseService.client
-320:               .from('blueprint_branches')
-321:               .select('blueprint_id, blueprints(owner_id)')
-322:               .eq('id', branchId)
-323:               .single()
-324:           ).pipe(
-325:             map(({ data: branch }) => {
-326:               const blueprint = (branch as any)?.blueprints;
-327:               return blueprint?.owner_id === userId;
-328:             })
-329:           );
-330:         }
-331: 
-332:         const level = branchPerm.permission_level as 'owner' | 'admin' | 'write' | 'read';
-333:         
-334:         switch (action) {
-335:           case 'read':
-336:             return of(true); // 所有级别都可以读取
-337:           case 'write':
-338:             return of(['owner', 'admin', 'write'].includes(level));
-339:           case 'admin':
-340:             return of(['owner', 'admin'].includes(level));
-341:           default:
-342:             return of(false);
-343:         }
-344:       })
-345:     );
-346:   }
-347: 
-348:   /**
-349:    * 检查是否可以修改任务结构（只有拥有者可以）
-350:    * 
-351:    * @param blueprintId 蓝图 ID
-352:    * @returns Observable<boolean>
-353:    */
-354:   canModifyTaskStructure(blueprintId: string): Observable<boolean> {
-355:     const userId = this.getCurrentUserId();
-356:     if (!userId) {
-357:       return of(false);
-358:     }
-359: 
-360:     return from(
-361:       this.supabaseService.client
-362:         .from('blueprints')
-363:         .select('owner_id')
-364:         .eq('id', blueprintId)
-365:         .single()
-366:     ).pipe(
-367:       map(({ data, error }) => {
-368:         if (error || !data) {
-369:           return false;
-370:         }
-371:         return data.owner_id === userId;
-372:       })
-373:     );
-374:   }
-375: 
-376:   /**
-377:    * 检查是否可以填写承攬欄位（协作组织可以）
-378:    * 
-379:    * @param branchId 分支 ID
-380:    * @returns Observable<boolean>
-381:    */
-382:   canFillContractorFields(branchId: string): Observable<boolean> {
-383:     const userId = this.getCurrentUserId();
-384:     if (!userId) {
-385:       return of(false);
-386:     }
-387: 
-388:     // 检查是否是分支所属组织
-389:     return from(
-390:       this.supabaseService.client
-391:         .from('blueprint_branches')
-392:         .select('organization_id')
-393:         .eq('id', branchId)
-394:         .single()
-395:     ).pipe(
-396:       map(({ data, error }) => {
-397:         if (error || !data) {
-398:           return false;
-399:         }
-400:         return data.organization_id === userId;
-401:       })
-402:     );
-403:   }
-404: 
-405:   /**
-406:    * 检查是否可以审核 PR（只有拥有者可以）
-407:    * 
-408:    * @param blueprintId 蓝图 ID
-409:    * @returns Observable<boolean>
-410:    */
-411:   canReviewPR(blueprintId: string): Observable<boolean> {
-412:     return this.canModifyTaskStructure(blueprintId);
-413:   }
-414: 
-415:   /**
-416:    * 检查是否可以创建 PR（分支所属组织可以）
-417:    * 
-418:    * @param branchId 分支 ID
-419:    * @returns Observable<boolean>
-420:    */
-421:   canCreatePR(branchId: string): Observable<boolean> {
-422:     return this.canFillContractorFields(branchId);
-423:   }
-424: 
-425:   /**
-426:    * 从数据库同步用户角色到 ACLService
-427:    * 
-428:    * @param userId 用户 ID
-429:    * @returns Promise<void>
-430:    */
-431:   async syncRolesFromDatabase(userId: string): Promise<void> {
-432:     const { data: userRoles, error } = await this.supabaseService.client
-433:       .from('user_roles')
-434:       .select('roles(code, name)')
-435:       .eq('account_id', userId);
-436: 
-437:     if (error) {
-438:       throw new Error(`Failed to sync roles: ${error.message}`);
-439:     }
-440: 
-441:     if (userRoles && userRoles.length > 0) {
-442:       const roles = userRoles.map(ur => (ur.roles as any).code);
-443:       this.aclService.set({ role: roles });
-444:     }
-445:   }
-446: 
-447:   /**
-448:    * 加载用户所有权限
-449:    * 
-450:    * @param userId 用户 ID
-451:    * @returns Observable<Permission[]>
-452:    */
-453:   loadUserPermissions(userId: string): Observable<Permission[]> {
-454:     if (this.userPermissions$) {
-455:       return this.userPermissions$;
-456:     }
-457: 
-458:     this.userPermissions$ = from(
-459:       this.supabaseService.client
-460:         .from('user_roles')
-461:         .select(`
-462:           roles!inner(
-463:             role_permissions!inner(
-464:               permissions!inner(*)
-465:             )
-466:           )
-467:         `)
-468:         .eq('account_id', userId)
-469:     ).pipe(
-470:       map(({ data, error }) => {
-471:         if (error) {
-472:           throw new Error(`Failed to load permissions: ${error.message}`);
-473:         }
-474: 
-475:         const permissions: Permission[] = [];
-476:         if (data) {
-477:           for (const userRole of data) {
-478:             const role = userRole.roles as any;
-479:             if (role?.role_permissions) {
-480:               for (const rolePerm of role.role_permissions) {
-481:                 const perm = rolePerm.permissions as Permission;
-482:                 if (!permissions.find(p => p.id === perm.id)) {
-483:                   permissions.push(perm);
-484:                 }
-485:               }
-486:             }
-487:           }
-488:         }
-489: 
-490:         return permissions;
-491:       }),
-492:       tap(permissions => {
-493:         // 同步权限到 ACLService
+217:       const currentData = this.aclService.data;
+218:       const abilities = currentData.abilities || [];
+219:       if (!abilities.includes(permission)) {
+220:         // 使用 ACLService.set() 设置权限
+221:         this.aclService.set({
+222:           ...currentData,
+223:           abilities: [...abilities, permission]
+224:         });
+225:       }
+226:     }
+227:   }
+228: 
+229:   /**
+230:    * 检查蓝图访问权限
+231:    * 
+232:    * @param blueprintId 蓝图 ID
+233:    * @param action 操作类型
+234:    * @returns Observable<boolean>
+235:    */
+236:   canAccessBlueprint(blueprintId: string, action: 'read' | 'write' | 'admin'): Observable<boolean> {
+237:     const userId = this.getCurrentUserId();
+238:     if (!userId) {
+239:       return of(false);
+240:     }
+241: 
+242:     // 查询蓝图拥有者或用户角色
+243:     return from(
+244:       this.supabaseService.client
+245:         .from('blueprints')
+246:         .select('owner_id')
+247:         .eq('id', blueprintId)
+248:         .single()
+249:     ).pipe(
+250:       switchMap(({ data: blueprint, error: blueprintError }) => {
+251:         if (blueprintError || !blueprint) {
+252:           return of(false);
+253:         }
+254: 
+255:         // 如果是拥有者，拥有所有权限
+256:         if (blueprint.owner_id === userId) {
+257:           return of(true);
+258:         }
+259: 
+260:         // 检查用户角色权限
+261:         return from(
+262:           this.supabaseService.client
+263:             .from('user_roles')
+264:             .select('roles(code)')
+265:             .eq('account_id', userId)
+266:             .eq('blueprint_id', blueprintId)
+267:         ).pipe(
+268:           map(({ data: userRoles }) => {
+269:             if (!userRoles || userRoles.length === 0) {
+270:               return false;
+271:             }
+272: 
+273:             // 根据角色代码判断权限
+274:             const roleCodes = userRoles.map(ur => (ur.roles as any).code);
+275:             
+276:             switch (action) {
+277:               case 'read':
+278:                 return roleCodes.some(code => ['blueprint_owner', 'blueprint_admin', 'project_manager', 'viewer'].includes(code));
+279:               case 'write':
+280:                 return roleCodes.some(code => ['blueprint_owner', 'blueprint_admin', 'project_manager'].includes(code));
+281:               case 'admin':
+282:                 return roleCodes.some(code => ['blueprint_owner', 'blueprint_admin'].includes(code));
+283:               default:
+284:                 return false;
+285:             }
+286:           })
+287:         );
+288:       })
+289:     );
+290:   }
+291: 
+292:   /**
+293:    * 检查分支访问权限
+294:    * 
+295:    * @param branchId 分支 ID
+296:    * @param action 操作类型
+297:    * @returns Observable<boolean>
+298:    */
+299:   canAccessBranch(branchId: string, action: 'read' | 'write' | 'admin'): Observable<boolean> {
+300:     const userId = this.getCurrentUserId();
+301:     if (!userId) {
+302:       return of(false);
+303:     }
+304: 
+305:     // 查询分支权限
+306:     return from(
+307:       this.supabaseService.client
+308:         .from('branch_permissions')
+309:         .select('permission_level, blueprint_branches(blueprint_id, blueprints(owner_id))')
+310:         .eq('branch_id', branchId)
+311:         .eq('account_id', userId)
+312:         .single()
+313:     ).pipe(
+314:       switchMap(({ data: branchPerm, error }) => {
+315:         // 如果没有分支权限，检查是否是蓝图拥有者
+316:         if (error || !branchPerm) {
+317:           return from(
+318:             this.supabaseService.client
+319:               .from('blueprint_branches')
+320:               .select('blueprint_id, blueprints(owner_id)')
+321:               .eq('id', branchId)
+322:               .single()
+323:           ).pipe(
+324:             map(({ data: branch }) => {
+325:               const blueprint = (branch as any)?.blueprints;
+326:               return blueprint?.owner_id === userId;
+327:             })
+328:           );
+329:         }
+330: 
+331:         const level = branchPerm.permission_level as 'owner' | 'admin' | 'write' | 'read';
+332:         
+333:         switch (action) {
+334:           case 'read':
+335:             return of(true); // 所有级别都可以读取
+336:           case 'write':
+337:             return of(['owner', 'admin', 'write'].includes(level));
+338:           case 'admin':
+339:             return of(['owner', 'admin'].includes(level));
+340:           default:
+341:             return of(false);
+342:         }
+343:       })
+344:     );
+345:   }
+346: 
+347:   /**
+348:    * 检查是否可以修改任务结构（只有拥有者可以）
+349:    * 
+350:    * @param blueprintId 蓝图 ID
+351:    * @returns Observable<boolean>
+352:    */
+353:   canModifyTaskStructure(blueprintId: string): Observable<boolean> {
+354:     const userId = this.getCurrentUserId();
+355:     if (!userId) {
+356:       return of(false);
+357:     }
+358: 
+359:     return from(
+360:       this.supabaseService.client
+361:         .from('blueprints')
+362:         .select('owner_id')
+363:         .eq('id', blueprintId)
+364:         .single()
+365:     ).pipe(
+366:       map(({ data, error }) => {
+367:         if (error || !data) {
+368:           return false;
+369:         }
+370:         return data.owner_id === userId;
+371:       })
+372:     );
+373:   }
+374: 
+375:   /**
+376:    * 检查是否可以填写承攬欄位（协作组织可以）
+377:    * 
+378:    * @param branchId 分支 ID
+379:    * @returns Observable<boolean>
+380:    */
+381:   canFillContractorFields(branchId: string): Observable<boolean> {
+382:     const userId = this.getCurrentUserId();
+383:     if (!userId) {
+384:       return of(false);
+385:     }
+386: 
+387:     // 检查是否是分支所属组织
+388:     return from(
+389:       this.supabaseService.client
+390:         .from('blueprint_branches')
+391:         .select('organization_id')
+392:         .eq('id', branchId)
+393:         .single()
+394:     ).pipe(
+395:       map(({ data, error }) => {
+396:         if (error || !data) {
+397:           return false;
+398:         }
+399:         return data.organization_id === userId;
+400:       })
+401:     );
+402:   }
+403: 
+404:   /**
+405:    * 检查是否可以审核 PR（只有拥有者可以）
+406:    * 
+407:    * @param blueprintId 蓝图 ID
+408:    * @returns Observable<boolean>
+409:    */
+410:   canReviewPR(blueprintId: string): Observable<boolean> {
+411:     return this.canModifyTaskStructure(blueprintId);
+412:   }
+413: 
+414:   /**
+415:    * 检查是否可以创建 PR（分支所属组织可以）
+416:    * 
+417:    * @param branchId 分支 ID
+418:    * @returns Observable<boolean>
+419:    */
+420:   canCreatePR(branchId: string): Observable<boolean> {
+421:     return this.canFillContractorFields(branchId);
+422:   }
+423: 
+424:   /**
+425:    * 从数据库同步用户角色到 ACLService
+426:    * 
+427:    * @param userId 用户 ID
+428:    * @returns Promise<void>
+429:    */
+430:   async syncRolesFromDatabase(userId: string): Promise<void> {
+431:     const { data: userRoles, error } = await this.supabaseService.client
+432:       .from('user_roles')
+433:       .select('roles(code, name)')
+434:       .eq('account_id', userId);
+435: 
+436:     if (error) {
+437:       throw new Error(`Failed to sync roles: ${error.message}`);
+438:     }
+439: 
+440:     if (userRoles && userRoles.length > 0) {
+441:       const roles = userRoles.map(ur => (ur.roles as any).code);
+442:       this.aclService.set({ role: roles });
+443:     }
+444:   }
+445: 
+446:   /**
+447:    * 加载用户所有权限
+448:    * 
+449:    * @param userId 用户 ID
+450:    * @returns Observable<Permission[]>
+451:    */
+452:   loadUserPermissions(userId: string): Observable<Permission[]> {
+453:     if (this.userPermissions$) {
+454:       return this.userPermissions$;
+455:     }
+456: 
+457:     this.userPermissions$ = from(
+458:       this.supabaseService.client
+459:         .from('user_roles')
+460:         .select(`
+461:           roles!inner(
+462:             role_permissions!inner(
+463:               permissions!inner(*)
+464:             )
+465:           )
+466:         `)
+467:         .eq('account_id', userId)
+468:     ).pipe(
+469:       map(({ data, error }) => {
+470:         if (error) {
+471:           throw new Error(`Failed to load permissions: ${error.message}`);
+472:         }
+473: 
+474:         const permissions: Permission[] = [];
+475:         if (data) {
+476:           for (const userRole of data) {
+477:             const role = userRole.roles as any;
+478:             if (role?.role_permissions) {
+479:               for (const rolePerm of role.role_permissions) {
+480:                 const perm = rolePerm.permissions as Permission;
+481:                 if (!permissions.find(p => p.id === perm.id)) {
+482:                   permissions.push(perm);
+483:                 }
+484:               }
+485:             }
+486:           }
+487:         }
+488: 
+489:         return permissions;
+490:       }),
+491:       tap(permissions => {
+492:         // 同步权限到 ACLService
+493:         const currentData = this.aclService.data;
 494:         const abilities = permissions.map(p => `${p.resource}.${p.action}`);
-495:         this.aclService.set({ ability: abilities });
-496:       }),
-497:       shareReplay(1)
-498:     );
-499: 
-500:     return this.userPermissions$;
-501:   }
+495:         this.aclService.set({
+496:           ...currentData,
+497:           abilities: abilities
+498:         });
+499:       }),
+500:       shareReplay(1)
+501:     );
 502: 
-503:   /**
-504:    * 刷新当前用户权限
-505:    * 
-506:    * @returns Observable<void>
-507:    */
-508:   refreshPermissions(): Observable<void> {
-509:     const userId = this.getCurrentUserId();
-510:     if (!userId) {
-511:       return of(undefined);
-512:     }
-513: 
-514:     // 清除缓存
-515:     this.permissionCache.clear();
-516:     this.userPermissions$ = undefined;
-517: 
-518:     // 重新加载权限
-519:     return this.loadUserPermissions(userId).pipe(
-520:       switchMap(() => this.syncRolesFromDatabase(userId)),
-521:       map(() => undefined),
-522:       catchError(error => {
-523:         return throwError(() => new Error(`Failed to refresh permissions: ${error.message}`));
-524:       })
-525:     );
-526:   }
-527: 
-528:   /**
-529:    * 清除权限缓存
-530:    */
-531:   clearCache(): void {
-532:     this.permissionCache.clear();
-533:     this.userPermissions$ = undefined;
-534:   }
-535: }
+503:     return this.userPermissions$;
+504:   }
+505: 
+506:   /**
+507:    * 刷新当前用户权限
+508:    * 
+509:    * @returns Observable<void>
+510:    */
+511:   refreshPermissions(): Observable<void> {
+512:     const userId = this.getCurrentUserId();
+513:     if (!userId) {
+514:       return of(undefined);
+515:     }
+516: 
+517:     // 清除缓存
+518:     this.permissionCache.clear();
+519:     this.userPermissions$ = undefined;
+520: 
+521:     // 重新加载权限
+522:     return this.loadUserPermissions(userId).pipe(
+523:       switchMap(() => this.syncRolesFromDatabase(userId)),
+524:       map(() => undefined),
+525:       catchError(error => {
+526:         return throwError(() => new Error(`Failed to refresh permissions: ${error.message}`));
+527:       })
+528:     );
+529:   }
+530: 
+531:   /**
+532:    * 清除权限缓存
+533:    */
+534:   clearCache(): void {
+535:     this.permissionCache.clear();
+536:     this.userPermissions$ = undefined;
+537:   }
+538: }
 ````
 
 ## File: src/app/core/permissions/role.service.ts
@@ -1148,661 +1752,6 @@ src/typings.d.ts
 82: }
 ````
 
-## File: src/app/shared/shared-tinymce.module.ts
-````typescript
- 1: /**
- 2:  * ngx-tinymce 富文本編輯器模組
- 3:  * 
- 4:  * 注意：此模組為可選模組，僅在需要使用 TinyMCE 富文本編輯器時導入
- 5:  * 
- 6:  * 使用方式：
- 7:  * ```typescript
- 8:  * import { SHARED_TINYMCE_MODULES } from '@shared/shared-tinymce.module';
- 9:  * 
-10:  * @Component({
-11:  *   imports: [SHARED_IMPORTS, ...SHARED_TINYMCE_MODULES]
-12:  * })
-13:  * ```
-14:  * 
-15:  * 或在需要時直接導入：
-16:  * ```typescript
-17:  * import { EditorModule } from 'ngx-tinymce';
-18:  * 
-19:  * @Component({
-20:  *   imports: [SHARED_IMPORTS, EditorModule]
-21:  * })
-22:  * ```
-23:  * 
-24:  * @see https://github.com/ng-alain/ng-alain/tree/master/packages/tinymce
-25:  * @see https://www.tiny.cloud/docs/tinymce/latest/
-26:  */
-27: 
-28: // 注意：ngx-tinymce 在 package.json 中已安裝，但當前未使用
-29: // 如需使用，請取消下面的註釋並安裝對應的類型定義（如果有的話）
-30: // import { EditorModule } from 'ngx-tinymce';
-31: 
-32: /**
-33:  * ngx-tinymce 模組集合
-34:  * 
-35:  * 目前為空數組，因為項目中尚未使用 TinyMCE 編輯器
-36:  * 如需使用，請取消上面的 import 並將 EditorModule 添加到數組中
-37:  */
-38: export const SHARED_TINYMCE_MODULES: any[] = [
-39:   // EditorModule, // TinyMCE 富文本編輯器 — https://github.com/ng-alain/ng-alain/tree/master/packages/tinymce
-40: ];
-````
-
-## File: src/app/app.component.ts
-````typescript
- 1: import { Component, OnInit, inject } from '@angular/core';
- 2: import { NavigationEnd, NavigationError, RouteConfigLoadStart, Router, RouterOutlet } from '@angular/router';
- 3: import { TitleService, VERSION as VERSION_ALAIN, stepPreloader } from '@delon/theme';
- 4: import { environment } from '@env/environment';
- 5: import { NzModalService } from 'ng-zorro-antd/modal';
- 6: import { VERSION as VERSION_ZORRO } from 'ng-zorro-antd/version';
- 7: 
- 8: @Component({
- 9:   selector: 'app-root',
-10:   template: `<router-outlet />`,
-11:   imports: [RouterOutlet],
-12:   host: {
-13:     '[attr.ng-alain-version]': 'ngAlainVersion',
-14:     '[attr.ng-zorro-version]': 'ngZorroVersion'
-15:   }
-16: })
-17: export class AppComponent implements OnInit {
-18:   private readonly router = inject(Router);
-19:   private readonly titleSrv = inject(TitleService);
-20:   private readonly modalSrv = inject(NzModalService);
-21:   ngAlainVersion = VERSION_ALAIN.full;
-22:   ngZorroVersion = VERSION_ZORRO.full;
-23: 
-24:   private donePreloader = stepPreloader();
-25: 
-26:   ngOnInit(): void {
-27:     let configLoad = false;
-28:     this.router.events.subscribe(ev => {
-29:       if (ev instanceof RouteConfigLoadStart) {
-30:         configLoad = true;
-31:       }
-32:       if (configLoad && ev instanceof NavigationError) {
-33:         this.modalSrv.confirm({
-34:           nzTitle: `提醒`,
-35:           nzContent: environment.production ? `应用可能已发布新版本，请点击刷新才能生效。` : `无法加载路由：${ev.url}`,
-36:           nzCancelDisabled: false,
-37:           nzOkText: '刷新',
-38:           nzCancelText: '忽略',
-39:           nzOnOk: () => location.reload()
-40:         });
-41:       }
-42:       if (ev instanceof NavigationEnd) {
-43:         this.donePreloader();
-44:         this.titleSrv.setTitle();
-45:         this.modalSrv.closeAll();
-46:       }
-47:     });
-48:   }
-49: }
-````
-
-## File: src/app/app.config.ts
-````typescript
- 1: import { provideHttpClient, withInterceptors } from '@angular/common/http';
- 2: import { default as ngLang } from '@angular/common/locales/zh';
- 3: import { ApplicationConfig, EnvironmentProviders, Provider } from '@angular/core';
- 4: import { provideAnimations } from '@angular/platform-browser/animations';
- 5: import {
- 6:   provideRouter,
- 7:   withComponentInputBinding,
- 8:   withInMemoryScrolling,
- 9:   withHashLocation,
-10:   RouterFeatures,
-11:   withViewTransitions
-12: } from '@angular/router';
-13: import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
-14: import { provideCellWidgets } from '@delon/abc/cell';
-15: import { provideSTWidgets } from '@delon/abc/st';
-16: import { authSimpleInterceptor, provideAuth } from '@delon/auth';
-17: import { provideSFConfig } from '@delon/form';
-18: import { AlainProvideLang, provideAlain, zh_CN as delonLang } from '@delon/theme';
-19: import { AlainConfig } from '@delon/util/config';
-20: import { environment } from '@env/environment';
-21: import { CELL_WIDGETS, SF_WIDGETS, ST_WIDGETS } from '@shared';
-22: import { zhCN as dateLang } from 'date-fns/locale';
-23: import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
-24: import { zh_CN as zorroLang } from 'ng-zorro-antd/i18n';
-25: 
-26: import { ICONS } from '../style-icons';
-27: import { ICONS_AUTO } from '../style-icons-auto';
-28: import { routes } from './routes/routes';
-29: 
-30: const defaultLang: AlainProvideLang = {
-31:   abbr: 'zh-CN',
-32:   ng: ngLang,
-33:   zorro: zorroLang,
-34:   date: dateLang,
-35:   delon: delonLang
-36: };
-37: 
-38: const alainConfig: AlainConfig = {
-39:   st: { modal: { size: 'lg' } },
-40:   pageHeader: { homeI18n: 'home' },
-41:   lodop: {
-42:     license: `A59B099A586B3851E0F0D7FDBF37B603`,
-43:     licenseA: `C94CEE276DB2187AE6B65D56B3FC2848`
-44:   },
-45:   auth: { login_url: '/passport/login' }
-46: };
-47: 
-48: const ngZorroConfig: NzConfig = {};
-49: 
-50: const routerFeatures: RouterFeatures[] = [
-51:   withComponentInputBinding(),
-52:   withViewTransitions(),
-53:   withInMemoryScrolling({ scrollPositionRestoration: 'top' })
-54: ];
-55: if (environment.useHash) routerFeatures.push(withHashLocation());
-56: 
-57: const providers: Array<Provider | EnvironmentProviders> = [
-58:   provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), authSimpleInterceptor, defaultInterceptor])),
-59:   provideAnimations(),
-60:   provideRouter(routes, ...routerFeatures),
-61:   provideAlain({ config: alainConfig, defaultLang, i18nClass: I18NService, icons: [...ICONS_AUTO, ...ICONS] }),
-62:   provideNzConfig(ngZorroConfig),
-63:   provideAuth(),
-64:   provideCellWidgets(...CELL_WIDGETS),
-65:   provideSTWidgets(...ST_WIDGETS),
-66:   provideSFConfig({ widgets: SF_WIDGETS }),
-67:   provideStartup(),
-68:   ...(environment.providers || [])
-69: ];
-70: 
-71: // If you use `@delon/auth` to refresh the token, additional registration `provideBindAuthRefresh` is required
-72: if (environment.api?.refreshTokenEnabled && environment.api.refreshTokenType === 'auth-refresh') {
-73:   providers.push(provideBindAuthRefresh());
-74: }
-75: 
-76: export const appConfig: ApplicationConfig = {
-77:   providers: providers
-78: };
-````
-
-## File: src/app/core/i18n/i18n.service.spec.ts
-````typescript
- 1: import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
- 2: import { provideHttpClientTesting } from '@angular/common/http/testing';
- 3: import { TestBed } from '@angular/core/testing';
- 4: import { DelonLocaleService, SettingsService } from '@delon/theme';
- 5: import { NzSafeAny } from 'ng-zorro-antd/core/types';
- 6: import { NzI18nService } from 'ng-zorro-antd/i18n';
- 7: 
- 8: import { I18NService } from './i18n.service';
- 9: 
-10: describe('Service: I18n', () => {
-11:   let srv: I18NService;
-12:   const MockSettingsService: NzSafeAny = {
-13:     layout: {
-14:       lang: null
-15:     }
-16:   };
-17:   const MockNzI18nService = {
-18:     setLocale: () => {},
-19:     setDateLocale: () => {}
-20:   };
-21:   const MockDelonLocaleService = {
-22:     setLocale: () => {}
-23:   };
-24: 
-25:   function genModule(): void {
-26:     TestBed.configureTestingModule({
-27:       imports: [],
-28:       providers: [
-29:         I18NService,
-30:         { provide: SettingsService, useValue: MockSettingsService },
-31:         { provide: NzI18nService, useValue: MockNzI18nService },
-32:         { provide: DelonLocaleService, useValue: MockDelonLocaleService },
-33:         provideHttpClient(withInterceptorsFromDi()),
-34:         provideHttpClientTesting()
-35:       ]
-36:     });
-37:     srv = TestBed.inject(I18NService);
-38:   }
-39: 
-40:   it('should working', () => {
-41:     spyOnProperty(navigator, 'languages').and.returnValue(['zh-CN']);
-42:     genModule();
-43:     expect(srv).toBeTruthy();
-44:     expect(srv.defaultLang).toBe('zh-CN');
-45:     srv.fanyi('a');
-46:     srv.fanyi('a', {});
-47:   });
-48: 
-49:   it('should be used layout as default language', () => {
-50:     MockSettingsService.layout.lang = 'en-US';
-51:     const navSpy = spyOnProperty(navigator, 'languages');
-52:     genModule();
-53:     expect(navSpy).not.toHaveBeenCalled();
-54:     expect(srv.defaultLang).toBe('en-US');
-55:     MockSettingsService.layout.lang = null;
-56:   });
-57: 
-58:   it('should be used browser as default language', () => {
-59:     spyOnProperty(navigator, 'languages').and.returnValue(['zh-TW']);
-60:     genModule();
-61:     expect(srv.defaultLang).toBe('zh-TW');
-62:   });
-63: 
-64:   it('should be use default language when the browser language is not in the list', () => {
-65:     spyOnProperty(navigator, 'languages').and.returnValue(['es-419']);
-66:     genModule();
-67:     expect(srv.defaultLang).toBe('zh-CN');
-68:   });
-69: 
-70:   it('should be trigger notify when changed language', () => {
-71:     genModule();
-72:     srv.use('en-US', {});
-73:     srv.change.subscribe(lang => {
-74:       expect(lang).toBe('en-US');
-75:     });
-76:   });
-77: });
-````
-
-## File: src/app/core/i18n/i18n.service.ts
-````typescript
-  1: // 请参考：https://ng-alain.com/docs/i18n
-  2: import { Platform } from '@angular/cdk/platform';
-  3: import { registerLocaleData } from '@angular/common';
-  4: import ngEn from '@angular/common/locales/en';
-  5: import ngZh from '@angular/common/locales/zh';
-  6: import ngZhTw from '@angular/common/locales/zh-Hant';
-  7: import { Injectable, inject } from '@angular/core';
-  8: import {
-  9:   DelonLocaleService,
- 10:   en_US as delonEnUS,
- 11:   SettingsService,
- 12:   zh_CN as delonZhCn,
- 13:   zh_TW as delonZhTw,
- 14:   _HttpClient,
- 15:   AlainI18nBaseService
- 16: } from '@delon/theme';
- 17: import { enUS as dfEn, zhCN as dfZhCn, zhTW as dfZhTw } from 'date-fns/locale';
- 18: import { NzSafeAny } from 'ng-zorro-antd/core/types';
- 19: import { en_US as zorroEnUS, NzI18nService, zh_CN as zorroZhCN, zh_TW as zorroZhTW } from 'ng-zorro-antd/i18n';
- 20: import { Observable } from 'rxjs';
- 21: 
- 22: interface LangConfigData {
- 23:   abbr: string;
- 24:   text: string;
- 25:   ng: NzSafeAny;
- 26:   zorro: NzSafeAny;
- 27:   date: NzSafeAny;
- 28:   delon: NzSafeAny;
- 29: }
- 30: 
- 31: const DEFAULT = 'zh-CN';
- 32: const LANGS: Record<string, LangConfigData> = {
- 33:   'zh-CN': {
- 34:     text: '简体中文',
- 35:     ng: ngZh,
- 36:     zorro: zorroZhCN,
- 37:     date: dfZhCn,
- 38:     delon: delonZhCn,
- 39:     abbr: '🇨🇳'
- 40:   },
- 41:   'zh-TW': {
- 42:     text: '繁体中文',
- 43:     ng: ngZhTw,
- 44:     zorro: zorroZhTW,
- 45:     date: dfZhTw,
- 46:     delon: delonZhTw,
- 47:     abbr: '🇭🇰'
- 48:   },
- 49:   'en-US': {
- 50:     text: 'English',
- 51:     ng: ngEn,
- 52:     zorro: zorroEnUS,
- 53:     date: dfEn,
- 54:     delon: delonEnUS,
- 55:     abbr: '🇬🇧'
- 56:   }
- 57: };
- 58: 
- 59: @Injectable({ providedIn: 'root' })
- 60: export class I18NService extends AlainI18nBaseService {
- 61:   private readonly http = inject(_HttpClient);
- 62:   private readonly settings = inject(SettingsService);
- 63:   private readonly nzI18nService = inject(NzI18nService);
- 64:   private readonly delonLocaleService = inject(DelonLocaleService);
- 65:   private readonly platform = inject(Platform);
- 66: 
- 67:   protected override _defaultLang = DEFAULT;
- 68:   private _langs = Object.keys(LANGS).map(code => {
- 69:     const item = LANGS[code];
- 70:     return { code, text: item.text, abbr: item.abbr };
- 71:   });
- 72: 
- 73:   constructor() {
- 74:     super();
- 75: 
- 76:     const defaultLang = this.getDefaultLang();
- 77:     this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;
- 78:   }
- 79: 
- 80:   private getDefaultLang(): string {
- 81:     if (!this.platform.isBrowser) {
- 82:       return DEFAULT;
- 83:     }
- 84:     if (this.settings.layout.lang) {
- 85:       return this.settings.layout.lang;
- 86:     }
- 87:     let res = (navigator.languages ? navigator.languages[0] : null) || navigator.language;
- 88:     const arr = res.split('-');
- 89:     return arr.length <= 1 ? res : `${arr[0]}-${arr[1].toUpperCase()}`;
- 90:   }
- 91: 
- 92:   loadLangData(lang: string): Observable<NzSafeAny> {
- 93:     return this.http.get(`./assets/tmp/i18n/${lang}.json`);
- 94:   }
- 95: 
- 96:   use(lang: string, data: Record<string, unknown>): void {
- 97:     if (this._currentLang === lang) return;
- 98: 
- 99:     this._data = this.flatData(data, []);
-100: 
-101:     const item = LANGS[lang];
-102:     registerLocaleData(item.ng);
-103:     this.nzI18nService.setLocale(item.zorro);
-104:     this.nzI18nService.setDateLocale(item.date);
-105:     this.delonLocaleService.setLocale(item.delon);
-106:     this._currentLang = lang;
-107: 
-108:     this._change$.next(lang);
-109:   }
-110: 
-111:   getLangs(): Array<{ code: string; text: string; abbr: string }> {
-112:     return this._langs;
-113:   }
-114: }
-````
-
-## File: src/app/core/index.ts
-````typescript
-1: export * from './i18n/i18n.service';
-2: export * from './net/index';
-3: export * from './startup/startup.service';
-4: export * from './start-page.guard';
-5: export * from './supabase';
-6: export * from './permissions';
-````
-
-## File: src/app/core/net/default.interceptor.ts
-````typescript
- 1: import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
- 2: import { Injector, inject } from '@angular/core';
- 3: import { IGNORE_BASE_URL } from '@delon/theme';
- 4: import { environment } from '@env/environment';
- 5: import { Observable, of, throwError, mergeMap } from 'rxjs';
- 6: 
- 7: import { ReThrowHttpError, checkStatus, getAdditionalHeaders, toLogin } from './helper';
- 8: import { tryRefreshToken } from './refresh-token';
- 9: 
-10: function handleData(injector: Injector, ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandlerFn): Observable<any> {
-11:   checkStatus(injector, ev);
-12:   // 业务处理：一些通用操作
-13:   switch (ev.status) {
-14:     case 200:
-15:       // 业务层级错误处理，以下是假定restful有一套统一输出格式（指不管成功与否都有相应的数据格式）情况下进行处理
-16:       // 例如响应内容：
-17:       //  错误内容：{ status: 1, msg: '非法参数' }
-18:       //  正确内容：{ status: 0, response: {  } }
-19:       // 则以下代码片断可直接适用
-20:       // if (ev instanceof HttpResponse) {
-21:       //   const body = ev.body;
-22:       //   if (body && body.status !== 0) {
-23:       //     const customError = req.context.get(CUSTOM_ERROR);
-24:       //     if (customError) injector.get(NzMessageService).error(body.msg);
-25:       //     return customError ? throwError(() => ({ body, _throw: true }) as ReThrowHttpError) : of({});
-26:       //   } else {
-27:       //     // 返回原始返回体
-28:       //     if (req.context.get(RAW_BODY) || ev.body instanceof Blob) {
-29:       //       return of(ev);
-30:       //     }
-31:       //     // 重新修改 `body` 内容为 `response` 内容，对于绝大多数场景已经无须再关心业务状态码
-32:       //     return of(new HttpResponse({ ...ev, body: body.response } as any));
-33:       //     // 或者依然保持完整的格式
-34:       //     return of(ev);
-35:       //   }
-36:       // }
-37:       break;
-38:     case 401:
-39:       if (environment.api.refreshTokenEnabled && environment.api.refreshTokenType === 're-request') {
-40:         return tryRefreshToken(injector, ev, req, next);
-41:       }
-42:       toLogin(injector);
-43:       break;
-44:     case 403:
-45:     case 404:
-46:     case 500:
-47:       // goTo(injector, `/exception/${ev.status}?url=${req.urlWithParams}`);
-48:       break;
-49:     default:
-50:       if (ev instanceof HttpErrorResponse) {
-51:         console.warn('未可知错误，大部分是由于后端不支持跨域CORS或无效配置引起，请参考 https://ng-alain.com/docs/server 解决跨域问题', ev);
-52:       }
-53:       break;
-54:   }
-55:   if (ev instanceof HttpErrorResponse) {
-56:     return throwError(() => ev);
-57:   } else if ((ev as unknown as ReThrowHttpError)._throw === true) {
-58:     return throwError(() => (ev as unknown as ReThrowHttpError).body);
-59:   } else {
-60:     return of(ev);
-61:   }
-62: }
-63: 
-64: export const defaultInterceptor: HttpInterceptorFn = (req, next) => {
-65:   // 统一加上服务端前缀
-66:   let url = req.url;
-67:   if (!req.context.get(IGNORE_BASE_URL) && !url.startsWith('https://') && !url.startsWith('http://')) {
-68:     const { baseUrl } = environment.api;
-69:     url = baseUrl + (baseUrl.endsWith('/') && url.startsWith('/') ? url.substring(1) : url);
-70:   }
-71:   const newReq = req.clone({ url, setHeaders: getAdditionalHeaders(req.headers) });
-72:   const injector = inject(Injector);
-73: 
-74:   return next(newReq).pipe(
-75:     mergeMap(ev => {
-76:       // 允许统一对请求错误处理
-77:       if (ev instanceof HttpResponseBase) {
-78:         return handleData(injector, ev, newReq, next);
-79:       }
-80:       // 若一切都正常，则后续操作
-81:       return of(ev);
-82:     })
-83:     // catchError((err: HttpErrorResponse) => handleData(injector, err, newReq, next))
-84:   );
-85: };
-````
-
-## File: src/app/core/net/helper.ts
-````typescript
- 1: import { HttpHeaders, HttpResponseBase } from '@angular/common/http';
- 2: import { Injector, inject } from '@angular/core';
- 3: import { Router } from '@angular/router';
- 4: import { DA_SERVICE_TOKEN } from '@delon/auth';
- 5: import { ALAIN_I18N_TOKEN } from '@delon/theme';
- 6: import { NzNotificationService } from 'ng-zorro-antd/notification';
- 7: 
- 8: export interface ReThrowHttpError {
- 9:   body: any;
-10:   _throw: true;
-11: }
-12: 
-13: export const CODEMESSAGE: Record<number, string> = {
-14:   200: '服务器成功返回请求的数据。',
-15:   201: '新建或修改数据成功。',
-16:   202: '一个请求已经进入后台排队（异步任务）。',
-17:   204: '删除数据成功。',
-18:   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-19:   401: '用户没有权限（令牌、用户名、密码错误）。',
-20:   403: '用户得到授权，但是访问是被禁止的。',
-21:   404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
-22:   406: '请求的格式不可得。',
-23:   410: '请求的资源被永久删除，且不会再得到的。',
-24:   422: '当创建一个对象时，发生一个验证错误。',
-25:   500: '服务器发生错误，请检查服务器。',
-26:   502: '网关错误。',
-27:   503: '服务不可用，服务器暂时过载或维护。',
-28:   504: '网关超时。'
-29: };
-30: 
-31: export function goTo(injector: Injector, url: string): void {
-32:   setTimeout(() => injector.get(Router).navigateByUrl(url));
-33: }
-34: 
-35: export function toLogin(injector: Injector): void {
-36:   injector.get(NzNotificationService).error(`未登录或登录已过期，请重新登录。`, ``);
-37:   goTo(injector, injector.get(DA_SERVICE_TOKEN).login_url!);
-38: }
-39: 
-40: export function getAdditionalHeaders(headers?: HttpHeaders): Record<string, string> {
-41:   const res: Record<string, string> = {};
-42:   const lang = inject(ALAIN_I18N_TOKEN).currentLang;
-43:   if (!headers?.has('Accept-Language') && lang) {
-44:     res['Accept-Language'] = lang;
-45:   }
-46: 
-47:   return res;
-48: }
-49: 
-50: export function checkStatus(injector: Injector, ev: HttpResponseBase): void {
-51:   if ((ev.status >= 200 && ev.status < 300) || ev.status === 401) {
-52:     return;
-53:   }
-54: 
-55:   const errortext = CODEMESSAGE[ev.status] || ev.statusText;
-56:   injector.get(NzNotificationService).error(`请求错误 ${ev.status}: ${ev.url}`, errortext);
-57: }
-````
-
-## File: src/app/core/net/index.ts
-````typescript
-1: export { provideBindAuthRefresh } from './refresh-token';
-2: export * from './default.interceptor';
-````
-
-## File: src/app/core/net/refresh-token.ts
-````typescript
-  1: import { HttpClient, HttpHandlerFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
-  2: import { EnvironmentProviders, Injector, inject, provideAppInitializer } from '@angular/core';
-  3: import { DA_SERVICE_TOKEN } from '@delon/auth';
-  4: import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError, map } from 'rxjs';
-  5: 
-  6: import { toLogin } from './helper';
-  7: import { SupabaseAuthAdapterService } from '../supabase';
-  8: 
-  9: let refreshToking = false;
- 10: let refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
- 11: 
- 12: /**
- 13:  * 重新附加新 Token 信息
- 14:  *
- 15:  * > 由于已经发起的请求，不会再走一遍 `@delon/auth` 因此需要结合业务情况重新附加新的 Token
- 16:  */
- 17: function reAttachToken(injector: Injector, req: HttpRequest<any>): HttpRequest<any> {
- 18:   const token = injector.get(DA_SERVICE_TOKEN).get()?.token;
- 19:   return req.clone({
- 20:     setHeaders: {
- 21:       token: `Bearer ${token}`
- 22:     }
- 23:   });
- 24: }
- 25: 
- 26: function refreshTokenRequest(injector: Injector): Observable<any> {
- 27:   const adapter = injector.get(SupabaseAuthAdapterService);
- 28:   return adapter.refreshSession().pipe(
- 29:     map(session => adapter.convertSessionToTokenFormat(session))
- 30:   );
- 31: }
- 32: 
- 33: /**
- 34:  * 刷新Token方式一：使用 401 重新刷新 Token
- 35:  */
- 36: export function tryRefreshToken(injector: Injector, ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandlerFn): Observable<any> {
- 37:   // 1、若请求为刷新Token请求，表示来自刷新Token可以直接跳转登录页
- 38:   if ([`/api/auth/refresh`].some(url => req.url.includes(url))) {
- 39:     toLogin(injector);
- 40:     return throwError(() => ev);
- 41:   }
- 42:   // 2、如果 `refreshToking` 为 `true` 表示已经在请求刷新 Token 中，后续所有请求转入等待状态，直至结果返回后再重新发起请求
- 43:   if (refreshToking) {
- 44:     return refreshToken$.pipe(
- 45:       filter(v => !!v),
- 46:       take(1),
- 47:       switchMap(() => next(reAttachToken(injector, req)))
- 48:     );
- 49:   }
- 50:   // 3、尝试调用刷新 Token
- 51:   refreshToking = true;
- 52:   refreshToken$.next(null);
- 53: 
- 54:   return refreshTokenRequest(injector).pipe(
- 55:     switchMap(res => {
- 56:       // 通知后续请求继续执行
- 57:       refreshToking = false;
- 58:       refreshToken$.next(res);
- 59:       // 重新保存新 token
- 60:       injector.get(DA_SERVICE_TOKEN).set(res);
- 61:       // 重新发起请求
- 62:       return next(reAttachToken(injector, req));
- 63:     }),
- 64:     catchError(err => {
- 65:       refreshToking = false;
- 66:       toLogin(injector);
- 67:       return throwError(() => err);
- 68:     })
- 69:   );
- 70: }
- 71: 
- 72: function buildAuthRefresh(injector: Injector): void {
- 73:   const tokenSrv = injector.get(DA_SERVICE_TOKEN);
- 74:   tokenSrv.refresh
- 75:     .pipe(
- 76:       filter(() => !refreshToking),
- 77:       switchMap(res => {
- 78:         console.log(res);
- 79:         refreshToking = true;
- 80:         return refreshTokenRequest(injector);
- 81:       })
- 82:     )
- 83:     .subscribe({
- 84:       next: res => {
- 85:         // TODO: Mock expired value
- 86:         res.expired = +new Date() + 1000 * 60 * 5;
- 87:         refreshToking = false;
- 88:         tokenSrv.set(res);
- 89:       },
- 90:       error: () => toLogin(injector)
- 91:     });
- 92: }
- 93: 
- 94: /**
- 95:  * 刷新Token方式二：使用 `@delon/auth` 的 `refresh` 接口，需要在 `app.config.ts` 中注册 `provideBindAuthRefresh`
- 96:  */
- 97: export function provideBindAuthRefresh(): EnvironmentProviders[] {
- 98:   return [
- 99:     provideAppInitializer(() => {
-100:       const initializerFn = (
-101:         (injector: Injector) => () =>
-102:           buildAuthRefresh(injector)
-103:       )(inject(Injector));
-104:       return initializerFn();
-105:     })
-106:   ];
-107: }
-````
-
 ## File: src/app/core/start-page.guard.ts
 ````typescript
  1: import { CanActivateFn } from '@angular/router';
@@ -1823,107 +1772,6 @@ src/typings.d.ts
 16:   // }
 17:   return true;
 18: };
-````
-
-## File: src/app/core/startup/startup.service.ts
-````typescript
- 1: import { HttpClient } from '@angular/common/http';
- 2: import { EnvironmentProviders, Injectable, Provider, inject, provideAppInitializer } from '@angular/core';
- 3: import { Router } from '@angular/router';
- 4: import { ACLService } from '@delon/acl';
- 5: import { DA_SERVICE_TOKEN } from '@delon/auth';
- 6: import { ALAIN_I18N_TOKEN, MenuService, SettingsService, TitleService } from '@delon/theme';
- 7: import { NzSafeAny } from 'ng-zorro-antd/core/types';
- 8: import { Observable, zip, catchError, map, switchMap, of } from 'rxjs';
- 9: 
-10: import { I18NService } from '../i18n/i18n.service';
-11: import { PermissionService } from '../permissions/permission.service';
-12: import { SupabaseAuthAdapterService } from '../supabase';
-13: 
-14: /**
-15:  * Used for application startup
-16:  * Generally used to get the basic data of the application, like: Menu Data, User Data, etc.
-17:  */
-18: export function provideStartup(): Array<Provider | EnvironmentProviders> {
-19:   return [
-20:     StartupService,
-21:     provideAppInitializer(() => {
-22:       const initializerFn = (
-23:         (startupService: StartupService) => () =>
-24:           startupService.load()
-25:       )(inject(StartupService));
-26:       return initializerFn();
-27:     })
-28:   ];
-29: }
-30: 
-31: @Injectable()
-32: export class StartupService {
-33:   private menuService = inject(MenuService);
-34:   private settingService = inject(SettingsService);
-35:   private aclService = inject(ACLService);
-36:   private titleService = inject(TitleService);
-37:   private httpClient = inject(HttpClient);
-38:   private router = inject(Router);
-39:   private i18n = inject<I18NService>(ALAIN_I18N_TOKEN);
-40:   private supabaseAuthAdapter = inject(SupabaseAuthAdapterService);
-41:   private permissionService = inject(PermissionService);
-42:   private tokenService = inject(DA_SERVICE_TOKEN);
-43: 
-44:   load(): Observable<void> {
-45:     const defaultLang = this.i18n.defaultLang;
-46:     
-47:     // 先恢復 Supabase Session（如果存在），然後執行原有的啟動邏輯
-48:     return this.supabaseAuthAdapter.restoreSession().pipe(
-49:       switchMap(() => {
-50:         // 同步用户权限（如果已登录）
-51:         const currentUser = this.tokenService.get()?.user;
-52:         const syncPermissions$ = currentUser?.id
-53:           ? from(this.permissionService.syncRolesFromDatabase(currentUser.id)).pipe(
-54:               catchError(error => {
-55:                 console.warn('Failed to sync permissions:', error);
-56:                 return of(undefined);
-57:               })
-58:             )
-59:           : of(undefined);
-60: 
-61:         return syncPermissions$.pipe(
-62:           switchMap(() => {
-63:             // If http request allows anonymous access, you need to add `ALLOW_ANONYMOUS`:
-64:             // this.httpClient.get('/app', { context: new HttpContext().set(ALLOW_ANONYMOUS, this.tokenService.get()?.token ? false : true) })
-65:             return zip(this.i18n.loadLangData(defaultLang), this.httpClient.get('./assets/tmp/app-data.json')).pipe(
-66:               // 接收其他拦截器后产生的异常消息
-67:               catchError(res => {
-68:                 console.warn(`StartupService.load: Network request failed`, res);
-69:                 setTimeout(() => this.router.navigateByUrl(`/exception/500`));
-70:                 return [];
-71:               }),
-72:               map(([langData, appData]: [Record<string, string>, NzSafeAny]) => {
-73:                 // setting language data
-74:                 this.i18n.use(defaultLang, langData);
-75: 
-76:                 // 应用信息：包括站点名、描述、年份
-77:                 this.settingService.setApp(appData.app);
-78:                 // 用户信息：包括姓名、头像、邮箱地址
-79:                 this.settingService.setUser(appData.user);
-80:                 // ACL：如果用户已登录，权限已通过 PermissionService 同步
-81:                 // 如果未登录，设置为全量（开发模式）
-82:                 if (!currentUser?.id) {
-83:                   this.aclService.setFull(true);
-84:                 }
-85:                 // 初始化菜单
-86:                 this.menuService.add(appData.menu);
-87:                 // 设置页面标题的后缀
-88:                 this.titleService.default = '';
-89:                 this.titleService.suffix = appData.app.name;
-90:               })
-91:             );
-92:           })
-93:         );
-94:       })
-95:     );
-96:   }
-97: }
 ````
 
 ## File: src/app/core/supabase/index.ts
@@ -7210,79 +7058,48 @@ src/typings.d.ts
 123: ];
 ````
 
-## File: src/app/shared/shared-imports.ts
+## File: src/app/shared/shared-tinymce.module.ts
 ````typescript
- 1: // Angular Common 管道與指令 — https://angular.dev/guide/pipes
- 2: import {
- 3:   AsyncPipe,
- 4:   CurrencyPipe,
- 5:   DatePipe,
- 6:   DecimalPipe,
- 7:   I18nPluralPipe,
- 8:   I18nSelectPipe,
- 9:   JsonPipe,
-10:   KeyValuePipe,
-11:   LowerCasePipe,
-12:   NgClass,
-13:   NgComponentOutlet,
-14:   NgStyle,
-15:   NgTemplateOutlet,
-16:   PercentPipe,
-17:   SlicePipe,
-18:   TitleCasePipe,
-19:   UpperCasePipe
-20: } from '@angular/common';
-21: // 表單模組（模板式 / 響應式） — https://angular.dev/guide/forms
-22: import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-23: // 路由（RouterLink/RouterOutlet） — https://angular.dev/guide/routing
-24: import { RouterOutlet, RouterLink } from '@angular/router';
-25: // @delon/theme 管道（I18n/Date） — https://ng-alain.com/theme
-26: // 注意：@delon/theme 的 DatePipe 在模板中使用 `_date` pipe，Angular Common 的 DatePipe 使用 `date` pipe
-27: import { DatePipe as DelonDatePipe, I18nPipe } from '@delon/theme';
-28: 
-29: import { SHARED_DELON_MODULES } from './shared-delon.module';
-30: import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+ 1: /**
+ 2:  * ngx-tinymce 富文本編輯器模組
+ 3:  * 
+ 4:  * 注意：此模組為可選模組，僅在需要使用 TinyMCE 富文本編輯器時導入
+ 5:  * 
+ 6:  * 使用方式：
+ 7:  * ```typescript
+ 8:  * import { SHARED_TINYMCE_MODULES } from '@shared/shared-tinymce.module';
+ 9:  * 
+10:  * @Component({
+11:  *   imports: [SHARED_IMPORTS, ...SHARED_TINYMCE_MODULES]
+12:  * })
+13:  * ```
+14:  * 
+15:  * 或在需要時直接導入：
+16:  * ```typescript
+17:  * import { EditorModule } from 'ngx-tinymce';
+18:  * 
+19:  * @Component({
+20:  *   imports: [SHARED_IMPORTS, EditorModule]
+21:  * })
+22:  * ```
+23:  * 
+24:  * @see https://github.com/ng-alain/ng-alain/tree/master/packages/tinymce
+25:  * @see https://www.tiny.cloud/docs/tinymce/latest/
+26:  */
+27: 
+28: // 注意：ngx-tinymce 在 package.json 中已安裝，但當前未使用
+29: // 如需使用，請取消下面的註釋並安裝對應的類型定義（如果有的話）
+30: // import { EditorModule } from 'ngx-tinymce';
 31: 
-32: export const SHARED_IMPORTS = [
-33:   // ========== Angular 表單模組 ==========
-34:   FormsModule, // 模板式表單 — https://angular.dev/guide/forms#template-driven-forms
-35:   ReactiveFormsModule, // 響應式表單 — https://angular.dev/guide/forms#reactive-forms
-36: 
-37:   // ========== Angular 路由 ==========
-38:   RouterLink, // 路由連結指令 — https://angular.dev/guide/routing#routerlink
-39:   RouterOutlet, // 路由插座 — https://angular.dev/guide/routing#routeroutlet
-40:   NgTemplateOutlet, // 動態嵌入模板 — https://angular.dev/api/common/NgTemplateOutlet
-41:   NgComponentOutlet, // 動態組件嵌入 — https://angular.dev/api/common/NgComponentOutlet
-42: 
-43:   // ========== Angular Common 標準管道 ==========
-44:   DatePipe, // 日期格式化（模板使用: `{{ value | date }}`） — https://angular.dev/api/common/DatePipe
-45:   CurrencyPipe, // 貨幣格式化（模板使用: `{{ value | currency }}`） — https://angular.dev/api/common/CurrencyPipe
-46:   DecimalPipe, // 數字格式化（模板使用: `{{ value | number }}`） — https://angular.dev/api/common/DecimalPipe
-47:   PercentPipe, // 百分比格式化（模板使用: `{{ value | percent }}`） — https://angular.dev/api/common/PercentPipe
-48:   LowerCasePipe, // 轉小寫（模板使用: `{{ value | lowercase }}`） — https://angular.dev/api/common/LowerCasePipe
-49:   UpperCasePipe, // 轉大寫（模板使用: `{{ value | uppercase }}`） — https://angular.dev/api/common/UpperCasePipe
-50:   TitleCasePipe, // 標題大小寫（模板使用: `{{ value | titlecase }}`） — https://angular.dev/api/common/TitleCasePipe
-51:   SlicePipe, // 陣列/字串切片（模板使用: `{{ value | slice:start:end }}`） — https://angular.dev/api/common/SlicePipe
-52:   KeyValuePipe, // 鍵值對遍歷（模板使用: `@for (item of obj | keyvalue)`） — https://angular.dev/api/common/KeyValuePipe
-53:   JsonPipe, // 物件轉 JSON 字串（模板使用: `{{ value | json }}`） — https://angular.dev/api/common/JsonPipe
-54:   AsyncPipe, // 觀察值/Promise 非同步解包（模板使用: `{{ value$ | async }}`） — https://angular.dev/api/common/AsyncPipe
-55:   I18nPluralPipe, // 複數形式映射（模板使用: `{{ count | i18nPlural:mapping }}`） — https://angular.dev/api/common/I18nPluralPipe
-56:   I18nSelectPipe, // 鍵值映射選擇（模板使用: `{{ value | i18nSelect:mapping }}`） — https://angular.dev/api/common/I18nSelectPipe
-57:   NgClass, // 動態 CSS 類（模板使用: `[ngClass]="..."`） — https://angular.dev/api/common/NgClass
-58:   NgStyle, // 動態內聯樣式（模板使用: `[ngStyle]="..."`） — https://angular.dev/api/common/NgStyle
-59: 
-60:   // ========== @delon/theme 管道 ==========
-61:   I18nPipe, // 國際化翻譯管道（模板使用: `{{ key | i18n }}`） — https://ng-alain.com/theme
-62:   DelonDatePipe, // @delon/theme 日期管道（模板使用: `{{ value | _date }}`） — https://ng-alain.com/theme
-63: 
-64:   // ========== @delon 組件/指令集合 ==========
-65:   // https://ng-alain.com/components
-66:   ...SHARED_DELON_MODULES,
-67: 
-68:   // ========== ng-zorro-antd 組件集合 ==========
-69:   // https://ng.ant.design/components/overview/zh
-70:   ...SHARED_ZORRO_MODULES
-71: ];
+32: /**
+33:  * ngx-tinymce 模組集合
+34:  * 
+35:  * 目前為空數組，因為項目中尚未使用 TinyMCE 編輯器
+36:  * 如需使用，請取消上面的 import 並將 EditorModule 添加到數組中
+37:  */
+38: export const SHARED_TINYMCE_MODULES: any[] = [
+39:   // EditorModule, // TinyMCE 富文本編輯器 — https://github.com/ng-alain/ng-alain/tree/master/packages/tinymce
+40: ];
 ````
 
 ## File: src/app/shared/shared-zorro.module.ts
@@ -7794,4 +7611,190 @@ src/typings.d.ts
 1: // # 3rd Party Library
 2: // If the library doesn't have typings available at `@types/`,
 3: // you can still use it by manually adding typings for it
+````
+
+## File: src/app/core/index.ts
+````typescript
+1: export * from './i18n/i18n.service';
+2: export * from './net/index';
+3: export * from './startup/startup.service';
+4: export * from './start-page.guard';
+5: export * from './supabase';
+6: export * from './permissions';
+````
+
+## File: src/app/core/startup/startup.service.ts
+````typescript
+ 1: import { HttpClient } from '@angular/common/http';
+ 2: import { EnvironmentProviders, Injectable, Provider, inject, provideAppInitializer } from '@angular/core';
+ 3: import { Router } from '@angular/router';
+ 4: import { ACLService } from '@delon/acl';
+ 5: import { DA_SERVICE_TOKEN } from '@delon/auth';
+ 6: import { ALAIN_I18N_TOKEN, MenuService, SettingsService, TitleService } from '@delon/theme';
+ 7: import { NzSafeAny } from 'ng-zorro-antd/core/types';
+ 8: import { Observable, zip, catchError, map, switchMap, of } from 'rxjs';
+ 9: 
+10: import { I18NService } from '../i18n/i18n.service';
+11: import { PermissionService } from '../permissions/permission.service';
+12: import { SupabaseAuthAdapterService } from '../supabase';
+13: 
+14: /**
+15:  * Used for application startup
+16:  * Generally used to get the basic data of the application, like: Menu Data, User Data, etc.
+17:  */
+18: export function provideStartup(): Array<Provider | EnvironmentProviders> {
+19:   return [
+20:     StartupService,
+21:     provideAppInitializer(() => {
+22:       const initializerFn = (
+23:         (startupService: StartupService) => () =>
+24:           startupService.load()
+25:       )(inject(StartupService));
+26:       return initializerFn();
+27:     })
+28:   ];
+29: }
+30: 
+31: @Injectable()
+32: export class StartupService {
+33:   private menuService = inject(MenuService);
+34:   private settingService = inject(SettingsService);
+35:   private aclService = inject(ACLService);
+36:   private titleService = inject(TitleService);
+37:   private httpClient = inject(HttpClient);
+38:   private router = inject(Router);
+39:   private i18n = inject<I18NService>(ALAIN_I18N_TOKEN);
+40:   private supabaseAuthAdapter = inject(SupabaseAuthAdapterService);
+41:   private permissionService = inject(PermissionService);
+42:   private tokenService = inject(DA_SERVICE_TOKEN);
+43: 
+44:   load(): Observable<void> {
+45:     const defaultLang = this.i18n.defaultLang;
+46:     
+47:     // 先恢復 Supabase Session（如果存在），然後執行原有的啟動邏輯
+48:     return this.supabaseAuthAdapter.restoreSession().pipe(
+49:       switchMap(() => {
+50:         // 同步用户权限（如果已登录）
+51:         const currentUser = this.tokenService.get()?.user;
+52:         const syncPermissions$ = currentUser?.id
+53:           ? from(this.permissionService.syncRolesFromDatabase(currentUser.id)).pipe(
+54:               catchError(error => {
+55:                 console.warn('Failed to sync permissions:', error);
+56:                 return of(undefined);
+57:               })
+58:             )
+59:           : of(undefined);
+60: 
+61:         return syncPermissions$.pipe(
+62:           switchMap(() => {
+63:             // If http request allows anonymous access, you need to add `ALLOW_ANONYMOUS`:
+64:             // this.httpClient.get('/app', { context: new HttpContext().set(ALLOW_ANONYMOUS, this.tokenService.get()?.token ? false : true) })
+65:             return zip(this.i18n.loadLangData(defaultLang), this.httpClient.get('./assets/tmp/app-data.json')).pipe(
+66:               // 接收其他拦截器后产生的异常消息
+67:               catchError(res => {
+68:                 console.warn(`StartupService.load: Network request failed`, res);
+69:                 setTimeout(() => this.router.navigateByUrl(`/exception/500`));
+70:                 return [];
+71:               }),
+72:               map(([langData, appData]: [Record<string, string>, NzSafeAny]) => {
+73:                 // setting language data
+74:                 this.i18n.use(defaultLang, langData);
+75: 
+76:                 // 应用信息：包括站点名、描述、年份
+77:                 this.settingService.setApp(appData.app);
+78:                 // 用户信息：包括姓名、头像、邮箱地址
+79:                 this.settingService.setUser(appData.user);
+80:                 // ACL：如果用户已登录，权限已通过 PermissionService 同步
+81:                 // 如果未登录，设置为全量（开发模式）
+82:                 if (!currentUser?.id) {
+83:                   this.aclService.setFull(true);
+84:                 }
+85:                 // 初始化菜单
+86:                 this.menuService.add(appData.menu);
+87:                 // 设置页面标题的后缀
+88:                 this.titleService.default = '';
+89:                 this.titleService.suffix = appData.app.name;
+90:               })
+91:             );
+92:           })
+93:         );
+94:       })
+95:     );
+96:   }
+97: }
+````
+
+## File: src/app/shared/shared-imports.ts
+````typescript
+ 1: // Angular Common 管道與指令 — https://angular.dev/guide/pipes
+ 2: import {
+ 3:   AsyncPipe,
+ 4:   CurrencyPipe,
+ 5:   DatePipe,
+ 6:   DecimalPipe,
+ 7:   I18nPluralPipe,
+ 8:   I18nSelectPipe,
+ 9:   JsonPipe,
+10:   KeyValuePipe,
+11:   LowerCasePipe,
+12:   NgClass,
+13:   NgComponentOutlet,
+14:   NgStyle,
+15:   NgTemplateOutlet,
+16:   PercentPipe,
+17:   SlicePipe,
+18:   TitleCasePipe,
+19:   UpperCasePipe
+20: } from '@angular/common';
+21: // 表單模組（模板式 / 響應式） — https://angular.dev/guide/forms
+22: import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+23: // 路由（RouterLink/RouterOutlet） — https://angular.dev/guide/routing
+24: import { RouterOutlet, RouterLink } from '@angular/router';
+25: // @delon/theme 管道（I18n/Date） — https://ng-alain.com/theme
+26: // 注意：@delon/theme 的 DatePipe 在模板中使用 `_date` pipe，Angular Common 的 DatePipe 使用 `date` pipe
+27: import { DatePipe as DelonDatePipe, I18nPipe } from '@delon/theme';
+28: 
+29: import { SHARED_DELON_MODULES } from './shared-delon.module';
+30: import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+31: 
+32: export const SHARED_IMPORTS = [
+33:   // ========== Angular 表單模組 ==========
+34:   FormsModule, // 模板式表單 — https://angular.dev/guide/forms#template-driven-forms
+35:   ReactiveFormsModule, // 響應式表單 — https://angular.dev/guide/forms#reactive-forms
+36: 
+37:   // ========== Angular 路由 ==========
+38:   RouterLink, // 路由連結指令 — https://angular.dev/guide/routing#routerlink
+39:   RouterOutlet, // 路由插座 — https://angular.dev/guide/routing#routeroutlet
+40:   NgTemplateOutlet, // 動態嵌入模板 — https://angular.dev/api/common/NgTemplateOutlet
+41:   NgComponentOutlet, // 動態組件嵌入 — https://angular.dev/api/common/NgComponentOutlet
+42: 
+43:   // ========== Angular Common 標準管道 ==========
+44:   DatePipe, // 日期格式化（模板使用: `{{ value | date }}`） — https://angular.dev/api/common/DatePipe
+45:   CurrencyPipe, // 貨幣格式化（模板使用: `{{ value | currency }}`） — https://angular.dev/api/common/CurrencyPipe
+46:   DecimalPipe, // 數字格式化（模板使用: `{{ value | number }}`） — https://angular.dev/api/common/DecimalPipe
+47:   PercentPipe, // 百分比格式化（模板使用: `{{ value | percent }}`） — https://angular.dev/api/common/PercentPipe
+48:   LowerCasePipe, // 轉小寫（模板使用: `{{ value | lowercase }}`） — https://angular.dev/api/common/LowerCasePipe
+49:   UpperCasePipe, // 轉大寫（模板使用: `{{ value | uppercase }}`） — https://angular.dev/api/common/UpperCasePipe
+50:   TitleCasePipe, // 標題大小寫（模板使用: `{{ value | titlecase }}`） — https://angular.dev/api/common/TitleCasePipe
+51:   SlicePipe, // 陣列/字串切片（模板使用: `{{ value | slice:start:end }}`） — https://angular.dev/api/common/SlicePipe
+52:   KeyValuePipe, // 鍵值對遍歷（模板使用: `@for (item of obj | keyvalue)`） — https://angular.dev/api/common/KeyValuePipe
+53:   JsonPipe, // 物件轉 JSON 字串（模板使用: `{{ value | json }}`） — https://angular.dev/api/common/JsonPipe
+54:   AsyncPipe, // 觀察值/Promise 非同步解包（模板使用: `{{ value$ | async }}`） — https://angular.dev/api/common/AsyncPipe
+55:   I18nPluralPipe, // 複數形式映射（模板使用: `{{ count | i18nPlural:mapping }}`） — https://angular.dev/api/common/I18nPluralPipe
+56:   I18nSelectPipe, // 鍵值映射選擇（模板使用: `{{ value | i18nSelect:mapping }}`） — https://angular.dev/api/common/I18nSelectPipe
+57:   NgClass, // 動態 CSS 類（模板使用: `[ngClass]="..."`） — https://angular.dev/api/common/NgClass
+58:   NgStyle, // 動態內聯樣式（模板使用: `[ngStyle]="..."`） — https://angular.dev/api/common/NgStyle
+59: 
+60:   // ========== @delon/theme 管道 ==========
+61:   I18nPipe, // 國際化翻譯管道（模板使用: `{{ key | i18n }}`） — https://ng-alain.com/theme
+62:   DelonDatePipe, // @delon/theme 日期管道（模板使用: `{{ value | _date }}`） — https://ng-alain.com/theme
+63: 
+64:   // ========== @delon 組件/指令集合 ==========
+65:   // https://ng-alain.com/components
+66:   ...SHARED_DELON_MODULES,
+67: 
+68:   // ========== ng-zorro-antd 組件集合 ==========
+69:   // https://ng.ant.design/components/overview/zh
+70:   ...SHARED_ZORRO_MODULES
+71: ];
 ````

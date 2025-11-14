@@ -96,6 +96,43 @@
 
 ---
 
+### 📄 7. 性能優化（Performance）
+➡ [fyi-performance.md](./fyi-performance.md)
+
+記錄性能優化策略和指標：
+- 緩存策略
+- 性能優化方案
+- 性能指標歷史數據
+- 構建時間、測試覆蓋率等
+
+---
+
+### 📄 8. 問題與挑戰（Challenges）
+➡ [fyi-challenges.md](./fyi-challenges.md)
+
+記錄開發過程中遇到的問題和挑戰：
+- 問題描述
+- 影響範圍
+- 解決方案
+- 經驗教訓
+
+---
+
+### 📄 9. 代碼庫索引（Codebase）
+➡ [fyi-codebase.md](./fyi-codebase.md)
+
+完整的代碼庫打包內容：
+- 所有 TypeScript 源代碼
+- 項目結構與文件組織
+- 代碼庫完整快照
+- 用於 AI 分析與代碼審查
+
+**生成方式**：
+- 使用 Repomix 工具自動生成
+- 執行：`npx -y repomix --config repomix.config.json --output docs/fyi-codebase.md --style markdown --verbose`
+
+---
+
 ## 🔍 快速查找
 
 ### 按主題查找
@@ -103,18 +140,26 @@
 #### 權限系統
 - **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-實施階段-1---權限服務模組corepermissions)
 - **架構設計**：→ [fyi-architecture.md](./fyi-architecture.md#權限系統架構)
+- **性能優化**：→ [fyi-performance.md](./fyi-performance.md#權限系統緩存策略)
 - **使用說明**：→ [fyi-context.md](./fyi-context.md#權限系統用語)
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-實施階段-1---權限服務模組)
+- **設計挑戰**：→ [fyi-challenges.md](./fyi-challenges.md#2025-01-15-權限系統設計權衡)
 
 #### 認證系統
 - **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-11-14-supabase-與-delonauth-整合)
 - **架構設計**：→ [fyi-architecture.md](./fyi-architecture.md#認證系統架構)
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-11-14-supabase-與-delonauth-整合)
+- **整合挑戰**：→ [fyi-challenges.md](./fyi-challenges.md#2025-11-14-supabase-與-delonauth-整合挑戰)
 
 #### 項目結構
 - **設計決策**：→ [fyi-development.md](./fyi-development.md#2025-01-15-項目結構重構規劃)
 - **架構設計**：→ [fyi-architecture.md](./fyi-architecture.md#項目結構設計)
 - **實施記錄**：→ [fyi-history.md](./fyi-history.md#2025-01-15-項目結構重構規劃)
+- **代碼庫內容**：→ [fyi-codebase.md](./fyi-codebase.md)
+
+#### 代碼庫
+- **完整代碼庫**：→ [fyi-codebase.md](./fyi-codebase.md)
+- **生成配置**：→ [repomix.config.json](../repomix.config.json)
 
 ---
 
@@ -124,6 +169,7 @@
 - 將原 `fyi.md` 內容拆分到 6 個分類文檔
 - 保持所有歷史記錄完整
 - 提升文檔可讀性和查找效率
+- 新增代碼庫索引（fyi-codebase.md）
 
 ---
 

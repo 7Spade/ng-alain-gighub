@@ -1,4 +1,4 @@
-// npx -y repomix --config repomix.config.json --output repomix-output.md --style markdown --verbose
+// npx -y repomix --config repomix.config.json --output docs/fyi-codebase.md --style markdown --verbose
 {
   "input": {},
   "include": [
