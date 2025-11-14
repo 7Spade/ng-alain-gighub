@@ -10,6 +10,8 @@ import {
   KeyValuePipe,
   LowerCasePipe,
   NgClass,
+  NgComponentOutlet,
+  NgStyle,
   NgTemplateOutlet,
   PercentPipe,
   SlicePipe,
@@ -36,6 +38,7 @@ export const SHARED_IMPORTS = [
   RouterLink, // 路由連結指令 — https://angular.dev/guide/routing#routerlink
   RouterOutlet, // 路由插座 — https://angular.dev/guide/routing#routeroutlet
   NgTemplateOutlet, // 動態嵌入模板 — https://angular.dev/api/common/NgTemplateOutlet
+  NgComponentOutlet, // 動態組件嵌入 — https://angular.dev/api/common/NgComponentOutlet
 
   // ========== Angular Common 標準管道 ==========
   DatePipe, // 日期格式化（模板使用: `{{ value | date }}`） — https://angular.dev/api/common/DatePipe
@@ -51,7 +54,8 @@ export const SHARED_IMPORTS = [
   AsyncPipe, // 觀察值/Promise 非同步解包（模板使用: `{{ value$ | async }}`） — https://angular.dev/api/common/AsyncPipe
   I18nPluralPipe, // 複數形式映射（模板使用: `{{ count | i18nPlural:mapping }}`） — https://angular.dev/api/common/I18nPluralPipe
   I18nSelectPipe, // 鍵值映射選擇（模板使用: `{{ value | i18nSelect:mapping }}`） — https://angular.dev/api/common/I18nSelectPipe
-  NgClass, // 動態樣式 — https://angular.dev/api/common/NgClass
+  NgClass, // 動態 CSS 類（模板使用: `[ngClass]="..."`） — https://angular.dev/api/common/NgClass
+  NgStyle, // 動態內聯樣式（模板使用: `[ngStyle]="..."`） — https://angular.dev/api/common/NgStyle
 
   // ========== @delon/theme 管道 ==========
   I18nPipe, // 國際化翻譯管道（模板使用: `{{ key | i18n }}`） — https://ng-alain.com/theme

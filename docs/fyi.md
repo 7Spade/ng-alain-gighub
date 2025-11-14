@@ -208,3 +208,109 @@ HTTP 攔截器自動添加 Authorization: Bearer {token}
 - `callback.component.ts` 組件仍保留在路由中，但由於已移除社交登入功能，該路由將不會被使用
 - 如需完全清理，可考慮在後續版本中移除 `callback` 路由和組件
 
+---
+
+## 2025-01-15: 項目結構重構規劃 - 基礎文件夾結構樹
+
+### 背景
+基於 51 張資料表的 11 個業務模組分類、業務流程圖、帳戶層流程圖和實體關係圖，需要重構項目文件夾結構，使其符合 Angular 20 + ng-alain 最佳實踐，並反映 Git-like 分支模型架構。
+
+### 設計決策
+- **分層架構**：嚴格遵循 `routes` → `shared` → `core` 的依賴方向
+- **業務領域驅動**：按 11 個業務模組組織文件夾結構
+- **Angular 20 最佳實踐**：使用 Standalone Components、SHARED_IMPORTS、Signals
+- **資料表映射**：每個業務模組對應相應的資料表集合和數據模型
+
+### 實施內容
+
+#### 創建的文檔
+1. **docs/04-重構後結構樹.md**
+   - 完整的項目文件夾結構樹文檔
+   - 包含 Core、Shared、Routes、Layout 四個主要模組的詳細結構
+   - 51 張資料表映射到 11 個業務模組的 Models 路徑
+   - 業務模組與 Routes 路徑的對應關係表
+   - 設計原則和命名規範說明
+
+### 結構設計
+
+#### Core 模組（核心基礎設施層）
+- `auth/` - 認證服務
+- `supabase/` - Supabase 數據庫服務
+- `net/` - HTTP 攔截器
+- `i18n/` - 國際化
+- `startup/` - 啟動服務
+- `permissions/` - 權限服務
+- `guards/` - 路由守衛
+- `interceptors/` - HTTP 攔截器
+
+#### Shared 模組（共享層）
+- `models/` - 數據模型（按 11 個業務模組分類）
+  - `account/` - 🔐 帳戶與身份系統（4 張表）
+  - `collaboration/` - 🤝 組織協作系統（3 張表）
+  - `permission/` - 🔒 權限系統（5 張表）
+  - `blueprint/` - 🎯 藍圖/專案系統（5 張表）
+  - `task/` - 📋 任務執行系統（9 張表）
+  - `quality/` - ✅ 品質驗收系統（4 張表）
+  - `issue/` - ⚠️ 問題追蹤系統（4 張表）
+  - `communication/` - 💬 協作溝通系統（6 張表）
+  - `data/` - 📊 資料分析系統（6 張表）
+  - `bot/` - 🤖 機器人系統（3 張表）
+  - `system/` - ⚙️ 系統管理（2 張表）
+- `services/` - 共享服務（Repository 模式、Storage 服務）
+- `components/` - 共享組件（UI 組件、小工具）
+- `utils/` - 工具函數
+- `pipes/` - 管道
+- `directives/` - 指令
+- `interfaces/` - 接口定義
+- `constants/` - 常量定義
+
+#### Routes 模組（業務層）
+按業務領域劃分：
+- `accounts/` - 🔐 帳戶管理
+- `blueprints/` - 🎯 藍圖管理（Git-like 分支模型）
+- `tasks/` - 📋 任務執行
+- `quality/` - ✅ 品質驗收
+- `issues/` - ⚠️ 問題追蹤
+- `collaboration/` - 💬 協作溝通
+- `documents/` - 📁 文件管理
+- `analytics/` - 📊 數據分析
+- `system/` - ⚙️ 系統管理
+- `dashboard/` - 📊 儀表板
+
+### 模組映射關係
+文檔包含完整的模組映射表，清晰展示：
+- 11 個業務模組
+- 對應的資料表數量
+- Models 路徑（`shared/models/{module}/`）
+- Routes 路徑（`routes/{module}/`）
+
+### 設計原則
+1. **分層架構**：Core（基礎設施）→ Shared（共享層）→ Routes（業務層）→ Layout（布局層）
+2. **業務領域驅動**：按 11 個業務模組組織文件夾
+3. **Angular 20 最佳實踐**：Standalone Components、SHARED_IMPORTS、Signals、inject()
+4. **命名規範**：kebab-case（文件夾、組件、服務、模型）
+
+### 技術細節
+- 使用 Context7 查詢 Angular 20 和 ng-alain 最佳實踐
+- 使用 Sequential Thinking 分析項目結構和業務需求
+- 使用 Software Planning Tool 創建重構計劃
+- 基於業務流程圖、帳戶層流程圖、實體關係圖進行設計
+
+### 後續工作
+- [ ] 實際創建 Core 模組文件夾結構
+- [ ] 實際創建 Shared 模組文件夾結構（特別是 models/ 下的 11 個業務模組）
+- [ ] 實際創建 Routes 模組文件夾結構
+- [ ] 創建對應的數據模型文件（51 張表的 TypeScript 模型）
+- [ ] 創建 Repository 服務（對應各業務模組）
+- [ ] 創建路由配置和組件骨架
+
+### 參考文檔
+- **結構樹文檔**：`04-重構後結構樹.md` ⭐ 新創建
+- **完整 SQL 表結構**：`30-0-完整SQL表結構定義.md`
+- **資料表清單總覽**：`30-資料表清單總覽.md`
+- **業務流程圖**：`14-業務流程圖.mermaid.md`
+- **帳戶層流程圖**：`13-帳戶層流程圖.mermaid.md`
+- **實體關係圖**：`12-實體關係圖.mermaid.md`
+- **架構流程圖**：`27-完整架構流程圖.mermaid.md`
+- **SHARED_IMPORTS 使用指南**：`45-SHARED_IMPORTS-使用指南.md`
+

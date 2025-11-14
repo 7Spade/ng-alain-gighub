@@ -2,12 +2,7 @@
 {
   "input": {},
   "include": [
-    "src/app/routes/blueprint/tabs/tasks/**/*.ts",
-    "src/app/routes/blueprint/tabs/tasks/**/*.html",
-    "src/app/routes/blueprint/tabs/tasks/**/*.less",
-    "angular.json",
-    "package.json",
-    "tsconfig.json"
+    "src/**/*.ts"
   ],
   "ignorePatterns": [
     "**/node_modules/**",
@@ -20,7 +15,19 @@
     "src/app/routes/extras/**",
     "src/app/routes/pro/**",
     "src/app/routes/style/**",
-    "**/*.md"
+    "src/app/routes/widgets/**",
+    "**/*.spec.ts",
+    "**/*.md",
+    "**/*.html",
+    "**/*.less",
+    "src/style-icons-auto.ts",
+    "src/style-icons.ts",
+    "src/typings.d.ts",
+    "src/environments/**",
+    "src/index.html",
+    "angular.json",
+    "package.json",
+    "tsconfig.json"
   ],
   "ignore": {},
   "output": {
