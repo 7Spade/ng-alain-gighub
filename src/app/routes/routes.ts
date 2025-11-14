@@ -33,6 +33,18 @@ export const routes: Routes = [
       {
         path: 'blueprints',
         loadChildren: () => import('./blueprints/routes').then(m => m.BLUEPRINT_ROUTES)
+      },
+      {
+        path: 'tasks',
+        loadChildren: () => import('./tasks/routes').then(m => m.TASK_ROUTES)
+      },
+      {
+        path: 'quality',
+        loadChildren: () => import('./quality/routes').then(m => m.QUALITY_ROUTES)
+      },
+      {
+        path: 'issues',
+        loadChildren: () => import('./issues/routes').then(m => m.ISSUE_ROUTES)
       }
     ]
   },

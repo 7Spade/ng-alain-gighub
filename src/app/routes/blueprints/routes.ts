@@ -30,6 +30,18 @@ export const BLUEPRINT_ROUTES: Routes = [
   {
     path: ':id/pull-requests',
     loadComponent: () => import('./pull-requests/pull-request-list.component').then(m => m.PullRequestListComponent)
+  },
+  {
+    path: ':id/settings',
+    loadComponent: () => import('./settings/blueprint-settings.component').then(m => m.BlueprintSettingsComponent)
+  },
+  {
+    path: ':id/fork',
+    loadComponent: () => import('./fork/blueprint-fork.component').then(m => m.BlueprintForkComponent)
+  },
+  {
+    path: ':id/pull-requests/:prId/review',
+    loadComponent: () => import('./review/pr-review.component').then(m => m.PrReviewComponent)
   }
 ];
 
