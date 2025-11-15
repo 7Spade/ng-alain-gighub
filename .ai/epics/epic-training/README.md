@@ -15,8 +15,8 @@
 5. 與 PR 審核/待辦中心/品質驗收的整合勾稽。
 
 ## 🧩 相關用戶故事
-- `story-cert-upload.md`
-- `story-cert-list.md`
+- [story-cert-upload.md](../../user-stories/story-cert-upload.md)
+- [story-cert-list.md](../../user-stories/story-cert-list.md)
 
 ## ✅ 驗收標準
 1. 承攬商可於任務、QC、驗收介面上傳證書檔案並綁定對應流程。
