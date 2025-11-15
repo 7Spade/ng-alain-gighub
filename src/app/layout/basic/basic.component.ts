@@ -1,11 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { MenuContextService } from '@core';
+import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { I18nPipe, SettingsService, User } from '@delon/theme';
 import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
 import { SettingDrawerModule } from '@delon/theme/setting-drawer';
 import { ThemeBtnComponent } from '@delon/theme/theme-btn';
 import { environment } from '@env/environment';
+import { Account, AccountService } from '@shared';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -91,6 +95,33 @@ import { HeaderUserComponent } from './widgets/user.component';
           <ul nz-menu>
             <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
+            @if (createdOrganizations().length > 0 || joinedOrganizations().length > 0) {
+              <li nz-menu-divider></li>
+              @if (createdOrganizations().length > 0) {
+                <li nz-submenu nzTitle="我建立的组织" nzIcon="plus-circle">
+                  <ul nz-menu>
+                    @for (org of createdOrganizations(); track org.id) {
+                      <li nz-menu-item (click)="switchToOrganization(org.id)">
+                        <i nz-icon nzType="team" class="mr-sm"></i>
+                        <span>{{ org.name }}</span>
+                      </li>
+                    }
+                  </ul>
+                </li>
+              }
+              @if (joinedOrganizations().length > 0) {
+                <li nz-submenu nzTitle="我加入的组织" nzIcon="usergroup-add">
+                  <ul nz-menu>
+                    @for (org of joinedOrganizations(); track org.id) {
+                      <li nz-menu-item (click)="switchToOrganization(org.id)">
+                        <i nz-icon nzType="team" class="mr-sm"></i>
+                        <span>{{ org.name }}</span>
+                      </li>
+                    }
+                  </ul>
+                </li>
+              }
+            }
           </ul>
         </nz-dropdown-menu>
       </ng-template>
@@ -112,6 +143,7 @@ import { HeaderUserComponent } from './widgets/user.component';
     NzMenuModule,
     NzDropDownModule,
     NzAvatarModule,
+    NzDividerModule,
     SettingDrawerModule,
     ThemeBtnComponent,
     HeaderSearchComponent,
@@ -126,15 +158,85 @@ import { HeaderUserComponent } from './widgets/user.component';
     HeaderUserComponent
   ]
 })
-export class LayoutBasicComponent {
+export class LayoutBasicComponent implements OnInit {
   private readonly settings = inject(SettingsService);
+  private readonly accountService = inject(AccountService);
+  private readonly menuContextService = inject(MenuContextService);
+  private readonly tokenService = inject(DA_SERVICE_TOKEN);
+
+  // 组织列表状态
+  readonly createdOrganizations = signal<Account[]>([]);
+  readonly joinedOrganizations = signal<Account[]>([]);
+  readonly loadingOrganizations = signal<boolean>(false);
+
   options: LayoutDefaultOptions = {
     logoExpanded: `./assets/logo-full.svg`,
     logoCollapsed: `./assets/logo.svg`
   };
   searchToggleStatus = false;
   showSettingDrawer = !environment.production;
+
   get user(): User {
     return this.settings.user;
+  }
+
+  constructor() {
+    // 监听用户登录状态，自动加载组织列表
+    effect(() => {
+      const token = this.tokenService.get();
+      if (token?.['user']?.['id']) {
+        this.loadUserOrganizations(token['user']['id']);
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    // 如果已有 token，立即加载组织列表
+    const token = this.tokenService.get();
+    if (token?.['user']?.['id']) {
+      this.loadUserOrganizations(token['user']['id']);
+    }
+  }
+
+  /**
+   * 加载用户的组织列表
+   */
+  private async loadUserOrganizations(authUserId: string): Promise<void> {
+    this.loadingOrganizations.set(true);
+
+    try {
+      // 1. 获取用户账户信息
+      const userAccount = await this.accountService.findByAuthUserId(authUserId);
+      if (!userAccount) {
+        this.loadingOrganizations.set(false);
+        return;
+      }
+
+      // 2. 并行加载建立的组织和加入的组织
+      const [createdOrgs, joinedOrgs] = await Promise.all([
+        this.accountService.getUserCreatedOrganizations(authUserId),
+        this.accountService.getUserJoinedOrganizations(userAccount.id)
+      ]);
+
+      this.createdOrganizations.set(createdOrgs);
+      this.joinedOrganizations.set(joinedOrgs);
+    } catch (error) {
+      console.error('加载用户组织列表失败:', error);
+    } finally {
+      this.loadingOrganizations.set(false);
+    }
+  }
+
+  /**
+   * 切换到组织菜单
+   */
+  switchToOrganization(organizationId: string): void {
+    this.menuContextService.switchToOrganization(organizationId);
+    // 同时更新 AccountService 的选中账户
+    const allOrgs = [...this.createdOrganizations(), ...this.joinedOrganizations()];
+    const account = allOrgs.find(org => org.id === organizationId);
+    if (account) {
+      this.accountService.selectAccount(account);
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { AccountInsert, AccountRepository, AccountUpdate } from '@core';
+import { AccountInsert, AccountRepository, AccountUpdate, CollaborationMemberRepository, OrganizationCollaborationRepository } from '@core';
 import { Account, AccountStatus, AccountType } from '@shared';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 
 /**
  * Account Service
@@ -27,6 +27,8 @@ import { firstValueFrom } from 'rxjs';
 })
 export class AccountService {
   private accountRepository = inject(AccountRepository);
+  private collaborationMemberRepository = inject(CollaborationMemberRepository);
+  private organizationCollaborationRepository = inject(OrganizationCollaborationRepository);
 
   // 使用 Signals 管理状态
   private accountsState = signal<Account[]>([]);
@@ -321,6 +323,84 @@ export class AccountService {
       throw error;
     } finally {
       this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 获取用户建立的组织
+   * 通过 auth_organization_id 字段查询用户创建的组织账户
+   *
+   * @param authUserId 用户的 auth_user_id
+   * @returns Promise<Account[]>
+   */
+  async getUserCreatedOrganizations(authUserId: string): Promise<Account[]> {
+    try {
+      const organizations = await firstValueFrom(this.accountRepository.findByAuthOrganizationId(authUserId));
+      // 过滤出组织类型的账户
+      return organizations.filter(org => org.type === AccountType.ORGANIZATION);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '获取用户建立的组织失败');
+      return [];
+    }
+  }
+
+  /**
+   * 获取用户加入的组织
+   * 通过 collaboration_members 表查询用户作为成员的组织
+   *
+   * @param userAccountId 用户的账户 ID
+   * @returns Promise<Account[]>
+   */
+  async getUserJoinedOrganizations(userAccountId: string): Promise<Account[]> {
+    try {
+      // 1. 查询用户作为成员的所有协作关系
+      const members = await firstValueFrom(this.collaborationMemberRepository.findByAccountId(userAccountId));
+
+      if (members.length === 0) {
+        return [];
+      }
+
+      // 2. 获取所有协作关系 ID（注意：BaseRepository 返回的是 snake_case）
+      const collaborationIds = members.map(m => (m as any).collaboration_id || (m as any).collaborationId);
+
+      // 3. 查询这些协作关系，获取组织 ID
+      const collaborations$ = collaborationIds.map(collabId =>
+        this.organizationCollaborationRepository.findAll({
+          filters: { id: collabId }
+        })
+      );
+
+      const collaborationsArrays = await firstValueFrom(forkJoin(collaborations$));
+      const collaborations = collaborationsArrays.flat();
+
+      // 4. 收集所有相关的组织 ID（owner_org_id 和 collaborator_org_id）
+      // 注意：BaseRepository 返回的数据可能是 snake_case，需要兼容处理
+      const organizationIds = new Set<string>();
+      collaborations.forEach(collab => {
+        const ownerOrgId = (collab as any).owner_org_id || (collab as any).ownerOrgId;
+        const collaboratorOrgId = (collab as any).collaborator_org_id || (collab as any).collaboratorOrgId;
+
+        if (ownerOrgId) {
+          organizationIds.add(ownerOrgId);
+        }
+        if (collaboratorOrgId) {
+          organizationIds.add(collaboratorOrgId);
+        }
+      });
+
+      // 5. 排除用户自己的账户 ID（避免重复）
+      organizationIds.delete(userAccountId);
+
+      if (organizationIds.size === 0) {
+        return [];
+      }
+
+      // 6. 批量查询组织账户
+      const organizations = await this.loadAccountsByIds(Array.from(organizationIds));
+      return organizations.filter(org => org.type === AccountType.ORGANIZATION);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '获取用户加入的组织失败');
+      return [];
     }
   }
 
