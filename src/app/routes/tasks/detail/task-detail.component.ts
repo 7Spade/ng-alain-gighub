@@ -27,12 +27,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-spin nzSize="large"></nz-spin>
         </div>
       } @else if (taskService.error()) {
-        <nz-alert
-          [nzMessage]="taskService.error()"
-          nzType="error"
-          [nzShowIcon]="true"
-          style="margin-bottom: 16px;"
-        ></nz-alert>
+        <nz-alert [nzMessage]="taskService.error()" nzType="error" [nzShowIcon]="true" style="margin-bottom: 16px;"></nz-alert>
         <button nz-button nzType="primary" (click)="loadTask()">重新加载</button>
       } @else if (!taskDetail()) {
         <nz-empty nzNotFoundContent="任务不存在"></nz-empty>
@@ -131,11 +126,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 
         @if (taskDetail()!.assignments && taskDetail()!.assignments!.length > 0) {
           <nz-divider nzText="任务分配"></nz-divider>
-          <nz-table
-            [nzData]="taskDetail()!.assignments || []"
-            [nzShowPagination]="false"
-            [nzSize]="'small'"
-          >
+          <nz-table [nzData]="taskDetail()!.assignments || []" [nzShowPagination]="false" [nzSize]="'small'">
             <thead>
               <tr>
                 <th>指派对象</th>
@@ -157,11 +148,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 
         @if (taskDetail()!.children && taskDetail()!.children!.length > 0) {
           <nz-divider nzText="子任务"></nz-divider>
-          <nz-table
-            [nzData]="taskDetail()!.children || []"
-            [nzShowPagination]="false"
-            [nzSize]="'small'"
-          >
+          <nz-table [nzData]="taskDetail()!.children || []" [nzShowPagination]="false" [nzSize]="'small'">
             <thead>
               <tr>
                 <th>标题</th>
@@ -192,9 +179,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                   </td>
                   <td>{{ child.progress_percentage || 0 }}%</td>
                   <td>
-                    <button nz-button nzType="link" nzSize="small" (click)="viewChildTask(child.id)">
-                      查看
-                    </button>
+                    <button nz-button nzType="link" nzSize="small" (click)="viewChildTask(child.id)"> 查看 </button>
                   </td>
                 </tr>
               }

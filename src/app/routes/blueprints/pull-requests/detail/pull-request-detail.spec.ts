@@ -9,8 +9,7 @@ describe('PullRequestDetail', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PullRequestDetail]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PullRequestDetail);
     component = fixture.componentInstance;

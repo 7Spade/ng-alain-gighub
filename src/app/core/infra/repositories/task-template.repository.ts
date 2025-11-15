@@ -58,4 +58,3 @@ export class TaskTemplateRepository extends BaseRepository<TaskTemplate, TaskTem
     });
   }
 }
-

@@ -1,4 +1,5 @@
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { NotificationRulesComponent } from './notification-rules.component';
 
 describe('NotificationRulesComponent', () => {
@@ -7,11 +8,8 @@ describe('NotificationRulesComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NotificationRulesComponent ]
-    })
-    .compileComponents();
-    ;
-
+      imports: [NotificationRulesComponent]
+    }).compileComponents();
     fixture = TestBed.createComponent(NotificationRulesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

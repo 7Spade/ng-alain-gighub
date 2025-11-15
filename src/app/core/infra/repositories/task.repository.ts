@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { TaskStatus, TaskType, TaskPriority } from '../types/task.types';
 import { Database } from '../types/database.types';
+import { TaskStatus, TaskType, TaskPriority } from '../types/task.types';
 
 /**
  * Task 实体类型（camelCase）
@@ -196,10 +196,10 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
 
   /**
    * 使用 ltree 查询子树
-   * 
+   *
    * 注意：此方法需要使用 PostgreSQL ltree 操作符
    * 如果 BaseRepository 不支持，可能需要使用 RPC 函数或原生 SQL
-   * 
+   *
    * @param treePath ltree 路径
    * @param options 查询选项
    * @returns Observable<Task[]>
@@ -228,9 +228,6 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
     // TODO: 实现路径查询
     // 需要使用递归查询或 ltree 操作符
     // 当前先返回单个任务作为临时方案
-    return this.findById(taskId).pipe(
-      map(task => (task ? [task] : []))
-    );
+    return this.findById(taskId).pipe(map(task => (task ? [task] : [])));
   }
 }
-

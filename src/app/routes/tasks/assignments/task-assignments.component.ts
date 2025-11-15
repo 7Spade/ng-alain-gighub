@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { TaskAssignmentRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, TaskService, Task, TaskAssignment, BlueprintService } from '@shared';
-import { TaskAssignmentRepository } from '@core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { firstValueFrom } from 'rxjs';
 
@@ -34,13 +34,7 @@ import { firstValueFrom } from 'rxjs';
           <nz-spin nzSize="large"></nz-spin>
         </div>
       } @else {
-        <st
-          #st
-          [data]="assignments()"
-          [columns]="columns"
-          [loading]="loading()"
-          [page]="{ front: false, show: true, showSize: true }"
-        >
+        <st #st [data]="assignments()" [columns]="columns" [loading]="loading()" [page]="{ front: false, show: true, showSize: true }">
           <ng-template #assigneeType let-record>
             @switch (record.assignee_type) {
               @case ('user') {
@@ -112,15 +106,13 @@ export class TaskAssignmentsComponent implements OnInit {
     try {
       // 先加载任务列表
       await this.taskService.loadTasksByBlueprint(blueprintId);
-      
+
       // 然后加载所有任务的分配信息
       const tasks = this.taskService.tasks();
-      const assignmentPromises = tasks.map(task => 
-        firstValueFrom(this.taskAssignmentRepository.findByTaskId(task.id))
-      );
+      const assignmentPromises = tasks.map(task => firstValueFrom(this.taskAssignmentRepository.findByTaskId(task.id)));
       const assignmentArrays = await Promise.all(assignmentPromises);
       const allAssignments = assignmentArrays.flat();
-      
+
       this.assignments.set(allAssignments);
     } catch (error) {
       this.message.error('加载任务分配失败');

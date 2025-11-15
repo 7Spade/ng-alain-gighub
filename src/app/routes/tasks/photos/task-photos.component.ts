@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { SHARED_IMPORTS, TaskService, Task, ReportPhoto, BlueprintService } from '@shared';
 import { ReportPhotoRepository, DailyReportRepository } from '@core';
+import { SHARED_IMPORTS, TaskService, Task, ReportPhoto, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { firstValueFrom } from 'rxjs';
 
@@ -43,25 +43,23 @@ import { firstValueFrom } from 'rxjs';
           <div nz-row [nzGutter]="[16, 16]">
             @for (photo of photos(); track photo.id) {
               <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" [nzXl]="4">
-                <nz-card
-                  [nzHoverable]="true"
-                  [nzCover]="cover"
-                  style="cursor: pointer;"
-                  (click)="viewPhoto(photo)"
-                >
+                <nz-card [nzHoverable]="true" [nzCover]="cover" style="cursor: pointer;" (click)="viewPhoto(photo)">
                   <ng-template #cover>
                     @if (photo.document_id) {
-                      <img [src]="getPhotoUrl(photo.document_id)" [alt]="photo.caption || '施工照片'" style="width: 100%; height: 200px; object-fit: cover;" />
+                      <img
+                        [src]="getPhotoUrl(photo.document_id)"
+                        [alt]="photo.caption || '施工照片'"
+                        style="width: 100%; height: 200px; object-fit: cover;"
+                      />
                     } @else {
-                      <div style="width: 100%; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                      <div
+                        style="width: 100%; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;"
+                      >
                         <span nz-icon nzType="picture" nzTheme="outline" style="font-size: 48px; color: #ccc;"></span>
                       </div>
                     }
                   </ng-template>
-                  <nz-card-meta
-                    [nzTitle]="photo.caption || '无标题'"
-                    [nzDescription]="photo.photo_type"
-                  ></nz-card-meta>
+                  <nz-card-meta [nzTitle]="photo.caption || '无标题'" [nzDescription]="photo.photo_type"></nz-card-meta>
                   <div style="margin-top: 8px; font-size: 12px; color: #999;">
                     {{ photo.uploaded_at | date: 'yyyy-MM-dd HH:mm' }}
                   </div>
@@ -106,22 +104,18 @@ export class TaskPhotosComponent implements OnInit {
     try {
       // 先加载任务列表
       await this.taskService.loadTasksByBlueprint(blueprintId);
-      
+
       // 然后加载所有任务的施工日志
       const tasks = this.taskService.tasks();
-      const reportPromises = tasks.map(task => 
-        firstValueFrom(this.dailyReportRepository.findByTaskId(task.id))
-      );
+      const reportPromises = tasks.map(task => firstValueFrom(this.dailyReportRepository.findByTaskId(task.id)));
       const reportArrays = await Promise.all(reportPromises);
       const allReports = reportArrays.flat();
-      
+
       // 加载所有报告的照片
-      const photoPromises = allReports.map(report => 
-        firstValueFrom(this.reportPhotoRepository.findByReportId(report.id))
-      );
+      const photoPromises = allReports.map(report => firstValueFrom(this.reportPhotoRepository.findByReportId(report.id)));
       const photoArrays = await Promise.all(photoPromises);
       const allPhotos = photoArrays.flat();
-      
+
       this.photos.set(allPhotos);
     } catch (error) {
       this.message.error('加载施工照片失败');

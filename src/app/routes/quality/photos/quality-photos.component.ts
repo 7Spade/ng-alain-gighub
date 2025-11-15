@@ -41,21 +41,15 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <div nz-row [nzGutter]="[16, 16]">
             @for (photo of photos(); track photo.id) {
               <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" [nzXl]="4">
-                <nz-card
-                  [nzHoverable]="true"
-                  [nzCover]="cover"
-                  style="cursor: pointer;"
-                  (click)="viewPhoto(photo)"
-                >
+                <nz-card [nzHoverable]="true" [nzCover]="cover" style="cursor: pointer;" (click)="viewPhoto(photo)">
                   <ng-template #cover>
-                    <div style="width: 100%; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                    <div
+                      style="width: 100%; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;"
+                    >
                       <span nz-icon nzType="picture" nzTheme="outline" style="font-size: 48px; color: #ccc;"></span>
                     </div>
                   </ng-template>
-                  <nz-card-meta
-                    [nzTitle]="photo.caption || '无标题'"
-                    [nzDescription]="photo.type || '验收照片'"
-                  ></nz-card-meta>
+                  <nz-card-meta [nzTitle]="photo.caption || '无标题'" [nzDescription]="photo.type || '验收照片'"></nz-card-meta>
                   <div style="margin-top: 8px; font-size: 12px; color: #999;">
                     {{ photo.uploaded_at | date: 'yyyy-MM-dd HH:mm' }}
                   </div>

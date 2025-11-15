@@ -72,15 +72,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                       {{ ownerAccount()!.name }}
                     }
                   }
-                  <button 
-                    nz-button 
-                    nzType="link" 
-                    nzSize="small" 
-                    style="margin-left: 8px;"
-                    (click)="viewOwnerAccount()"
-                  >
-                    查看详情
-                  </button>
+                  <button nz-button nzType="link" nzSize="small" style="margin-left: 8px;" (click)="viewOwnerAccount()"> 查看详情 </button>
                 </span>
               } @else {
                 <span style="color: #999;">{{ blueprint()!.owner_id }}</span>

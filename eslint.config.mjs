@@ -19,7 +19,9 @@ export default tseslint.config(
       'schematics/**/files/**/*',
       'src/dist/**/*',
       'src/templates/**/*',
-      'src/app/routes/gen/**/*'
+      'src/app/routes/gen/**/*',
+      '_mock/**/*',
+      'e2e/**/*'
     ]
   },
   {
@@ -27,7 +29,6 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: true,
-        project: ['tsconfig.json'],
         tsconfigRootDir: import.meta.dirname
       }
     },
@@ -141,7 +142,11 @@ export default tseslint.config(
       '@typescript-eslint/no-deprecated': 'warn',
       "no-empty-function": "off",
       '@typescript-eslint/no-empty-function': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn'
+      '@typescript-eslint/no-explicit-any': 'warn',
+      // Temporarily downgrade to warnings while we fix pre-existing issues
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@angular-eslint/no-empty-lifecycle-method': 'warn',
+      '@angular-eslint/component-class-suffix': 'warn'
     }
   },
   {

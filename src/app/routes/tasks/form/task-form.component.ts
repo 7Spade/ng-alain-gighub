@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS, TaskService, TaskInsert, TaskUpdate, TaskType, TaskStatus, TaskPriority, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -50,7 +50,12 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-form-item>
             <nz-form-label [nzSpan]="4">描述</nz-form-label>
             <nz-form-control [nzSpan]="20">
-              <textarea nz-input formControlName="description" [nzAutosize]="{ minRows: 3, maxRows: 6 }" placeholder="请输入任务描述"></textarea>
+              <textarea
+                nz-input
+                formControlName="description"
+                [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                placeholder="请输入任务描述"
+              ></textarea>
             </nz-form-control>
           </nz-form-item>
 
@@ -106,7 +111,13 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-form-item>
             <nz-form-label [nzSpan]="4">进度 (%)</nz-form-label>
             <nz-form-control [nzSpan]="20">
-              <nz-input-number formControlName="progressPercentage" [nzMin]="0" [nzMax]="100" [nzStep]="1" style="width: 100%;"></nz-input-number>
+              <nz-input-number
+                formControlName="progressPercentage"
+                [nzMin]="0"
+                [nzMax]="100"
+                [nzStep]="1"
+                style="width: 100%;"
+              ></nz-input-number>
             </nz-form-control>
           </nz-form-item>
         </form>

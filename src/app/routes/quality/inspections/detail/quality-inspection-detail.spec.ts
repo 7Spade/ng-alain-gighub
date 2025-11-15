@@ -9,8 +9,7 @@ describe('QualityInspectionDetail', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [QualityInspectionDetail]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(QualityInspectionDetail);
     component = fixture.componentInstance;

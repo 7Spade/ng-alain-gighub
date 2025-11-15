@@ -78,4 +78,3 @@ export class ReportPhotoRepository extends BaseRepository<ReportPhoto, ReportPho
     });
   }
 }
-

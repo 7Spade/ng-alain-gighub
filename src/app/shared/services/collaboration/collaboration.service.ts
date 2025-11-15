@@ -7,7 +7,7 @@ import {
   CollaborationStatus
 } from '@core';
 import { OrganizationCollaboration } from '@shared';
-import { Observable, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Collaboration Service

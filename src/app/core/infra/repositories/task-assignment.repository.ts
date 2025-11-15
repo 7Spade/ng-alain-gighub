@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { TaskAssigneeType } from '../types/task.types';
 import { Database } from '../types/database.types';
+import { TaskAssigneeType } from '../types/task.types';
 
 /**
  * TaskAssignment 实体类型（camelCase）
@@ -94,4 +94,3 @@ export class TaskAssignmentRepository extends BaseRepository<TaskAssignment, Tas
     });
   }
 }
-

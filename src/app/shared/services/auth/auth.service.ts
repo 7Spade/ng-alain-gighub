@@ -4,9 +4,9 @@ import { AccountRepository, SupabaseService, SupabaseSessionAdapterService } fro
 import { Observable, from, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
-import { Account } from '../../models';
 import { AuthStateService } from './auth.state';
 import { AuthResult, SignInRequest, SignUpRequest } from './auth.types';
+import { Account } from '../../models';
 
 /**
  * 认证服务（业务层）

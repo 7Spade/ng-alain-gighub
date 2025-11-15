@@ -9,8 +9,7 @@ describe('BranchDetail', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BranchDetail]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(BranchDetail);
     component = fixture.componentInstance;

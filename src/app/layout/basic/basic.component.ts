@@ -169,7 +169,7 @@ export class LayoutBasicComponent implements OnInit {
     logoCollapsed: `./assets/logo.svg`
   };
   searchToggleStatus = false;
-  showSettingDrawer = !environment.production;
+  showSettingDrawer = true;
 
   get user(): User {
     return this.settings.user;

@@ -9,8 +9,7 @@ describe('BotTasks', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BotTasks]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(BotTasks);
     component = fixture.componentInstance;

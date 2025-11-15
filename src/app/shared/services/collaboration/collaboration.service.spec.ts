@@ -106,7 +106,7 @@ describe('CollaborationService', () => {
       try {
         await service.loadCollaborations();
         fail('should have thrown error');
-      } catch (e) {
+      } catch (_e) {
         expect(service.error()).toBe('Load failed');
         expect(service.loading()).toBe(false);
       }
@@ -140,7 +140,7 @@ describe('CollaborationService', () => {
       try {
         await service.loadCollaborationById('collab-1');
         fail('should have thrown error');
-      } catch (e) {
+      } catch (_e) {
         expect(service.error()).toBe('Not found');
       }
     });
@@ -230,7 +230,7 @@ describe('CollaborationService', () => {
           collaboration_type: CollaborationType.CONTRACTOR
         });
         fail('should have thrown error');
-      } catch (e) {
+      } catch (_e) {
         expect(service.error()).toBe('Create failed');
       }
     });
@@ -268,7 +268,7 @@ describe('CollaborationService', () => {
       try {
         await service.updateCollaboration('collab-1', { notes: 'Updated' });
         fail('should have thrown error');
-      } catch (e) {
+      } catch (_e) {
         expect(service.error()).toBe('Update failed');
       }
     });
@@ -304,7 +304,7 @@ describe('CollaborationService', () => {
       try {
         await service.deleteCollaboration('collab-1');
         fail('should have thrown error');
-      } catch (e) {
+      } catch (_e) {
         expect(service.error()).toBe('Delete failed');
       }
     });

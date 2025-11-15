@@ -35,11 +35,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-spin nzSize="large"></nz-spin>
         </div>
       } @else {
-        <nz-calendar
-          [ngModel]="selectedDate()"
-          (nzSelectChange)="onDateSelect($event)"
-          [nzFullscreen]="false"
-        >
+        <nz-calendar [ngModel]="selectedDate()" (nzSelectChange)="onDateSelect($event)" [nzFullscreen]="false">
           <ul *nzDateCell="let date" class="events">
             @for (task of getTasksForDate(date); track task.id) {
               <li
@@ -61,19 +57,14 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-list [nzDataSource]="tasksForSelectedDate()" [nzRenderItem]="item">
             <ng-template #item let-task>
               <nz-list-item>
-                <nz-list-item-meta
-                  [nzTitle]="task.title"
-                  [nzDescription]="task.description || '无描述'"
-                >
+                <nz-list-item-meta [nzTitle]="task.title" [nzDescription]="task.description || '无描述'">
                   <ng-template #nzAvatar>
                     <nz-tag [nzColor]="getPriorityColor(task.priority)">{{ task.priority }}</nz-tag>
                   </ng-template>
                 </nz-list-item-meta>
                 <ul nz-list-item-actions>
                   <nz-list-item-action>
-                    <button nz-button nzType="link" nzSize="small" (click)="viewTask(task.id)">
-                      查看
-                    </button>
+                    <button nz-button nzType="link" nzSize="small" (click)="viewTask(task.id)"> 查看 </button>
                   </nz-list-item-action>
                 </ul>
               </nz-list-item>
@@ -130,28 +121,37 @@ export class TaskCalendarComponent implements OnInit {
     return this.taskService.tasks().filter(task => {
       const startDate = task.planned_start_date ? task.planned_start_date.split('T')[0] : null;
       const endDate = task.planned_end_date ? task.planned_end_date.split('T')[0] : null;
-      return startDate === dateStr || endDate === dateStr ||
-        (startDate && endDate && dateStr >= startDate && dateStr <= endDate);
+      return startDate === dateStr || endDate === dateStr || (startDate && endDate && dateStr >= startDate && dateStr <= endDate);
     });
   }
 
   getTaskColor(task: Task): string {
     switch (task.priority) {
-      case 'urgent': return '#ff4d4f';
-      case 'high': return '#ff9800';
-      case 'medium': return '#1890ff';
-      case 'low': return '#52c41a';
-      default: return '#d9d9d9';
+      case 'urgent':
+        return '#ff4d4f';
+      case 'high':
+        return '#ff9800';
+      case 'medium':
+        return '#1890ff';
+      case 'low':
+        return '#52c41a';
+      default:
+        return '#d9d9d9';
     }
   }
 
   getPriorityColor(priority: string): string {
     switch (priority) {
-      case 'urgent': return 'red';
-      case 'high': return 'orange';
-      case 'medium': return 'blue';
-      case 'low': return 'green';
-      default: return 'default';
+      case 'urgent':
+        return 'red';
+      case 'high':
+        return 'orange';
+      case 'medium':
+        return 'blue';
+      case 'low':
+        return 'green';
+      default:
+        return 'default';
     }
   }
 

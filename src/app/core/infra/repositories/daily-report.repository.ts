@@ -118,4 +118,3 @@ export class DailyReportRepository extends BaseRepository<DailyReport, DailyRepo
     });
   }
 }
-
