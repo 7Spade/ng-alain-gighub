@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MenuContextService } from '@core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
@@ -95,30 +95,12 @@ import { HeaderUserComponent } from './widgets/user.component';
           <ul nz-menu>
             <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
-            @if (createdOrganizations().length > 0 || joinedOrganizations().length > 0) {
+            @if (allOrganizations().length > 0) {
               <li nz-menu-divider></li>
-              @if (createdOrganizations().length > 0) {
-                <li nz-submenu nzTitle="我建立的组织" nzIcon="plus-circle">
-                  <ul nz-menu>
-                    @for (org of createdOrganizations(); track org.id) {
-                      <li nz-menu-item (click)="switchToOrganization(org.id)">
-                        <i nz-icon nzType="team" class="mr-sm"></i>
-                        <span>{{ org.name }}</span>
-                      </li>
-                    }
-                  </ul>
-                </li>
-              }
-              @if (joinedOrganizations().length > 0) {
-                <li nz-submenu nzTitle="我加入的组织" nzIcon="usergroup-add">
-                  <ul nz-menu>
-                    @for (org of joinedOrganizations(); track org.id) {
-                      <li nz-menu-item (click)="switchToOrganization(org.id)">
-                        <i nz-icon nzType="team" class="mr-sm"></i>
-                        <span>{{ org.name }}</span>
-                      </li>
-                    }
-                  </ul>
+              @for (org of allOrganizations(); track org.id) {
+                <li nz-menu-item (click)="switchToOrganization(org.id)">
+                  <i nz-icon nzType="team" class="mr-sm"></i>
+                  <span>{{ org.name }}</span>
                 </li>
               }
             }
@@ -168,6 +150,19 @@ export class LayoutBasicComponent implements OnInit {
   readonly createdOrganizations = signal<Account[]>([]);
   readonly joinedOrganizations = signal<Account[]>([]);
   readonly loadingOrganizations = signal<boolean>(false);
+
+  // 合并所有组织（去重）
+  readonly allOrganizations = computed(() => {
+    const all = [...this.createdOrganizations(), ...this.joinedOrganizations()];
+    // 根据 ID 去重
+    const uniqueMap = new Map<string, Account>();
+    all.forEach(org => {
+      if (!uniqueMap.has(org.id)) {
+        uniqueMap.set(org.id, org);
+      }
+    });
+    return Array.from(uniqueMap.values());
+  });
 
   options: LayoutDefaultOptions = {
     logoExpanded: `./assets/logo-full.svg`,
@@ -233,8 +228,7 @@ export class LayoutBasicComponent implements OnInit {
   switchToOrganization(organizationId: string): void {
     this.menuContextService.switchToOrganization(organizationId);
     // 同时更新 AccountService 的选中账户
-    const allOrgs = [...this.createdOrganizations(), ...this.joinedOrganizations()];
-    const account = allOrgs.find(org => org.id === organizationId);
+    const account = this.allOrganizations().find(org => org.id === organizationId);
     if (account) {
       this.accountService.selectAccount(account);
     }
