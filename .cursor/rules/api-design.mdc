@@ -1,38 +1,38 @@
 ---
-description: API 設計與 Repository 模式規範
+description: API design and Repository pattern standards
 globs: ["src/app/core/**/*.ts", "src/app/shared/**/*.ts", "src/app/routes/**/*.ts"]
 alwaysApply: false
 ---
 
-# API 設計規範
+# API Design Standards
 
-> **相關規則**：參考 [錯誤處理](./error-handling.mdc)、[安全規範](./security.mdc)、[類型安全](./typescript.mdc)、[MCP 工具](./mcp-tools.mdc)
+> **Related Rules**: See [Error Handling](./error-handling.mdc), [Security Standards](./security.mdc), [Type Safety](./typescript.mdc), [MCP Tools](./mcp-tools.mdc)
 
-## Repository 模式
+## Repository Pattern
 
-- 使用 Repository 模式封裝資料存取邏輯
-- 統一回應格式與錯誤處理（參考 [錯誤處理規範](./error-handling.mdc)）
-- 使用 TypeScript 類型定義 API 介面（參考 [類型安全](./typescript.mdc)）
+- Use Repository pattern to encapsulate data access logic
+- Unified response format and error handling (see [Error Handling Standards](./error-handling.mdc))
+- Use TypeScript types to define API interfaces (see [Type Safety](./typescript.mdc))
 
-## API 功能要求
+## API Functionality Requirements
 
-- 支援分頁、排序、篩選查詢參數
-- 實作請求快取與重試機制
-- 提供統一的錯誤處理機制
+- Support pagination, sorting, filtering query parameters
+- Implement request caching and retry mechanisms
+- Provide unified error handling mechanism
 
-## 權限驗證
+## Permission Verification
 
-- 分支相關 API 需驗證權限（擁有者/協作組織/查看者）
-- PR 相關 API 需實作審核與合併邏輯
-- 權限驗證必須在資料庫層（RLS）與應用層雙重驗證（參考 [安全規範](./security.mdc)）
+- Branch-related APIs need permission verification (owner/collaborating organization/viewer)
+- PR-related APIs need to implement review and merge logic
+- Permission verification must be verified at both database layer (RLS) and application layer (see [Security Standards](./security.mdc))
 
-## 資料庫操作
+## Database Operations
 
-- 所有資料庫操作必須通過 Supabase MCP 工具（參考 [MCP 工具](./mcp-tools.mdc)）
-- 啟用 Supabase RLS (Row Level Security) 檢查
-- 使用 Repository 模式封裝資料存取邏輯
+- All database operations must go through Supabase MCP tools (see [MCP Tools](./mcp-tools.mdc))
+- Enable Supabase RLS (Row Level Security) checks
+- Use Repository pattern to encapsulate data access logic
 
-## 參考文檔
+## Reference Documentation
 
-- [Routes 模組規範](./routes-specific.mdc)
-- [Core 模組規範](./core-specific.mdc)
+- [Routes Module Standards](./routes-specific.mdc)
+- [Core Module Standards](./core-specific.mdc)

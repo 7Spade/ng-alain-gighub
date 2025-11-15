@@ -1,63 +1,63 @@
 ---
-description: Stylelint 和 Less 樣式規範
+description: Stylelint and Less styling standards
 globs: ["**/*.less", "**/*.css", "**/*.scss"]
 alwaysApply: true
 ---
 
-# Stylelint 和 Less 樣式規範
+# Stylelint and Less Styling Standards
 
-> **相關規則**：參考 [主題定制](./theming.mdc)、[Git 工作流](./git-workflow.mdc)
+> **Related Rules**: See [Theme Customization](./theming.mdc), [Git Workflow](./git-workflow.mdc)
 
-## 基本原則
+## Basic Principles
 
-- 所有 Less 文件必須通過 Stylelint 檢查
-- 使用 Less 作為 CSS 預處理器
-- 遵循 BEM 命名規範（如適用）
-- 保持樣式代碼整潔和可維護
+- All Less files must pass Stylelint checks
+- Use Less as CSS preprocessor
+- Follow BEM naming convention (if applicable)
+- Keep style code clean and maintainable
 
-## 執行方式
+## Execution Methods
 
 ```bash
-# 檢查所有樣式文件
+# Check all style files
 yarn lint:style
 
-# 檢查特定文件
+# Check specific files
 npx stylelint 'src/**/*.less'
 ```
 
-## 配置要求
+## Configuration Requirements
 
-- 使用 `stylelint-config-standard` 作為基礎配置
-- 使用 `stylelint-config-clean-order` 規範屬性順序
-- 使用 `stylelint-declaration-block-no-ignored-properties` 檢測無效屬性
+- Use `stylelint-config-standard` as base configuration
+- Use `stylelint-config-clean-order` to standardize property order
+- Use `stylelint-declaration-block-no-ignored-properties` to detect invalid properties
 
-## Less 使用規範
+## Less Usage Standards
 
-- 使用變數定義顏色、字體、間距等
-- 使用嵌套保持樣式層級清晰
-- 使用 Mixin 重用樣式代碼
-- 避免過度嵌套（建議不超過 3 層）
+- Use variables to define colors, fonts, spacing, etc.
+- Use nesting to keep style hierarchy clear
+- Use Mixins to reuse style code
+- Avoid excessive nesting (recommended max 3 levels)
 
-## 樣式組織
+## Style Organization
 
-- 按照邏輯順序組織樣式屬性
-- 使用 `stylelint-config-clean-order` 規範的屬性順序
-- 相關樣式屬性分組
+- Organize style properties in logical order
+- Use property order standardized by `stylelint-config-clean-order`
+- Group related style properties
 
-## ng-alain 主題集成
+## ng-alain Theme Integration
 
-- 使用 ng-alain 主題變數
-- 遵循 ng-alain 主題定制規範（參考 [主題定制規範](./theming.mdc)）
-- 參考 `docs/` 中的主題相關文檔
+- Use ng-alain theme variables
+- Follow ng-alain theme customization standards (see [Theme Customization Standards](./theming.mdc))
+- Refer to theme-related documentation in `docs/`
 
-## Git Hooks 集成
+## Git Hooks Integration
 
-- 通過 `lint-staged` 在提交前自動檢查樣式（參考 [Git 工作流](./git-workflow.mdc)）
-- 僅檢查已修改的樣式文件
+- Automatically check styles before commit through `lint-staged` (see [Git Workflow](./git-workflow.mdc))
+- Only check modified style files
 
-## 參考文檔
+## Reference Documentation
 
-- [Stylelint 官方文檔](https://stylelint.io/)
-- [Less 官方文檔](https://lesscss.org/)
-- [ng-alain 主題文檔](https://ng-alain.com/theme)
-- [主題定制規範](./theming.mdc)
+- [Stylelint Official Documentation](https://stylelint.io/)
+- [Less Official Documentation](https://lesscss.org/)
+- [ng-alain Theme Documentation](https://ng-alain.com/theme)
+- [Theme Customization Standards](./theming.mdc)
