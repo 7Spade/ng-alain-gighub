@@ -1,28 +1,165 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { SHARED_IMPORTS } from '@shared';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
+import { SHARED_IMPORTS, TaskService, Task, BlueprintService } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-task-calendar',
   standalone: true,
   imports: [SHARED_IMPORTS],
   template: `
-    <page-header [title]="'任务日历'"></page-header>
+    <page-header [title]="'任务日历'">
+      <ng-template #extra>
+        <nz-select
+          [ngModel]="selectedBlueprintId()"
+          (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
+          nzPlaceHolder="请选择蓝图"
+          style="width: 300px; margin-right: 8px;"
+        >
+          @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
+            <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
+          }
+        </nz-select>
+        <button nz-button nzType="primary" (click)="createTask()">
+          <span nz-icon nzType="plus"></span>
+          新建任务
+        </button>
+      </ng-template>
+    </page-header>
 
-    <nz-card nzTitle="任务日历视图" style="margin-top: 16px;">
-      <nz-alert
-        nzType="info"
-        nzMessage="任务日历功能开发中"
-        nzDescription="此页面将用于以日历形式展示任务。"
-        [nzShowIcon]="true"
-        style="margin-bottom: 16px;"
-      ></nz-alert>
+    <nz-card style="margin-top: 16px;">
+      @if (!selectedBlueprintId()) {
+        <nz-empty nzNotFoundContent="请先选择蓝图"></nz-empty>
+      } @else if (taskService.loading()) {
+        <div style="text-align: center; padding: 40px;">
+          <nz-spin nzSize="large"></nz-spin>
+        </div>
+      } @else {
+        <nz-calendar
+          [ngModel]="selectedDate()"
+          (nzSelectChange)="onDateSelect($event)"
+          [nzFullscreen]="false"
+        >
+          <ul *nzDateCell="let date" class="events">
+            @for (task of getTasksForDate(date); track task.id) {
+              <li
+                [style.background-color]="getTaskColor(task)"
+                [title]="task.title"
+                (click)="viewTask(task.id)"
+                style="cursor: pointer; padding: 2px 4px; margin: 2px 0; border-radius: 2px; color: white; font-size: 12px;"
+              >
+                {{ task.title }}
+              </li>
+            }
+          </ul>
+        </nz-calendar>
 
-      <nz-empty nzNotFoundContent="功能开发中"></nz-empty>
+        <nz-divider nzText="选中日期的任务"></nz-divider>
+        @if (tasksForSelectedDate().length === 0) {
+          <nz-empty [nzNotFoundContent]="'该日期暂无任务'"></nz-empty>
+        } @else {
+          <nz-list [nzDataSource]="tasksForSelectedDate()" [nzRenderItem]="item">
+            <ng-template #item let-task>
+              <nz-list-item>
+                <nz-list-item-meta
+                  [nzTitle]="task.title"
+                  [nzDescription]="task.description || '无描述'"
+                >
+                  <ng-template #nzAvatar>
+                    <nz-tag [nzColor]="getPriorityColor(task.priority)">{{ task.priority }}</nz-tag>
+                  </ng-template>
+                </nz-list-item-meta>
+                <ul nz-list-item-actions>
+                  <nz-list-item-action>
+                    <button nz-button nzType="link" nzSize="small" (click)="viewTask(task.id)">
+                      查看
+                    </button>
+                  </nz-list-item-action>
+                </ul>
+              </nz-list-item>
+            </ng-template>
+          </nz-list>
+        }
+      }
     </nz-card>
   `
 })
 export class TaskCalendarComponent implements OnInit {
+  readonly taskService = inject(TaskService);
+  readonly blueprintService = inject(BlueprintService);
+  private readonly router = inject(Router);
+  private readonly message = inject(NzMessageService);
+
+  readonly selectedBlueprintId = signal<string | null>(null);
+  readonly selectedDate = signal<Date>(new Date());
+
+  readonly tasksForSelectedDate = computed(() => {
+    const date = this.selectedDate();
+    return this.getTasksForDate(date);
+  });
+
   ngOnInit(): void {
-    // TODO: 加载任务日历数据
+    this.loadBlueprints();
+  }
+
+  async loadBlueprints(): Promise<void> {
+    try {
+      await this.blueprintService.loadBlueprints();
+    } catch (error) {
+      this.message.error('加载蓝图列表失败');
+    }
+  }
+
+  async onBlueprintChange(): Promise<void> {
+    const blueprintId = this.selectedBlueprintId();
+    if (blueprintId) {
+      try {
+        await this.taskService.loadTasksByBlueprint(blueprintId);
+      } catch (error) {
+        this.message.error('加载任务列表失败');
+      }
+    }
+  }
+
+  onDateSelect(date: Date): void {
+    this.selectedDate.set(date);
+  }
+
+  getTasksForDate(date: Date): Task[] {
+    const dateStr = date.toISOString().split('T')[0];
+    return this.taskService.tasks().filter(task => {
+      const startDate = task.planned_start_date ? task.planned_start_date.split('T')[0] : null;
+      const endDate = task.planned_end_date ? task.planned_end_date.split('T')[0] : null;
+      return startDate === dateStr || endDate === dateStr ||
+        (startDate && endDate && dateStr >= startDate && dateStr <= endDate);
+    });
+  }
+
+  getTaskColor(task: Task): string {
+    switch (task.priority) {
+      case 'urgent': return '#ff4d4f';
+      case 'high': return '#ff9800';
+      case 'medium': return '#1890ff';
+      case 'low': return '#52c41a';
+      default: return '#d9d9d9';
+    }
+  }
+
+  getPriorityColor(priority: string): string {
+    switch (priority) {
+      case 'urgent': return 'red';
+      case 'high': return 'orange';
+      case 'medium': return 'blue';
+      case 'low': return 'green';
+      default: return 'default';
+    }
+  }
+
+  createTask(): void {
+    this.router.navigate(['/tasks/create']);
+  }
+
+  viewTask(id: string): void {
+    this.router.navigate(['/tasks', id]);
   }
 }

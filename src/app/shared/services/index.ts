@@ -14,3 +14,4 @@ export * from './account';
 export * from './auth';
 export * from './collaboration';
 export * from './blueprint';
+export * from './task';

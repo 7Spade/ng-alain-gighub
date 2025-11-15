@@ -1,0 +1,42 @@
+<nz-list nzItemLayout="horizontal">
+  <nz-list-item [nzActions]="[passwordOp]">
+    <ng-template #passwordOp>
+      <a (click)="msg.success('Edit')">修改</a>
+    </ng-template>
+    <nz-list-item-meta nzTitle="賬戶密碼" [nzDescription]="passwordDesc">
+      <ng-template #passwordDesc> 當前密碼強度：<span class="text-green">強</span> </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item [nzActions]="[phoneOp]">
+    <ng-template #phoneOp>
+      <a (click)="msg.success('Edit')">修改</a>
+    </ng-template>
+    <nz-list-item-meta nzTitle="密保手機" [nzDescription]="phoneDesc">
+      <ng-template #phoneDesc> 已綁定手機：159****2231 </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item [nzActions]="[questionOp]">
+    <ng-template #questionOp>
+      <a (click)="msg.success('Edit')">修改</a>
+    </ng-template>
+    <nz-list-item-meta nzTitle="密保問題" [nzDescription]="questionDesc">
+      <ng-template #questionDesc> 未設置密保問題，密保問題可有效保護賬戶安全 </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item [nzActions]="[emailOp]">
+    <ng-template #emailOp>
+      <a (click)="msg.success('Edit')">修改</a>
+    </ng-template>
+    <nz-list-item-meta nzTitle="備用郵箱" [nzDescription]="emailDesc">
+      <ng-template #emailDesc> 已綁定郵箱：cip*****.com </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+  <nz-list-item [nzActions]="[mfaOp]">
+    <ng-template #mfaOp>
+      <a (click)="msg.success('Edit')">修改</a>
+    </ng-template>
+    <nz-list-item-meta nzTitle="MFA 設備" [nzDescription]="mfaDesc">
+      <ng-template #mfaDesc> 未綁定 MFA 設備，綁定後，可以進行二次確認 </ng-template>
+    </nz-list-item-meta>
+  </nz-list-item>
+</nz-list>

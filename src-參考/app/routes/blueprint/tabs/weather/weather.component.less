@@ -1,0 +1,82 @@
+.weather-highlight {
+    .highlight-row {
+        align-items: center;
+    }
+
+    .highlight-main {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .highlight-temp {
+        font-size: 48px;
+        font-weight: 600;
+    }
+
+    .highlight-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 14px;
+    }
+
+    .highlight-chart {
+        .timeline-header {
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 12px;
+        }
+
+        .timeline-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .timeline-temp {
+            font-weight: 500;
+        }
+    }
+}
+
+.daily-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+.daily-item {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.daily-day {
+    font-weight: 600;
+}
+
+.daily-temp {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    font-size: 18px;
+}
+
+.daily-desc {
+    font-size: 14px;
+}
+
+.daily-meta {
+    font-size: 12px;
+}

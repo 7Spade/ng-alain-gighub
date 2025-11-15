@@ -1,0 +1,24 @@
+@if (loading()) {
+<nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else if (blueprint(); as bp) {
+<page-header [title]="bp.name" [action]="action" [tab]="tab">
+  <ng-template #action>
+    <button nz-button (click)="navigateToSettings()">
+      <i nz-icon nzType="setting"></i>
+      設定
+    </button>
+  </ng-template>
+  <ng-template #tab>
+    <nz-tabs [nzSelectedIndex]="activeTabIndex()">
+      @for (tab of tabs; track tab.route) {
+      <nz-tab [nzTitle]="tab.label" (nzClick)="onTabClick(tab.route)"></nz-tab>
+      }
+    </nz-tabs>
+  </ng-template>
+</page-header>
+
+<!-- 子路由內容 -->
+<router-outlet></router-outlet>
+} @else {
+<nz-empty nzNotFoundContent="藍圖不存在"></nz-empty>
+}

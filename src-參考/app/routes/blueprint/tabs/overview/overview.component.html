@@ -1,0 +1,209 @@
+@if (loading()) {
+<nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else if (blueprintWithDetails(); as bp) {
+<!-- 頂部狀態和進度資訊 -->
+<div nz-row [nzGutter]="24" class="mb-lg">
+  <div nz-col nzXs="24" nzSm="8" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-muted mb-xs">狀態</div>
+      <div>
+        <nz-tag [nzColor]="getStatusColor(bp.status)" class="text-lg">
+          {{ getStatusText(bp.status) }}
+        </nz-tag>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="8" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-muted mb-xs">進度</div>
+      <div class="text-lg text-primary font-bold">{{ bp.progress_percentage }}%</div>
+      <nz-progress [nzPercent]="bp.progress_percentage"
+        [nzStatus]="bp.progress_percentage === 100 ? 'success' : 'active'" [nzShowInfo]="false"
+        class="mt-xs"></nz-progress>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="8" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-muted mb-xs">藍圖代號</div>
+      <div class="text-lg font-medium">{{ bp.slug }}</div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="8" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-muted mb-xs">可見性</div>
+      <div>
+        <nz-tag [nzColor]="bp.is_private ? 'red' : 'green'">
+          {{ bp.is_private ? '私有' : '公開' }}
+        </nz-tag>
+      </div>
+    </nz-card>
+  </div>
+</div>
+
+<nz-card [nzBordered]="false" class="mb-lg">
+  <h3 class="mb-md">專案資訊</h3>
+  <sv-container size="small" col="2">
+    <sv label="藍圖名稱">{{ bp.name }}</sv>
+    <sv label="工地位置">
+      {{ bp.site_location || '暫無' }}
+    </sv>
+    <sv label="專案經理">
+      @if (bp.project_manager) {
+      <div class="flex align-center gap-sm">
+        <nz-avatar [nzSrc]="bp.project_manager.avatar_url ?? undefined"
+          [nzText]="bp.project_manager.display_name?.charAt(0)" nzSize="small"></nz-avatar>
+        <span>{{ bp.project_manager.display_name || bp.project_manager.email }}</span>
+      </div>
+      } @else {
+      <span class="text-muted">未指定</span>
+      }
+    </sv>
+    <sv label="當前階段">
+      {{ bp.current_stage || '未設定' }}
+    </sv>
+    <sv label="進度百分比">
+      <nz-progress [nzPercent]="bp.progress_percentage"
+        [nzStatus]="bp.progress_percentage === 100 ? 'success' : 'active'"></nz-progress>
+    </sv>
+    <sv label="專案狀態">
+      <nz-tag [nzColor]="getStatusColor(bp.status)">
+        {{ getStatusText(bp.status) }}
+      </nz-tag>
+    </sv>
+    <sv label="可見性">
+      <nz-tag [nzColor]="bp.is_private ? 'red' : 'green'">
+        {{ bp.is_private ? '私有' : '公開' }}
+      </nz-tag>
+    </sv>
+    <sv label="開始日期">
+      {{ bp.start_date ? (bp.start_date | date: 'yyyy-MM-dd') : '未設定' }}
+    </sv>
+    <sv label="結束日期">
+      {{ bp.end_date ? (bp.end_date | date: 'yyyy-MM-dd') : '未設定' }}
+    </sv>
+    <sv label="描述">
+      {{ bp.description || '暫無描述' }}
+    </sv>
+    <sv label="標籤">
+      @if (bp.tags && bp.tags.length > 0) {
+      @for (tag of bp.tags; track tag) {
+      <nz-tag>{{ tag }}</nz-tag>
+      }
+      } @else {
+      <span class="text-muted">無標籤</span>
+      }
+    </sv>
+    <sv label="創建時間">
+      {{ bp.created_at | date: 'yyyy-MM-dd HH:mm' }}
+    </sv>
+    <sv label="最後更新">
+      {{ bp.updated_at | date: 'yyyy-MM-dd HH:mm' }}
+    </sv>
+  </sv-container>
+</nz-card>
+
+<!-- 快速統計 -->
+<div nz-row [nzGutter]="24" class="mb-lg">
+  <div nz-col nzXs="24" nzSm="12" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-lg text-primary">{{ bp.milestones.length || 0 }}</div>
+      <div class="text-muted">里程碑</div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-lg text-primary">{{ bp.tasks.length || 0 }}</div>
+      <div class="text-muted">任務</div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-lg text-primary">{{ bp.members.length || 0 }}</div>
+      <div class="text-muted">成員</div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6">
+    <nz-card [nzBordered]="false" class="text-center">
+      <div class="text-lg text-primary">{{ bp.progress_percentage }}%</div>
+      <div class="text-muted">完成度</div>
+    </nz-card>
+  </div>
+</div>
+
+<!-- 成員列表 -->
+@if (bp.members && bp.members.length > 0) {
+<nz-card [nzBordered]="false" class="mb-lg" nzTitle="成員列表">
+  <div nz-row [nzGutter]="16">
+    @for (member of bp.members; track member.id) {
+    <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6">
+      <div class="flex align-center gap-sm py-sm">
+        <nz-avatar [nzSrc]="member.user.avatar_url ?? undefined" [nzText]="member.user.display_name?.charAt(0)"
+          nzSize="small"></nz-avatar>
+        <div class="flex-1">
+          <div class="font-medium">{{ member.user.display_name || member.user.email }}</div>
+          <div class="text-muted text-sm">
+            <nz-tag nzSize="small"
+              [nzColor]="member.role === 'owner' ? 'gold' : member.role === 'manager' ? 'blue' : 'default'">
+              {{ member.role === 'owner' ? '擁有者' : member.role === 'manager' ? '管理者' : member.role === 'viewer' ? '查看者'
+              : '成員' }}
+            </nz-tag>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</nz-card>
+}
+
+<!-- 最近里程碑 -->
+@if (bp.milestones && bp.milestones.length > 0) {
+<nz-card [nzBordered]="false" class="mb-lg" nzTitle="最近里程碑">
+  <nz-list [nzDataSource]="bp.milestones.slice(0, 5)" nzSize="small">
+    <ng-template #item let-item>
+      <nz-list-item>
+        <nz-list-item-meta [nzTitle]="item.name" [nzDescription]="item.description || '暫無描述'">
+          <ng-template #nzAvatar>
+            <nz-badge [nzCount]="item.status === 'completed' ? 1 : 0" nzShowZero
+              [nzStyle]="{ backgroundColor: item.status === 'completed' ? '#52c41a' : '#1890ff' }">
+              <nz-avatar nzText="裡" nzSize="small"></nz-avatar>
+            </nz-badge>
+          </ng-template>
+        </nz-list-item-meta>
+        <nz-progress [nzPercent]="item.progress_percentage"
+          [nzStatus]="item.status === 'completed' ? 'success' : 'active'"></nz-progress>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+</nz-card>
+}
+
+<!-- 最近任務 -->
+@if (bp.tasks && bp.tasks.length > 0) {
+<nz-card [nzBordered]="false" nzTitle="最近任務">
+  <nz-list [nzDataSource]="bp.tasks.slice(0, 5)" nzSize="small">
+    <ng-template #item let-item>
+      <nz-list-item>
+        <nz-list-item-meta [nzTitle]="item.title" [nzDescription]="item.description || '暫無描述'">
+          <ng-template #nzAvatar>
+            <nz-tag
+              [nzColor]="item.priority === 'urgent' ? 'red' : item.priority === 'high' ? 'orange' : item.priority === 'medium' ? 'blue' : 'default'">
+              {{ item.priority === 'urgent' ? '緊急' : item.priority === 'high' ? '高' : item.priority === 'medium' ? '中' :
+              '低' }}
+            </nz-tag>
+          </ng-template>
+        </nz-list-item-meta>
+        <nz-tag
+          [nzColor]="item.status === 'completed' ? 'success' : item.status === 'in-progress' ? 'processing' : 'default'">
+          {{ item.status === 'completed' ? '已完成' : item.status === 'in-progress' ? '進行中' : item.status === 'cancelled' ?
+          '已取消' : '待辦' }}
+        </nz-tag>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+</nz-card>
+}
+} @else {
+<nz-empty nzNotFoundContent="藍圖不存在"></nz-empty>
+}
+

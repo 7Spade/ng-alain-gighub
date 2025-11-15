@@ -21,3 +21,4 @@
 export * from './account';
 export * from './collaboration';
 export * from './blueprint';
+export * from './task';
