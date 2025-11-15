@@ -5,3 +5,4 @@ export * from './start-page.guard';
 export * from './supabase';
 export * from './permissions';
 export * from './infra';
+export * from './identity';

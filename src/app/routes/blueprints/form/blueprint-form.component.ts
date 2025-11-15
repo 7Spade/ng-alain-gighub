@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { Component, OnInit, inject, computed, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BlueprintStatus } from '@core';
-import { SHARED_IMPORTS, BlueprintService, Blueprint, BlueprintInsert, BlueprintUpdate } from '@shared';
+import { SHARED_IMPORTS, BlueprintService, Blueprint, BlueprintInsert, BlueprintUpdate, AccountSelectorComponent } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
@@ -21,7 +21,7 @@ interface BlueprintFormValue {
 @Component({
   selector: 'app-blueprint-form',
   standalone: true,
-  imports: [SHARED_IMPORTS, ReactiveFormsModule],
+  imports: [SHARED_IMPORTS, ReactiveFormsModule, AccountSelectorComponent],
   template: `
     <page-header [title]="isEditMode() ? '编辑蓝图' : '创建蓝图'">
       <ng-template #extra>
@@ -56,12 +56,11 @@ interface BlueprintFormValue {
               </nz-form-control>
             </nz-form-item>
 
-            <nz-form-item>
-              <nz-form-label [nzSpan]="4" nzRequired>拥有者ID</nz-form-label>
-              <nz-form-control [nzSpan]="20" [nzErrorTip]="'请输入拥有者ID'">
-                <input nz-input formControlName="ownerId" placeholder="请输入拥有者ID" />
-              </nz-form-control>
-            </nz-form-item>
+            <!-- 账户选择器 -->
+            <app-account-selector
+              (accountChange)="onOwnerAccountChange($event)"
+              [helpText]="'选择蓝图拥有者。个人账户用于个人项目，组织账户用于团队项目。'"
+            ></app-account-selector>
 
             <nz-form-item>
               <nz-form-label [nzSpan]="4" nzRequired>状态</nz-form-label>
@@ -132,6 +131,8 @@ export class BlueprintFormComponent implements OnInit {
   // 导出枚举供模板使用
   BlueprintStatus = BlueprintStatus;
 
+  @ViewChild(AccountSelectorComponent) accountSelector?: AccountSelectorComponent;
+
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
     projectCode: new FormControl(''),
@@ -148,6 +149,16 @@ export class BlueprintFormComponent implements OnInit {
       if (blueprintId) {
         this.loadBlueprint(blueprintId);
       }
+    }
+  }
+
+  onOwnerAccountChange(accountId: string): void {
+    if (accountId) {
+      this.form.patchValue({ ownerId: accountId });
+      // 手动触发验证
+      this.form.get('ownerId')?.updateValueAndValidity();
+      // 手动触发表单验证状态更新
+      this.form.updateValueAndValidity();
     }
   }
 

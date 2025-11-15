@@ -1,4 +1,5 @@
 // Components
+export * from './components/account-selector';
 
 // Utils
 export * from './utils/yuan';

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BlueprintStatus } from '@core';
-import { SHARED_IMPORTS, BlueprintService, Blueprint } from '@shared';
+import { SHARED_IMPORTS, BlueprintService, Blueprint, AccountService, Account, AccountType } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -54,7 +54,38 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             <nz-descriptions-item nzTitle="ID">{{ blueprint()!.id }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="项目名称">{{ blueprint()!.name }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="项目代码">{{ blueprint()!.project_code || '-' }}</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="拥有者">{{ blueprint()!.owner_id }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="拥有者">
+              @if (ownerAccount()) {
+                <span>
+                  @switch (ownerAccount()!.type) {
+                    @case (AccountType.USER) {
+                      <span nz-icon nzType="user" style="margin-right: 4px;"></span>
+                      {{ ownerAccount()!.name }}
+                      <nz-tag nzColor="blue" style="margin-left: 8px;">个人</nz-tag>
+                    }
+                    @case (AccountType.ORGANIZATION) {
+                      <span nz-icon nzType="team" style="margin-right: 4px;"></span>
+                      {{ ownerAccount()!.name }}
+                      <nz-tag nzColor="green" style="margin-left: 8px;">组织</nz-tag>
+                    }
+                    @default {
+                      {{ ownerAccount()!.name }}
+                    }
+                  }
+                  <button 
+                    nz-button 
+                    nzType="link" 
+                    nzSize="small" 
+                    style="margin-left: 8px;"
+                    (click)="viewOwnerAccount()"
+                  >
+                    查看详情
+                  </button>
+                </span>
+              } @else {
+                <span style="color: #999;">{{ blueprint()!.owner_id }}</span>
+              }
+            </nz-descriptions-item>
             <nz-descriptions-item nzTitle="状态">
               @switch (blueprint()!.status) {
                 @case ('planning') {
@@ -112,6 +143,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class BlueprintDetailComponent implements OnInit {
   blueprintService = inject(BlueprintService);
+  accountService = inject(AccountService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
@@ -119,8 +151,16 @@ export class BlueprintDetailComponent implements OnInit {
   // 使用 computed 从 Service 获取蓝图信息
   blueprint = computed(() => this.blueprintService.selectedBlueprint());
 
+  // 拥有者账户信息
+  ownerAccount = computed(() => {
+    const blueprint = this.blueprint();
+    if (!blueprint) return null;
+    return this.accountService.accounts().find(a => a.id === blueprint.owner_id);
+  });
+
   // 导出枚举供模板使用
   BlueprintStatus = BlueprintStatus;
+  AccountType = AccountType;
 
   ngOnInit(): void {
     const blueprintId = this.route.snapshot.paramMap.get('id');
@@ -135,9 +175,28 @@ export class BlueprintDetailComponent implements OnInit {
       if (!blueprint) {
         this.message.warning('蓝图不存在');
         this.goBack();
+        return;
       }
+      // 加载拥有者账户信息
+      await this.loadOwnerAccount(blueprint.owner_id);
     } catch (error) {
       this.message.error('加载蓝图详情失败');
+    }
+  }
+
+  async loadOwnerAccount(ownerId: string): Promise<void> {
+    try {
+      await this.accountService.loadAccountById(ownerId);
+    } catch (error) {
+      // 静默失败，不影响主流程
+      console.error('加载拥有者账户信息失败:', error);
+    }
+  }
+
+  viewOwnerAccount(): void {
+    const account = this.ownerAccount();
+    if (account) {
+      this.router.navigate(['/accounts', account.id]);
     }
   }
 

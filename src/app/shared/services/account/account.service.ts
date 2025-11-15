@@ -117,6 +117,32 @@ export class AccountService {
   }
 
   /**
+   * 根据多个 ID 批量加载账户
+   *
+   * @param ids 账户 ID 数组
+   * @returns Promise<Account[]>
+   */
+  async loadAccountsByIds(ids: string[]): Promise<Account[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    try {
+      const accounts = await firstValueFrom(this.accountRepository.findByIds(ids));
+      // 更新本地状态（合并到现有账户列表）
+      this.accountsState.update(currentAccounts => {
+        const existingIds = new Set(currentAccounts.map(a => a.id));
+        const newAccounts = accounts.filter(a => !existingIds.has(a.id));
+        return [...currentAccounts, ...newAccounts];
+      });
+      return accounts;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '批量加载账户失败');
+      throw error;
+    }
+  }
+
+  /**
    * 根据状态加载账户
    */
   async loadAccountsByStatus(status: AccountStatus): Promise<Account[]> {

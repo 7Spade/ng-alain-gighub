@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { SupabaseService } from '../../supabase/supabase.service';
 import { AccountStatus, AccountType } from '../types/account.types';
 import { Database } from '../types/database.types';
+import { toCamelCaseData } from '../utils/transformers';
 import { BaseRepository, QueryOptions } from './base.repository';
 
 /**
@@ -102,6 +103,28 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
         authOrganizationId // 会自动转换为 auth_organization_id
       }
     });
+  }
+
+  /**
+   * 根据多个 ID 批量查询账户
+   *
+   * @param ids 账户 ID 数组
+   * @returns Observable<Account[]>
+   */
+  findByIds(ids: string[]): Observable<Account[]> {
+    if (ids.length === 0) {
+      return of([]);
+    }
+    // 使用 Supabase 的 in 查询
+    return from(this.supabaseService.client.from(this.tableName).select('*').in('id', ids)).pipe(
+      map((response: { data: any[] | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '批量查询账户失败');
+        }
+        // 使用转换工具函数
+        return (response.data || []).map(item => toCamelCaseData<Account>(item));
+      })
+    );
   }
 
   /**
