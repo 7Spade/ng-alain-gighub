@@ -1,76 +1,43 @@
 ---
-description: 構建和部署規範
-globs: ["angular.json", "**/build/**", "dist/**"]
+description: Build and deployment standards
+globs: ["**/*"]
 alwaysApply: false
 ---
 
-# 構建和部署規範
+# Build and Deployment Standards
 
-> **相關規則**：參考 [性能優化](./performance.mdc)、[依賴管理](./dependency-management.mdc)、[測試規範](./testing.mdc)
+> **Related Rules**: See [Performance](./performance.mdc), [Security Standards](./security.mdc), [Dependency Management](./dependency-management.mdc)
 
-## 構建命令
+## Build Commands
 
 ```bash
-# 開發環境啟動
-yarn start
-
-# 熱模塊替換（HMR）
-yarn hmr
-
-# 生產構建
+# Development build
 yarn build
 
-# 構建並生成 source map（用於分析）
-yarn analyze
+# Production build
+yarn build --configuration production
 
-# 查看構建分析報告
+# Analyze bundle size
+yarn analyze
 yarn analyze:view
 ```
 
-## 構建配置
+## Performance Analysis
 
-- 使用 `ng-high-memory` 腳本處理大型項目構建
-- 設置 `--max_old_space_size=8000` 避免內存不足
-- 生產構建啟用優化和壓縮
-- 生成 source map 用於錯誤追蹤和性能分析
+- Regularly analyze bundle size
+- Monitor build time
+- Optimize import statements
+- Use lazy loading for routes
 
-## 性能分析
+## Pre-Deployment Checks
 
-- 使用 `source-map-explorer` 分析構建產物
-- 定期檢查 bundle 大小
-- 識別大型依賴並優化
-- 使用 `yarn analyze:view` 可視化分析結果
-- 詳細策略參考 [性能優化規範](./performance.mdc)
+- Run all tests: `yarn test-coverage`
+- Run linting: `yarn lint`
+- Run type checking: `yarn type-check`
+- Build successfully: `yarn build`
+- Security audit: `yarn audit`
 
-## 構建優化
+## Reference Documentation
 
-- 啟用 Tree Shaking 移除未使用代碼
-- 使用代碼分割（Code Splitting）
-- 啟用壓縮和混淆
-- 優化圖片和資源加載
-
-## 部署前檢查
-
-部署前必須確保：
-1. 構建成功無錯誤
-2. 構建產物大小在合理範圍內（參考 [性能優化規範](./performance.mdc)）
-3. 所有測試通過（參考 [測試規範](./testing.mdc)）
-4. 性能指標達標
-5. 文檔已更新
-
-## 環境配置
-
-- 使用環境變數管理不同環境配置
-- 區分開發、測試、生產環境
-- 敏感信息使用環境變數，不提交到版本控制
-
-## 構建產物
-
-- 構建產物輸出到 `dist/` 目錄
-- 不提交構建產物到版本控制
-- 使用 CI/CD 自動構建和部署
-
-## 參考文檔
-
-- [Angular 構建文檔](https://angular.dev/tools/cli/build)
-- [source-map-explorer 文檔](https://github.com/danvk/source-map-explorer)
+- [Angular Build Documentation](https://angular.dev/tools/cli/build)
+- [Performance Standards](./performance.mdc)

@@ -1,32 +1,32 @@
 ---
-description: 可訪問性規範（WCAG 2.1 AA）
+description: Accessibility standards (WCAG 2.1 AA)
 globs: ["**/*.html", "**/*.ts"]
 alwaysApply: true
 ---
 
-# 可訪問性規範
+# Accessibility Standards
 
-> **相關規則**：參考 [主題定制](./theming.mdc)、[Layout 模組規範](./layout-specific.mdc)
+> **Related Rules**: See [Theme Customization](./theming.mdc), [Layout Module Standards](./layout-specific.mdc)
 
-## ARIA 標籤
+## ARIA Labels
 
-- 所有互動元素需提供適當的 ARIA 標籤
-- 表單驗證錯誤需明確提示
-- 使用語義化 HTML 元素
+- All interactive elements need appropriate ARIA labels
+- Form validation errors need clear prompts
+- Use semantic HTML elements
 
-## 鍵盤導航
+## Keyboard Navigation
 
-- 鍵盤導航支援（Tab、Enter、Esc 等）
-- 所有互動功能必須可通過鍵盤操作
-- 確保焦點管理正確
+- Keyboard navigation support (Tab, Enter, Esc, etc.)
+- All interactive functions must be operable via keyboard
+- Ensure correct focus management
 
-## 視覺設計
+## Visual Design
 
-- 顏色對比度符合 WCAG 2.1 AA 標準（參考 [主題定制規範](./theming.mdc)）
-- 圖片提供替代文字（alt text）
-- 不使用顏色作為唯一的信息傳達方式
+- Color contrast meets WCAG 2.1 AA standards (see [Theme Customization Standards](./theming.mdc))
+- Images provide alternative text (alt text)
+- Do not use color as the only means of conveying information
 
-## 參考文檔
+## Reference Documentation
 
-- [WCAG 2.1 指南](https://www.w3.org/WAI/WCAG21/quickref/)
-- [Angular 可訪問性指南](https://angular.dev/guide/accessibility)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Angular Accessibility Guide](https://angular.dev/guide/accessibility)

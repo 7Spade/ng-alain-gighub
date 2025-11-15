@@ -1,96 +1,35 @@
 ---
-description: 性能監控和優化規範
-globs: ["**/*.ts", "**/*.html", "angular.json"]
+description: Performance monitoring and optimization standards
+globs: ["**/*.ts", "**/*.html"]
 alwaysApply: false
 ---
 
-# 性能監控和優化規範
+# Performance Standards
 
-> **相關規則**：參考 [Angular 20 最佳實踐](./angular.mdc)、[構建部署](./build-deploy.mdc)
+> **Related Rules**: See [Angular Best Practices](./angular.mdc), [Build and Deployment](./build-deploy.mdc)
 
-## 基本原則
+## Bundle Size Monitoring
 
-- 定期進行性能分析
-- 監控構建產物大小
-- 優化加載時間和運行時性能
-- 使用性能分析工具識別瓶頸
+- Monitor bundle size regularly using `yarn analyze`
+- Keep main bundle under reasonable size
+- Use lazy loading for feature modules
+- Use code splitting for large dependencies
 
-## 構建分析
+## Performance Metrics
 
-```bash
-# 構建並生成 source map
-yarn analyze
+- First Contentful Paint (FCP) < 1.8s
+- Time to Interactive (TTI) < 3.8s
+- Largest Contentful Paint (LCP) < 2.5s
 
-# 查看構建分析報告
-yarn analyze:view
-```
+## Optimization Strategies
 
-## Bundle 大小監控
+- Use OnPush change detection (see [Angular Best Practices](./angular.mdc))
+- Use trackBy functions for lists
+- Lazy load images and routes
+- Minimize bundle size
+- Use virtual scrolling for large lists
 
-- 使用 `source-map-explorer` 分析 bundle 大小
-- 識別大型依賴並考慮替代方案
-- 設置 bundle 大小預警閾值
-- 定期檢查構建產物大小變化
+## Reference Documentation
 
-## 性能指標
-
-- **First Contentful Paint (FCP)**: < 1.8s
-- **Largest Contentful Paint (LCP)**: < 2.5s
-- **Time to Interactive (TTI)**: < 3.8s
-- **Total Blocking Time (TBT)**: < 200ms
-- **Cumulative Layout Shift (CLS)**: < 0.1
-
-## 優化策略
-
-### 代碼分割
-
-- 使用路由級代碼分割
-- 按需加載大型組件
-- 使用動態導入（`import()`）
-
-### 資源優化
-
-- 圖片使用適當格式（WebP、AVIF）
-- 啟用圖片懶加載
-- 壓縮和優化靜態資源
-
-### 運行時優化
-
-- 使用 OnPush 變更檢測策略（參考 [Angular 20 最佳實踐](./angular.mdc)）
-- 使用 Signals 減少不必要的變更檢測
-- 避免在模板中使用複雜表達式
-- 使用 `trackBy` 優化列表渲染
-
-### 構建優化
-
-- 啟用 Tree Shaking
-- 使用生產模式構建
-- 啟用壓縮和混淆
-- 移除未使用的代碼
-
-## 性能監控工具
-
-- Chrome DevTools Performance 面板
-- Angular DevTools
-- Lighthouse
-- WebPageTest
-
-## 性能測試
-
-- 定期進行性能測試
-- 記錄性能基準
-- 監控性能回歸
-- 在 CI/CD 中集成性能測試
-
-## 內存管理
-
-- 監控內存使用情況
-- 及時清理訂閱和事件監聽器
-- 避免內存洩漏
-- 使用 `ngOnDestroy` 清理資源
-
-## 參考文檔
-
-- [Angular 性能最佳實踐](https://angular.dev/guide/performance)
+- [Angular Performance Guide](https://angular.dev/best-practices/runtime-performance)
 - [Web Vitals](https://web.dev/vitals/)
-- [source-map-explorer](https://github.com/danvk/source-map-explorer)

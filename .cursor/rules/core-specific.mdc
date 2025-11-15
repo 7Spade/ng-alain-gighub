@@ -1,101 +1,43 @@
 ---
-description: Core 模組特定開發規範
+description: Core module specific standards
 globs: ["src/app/core/**/*.ts"]
-alwaysApply: false
+alwaysApply: true
 ---
 
-# Core 模組特定規範
+# Core Module Specific Standards
 
-> **相關規則**：參考 [架構規範](./architecture.mdc)、[錯誤處理](./error-handling.mdc)、[API 設計](./api-design.mdc)、[安全規範](./security.mdc)
+> **Related Rules**: See [Architecture Standards](./architecture.mdc), [Security Standards](./security.mdc), [Error Handling](./error-handling.mdc)
 
-## 模組職責
+## HTTP Interceptors
 
-Core 模組是應用程式的核心基礎設施層，提供：
-- 網路請求攔截與錯誤處理
-- 國際化服務
-- 應用啟動邏輯
-- 路由守衛
+- Authentication interceptor for adding tokens
+- Error interceptor for global error handling
+- Logging interceptor for request/response logging
+- Use functional interceptors (Angular 20+)
 
-## 依賴關係
+## Internationalization Services
 
-- ✅ **可被依賴**：`routes` 和 `shared` 可以依賴 `core`
-- ❌ **禁止依賴**：`core` 不能依賴 `routes` 或 `shared`
-- 使用 `inject()` 進行依賴注入
-- 詳細規範參考 [架構規範](./architecture.mdc)
+- i18n service for translations
+- Support multiple languages
+- Lazy load translations
+- Use ng-alain i18n integration
 
-## HTTP 攔截器
+## Route Guards
 
-- 使用 `defaultInterceptor` 統一處理 HTTP 請求
-- 自動添加認證 token
-- 統一錯誤處理和重試邏輯（參考 [錯誤處理規範](./error-handling.mdc)）
-- 記錄請求日誌（開發環境）
+- Authentication guard
+- Authorization guard
+- Unsaved changes guard
+- Use functional guards (Angular 20+)
 
-### 攔截器範例
+## Singleton Services
 
-```typescript
-@Injectable()
-export class DefaultInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // 添加認證 token
-    // 統一錯誤處理
-    // 重試邏輯
-  }
-}
-```
+- All services in core/ are singletons
+- Provide in root: `providedIn: 'root'`
+- Must be stateless or manage global state
+- No component-specific logic
 
-## 錯誤處理
+## Reference Documentation
 
-- 使用 `ErrorStateService` 統一管理錯誤狀態（參考 [錯誤處理規範](./error-handling.mdc)）
-- HTTP 錯誤透過 `defaultInterceptor` 自動處理
-- 業務錯誤需明確分類（HTTP、網路、驗證、業務、權限）
-- 提供錯誤重試機制
-
-## 國際化服務
-
-- 使用 Angular i18n 或自定義國際化服務
-- 支持多語言切換
-- 語言資源文件統一管理
-- 支持動態語言切換
-
-## 應用啟動邏輯
-
-- 使用 `startup.service.ts` 處理應用啟動邏輯
-- 初始化必要的配置和數據
-- 處理認證狀態恢復
-- 預加載關鍵資源
-
-## 路由守衛
-
-- 使用 `canActivate` 和 `canActivateChild` 保護路由
-- 驗證用戶認證狀態
-- 檢查用戶權限（參考 [安全規範](./security.mdc)）
-- 處理未授權訪問
-
-## 資料庫操作
-
-- 所有資料庫操作必須通過 Supabase MCP 工具（參考 [MCP 工具](./mcp-tools.mdc)）
-- 啟用 Supabase RLS (Row Level Security) 檢查（參考 [安全規範](./security.mdc)）
-- 使用 Repository 模式封裝資料存取（參考 [API 設計規範](./api-design.mdc)）
-- 提供類型安全的資料存取接口（參考 [類型安全](./typescript.mdc)）
-
-## 測試要求
-
-- 每個服務至少 80% 程式碼覆蓋率
-- 關鍵業務邏輯需 100% 覆蓋率
-- 測試錯誤處理邏輯
-- 測試路由守衛邏輯
-- 詳細規範參考 [測試規範](./testing.mdc)
-
-## 通用規範
-
-以下規範已在通用規則文件中定義，請參考：
-- [TypeScript 類型安全](./typescript.mdc)
-- [錯誤處理](./error-handling.mdc)
-- [API 設計](./api-design.mdc)
-- [安全規範](./security.mdc)
-- [測試規範](./testing.mdc)
-
-## 參考文檔
-
-- [錯誤處理指南](../../docs/37-錯誤處理指南.md)
-- [測試指南](../../docs/38-測試指南.md)
+- [Architecture Standards](./architecture.mdc)
+- [Security Standards](./security.mdc)
+- [Error Handling Standards](./error-handling.mdc)
