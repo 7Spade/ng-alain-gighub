@@ -1,93 +1,39 @@
 ---
-description: Routes 模組特定開發規範
+description: Routes module specific standards
 globs: ["src/app/routes/**/*.ts", "src/app/routes/**/*.html"]
-alwaysApply: false
+alwaysApply: true
 ---
 
-# Routes 模組特定規範
+# Routes Module Specific Standards
 
-> **相關規則**：參考 [架構規範](./architecture.mdc)、[API 設計](./api-design.mdc)、[錯誤處理](./error-handling.mdc)
+> **Related Rules**: See [Architecture Standards](./architecture.mdc), [API Design](./api-design.mdc), [Git-like Branching Model](./git-model.mdc)
 
-## 模組職責
+## Route Configuration
 
-Routes 模組是應用程式的路由層，包含所有功能頁面：
-- 儀表板（Dashboard）
-- 業務功能頁面（Pro）
-- 認證頁面（Passport）
-- 異常頁面（Exception）
-- 其他功能模組
+- Each feature module should have its own routing
+- Use lazy loading for feature routes
+- Follow consistent route naming
 
-## 依賴關係
+## API Design Standards
 
-- ✅ **可依賴**：`routes` 可以依賴 `shared` 和 `core`
-- ❌ **禁止依賴**：`routes` 不能直接依賴其他 `routes` 子模組
-- 使用 `inject()` 進行依賴注入
-- 詳細規範參考 [架構規範](./architecture.mdc)
+- Use Repository pattern for data access
+- All database operations via Supabase client
+- Implement proper error handling
 
-## 路由配置
+## Business Logic Organization
 
-- 使用懶加載（Lazy Loading）載入子路由
-- 路由守衛使用 `canActivate` 和 `canActivateChild`（參考 [Core 模組規範](./core-specific.mdc)）
-- 路由資料使用 `data` 屬性傳遞元數據
-- 遵循 RESTful 路由命名規範
+- Keep business logic in services
+- Components should be thin, delegating to services
+- Use Signals for reactive state
 
-### 路由配置範例
+## Git-like Branching Model Integration
 
-```typescript
-export const routes: Routes = [
-  {
-    path: 'dashboard',
-    loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
-    data: { title: '儀表板' }
-  },
-  {
-    path: 'pro',
-    loadChildren: () => import('./pro/pro.routes').then(m => m.routes),
-    canActivate: [AuthGuard]
-  }
-];
-```
+- Understand branching model when working in routes/blueprint/
+- Implement branch permissions correctly
+- Handle PR workflows properly
 
-## API 設計規範
+## Reference Documentation
 
-- 使用 Repository 模式封裝資料存取邏輯（參考 [API 設計規範](./api-design.mdc)）
-- 統一回應格式與錯誤處理
-- 使用 TypeScript 類型定義 API 介面（參考 [類型安全](./typescript.mdc)）
-- 支援分頁、排序、篩選查詢參數
-- 分支相關 API 需驗證權限（擁有者/協作組織/查看者）（參考 [安全規範](./security.mdc)）
-
-## 業務邏輯組織
-
-- 業務邏輯應該放在服務層，而非組件中
-- 使用 Repository 模式封裝資料存取
-- 組件只負責展示和用戶交互
-- 複雜業務邏輯使用 Signals 管理狀態（參考 [Angular 20 最佳實踐](./angular.mdc)）
-
-## 錯誤處理
-
-- 使用 `ErrorStateService` 統一管理錯誤狀態（參考 [錯誤處理規範](./error-handling.mdc)）
-- HTTP 錯誤透過 `defaultInterceptor` 自動處理
-- 業務錯誤需明確分類（HTTP、網路、驗證、業務、權限）
-- 在組件中處理用戶友好的錯誤提示
-
-## 測試要求
-
-- 每個組件至少 80% 程式碼覆蓋率
-- 關鍵業務邏輯需 100% 覆蓋率
-- E2E 測試覆蓋關鍵用戶流程（藍圖建立、Fork、PR、任務執行等）
-- 詳細規範參考 [測試規範](./testing.mdc)
-
-## 通用規範
-
-以下規範已在通用規則文件中定義，請參考：
-- [Angular 20 最佳實踐](./angular.mdc)
-- [TypeScript 類型安全](./typescript.mdc)
-- [共享模組優先使用](./shared-imports.mdc)
-- [API 設計](./api-design.mdc)
-- [錯誤處理](./error-handling.mdc)
-- [測試規範](./testing.mdc)
-
-## 參考文檔
-
-- [SHARED_IMPORTS 使用指南](../../docs/45-SHARED_IMPORTS-使用指南.md) ⭐ 必讀
-- [錯誤處理指南](../../docs/37-錯誤處理指南.md)
+- [Module-Specific Rules](./.cursor/rules/routes-specific.mdc)
+- [API Design Patterns](./.cursor/rules/api-design.mdc)
+- [Development Guidelines](../../docs/00-開發作業指引.md)

@@ -1,12 +1,12 @@
 ---
-description: Angular Service 模板（使用 Signals）
+description: Angular Service template (using Signals)
 globs: ["src/app/**/*.service.ts"]
 alwaysApply: false
 ---
 
-# Angular Service 模板
+# Angular Service Template
 
-## Service 結構
+## Service Structure
 
 ```typescript
 import { Injectable, signal, computed, inject, resource } from '@angular/core';
@@ -16,32 +16,32 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ExampleService {
-  // 使用 inject() 注入依賴
+  // Use inject() for dependency injection
   private readonly http = inject(HttpClient);
   private readonly repository = inject(ExampleRepository);
   
-  // 使用 signal() 創建私有狀態
+  // Use signal() to create private state
   private readonly _state = signal<StateType>(initialValue);
   
-  // 暴露 ReadonlySignal 給組件
+  // Expose ReadonlySignal to components
   readonly state = this._state.asReadonly();
   
-  // 使用 computed() 創建派生狀態
+  // Use computed() to create derived state
   readonly derivedState = computed(() => {
     return this._state().someProperty;
   });
   
-  // 方法更新狀態
+  // Methods to update state
   updateState(newValue: StateType): void {
     this._state.set(newValue);
   }
   
-  // 使用 update() 方法進行複雜狀態更新
+  // Use update() method for complex state updates
   updateStatePartial(partial: Partial<StateType>): void {
     this._state.update(current => ({ ...current, ...partial }));
   }
 
-  // 使用 resource() 將 Supabase/HTTP 呼叫封裝為可重載資源
+  // Use resource() to wrap Supabase/HTTP calls as reloadable resources
   readonly profileResource = resource({
     params: () => ({ id: this.state().activeProfileId }),
     loader: ({ params }) => this.repository.findById(params.id)
@@ -53,7 +53,7 @@ export class ExampleService {
 }
 ```
 
-## Repository 模式
+## Repository Pattern
 
 ```typescript
 import { Injectable, inject } from '@angular/core';
@@ -76,12 +76,12 @@ export class ExampleRepository {
 }
 ```
 
-## 注意事項
+## Important Notes
 
-- 使用 `inject()` 進行依賴注入（避免 constructor injection）
-- 使用 Signals 管理狀態
-- 暴露 `ReadonlySignal` 給組件
-- 使用 `readonly` 修飾符保護不可變屬性
-- 使用 `update()` 方法進行複雜狀態更新
-- 非同步資料優先封裝為 `resource()`/`rxResource()`，提供 `reload()` 鉤子給 UI
-- 資料庫操作通過 Supabase MCP 工具
+- Use `inject()` for dependency injection (avoid constructor injection)
+- Use Signals to manage state
+- Expose `ReadonlySignal` to components
+- Use `readonly` modifier to protect immutable properties
+- Use `update()` method for complex state updates
+- Prioritize wrapping async data as `resource()`/`rxResource()`, provide `reload()` hooks for UI
+- Database operations through Supabase MCP tools

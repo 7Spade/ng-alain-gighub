@@ -1,45 +1,45 @@
 ---
-description: MCP 工具使用規範
+description: MCP tools usage standards
 globs: ["**/*"]
 alwaysApply: false
 ---
 
-# MCP 工具使用規範
+# MCP Tools Usage Standards
 
-> **相關規則**：參考 [類型安全](./typescript.mdc)、[安全規範](./security.mdc)、[API 設計](./api-design.mdc)
+> **Related Rules**: See [Type Safety](./typescript.mdc), [Security Standards](./security.mdc), [API Design](./api-design.mdc)
 
 ## Context7
 
-- 技術文檔檢索工具，實作前查詢官方文檔與最佳實踐
-- 使用方式：`@C7` 或 `@Context7`
-- 用於查詢 Angular、TypeScript、ng-alain 等技術文檔
+- Technical documentation retrieval tool, query official documentation and best practices before implementation
+- Usage: `@C7` or `@Context7`
+- Used for querying Angular, TypeScript, ng-alain and other technical documentation
 
 ## Sequential Thinking
 
-- 複雜問題分析與決策，用於架構設計與根因分析
-- 使用方式：`@S7` 或 `@Sequential Thinking`
-- 用於複雜問題的結構化思考
+- Complex problem analysis and decision making, used for architecture design and root cause analysis
+- Usage: `@S7` or `@Sequential Thinking`
+- Used for structured thinking on complex problems
 
 ## Software Planning Tool
 
-- Level 3 以上複雜任務必須使用，用於任務規劃與追蹤
-- 使用方式：`@SPT` 或 `@Software Planning Tool`
-- 用於大型功能的任務分解和追蹤
+- Must be used for Level 3+ complex tasks, used for task planning and tracking
+- Usage: `@SPT` or `@Software Planning Tool`
+- Used for task decomposition and tracking of large features
 
 ## Memory
 
-- 記錄架構決策、技術債務、配置與測試結果
-- 定期清理冗餘記憶
+- Record architecture decisions, technical debt, configurations, and test results
+- Regularly clean up redundant memories
 
 ## Supabase MCP
 
-- 所有資料庫操作必須透過 `@SUPABASE` MCP 工具
-- 使用 Supabase MCP 定期檢查數據庫結構
-- 使用 Supabase MCP 工具生成 TypeScript 類型定義（參考 [類型安全](./typescript.mdc)）
-- 資料庫操作需啟用 RLS 檢查（參考 [安全規範](./security.mdc)）
-- 使用 Repository 模式封裝資料存取（參考 [API 設計規範](./api-design.mdc)）
+- All database operations must go through `@SUPABASE` MCP tool
+- Use Supabase MCP to regularly check database structure
+- Use Supabase MCP tools to generate TypeScript type definitions (see [Type Safety](./typescript.mdc))
+- Database operations need RLS checks enabled (see [Security Standards](./security.mdc))
+- Use Repository pattern to encapsulate data access (see [API Design Standards](./api-design.mdc))
 
-## 參考文檔
+## Reference Documentation
 
-- [Supabase 官方文檔](https://supabase.com/docs)
-- [MCP 協議文檔](https://modelcontextprotocol.io/)
+- [Supabase Official Documentation](https://supabase.com/docs)
+- [MCP Protocol Documentation](https://modelcontextprotocol.io/)

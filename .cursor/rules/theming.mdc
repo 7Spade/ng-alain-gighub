@@ -1,70 +1,32 @@
 ---
-description: ng-alain 主題定制規範
-globs: ["**/*.less", "**/theme/**", "src/styles/**"]
+description: ng-alain theme customization standards
+globs: ["**/*.less"]
 alwaysApply: false
 ---
 
-# ng-alain 主題定制規範
+# ng-alain Theme Customization Standards
 
-> **相關規則**：參考 [樣式規範](./styling.mdc)、[可訪問性](./accessibility.mdc)
+> **Related Rules**: See [Styling Standards](./styling.mdc), [Accessibility Standards](./accessibility.mdc)
 
-## 基本原則
+## Theme Tool Usage
 
-- 使用 ng-alain 主題系統進行樣式定制
-- 遵循 ng-alain 主題變數規範
-- 使用主題工具生成主題文件
-- 保持主題一致性
+- Use `yarn color-less` to generate color palettes
+- Use `yarn theme` to generate theme CSS
+- Use theme variables consistently
 
-## 主題工具
+## Color System
 
-```bash
-# 生成顏色變數 Less 文件
-yarn color-less
+- Use theme variables for colors
+- Ensure color contrast meets WCAG 2.1 AA (see [Accessibility](./accessibility.mdc))
+- Define custom colors in theme configuration
 
-# 生成主題 CSS 文件
-yarn theme
+## Theme Variables
 
-# 生成圖標
-yarn icon
-```
+- Use ng-alain theme variables
+- Override variables in custom theme file
+- Keep theme customization maintainable
 
-## 主題定制
+## Reference Documentation
 
-- 使用 `ng-alain-plugin-theme` 工具進行主題定制
-- 修改主題變數而非直接覆蓋樣式
-- 使用 Less 變數系統保持一致性
-
-## 顏色系統
-
-- 使用 `yarn color-less` 生成顏色變數
-- 遵循 Ant Design 顏色規範
-- 保持顏色對比度符合 WCAG 標準（參考 [可訪問性規範](./accessibility.mdc)）
-
-## 主題變數
-
-- 使用 ng-alain 提供的主題變數
-- 自定義變數應遵循命名規範
-- 避免硬編碼顏色值
-
-## 樣式組織
-
-- 主題相關樣式放在 `src/styles/` 目錄
-- 組件特定樣式放在組件目錄
-- 全局樣式使用主題變數
-
-## 響應式設計
-
-- 使用 ng-alain 的響應式工具類
-- 遵循移動優先的設計原則
-- 測試不同屏幕尺寸的顯示效果
-
-## 主題切換
-
-- 如需要支持多主題，使用 ng-alain 主題切換功能
-- 保持主題切換的流暢性
-- 確保所有組件支持主題切換
-
-## 參考文檔
-
-- [ng-alain 主題文檔](https://ng-alain.com/theme)
-- [Ant Design 設計規範](https://ant.design/docs/spec/introduce-cn)
+- [ng-alain Theme Documentation](https://ng-alain.com/theme)
+- [NG-ZORRO Theme Customization](https://ng.ant.design/docs/customize-theme/en)
