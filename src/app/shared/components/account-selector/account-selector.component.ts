@@ -110,7 +110,7 @@ export class AccountSelectorComponent implements OnInit, AfterViewInit {
   initialValue = input<string | null>(null);
 
   // Outputs
-  accountChange = output<string>();
+  readonly accountChange = output<string>();
 
   // Internal state
   ownerType = signal<'user' | 'organization'>('user');
