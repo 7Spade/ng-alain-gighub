@@ -5,7 +5,7 @@
 **最後更新**：2025-11-15  
 **維護者**：開發團隊  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
-**技術棧版本**：Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.0.x + Supabase
+**技術棧版本**：Angular 20.3.x + NG-ZORRO 20.2.x + NG-ALAIN 20.1.x + Supabase
 
 ---
 
