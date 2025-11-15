@@ -26,4 +26,3 @@ export class IssueAssignmentsComponent implements OnInit {
     // TODO: 加载问题分配数据
   }
 }
-

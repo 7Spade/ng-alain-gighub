@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 import type { NzUploadFile } from 'ng-zorro-antd/upload';
 
-type PhotoItem = {
+interface PhotoItem {
   readonly name: string;
   readonly thumbUrl: string;
   readonly datetime: string;
-};
+}
 
 @Component({
   selector: 'app-issue-photos-wall',
@@ -71,7 +71,7 @@ type PhotoItem = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssuePhotosWallComponent {
-  protected readonly photoFileList: (PhotoItem & NzUploadFile)[] = [
+  protected readonly photoFileList: Array<PhotoItem & NzUploadFile> = [
     {
       uid: '1',
       name: 'evidence-1.png',

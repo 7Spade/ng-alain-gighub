@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type Timeline = {
+interface Timeline {
   readonly title: string;
   readonly description: string;
   readonly color: string;
-};
+}
 
 @Component({
   selector: 'app-issue-detail-static',

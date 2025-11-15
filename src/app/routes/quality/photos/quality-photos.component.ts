@@ -26,4 +26,3 @@ export class QualityPhotosComponent implements OnInit {
     // TODO: 加载验收照片数据
   }
 }
-

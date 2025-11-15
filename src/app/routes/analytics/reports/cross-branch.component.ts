@@ -22,5 +22,3 @@ import { SHARED_IMPORTS } from '@shared';
   `
 })
 export class CrossBranchComponent {}
-
-

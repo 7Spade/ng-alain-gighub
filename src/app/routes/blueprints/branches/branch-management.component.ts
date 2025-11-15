@@ -1,15 +1,102 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BranchType } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS } from '@shared';
-import { BranchService, BlueprintBranch } from '@shared';
-import { BranchStatus, BranchType } from '@core';
+import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { AccountService, BlueprintBranch, BranchService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+
+// Fork 分支对话框组件
+@Component({
+  selector: 'app-fork-branch-dialog',
+  standalone: true,
+  imports: [SHARED_IMPORTS, ReactiveFormsModule],
+  template: `
+    <div>
+      <form nz-form [formGroup]="form">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6" nzRequired>组织</nz-form-label>
+          <nz-form-control [nzSpan]="18" [nzErrorTip]="'请选择组织'">
+            <nz-select formControlName="organizationId" nzPlaceHolder="请选择组织" [nzLoading]="loading()">
+              @for (org of organizations(); track org.id) {
+                <nz-option [nzValue]="org.id" [nzLabel]="org.name || org.id"></nz-option>
+              }
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6" nzRequired>分支名称</nz-form-label>
+          <nz-form-control [nzSpan]="18" [nzErrorTip]="'请输入分支名称'">
+            <input nz-input formControlName="branchName" placeholder="请输入分支名称" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6" nzRequired>分支类型</nz-form-label>
+          <nz-form-control [nzSpan]="18" [nzErrorTip]="'请选择分支类型'">
+            <nz-select formControlName="branchType" nzPlaceHolder="请选择分支类型">
+              <nz-option [nzValue]="BranchType.CONTRACTOR" nzLabel="承揽商"></nz-option>
+              <nz-option [nzValue]="BranchType.SUBCONTRACTOR" nzLabel="次承揽商"></nz-option>
+              <nz-option [nzValue]="BranchType.CONSULTANT" nzLabel="顾问"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6">备注</nz-form-label>
+          <nz-form-control [nzSpan]="18">
+            <textarea
+              nz-input
+              formControlName="notes"
+              [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+              placeholder="请输入备注（可选）"
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  `
+})
+class ForkBranchDialogComponent implements OnInit {
+  modal = inject(NzModalRef);
+  accountService = inject(AccountService);
+  BranchType = BranchType;
+
+  form = new FormGroup({
+    organizationId: new FormControl<string>('', [Validators.required]),
+    branchName: new FormControl<string>('', [Validators.required]),
+    branchType: new FormControl<BranchType>(BranchType.CONTRACTOR, [Validators.required]),
+    notes: new FormControl<string>('')
+  });
+
+  organizations = this.accountService.organizationAccounts;
+  loading = this.accountService.loading;
+
+  ngOnInit(): void {
+    // 加载组织列表
+    this.accountService.loadAccounts().catch(() => {
+      // 错误处理已在service中完成
+    });
+  }
+
+  submit(): void {
+    if (this.form.valid) {
+      this.modal.close(this.form.value);
+    }
+  }
+
+  cancel(): void {
+    this.modal.destroy();
+  }
+}
 
 @Component({
   selector: 'app-branch-management',
   standalone: true,
-  imports: [SHARED_IMPORTS],
+  imports: [SHARED_IMPORTS, ReactiveFormsModule],
   template: `
     <page-header [title]="'分支管理'">
       <ng-template #extra>
@@ -72,9 +159,12 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class BranchManagementComponent implements OnInit {
   branchService = inject(BranchService);
+  accountService = inject(AccountService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
+  modal = inject(NzModalService);
+  tokenService = inject(DA_SERVICE_TOKEN);
 
   blueprintId = computed(() => this.route.snapshot.paramMap.get('id') || '');
 
@@ -134,8 +224,88 @@ export class BranchManagementComponent implements OnInit {
   }
 
   forkBranch(): void {
-    // TODO: 实现 Fork 分支对话框
-    this.message.info('Fork 分支功能待实现');
+    const blueprintId = this.blueprintId();
+    if (!blueprintId) {
+      this.message.error('蓝图ID不存在');
+      return;
+    }
+
+    // 获取当前用户ID
+    const currentUser = this.tokenService.get()?.['user'];
+    if (!currentUser?.id) {
+      this.message.error('请先登录');
+      return;
+    }
+
+    // 打开Fork分支对话框
+    const modalRef = this.modal.create({
+      nzTitle: 'Fork 分支',
+      nzContent: ForkBranchDialogComponent,
+      nzWidth: 600,
+      nzFooter: [
+        {
+          label: '取消',
+          onClick: () => modalRef.destroy()
+        },
+        {
+          label: '确定',
+          type: 'primary',
+          onClick: () => {
+            const component = modalRef.getContentComponent() as ForkBranchDialogComponent;
+            if (component.form.valid) {
+              const formValue = component.form.value;
+              this.handleForkBranch(
+                blueprintId,
+                currentUser.id,
+                {
+                  organizationId: formValue.organizationId ?? null,
+                  branchName: formValue.branchName ?? null,
+                  branchType: formValue.branchType ?? null,
+                  notes: formValue.notes ?? null
+                },
+                modalRef
+              );
+            } else {
+              // 标记表单为touched以显示验证错误
+              Object.values(component.form.controls).forEach(control => {
+                control.markAsTouched();
+                control.updateValueAndValidity();
+              });
+            }
+          }
+        }
+      ]
+    });
+  }
+
+  private async handleForkBranch(
+    blueprintId: string,
+    forkedBy: string,
+    formValue: { organizationId: string | null; branchName: string | null; branchType: BranchType | null; notes?: string | null },
+    modalRef: any
+  ): Promise<void> {
+    if (!formValue.organizationId || !formValue.branchName || !formValue.branchType) {
+      this.message.error('请填写所有必填字段');
+      return;
+    }
+
+    try {
+      await this.branchService.forkBranch(
+        blueprintId,
+        formValue.organizationId,
+        formValue.branchName,
+        formValue.branchType,
+        forkedBy,
+        formValue.notes || undefined
+      );
+      this.message.success('Fork 分支成功');
+      modalRef.destroy();
+      // 刷新分支列表
+      await this.loadBranches(blueprintId);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Fork 分支失败';
+      this.message.error(errorMessage);
+    }
   }
 
   viewBranch(branchId: string): void {
@@ -165,4 +335,3 @@ export class BranchManagementComponent implements OnInit {
     }
   }
 }
-

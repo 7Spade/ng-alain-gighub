@@ -1,9 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS } from '@shared';
-import { BlueprintService, Blueprint } from '@shared';
 import { BlueprintStatus } from '@core';
+import { STColumn } from '@delon/abc/st';
+import { SHARED_IMPORTS, BlueprintService, Blueprint } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -140,4 +139,3 @@ export class BlueprintListComponent implements OnInit {
     }
   }
 }
-

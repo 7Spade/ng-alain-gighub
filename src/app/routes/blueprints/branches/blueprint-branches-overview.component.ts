@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type BranchNode = {
+interface BranchNode {
   readonly title: string;
   readonly key: string;
   readonly children?: BranchNode[];
-};
+}
 
-type BranchRow = {
+interface BranchRow {
   readonly name: string;
   readonly owner: string;
   readonly changes: number;
   readonly updatedAt: string;
-};
+}
 
 @Component({
   selector: 'app-blueprint-branches-overview',
@@ -115,4 +115,3 @@ export class BlueprintBranchesOverviewComponent {
     { name: 'feature/blueprint-hub', owner: 'Blueprint Squad', changes: 3, updatedAt: '10:12' }
   ];
 }
-

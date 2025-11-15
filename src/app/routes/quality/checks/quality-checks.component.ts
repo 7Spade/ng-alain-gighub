@@ -26,4 +26,3 @@ export class QualityChecksComponent implements OnInit {
     // TODO: 加载质量检查数据
   }
 }
-

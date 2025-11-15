@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type ForkStep = {
+interface ForkStep {
   readonly title: string;
   readonly description: string;
-};
+}
 
 @Component({
   selector: 'app-blueprint-fork-landing',
@@ -54,11 +54,7 @@ type ForkStep = {
             <nz-form-item>
               <nz-form-label>引用模組</nz-form-label>
               <nz-form-control>
-                <nz-transfer
-                  [nzDataSource]="transferData"
-                  [nzTitles]="['可選模組', '已加入']"
-                  nzShowSearch
-                ></nz-transfer>
+                <nz-transfer [nzDataSource]="transferData" [nzTitles]="['可選模組', '已加入']" nzShowSearch></nz-transfer>
               </nz-form-control>
             </nz-form-item>
 
@@ -109,4 +105,3 @@ export class BlueprintForkLandingComponent {
     { key: 'quality', title: 'Quality 模組', direction: 'right' as const }
   ];
 }
-

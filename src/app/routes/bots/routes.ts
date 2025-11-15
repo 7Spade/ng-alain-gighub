@@ -16,9 +16,6 @@ export const BOT_ROUTES: Routes = [
   },
   {
     path: 'executions',
-    loadComponent: () =>
-      import('./executions/bot-execution.component').then(m => m.BotExecutionComponent)
+    loadComponent: () => import('./executions/bot-execution.component').then(m => m.BotExecutionComponent)
   }
 ];
-
-

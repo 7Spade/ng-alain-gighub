@@ -14,4 +14,3 @@ export * from './organization-schedule.repository';
 export * from './organization-collaboration.repository';
 export * from './collaboration-invitation.repository';
 export * from './collaboration-member.repository';
-

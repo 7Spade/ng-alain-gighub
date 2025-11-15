@@ -1,29 +1,23 @@
-import { Injectable, inject } from '@angular/core';
-import { signal, computed } from '@angular/core';
-import { Observable, firstValueFrom } from 'rxjs';
-import {
-  CollaborationInvitationRepository,
-  CollaborationInvitationInsert,
-  CollaborationInvitationUpdate,
-  InvitationStatus
-} from '@core';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { CollaborationInvitationRepository, CollaborationInvitationInsert, CollaborationInvitationUpdate, InvitationStatus } from '@core';
 import { CollaborationInvitation } from '@shared';
+import { Observable, firstValueFrom } from 'rxjs';
 
 /**
  * Invitation Service
- * 
+ *
  * 提供协作邀请相关的业务逻辑和状态管理
  * 使用 Signals 管理状态，暴露 ReadonlySignal 给组件
- * 
+ *
  * @example
  * ```typescript
  * const invitationService = inject(InvitationService);
- * 
+ *
  * // 订阅邀请列表
  * effect(() => {
  *   console.log('Invitations:', invitationService.invitations());
  * });
- * 
+ *
  * // 加载邀请列表
  * await invitationService.loadInvitations();
  * ```
@@ -47,13 +41,9 @@ export class InvitationService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly pendingInvitations = computed(() =>
-    this.invitations().filter(i => i.status === InvitationStatus.PENDING)
-  );
+  readonly pendingInvitations = computed(() => this.invitations().filter(i => i.status === InvitationStatus.PENDING));
 
-  readonly acceptedInvitations = computed(() =>
-    this.invitations().filter(i => i.status === InvitationStatus.ACCEPTED)
-  );
+  readonly acceptedInvitations = computed(() => this.invitations().filter(i => i.status === InvitationStatus.ACCEPTED));
 
   readonly expiredInvitations = computed(() =>
     this.invitations().filter(i => {
@@ -109,9 +99,7 @@ export class InvitationService {
     this.errorState.set(null);
 
     try {
-      const invitations = await firstValueFrom(
-        this.invitationRepository.findByBlueprintId(blueprintId)
-      );
+      const invitations = await firstValueFrom(this.invitationRepository.findByBlueprintId(blueprintId));
       return invitations;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载邀请列表失败');
@@ -129,9 +117,7 @@ export class InvitationService {
     this.errorState.set(null);
 
     try {
-      const invitations = await firstValueFrom(
-        this.invitationRepository.findByFromOrgId(fromOrgId)
-      );
+      const invitations = await firstValueFrom(this.invitationRepository.findByFromOrgId(fromOrgId));
       return invitations;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载邀请列表失败');
@@ -149,9 +135,7 @@ export class InvitationService {
     this.errorState.set(null);
 
     try {
-      const invitations = await firstValueFrom(
-        this.invitationRepository.findByToOrgId(toOrgId)
-      );
+      const invitations = await firstValueFrom(this.invitationRepository.findByToOrgId(toOrgId));
       return invitations;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载邀请列表失败');
@@ -169,9 +153,7 @@ export class InvitationService {
     this.errorState.set(null);
 
     try {
-      const invitations = await firstValueFrom(
-        this.invitationRepository.findByStatus(status)
-      );
+      const invitations = await firstValueFrom(this.invitationRepository.findByStatus(status));
       return invitations;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载邀请列表失败');
@@ -240,19 +222,14 @@ export class InvitationService {
   /**
    * 更新邀请
    */
-  async updateInvitation(
-    id: string,
-    data: CollaborationInvitationUpdate
-  ): Promise<CollaborationInvitation> {
+  async updateInvitation(id: string, data: CollaborationInvitationUpdate): Promise<CollaborationInvitation> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
       const invitation = await firstValueFrom(this.invitationRepository.update(id, data));
       // 更新本地状态
-      this.invitationsState.update(invitations =>
-        invitations.map(i => (i.id === id ? invitation : i))
-      );
+      this.invitationsState.update(invitations => invitations.map(i => (i.id === id ? invitation : i)));
       // 如果更新的是当前选中的邀请，也更新选中状态
       if (this.selectedInvitation()?.id === id) {
         this.selectedInvitationState.set(invitation);
@@ -325,4 +302,3 @@ export class InvitationService {
     this.errorState.set(null);
   }
 }
-

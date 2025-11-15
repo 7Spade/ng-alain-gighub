@@ -1,8 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { STColumn, STData } from '@delon/abc/st';
-import { SHARED_IMPORTS } from '@shared';
-import { AccountService, Account, AccountType, AccountStatus } from '@shared';
+import { SHARED_IMPORTS, AccountService, Account, AccountType, AccountStatus } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -130,4 +129,3 @@ export class AccountListComponent implements OnInit {
     }
   }
 }
-

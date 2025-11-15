@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
-import { AccountService, Account, AccountType, AccountStatus, TeamService, OrganizationScheduleService } from '@shared';
+import { SHARED_IMPORTS, AccountService, Account, AccountType, AccountStatus, TeamService, OrganizationScheduleService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -91,11 +90,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             @if (teamService.loading()) {
               <nz-spin nzSimple></nz-spin>
             } @else if (teamService.teams().length > 0) {
-              <nz-table
-                [nzData]="teamService.teams()"
-                [nzShowPagination]="false"
-                [nzSize]="'small'"
-              >
+              <nz-table [nzData]="teamService.teams()" [nzShowPagination]="false" [nzSize]="'small'">
                 <thead>
                   <tr>
                     <th>团队名称</th>
@@ -111,9 +106,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                       <td>{{ team.description || '-' }}</td>
                       <td>{{ team.created_at | date: 'yyyy-MM-dd' }}</td>
                       <td>
-                        <button nz-button nzType="link" nzSize="small" (click)="viewTeam(team.id)">
-                          查看
-                        </button>
+                        <button nz-button nzType="link" nzSize="small" (click)="viewTeam(team.id)"> 查看 </button>
                       </td>
                     </tr>
                   }
@@ -129,11 +122,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             @if (scheduleService.loading()) {
               <nz-spin nzSimple></nz-spin>
             } @else if (scheduleService.schedules().length > 0) {
-              <nz-table
-                [nzData]="scheduleService.schedules()"
-                [nzShowPagination]="false"
-                [nzSize]="'small'"
-              >
+              <nz-table [nzData]="scheduleService.schedules()" [nzShowPagination]="false" [nzSize]="'small'">
                 <thead>
                   <tr>
                     <th>日期</th>
@@ -253,4 +242,3 @@ export class AccountDetailComponent implements OnInit {
     this.router.navigate(['/accounts/teams', teamId]);
   }
 }
-

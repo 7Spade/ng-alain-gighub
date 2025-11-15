@@ -1,9 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS } from '@shared';
-import { InvitationService, CollaborationInvitation } from '@shared';
 import { InvitationStatus } from '@core';
+import { STColumn } from '@delon/abc/st';
+import { SHARED_IMPORTS, InvitationService, CollaborationInvitation } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -154,4 +153,3 @@ export class InvitationListComponent implements OnInit {
     }
   }
 }
-

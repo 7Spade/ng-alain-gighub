@@ -36,4 +36,3 @@ export class TaskFormComponent implements OnInit {
     this.isEdit = !!this.taskId;
   }
 }
-

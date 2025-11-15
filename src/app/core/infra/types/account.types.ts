@@ -1,9 +1,9 @@
 /**
  * 账户相关类型定义（基础设施层）
- * 
+ *
  * 这些类型被 Repository 层使用，因此放在 core 层
  * 符合分层架构：core 不依赖 shared
- * 
+ *
  * @module core/infra/types
  */
 
@@ -43,4 +43,3 @@ export enum TeamMemberRole {
   /** 团队成员 */
   MEMBER = 'member'
 }
-

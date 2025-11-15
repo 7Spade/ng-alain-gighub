@@ -1,9 +1,8 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS } from '@shared';
-import { PullRequestService, PullRequest } from '@shared';
 import { PRStatus } from '@core';
+import { STColumn } from '@delon/abc/st';
+import { SHARED_IMPORTS, PullRequestService, PullRequest } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -145,4 +144,3 @@ export class PullRequestListComponent implements OnInit {
     this.message.info('合并 PR 功能待实现');
   }
 }
-

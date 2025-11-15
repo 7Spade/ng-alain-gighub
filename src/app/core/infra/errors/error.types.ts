@@ -1,6 +1,6 @@
 /**
  * 错误类型定义
- * 
+ *
  * 提供统一的错误类型，与现有错误处理模式兼容
  */
 
@@ -60,4 +60,3 @@ export function createAppError(
   error.retryable = options?.retryable ?? false;
   return error;
 }
-

@@ -1,13 +1,14 @@
 import { Routes } from '@angular/router';
-import { AccountListComponent } from './list/account-list.component';
+
+import { BotListComponent } from './bots/bot-list.component';
 import { AccountDetailComponent } from './detail/account-detail.component';
 import { AccountFormComponent } from './form/account-form.component';
-import { TeamListComponent } from './teams/team-list.component';
-import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
-import { ScheduleListComponent } from './schedules/schedule-list.component';
-import { UserListComponent } from './users/user-list.component';
+import { AccountListComponent } from './list/account-list.component';
 import { OrganizationListComponent } from './organizations/organization-list.component';
-import { BotListComponent } from './bots/bot-list.component';
+import { ScheduleListComponent } from './schedules/schedule-list.component';
+import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
+import { TeamListComponent } from './teams/team-list.component';
+import { UserListComponent } from './users/user-list.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'list', pathMatch: 'full' },
@@ -22,4 +23,3 @@ export const routes: Routes = [
   { path: 'organizations', component: OrganizationListComponent },
   { path: 'bots', component: BotListComponent }
 ];
-

@@ -26,4 +26,3 @@ export class TaskPhotosComponent implements OnInit {
     // TODO: 加载施工照片数据
   }
 }
-

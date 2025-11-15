@@ -1,8 +1,7 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
-import { CollaborationService, OrganizationCollaboration } from '@shared';
 import { CollaborationType, CollaborationStatus } from '@core';
+import { SHARED_IMPORTS, CollaborationService, OrganizationCollaboration } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -168,4 +167,3 @@ export class CollaborationDetailComponent implements OnInit {
     }
   }
 }
-

@@ -38,4 +38,3 @@ export class IssueCloseComponent implements OnInit {
     }
   }
 }
-

@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type PullRequest = {
+interface PullRequest {
   readonly title: string;
   readonly author: string;
   readonly reviewers: string[];
   readonly status: 'open' | 'review' | 'merged';
-};
+}
 
 @Component({
   selector: 'app-blueprint-pull-request-center',
@@ -31,10 +31,7 @@ type PullRequest = {
         <nz-list [nzDataSource]="pullRequests" nzItemLayout="vertical">
           <ng-template #renderItem let-item>
             <nz-list-item>
-              <nz-list-item-meta
-                [nzTitle]="item.title"
-                [nzDescription]="'作者：' + item.author"
-              ></nz-list-item-meta>
+              <nz-list-item-meta [nzTitle]="item.title" [nzDescription]="'作者：' + item.author"></nz-list-item-meta>
               <div class="pr-meta">
                 <nz-tag nzColor="blue" *nzStringTemplateOutlet="statusText(item.status)">
                   {{ statusText(item.status) }}
@@ -112,4 +109,3 @@ export class PullRequestCenterComponent {
     }
   }
 }
-

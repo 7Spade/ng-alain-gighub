@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
 import { TeamRepository, TeamMemberRepository, TeamMemberRole } from '@core';
-import { TeamService } from './team.service';
 import { Team, TeamMember } from '@shared';
+import { of, throwError } from 'rxjs';
+
+import { TeamService } from './team.service';
 
 describe('TeamService', () => {
   let service: TeamService;
@@ -57,12 +58,7 @@ describe('TeamService', () => {
       'delete'
     ]);
 
-    const teamMemberRepositorySpy = jasmine.createSpyObj('TeamMemberRepository', [
-      'findByTeamId',
-      'create',
-      'update',
-      'delete'
-    ]);
+    const teamMemberRepositorySpy = jasmine.createSpyObj('TeamMemberRepository', ['findByTeamId', 'create', 'update', 'delete']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -74,9 +70,7 @@ describe('TeamService', () => {
 
     service = TestBed.inject(TeamService);
     teamRepository = TestBed.inject(TeamRepository) as jasmine.SpyObj<TeamRepository>;
-    teamMemberRepository = TestBed.inject(
-      TeamMemberRepository
-    ) as jasmine.SpyObj<TeamMemberRepository>;
+    teamMemberRepository = TestBed.inject(TeamMemberRepository) as jasmine.SpyObj<TeamMemberRepository>;
   });
 
   it('should be created', () => {
@@ -304,4 +298,3 @@ describe('TeamService', () => {
     });
   });
 });
-

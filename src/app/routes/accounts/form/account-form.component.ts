@@ -1,8 +1,7 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
-import { AccountService, Account, AccountType, AccountStatus, AccountInsert, AccountUpdate } from '@shared';
+import { SHARED_IMPORTS, AccountService, Account, AccountType, AccountStatus, AccountInsert, AccountUpdate } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
@@ -48,10 +47,7 @@ interface AccountFormValue {
 
             <nz-form-item>
               <nz-form-label [nzSpan]="4" nzRequired>邮箱</nz-form-label>
-              <nz-form-control
-                [nzSpan]="20"
-                [nzErrorTip]="form.get('email')?.hasError('required') ? '请输入邮箱' : '请输入有效的邮箱地址'"
-              >
+              <nz-form-control [nzSpan]="20" [nzErrorTip]="form.get('email')?.hasError('required') ? '请输入邮箱' : '请输入有效的邮箱地址'">
                 <input nz-input formControlName="email" type="email" placeholder="请输入邮箱地址" />
               </nz-form-control>
             </nz-form-item>
@@ -86,9 +82,7 @@ interface AccountFormValue {
                   <span nz-icon nzType="save"></span>
                   {{ isEditMode() ? '保存' : '创建' }}
                 </button>
-                <button nz-button nzType="default" type="button" (click)="goBack()" style="margin-left: 8px;">
-                  取消
-                </button>
+                <button nz-button nzType="default" type="button" (click)="goBack()" style="margin-left: 8px;"> 取消 </button>
               </nz-form-control>
             </nz-form-item>
           </form>
@@ -209,4 +203,3 @@ export class AccountFormComponent implements OnInit {
     }
   }
 }
-

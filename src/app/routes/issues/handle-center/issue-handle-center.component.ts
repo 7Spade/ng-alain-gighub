@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type ChecklistItem = {
+interface ChecklistItem {
   readonly label: string;
   readonly done: boolean;
-};
+}
 
 @Component({
   selector: 'app-issue-handle-center',

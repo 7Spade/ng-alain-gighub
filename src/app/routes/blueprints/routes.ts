@@ -8,8 +8,7 @@ export const BLUEPRINT_ROUTES: Routes = [
   },
   {
     path: 'list',
-    loadComponent: () =>
-      import('./list/blueprint-list.component').then(m => m.BlueprintListComponent)
+    loadComponent: () => import('./list/blueprint-list.component').then(m => m.BlueprintListComponent)
   },
   {
     path: 'create',
@@ -17,42 +16,31 @@ export const BLUEPRINT_ROUTES: Routes = [
   },
   {
     path: 'detail',
-    loadComponent: () =>
-      import('./detail-shell/blueprint-detail-shell.component').then(m => m.BlueprintDetailShellComponent)
+    loadComponent: () => import('./detail-shell/blueprint-detail-shell.component').then(m => m.BlueprintDetailShellComponent)
   },
   {
     path: 'settings',
-    loadComponent: () =>
-      import('./settings-shell/blueprint-settings-shell.component').then(m => m.BlueprintSettingsShellComponent)
+    loadComponent: () => import('./settings-shell/blueprint-settings-shell.component').then(m => m.BlueprintSettingsShellComponent)
   },
   {
     path: 'main-branch',
-    loadComponent: () =>
-      import('./main-branch/blueprint-main-branch.component').then(m => m.BlueprintMainBranchComponent)
+    loadComponent: () => import('./main-branch/blueprint-main-branch.component').then(m => m.BlueprintMainBranchComponent)
   },
   {
     path: 'branches',
-    loadComponent: () =>
-      import('./branches/blueprint-branches-overview.component').then(
-        m => m.BlueprintBranchesOverviewComponent
-      )
+    loadComponent: () => import('./branches/blueprint-branches-overview.component').then(m => m.BlueprintBranchesOverviewComponent)
   },
   {
     path: 'fork',
-    loadComponent: () =>
-      import('./fork/blueprint-fork-landing.component').then(m => m.BlueprintForkLandingComponent)
+    loadComponent: () => import('./fork/blueprint-fork-landing.component').then(m => m.BlueprintForkLandingComponent)
   },
   {
     path: 'pull-requests',
-    loadComponent: () =>
-      import('./pull-requests/pull-request-center.component').then(m => m.PullRequestCenterComponent)
+    loadComponent: () => import('./pull-requests/pull-request-center.component').then(m => m.PullRequestCenterComponent)
   },
   {
     path: 'review',
-    loadComponent: () =>
-      import('./review/blueprint-review-workspace.component').then(
-        m => m.BlueprintReviewWorkspaceComponent
-      )
+    loadComponent: () => import('./review/blueprint-review-workspace.component').then(m => m.BlueprintReviewWorkspaceComponent)
   },
   {
     path: ':id',
@@ -83,4 +71,3 @@ export const BLUEPRINT_ROUTES: Routes = [
     loadComponent: () => import('./review/pr-review.component').then(m => m.PrReviewComponent)
   }
 ];
-

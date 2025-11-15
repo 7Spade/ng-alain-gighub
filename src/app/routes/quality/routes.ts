@@ -27,4 +27,3 @@ export const QUALITY_ROUTES: Routes = [
     loadComponent: () => import('./results/quality-results.component').then(m => m.QualityResultsComponent)
   }
 ];
-

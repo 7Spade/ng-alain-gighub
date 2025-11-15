@@ -20,8 +20,7 @@ export const TASK_ROUTES: Routes = [
   },
   {
     path: 'detail',
-    loadComponent: () =>
-      import('./detail-shell/task-detail-shell.component').then(m => m.TaskDetailShellComponent)
+    loadComponent: () => import('./detail-shell/task-detail-shell.component').then(m => m.TaskDetailShellComponent)
   },
   {
     path: 'form',
@@ -64,4 +63,3 @@ export const TASK_ROUTES: Routes = [
     loadComponent: () => import('./form/task-form.component').then(m => m.TaskFormComponent)
   }
 ];
-

@@ -1,29 +1,23 @@
-import { Injectable, inject } from '@angular/core';
-import { signal, computed } from '@angular/core';
-import { Observable, firstValueFrom } from 'rxjs';
-import {
-  PullRequestRepository,
-  PullRequestInsert,
-  PullRequestUpdate,
-  PRStatus
-} from '@core';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { PullRequestRepository, PullRequestInsert, PullRequestUpdate, PRStatus } from '@core';
 import { PullRequest } from '@shared';
+import { Observable, firstValueFrom } from 'rxjs';
 
 /**
  * PullRequest Service
- * 
+ *
  * 提供 Pull Request 相关的业务逻辑和状态管理
  * 实现 Git-like PR 机制：创建、审核、合并（更新承揽字段）
- * 
+ *
  * @example
  * ```typescript
  * const prService = inject(PullRequestService);
- * 
+ *
  * // 订阅 PR 列表
  * effect(() => {
  *   console.log('Pull Requests:', prService.pullRequests());
  * });
- * 
+ *
  * // 创建 PR
  * await prService.createPullRequest({
  *   blueprintId: 'blueprint-id',
@@ -52,21 +46,13 @@ export class PullRequestService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly openPullRequests = computed(() =>
-    this.pullRequests().filter(pr => pr.status === PRStatus.OPEN)
-  );
+  readonly openPullRequests = computed(() => this.pullRequests().filter(pr => pr.status === PRStatus.OPEN));
 
-  readonly reviewingPullRequests = computed(() =>
-    this.pullRequests().filter(pr => pr.status === PRStatus.REVIEWING)
-  );
+  readonly reviewingPullRequests = computed(() => this.pullRequests().filter(pr => pr.status === PRStatus.REVIEWING));
 
-  readonly approvedPullRequests = computed(() =>
-    this.pullRequests().filter(pr => pr.status === PRStatus.APPROVED)
-  );
+  readonly approvedPullRequests = computed(() => this.pullRequests().filter(pr => pr.status === PRStatus.APPROVED));
 
-  readonly mergedPullRequests = computed(() =>
-    this.pullRequests().filter(pr => pr.status === PRStatus.MERGED)
-  );
+  readonly mergedPullRequests = computed(() => this.pullRequests().filter(pr => pr.status === PRStatus.MERGED));
 
   /**
    * 加载所有 Pull Request
@@ -115,9 +101,7 @@ export class PullRequestService {
     this.errorState.set(null);
 
     try {
-      const pullRequests = await firstValueFrom(
-        this.pullRequestRepository.findByBlueprintId(blueprintId)
-      );
+      const pullRequests = await firstValueFrom(this.pullRequestRepository.findByBlueprintId(blueprintId));
       this.pullRequestsState.set(pullRequests);
       return pullRequests;
     } catch (error) {
@@ -136,9 +120,7 @@ export class PullRequestService {
     this.errorState.set(null);
 
     try {
-      const pullRequests = await firstValueFrom(
-        this.pullRequestRepository.findByBranchId(branchId)
-      );
+      const pullRequests = await firstValueFrom(this.pullRequestRepository.findByBranchId(branchId));
       this.pullRequestsState.set(pullRequests);
       return pullRequests;
     } catch (error) {
@@ -151,7 +133,7 @@ export class PullRequestService {
 
   /**
    * 创建 Pull Request
-   * 
+   *
    * @param data PR 数据
    * @returns 创建的 PR
    */
@@ -185,13 +167,9 @@ export class PullRequestService {
     this.errorState.set(null);
 
     try {
-      const pullRequest = await firstValueFrom(
-        this.pullRequestRepository.update(id, data)
-      );
+      const pullRequest = await firstValueFrom(this.pullRequestRepository.update(id, data));
       // 更新本地状态
-      this.pullRequestsState.update(prs =>
-        prs.map(pr => (pr.id === id ? pullRequest : pr))
-      );
+      this.pullRequestsState.update(prs => prs.map(pr => (pr.id === id ? pullRequest : pr)));
       // 如果更新的是当前选中的 PR，也更新选中状态
       if (this.selectedPullRequest()?.id === id) {
         this.selectedPullRequestState.set(pullRequest);
@@ -237,7 +215,7 @@ export class PullRequestService {
 
   /**
    * 开始审核 PR（状态变为 reviewing）
-   * 
+   *
    * @param prId PR ID
    * @param reviewedBy 审核者 ID
    */
@@ -250,7 +228,7 @@ export class PullRequestService {
 
   /**
    * 批准 PR（状态变为 approved）
-   * 
+   *
    * @param prId PR ID
    * @param reviewedBy 审核者 ID
    */
@@ -264,7 +242,7 @@ export class PullRequestService {
 
   /**
    * 拒绝 PR（状态变为 rejected）
-   * 
+   *
    * @param prId PR ID
    * @param reviewedBy 审核者 ID
    */
@@ -278,19 +256,15 @@ export class PullRequestService {
 
   /**
    * 合并 PR（状态变为 merged，更新承揽字段）
-   * 
+   *
    * 注意：实际的合并逻辑（更新任务承揽字段）应该在 Service 层或更高层实现
    * 这里只更新 PR 状态
-   * 
+   *
    * @param prId PR ID
    * @param mergedBy 合并者 ID
    * @param changesSummary 变更摘要（用于记录合并的内容）
    */
-  async mergePullRequest(
-    prId: string,
-    mergedBy: string,
-    changesSummary?: any
-  ): Promise<PullRequest> {
+  async mergePullRequest(prId: string, mergedBy: string, changesSummary?: any): Promise<PullRequest> {
     return await this.updatePullRequest(prId, {
       status: PRStatus.MERGED,
       mergedBy,
@@ -301,7 +275,7 @@ export class PullRequestService {
 
   /**
    * 关闭 PR（状态变为 closed）
-   * 
+   *
    * @param prId PR ID
    */
   async closePullRequest(prId: string): Promise<PullRequest> {
@@ -319,4 +293,3 @@ export class PullRequestService {
     this.errorState.set(null);
   }
 }
-

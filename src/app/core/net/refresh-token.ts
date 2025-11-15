@@ -25,9 +25,7 @@ function reAttachToken(injector: Injector, req: HttpRequest<any>): HttpRequest<a
 
 function refreshTokenRequest(injector: Injector): Observable<any> {
   const adapter = injector.get(SupabaseAuthAdapterService);
-  return adapter.refreshSession().pipe(
-    map(session => adapter.convertSessionToTokenFormat(session))
-  );
+  return adapter.refreshSession().pipe(map(session => adapter.convertSessionToTokenFormat(session)));
 }
 
 /**

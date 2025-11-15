@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { BaseRepository, QueryOptions } from './base.repository';
 import { Database } from '../types/database.types';
 
@@ -19,9 +20,9 @@ export type { TeamInsert, TeamUpdate };
 
 /**
  * Team Repository
- * 
+ *
  * 提供团队相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const teamRepo = inject(TeamRepository);
@@ -38,7 +39,7 @@ export class TeamRepository extends BaseRepository<Team, TeamInsert, TeamUpdate>
 
   /**
    * 根据组织 ID 查询团队列表
-   * 
+   *
    * @param organizationId 组织 ID
    * @param options 查询选项
    * @returns Observable<Team[]>
@@ -48,14 +49,14 @@ export class TeamRepository extends BaseRepository<Team, TeamInsert, TeamUpdate>
       ...options,
       filters: {
         ...options?.filters,
-        organizationId, // 会自动转换为 organization_id
-      },
+        organizationId // 会自动转换为 organization_id
+      }
     });
   }
 
   /**
    * 根据创建者 ID 查询团队列表
-   * 
+   *
    * @param createdBy 创建者 ID
    * @param options 查询选项
    * @returns Observable<Team[]>
@@ -65,9 +66,8 @@ export class TeamRepository extends BaseRepository<Team, TeamInsert, TeamUpdate>
       ...options,
       filters: {
         ...options?.filters,
-        createdBy, // 会自动转换为 created_by
-      },
+        createdBy // 会自动转换为 created_by
+      }
     });
   }
 }
-

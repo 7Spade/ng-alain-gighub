@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { BaseRepository, QueryOptions } from './base.repository';
 import { Database } from '../types/database.types';
 
@@ -19,9 +20,9 @@ export type { BranchForkInsert, BranchForkUpdate };
 
 /**
  * BranchFork Repository
- * 
+ *
  * 提供分支 Fork 记录相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const forkRepo = inject(BranchForkRepository);
@@ -38,7 +39,7 @@ export class BranchForkRepository extends BaseRepository<BranchFork, BranchForkI
 
   /**
    * 根据蓝图 ID 查询 Fork 记录列表
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param options 查询选项
    * @returns Observable<BranchFork[]>
@@ -48,14 +49,14 @@ export class BranchForkRepository extends BaseRepository<BranchFork, BranchForkI
       ...options,
       filters: {
         ...options?.filters,
-        blueprintId, // 会自动转换为 blueprint_id
-      },
+        blueprintId // 会自动转换为 blueprint_id
+      }
     });
   }
 
   /**
    * 根据分支 ID 查询 Fork 记录列表
-   * 
+   *
    * @param branchId 分支 ID
    * @param options 查询选项
    * @returns Observable<BranchFork[]>
@@ -65,14 +66,14 @@ export class BranchForkRepository extends BaseRepository<BranchFork, BranchForkI
       ...options,
       filters: {
         ...options?.filters,
-        branchId, // 会自动转换为 branch_id
-      },
+        branchId // 会自动转换为 branch_id
+      }
     });
   }
 
   /**
    * 根据源任务 ID 查询 Fork 记录列表
-   * 
+   *
    * @param forkedFromTaskId 源任务 ID
    * @param options 查询选项
    * @returns Observable<BranchFork[]>
@@ -82,14 +83,14 @@ export class BranchForkRepository extends BaseRepository<BranchFork, BranchForkI
       ...options,
       filters: {
         ...options?.filters,
-        forkedFromTaskId, // 会自动转换为 forked_from_task_id
-      },
+        forkedFromTaskId // 会自动转换为 forked_from_task_id
+      }
     });
   }
 
   /**
    * 根据 Fork 者 ID 查询 Fork 记录列表
-   * 
+   *
    * @param forkedBy Fork 者 ID
    * @param options 查询选项
    * @returns Observable<BranchFork[]>
@@ -99,9 +100,8 @@ export class BranchForkRepository extends BaseRepository<BranchFork, BranchForkI
       ...options,
       filters: {
         ...options?.filters,
-        forkedBy, // 会自动转换为 forked_by
-      },
+        forkedBy // 会自动转换为 forked_by
+      }
     });
   }
 }
-

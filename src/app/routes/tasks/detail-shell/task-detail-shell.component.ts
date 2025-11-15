@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type Checklist = {
+interface Checklist {
   readonly content: string;
   readonly done: boolean;
-};
+}
 
 @Component({
   selector: 'app-task-detail-shell',

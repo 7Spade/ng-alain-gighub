@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
-import { BlueprintService } from '@shared';
+import { SHARED_IMPORTS, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -49,4 +48,3 @@ export class BlueprintForkComponent implements OnInit {
     }
   }
 }
-

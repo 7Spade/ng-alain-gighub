@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
+import { SupabaseClient, PostgrestResponse, PostgrestSingleResponse, PostgrestMaybeSingleResponse } from '@supabase/supabase-js';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SupabaseClient, PostgrestResponse, PostgrestSingleResponse, PostgrestMaybeSingleResponse } from '@supabase/supabase-js';
-import { Database } from '../types/database.types';
+
 import { SupabaseService } from '../../supabase/supabase.service';
 import { handleSupabaseResponse } from '../errors/supabase-error.transformer';
+import { Database } from '../types/database.types';
 import { toCamelCaseData, toSnakeCaseData } from '../utils/transformers';
 
 /**
@@ -38,13 +39,13 @@ export interface PaginatedResult<T> {
 
 /**
  * 基础 Repository 类
- * 
+ *
  * 提供通用的 CRUD 操作方法，封装 Supabase 客户端调用
- * 
+ *
  * @template T 实体类型（camelCase）
  * @template TInsert 插入类型（camelCase）
  * @template TUpdate 更新类型（camelCase）
- * 
+ *
  * @example
  * ```typescript
  * @Injectable({ providedIn: 'root' })
@@ -54,11 +55,7 @@ export interface PaginatedResult<T> {
  * ```
  */
 @Injectable()
-export abstract class BaseRepository<
-  T,
-  TInsert = Partial<T>,
-  TUpdate = Partial<T>
-> {
+export abstract class BaseRepository<T, TInsert = Partial<T>, TUpdate = Partial<T>> {
   protected readonly supabase: SupabaseClient<Database> = inject(SupabaseService).client;
 
   /**
@@ -69,15 +66,13 @@ export abstract class BaseRepository<
 
   /**
    * 获取所有记录
-   * 
+   *
    * @param options 查询选项
    * @returns Observable<T[]>
    */
   findAll(options?: QueryOptions): Observable<T[]> {
     // 使用类型断言，因为 tableName 是运行时值，但 Supabase 需要字面量类型
-    let query = (this.supabase
-      .from(this.tableName as any)
-      .select(options?.select || '*')) as any;
+    let query = this.supabase.from(this.tableName as any).select(options?.select || '*') as any;
 
     // 应用筛选条件
     if (options?.filters) {
@@ -110,17 +105,17 @@ export abstract class BaseRepository<
 
   /**
    * 根据 ID 获取单条记录
-   * 
+   *
    * @param id 记录 ID
    * @returns Observable<T | null>
    */
   findById(id: string): Observable<T | null> {
     return from(
-      (this.supabase
+      this.supabase
         .from(this.tableName as any)
         .select('*')
         .eq('id', id)
-        .maybeSingle() as unknown) as Promise<PostgrestMaybeSingleResponse<any>>
+        .maybeSingle() as unknown as Promise<PostgrestMaybeSingleResponse<any>>
     ).pipe(
       map((response: PostgrestMaybeSingleResponse<any>) => {
         if (response.error && response.error.code !== 'PGRST116') {
@@ -136,19 +131,19 @@ export abstract class BaseRepository<
 
   /**
    * 创建新记录
-   * 
+   *
    * @param data 插入数据（camelCase）
    * @returns Observable<T>
    */
   create(data: TInsert): Observable<T> {
     const snakeData = toSnakeCaseData(data as Record<string, any>);
-    
+
     return from(
-      (this.supabase
+      this.supabase
         .from(this.tableName as any)
         .insert(snakeData as any)
         .select()
-        .single() as unknown) as Promise<PostgrestSingleResponse<any>>
+        .single() as unknown as Promise<PostgrestSingleResponse<any>>
     ).pipe(
       map((response: PostgrestSingleResponse<any>) => {
         const result = handleSupabaseResponse(response, `${this.constructor.name}.create`);
@@ -159,21 +154,21 @@ export abstract class BaseRepository<
 
   /**
    * 更新记录
-   * 
+   *
    * @param id 记录 ID
    * @param data 更新数据（camelCase）
    * @returns Observable<T>
    */
   update(id: string, data: TUpdate): Observable<T> {
     const snakeData = toSnakeCaseData(data as Record<string, any>);
-    
+
     return from(
-      (this.supabase
+      this.supabase
         .from(this.tableName as any)
         .update(snakeData as any)
         .eq('id', id)
         .select()
-        .single() as unknown) as Promise<PostgrestSingleResponse<any>>
+        .single() as unknown as Promise<PostgrestSingleResponse<any>>
     ).pipe(
       map((response: PostgrestSingleResponse<any>) => {
         const result = handleSupabaseResponse(response, `${this.constructor.name}.update`);
@@ -184,16 +179,16 @@ export abstract class BaseRepository<
 
   /**
    * 删除记录
-   * 
+   *
    * @param id 记录 ID
    * @returns Observable<void>
    */
   delete(id: string): Observable<void> {
     return from(
-      (this.supabase
+      this.supabase
         .from(this.tableName as any)
         .delete()
-        .eq('id', id) as unknown) as Promise<PostgrestResponse<any>>
+        .eq('id', id) as unknown as Promise<PostgrestResponse<any>>
     ).pipe(
       map((response: PostgrestResponse<any>) => {
         if (response.error) {
@@ -205,20 +200,16 @@ export abstract class BaseRepository<
 
   /**
    * 分页查询
-   * 
+   *
    * @param options 查询选项（必须包含 page 和 pageSize）
    * @returns Observable<PaginatedResult<T>>
    */
   findPaginated(options: QueryOptions & { page: number; pageSize: number }): Observable<PaginatedResult<T>> {
     // 先获取总数
-    const countQuery = (this.supabase
-      .from(this.tableName as any)
-      .select('*', { count: 'exact', head: true })) as any;
+    const countQuery = this.supabase.from(this.tableName as any).select('*', { count: 'exact', head: true }) as any;
 
     // 应用筛选条件
-    let dataQuery = (this.supabase
-      .from(this.tableName as any)
-      .select(options.select || '*')) as any;
+    let dataQuery = this.supabase.from(this.tableName as any).select(options.select || '*') as any;
 
     if (options.filters) {
       for (const [key, value] of Object.entries(options.filters)) {
@@ -245,16 +236,15 @@ export abstract class BaseRepository<
         const total = countResponse.count || 0;
         const data = handleSupabaseResponse(dataResponse, `${this.constructor.name}.findPaginated`);
         const items = Array.isArray(data) ? data.map(item => toCamelCaseData<T>(item)) : [toCamelCaseData<T>(data)];
-        
+
         return {
           data: items,
           total,
           page: options.page,
           pageSize: options.pageSize,
-          totalPages: Math.ceil(total / options.pageSize),
+          totalPages: Math.ceil(total / options.pageSize)
         };
       })
     );
   }
 }
-

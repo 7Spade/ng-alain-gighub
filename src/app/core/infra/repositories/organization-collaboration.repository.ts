@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
 import { CollaborationType, CollaborationStatus } from '../types/collaboration.types';
+import { Database } from '../types/database.types';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -20,9 +21,9 @@ export type { OrganizationCollaborationInsert, OrganizationCollaborationUpdate }
 
 /**
  * OrganizationCollaboration Repository
- * 
+ *
  * 提供组织协作关系相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const collabRepo = inject(OrganizationCollaborationRepository);
@@ -43,7 +44,7 @@ export class OrganizationCollaborationRepository extends BaseRepository<
 
   /**
    * 根据蓝图 ID 查询协作关系列表
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param options 查询选项
    * @returns Observable<OrganizationCollaboration[]>
@@ -53,14 +54,14 @@ export class OrganizationCollaborationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        blueprintId, // 会自动转换为 blueprint_id
-      },
+        blueprintId // 会自动转换为 blueprint_id
+      }
     });
   }
 
   /**
    * 根据拥有者组织 ID 查询协作关系列表
-   * 
+   *
    * @param ownerOrgId 拥有者组织 ID
    * @param options 查询选项
    * @returns Observable<OrganizationCollaboration[]>
@@ -70,54 +71,48 @@ export class OrganizationCollaborationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        ownerOrgId, // 会自动转换为 owner_org_id
-      },
+        ownerOrgId // 会自动转换为 owner_org_id
+      }
     });
   }
 
   /**
    * 根据协作组织 ID 查询协作关系列表
-   * 
+   *
    * @param collaboratorOrgId 协作组织 ID
    * @param options 查询选项
    * @returns Observable<OrganizationCollaboration[]>
    */
-  findByCollaboratorOrgId(
-    collaboratorOrgId: string,
-    options?: QueryOptions
-  ): Observable<OrganizationCollaboration[]> {
+  findByCollaboratorOrgId(collaboratorOrgId: string, options?: QueryOptions): Observable<OrganizationCollaboration[]> {
     return this.findAll({
       ...options,
       filters: {
         ...options?.filters,
-        collaboratorOrgId, // 会自动转换为 collaborator_org_id
-      },
+        collaboratorOrgId // 会自动转换为 collaborator_org_id
+      }
     });
   }
 
   /**
    * 根据协作类型查询协作关系列表
-   * 
+   *
    * @param collaborationType 协作类型
    * @param options 查询选项
    * @returns Observable<OrganizationCollaboration[]>
    */
-  findByCollaborationType(
-    collaborationType: CollaborationType,
-    options?: QueryOptions
-  ): Observable<OrganizationCollaboration[]> {
+  findByCollaborationType(collaborationType: CollaborationType, options?: QueryOptions): Observable<OrganizationCollaboration[]> {
     return this.findAll({
       ...options,
       filters: {
         ...options?.filters,
-        collaborationType, // 会自动转换为 collaboration_type
-      },
+        collaborationType // 会自动转换为 collaboration_type
+      }
     });
   }
 
   /**
    * 根据状态查询协作关系列表
-   * 
+   *
    * @param status 协作状态
    * @param options 查询选项
    * @returns Observable<OrganizationCollaboration[]>
@@ -127,9 +122,8 @@ export class OrganizationCollaborationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        status,
-      },
+        status
+      }
     });
   }
 }
-

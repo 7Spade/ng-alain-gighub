@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type ReviewNote = {
+interface ReviewNote {
   readonly author: string;
   readonly content: string;
   readonly datetime: string;
-};
+}
 
 @Component({
   selector: 'app-blueprint-review-workspace',

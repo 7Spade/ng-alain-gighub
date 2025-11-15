@@ -43,4 +43,3 @@ export class TaskListComponent implements OnInit {
     this.router.navigate(['/tasks/create']);
   }
 }
-

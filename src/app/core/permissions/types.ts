@@ -1,6 +1,6 @@
 /**
  * 权限服务类型定义
- * 
+ *
  * 参考 docs/30-0-完整SQL表結構定義.md 中的权限表结构
  */
 
@@ -80,4 +80,3 @@ export interface PermissionCacheItem {
   roles?: string[];
   abilities?: string[];
 }
-

@@ -1,12 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
-import {
-  OrganizationCollaborationRepository,
-  CollaborationType,
-  CollaborationStatus
-} from '@core';
-import { CollaborationService } from './collaboration.service';
+import { OrganizationCollaborationRepository, CollaborationType, CollaborationStatus } from '@core';
 import { OrganizationCollaboration } from '@shared';
+import { of, throwError } from 'rxjs';
+
+import { CollaborationService } from './collaboration.service';
 
 describe('CollaborationService', () => {
   let service: CollaborationService;
@@ -51,16 +48,11 @@ describe('CollaborationService', () => {
     ]);
 
     TestBed.configureTestingModule({
-      providers: [
-        CollaborationService,
-        { provide: OrganizationCollaborationRepository, useValue: repositorySpy }
-      ]
+      providers: [CollaborationService, { provide: OrganizationCollaborationRepository, useValue: repositorySpy }]
     });
 
     service = TestBed.inject(CollaborationService);
-    repository = TestBed.inject(
-      OrganizationCollaborationRepository
-    ) as jasmine.SpyObj<OrganizationCollaborationRepository>;
+    repository = TestBed.inject(OrganizationCollaborationRepository) as jasmine.SpyObj<OrganizationCollaborationRepository>;
   });
 
   it('should be created', () => {
@@ -364,10 +356,7 @@ describe('CollaborationService', () => {
 
     it('should compute contractorCollaborations', () => {
       expect(service.contractorCollaborations().length).toBe(1);
-      expect(service.contractorCollaborations()[0].collaboration_type).toBe(
-        CollaborationType.CONTRACTOR
-      );
+      expect(service.contractorCollaborations()[0].collaboration_type).toBe(CollaborationType.CONTRACTOR);
     });
   });
 });
-

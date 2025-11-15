@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
-import { TeamService, Team, TeamMember, TeamMemberRole } from '@shared';
+import { SHARED_IMPORTS, TeamService, Team, TeamMember, TeamMemberRole } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -35,13 +34,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         </ng-template>
       </nz-spin>
     } @else if (teamService.error()) {
-      <nz-alert
-        nzType="error"
-        [nzMessage]="'加载失败'"
-        [nzDescription]="teamService.error()"
-        nzShowIcon
-        style="margin: 16px;"
-      ></nz-alert>
+      <nz-alert nzType="error" [nzMessage]="'加载失败'" [nzDescription]="teamService.error()" nzShowIcon style="margin: 16px;"></nz-alert>
     } @else if (team()) {
       <div style="padding: 16px;">
         <!-- 团队基本信息 -->
@@ -70,11 +63,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           </ng-template>
 
           @if (teamService.teamMembers().length > 0) {
-            <nz-table
-              [nzData]="teamService.teamMembers()"
-              [nzShowPagination]="false"
-              [nzSize]="'small'"
-            >
+            <nz-table [nzData]="teamService.teamMembers()" [nzShowPagination]="false" [nzSize]="'small'">
               <thead>
                 <tr>
                   <th>账户ID</th>
@@ -99,12 +88,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                     </td>
                     <td>{{ member.joined_at | date: 'yyyy-MM-dd' }}</td>
                     <td>
-                      <button nz-button nzType="link" nzSize="small" (click)="changeRole(member)">
-                        变更角色
-                      </button>
-                      <button nz-button nzType="link" nzDanger nzSize="small" (click)="removeMember(member.id)">
-                        移除
-                      </button>
+                      <button nz-button nzType="link" nzSize="small" (click)="changeRole(member)"> 变更角色 </button>
+                      <button nz-button nzType="link" nzDanger nzSize="small" (click)="removeMember(member.id)"> 移除 </button>
                     </td>
                   </tr>
                 }
@@ -204,4 +189,3 @@ export class TeamDetailComponent implements OnInit {
     }
   }
 }
-

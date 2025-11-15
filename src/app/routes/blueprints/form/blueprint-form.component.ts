@@ -1,9 +1,8 @@
 import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
-import { BlueprintService, Blueprint, BlueprintInsert, BlueprintUpdate } from '@shared';
 import { BlueprintStatus } from '@core';
+import { SHARED_IMPORTS, BlueprintService, Blueprint, BlueprintInsert, BlueprintUpdate } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
@@ -94,18 +93,19 @@ interface BlueprintFormValue {
             <nz-form-item>
               <nz-form-label [nzSpan]="4">描述</nz-form-label>
               <nz-form-control [nzSpan]="20">
-                <textarea nz-input formControlName="description" [nzAutosize]="{ minRows: 3, maxRows: 6 }" placeholder="请输入描述"></textarea>
+                <textarea
+                  nz-input
+                  formControlName="description"
+                  [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                  placeholder="请输入描述"
+                ></textarea>
               </nz-form-control>
             </nz-form-item>
 
             <nz-form-item>
               <nz-form-control [nzOffset]="4" [nzSpan]="20">
-                <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="submitting()">
-                  提交
-                </button>
-                <button nz-button nzType="default" (click)="goBack()" style="margin-left: 8px;">
-                  取消
-                </button>
+                <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="submitting()"> 提交 </button>
+                <button nz-button nzType="default" (click)="goBack()" style="margin-left: 8px;"> 取消 </button>
               </nz-form-control>
             </nz-form-item>
           </form>
@@ -223,4 +223,3 @@ export class BlueprintFormComponent implements OnInit {
     this.router.navigate(['/blueprints/list']);
   }
 }
-

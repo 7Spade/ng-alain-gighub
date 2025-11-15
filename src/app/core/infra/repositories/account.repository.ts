@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
 import { AccountType, AccountStatus } from '../types/account.types';
+import { Database } from '../types/database.types';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -21,9 +22,9 @@ export type { AccountInsert, AccountUpdate };
 
 /**
  * Account Repository
- * 
+ *
  * 提供账户相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const accountRepo = inject(AccountRepository);
@@ -40,7 +41,7 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
 
   /**
    * 根据账户类型查询账户
-   * 
+   *
    * @param type 账户类型
    * @param options 查询选项
    * @returns Observable<Account[]>
@@ -50,14 +51,14 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
       ...options,
       filters: {
         ...options?.filters,
-        type,
-      },
+        type
+      }
     });
   }
 
   /**
    * 根据状态查询账户
-   * 
+   *
    * @param status 账户状态
    * @param options 查询选项
    * @returns Observable<Account[]>
@@ -67,46 +68,42 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
       ...options,
       filters: {
         ...options?.filters,
-        status,
-      },
+        status
+      }
     });
   }
 
   /**
    * 根据 auth_user_id 查询账户
-   * 
+   *
    * @param authUserId 认证用户 ID
    * @returns Observable<Account | null>
    */
   findByAuthUserId(authUserId: string): Observable<Account | null> {
     return this.findAll({
       filters: {
-        authUserId, // 会自动转换为 auth_user_id
-      },
-    }).pipe(
-      map(accounts => accounts.length > 0 ? accounts[0] : null)
-    );
+        authUserId // 会自动转换为 auth_user_id
+      }
+    }).pipe(map(accounts => (accounts.length > 0 ? accounts[0] : null)));
   }
 
   /**
    * 根据邮箱查询账户
-   * 
+   *
    * @param email 邮箱地址
    * @returns Observable<Account | null>
    */
   findByEmail(email: string): Observable<Account | null> {
     return this.findAll({
       filters: {
-        email,
-      },
-    }).pipe(
-      map(accounts => accounts.length > 0 ? accounts[0] : null)
-    );
+        email
+      }
+    }).pipe(map(accounts => (accounts.length > 0 ? accounts[0] : null)));
   }
 
   /**
    * 查询活跃的账户（状态为 active）
-   * 
+   *
    * @param options 查询选项
    * @returns Observable<Account[]>
    */
@@ -114,4 +111,3 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
     return this.findByStatus(AccountStatus.ACTIVE, options);
   }
 }
-

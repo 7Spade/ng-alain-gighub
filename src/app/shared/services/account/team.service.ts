@@ -1,23 +1,32 @@
-import { Injectable, inject } from '@angular/core';
-import { signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import {
+  TeamRepository,
+  Team,
+  TeamInsert,
+  TeamUpdate,
+  TeamMemberRepository,
+  TeamMember,
+  TeamMemberInsert,
+  TeamMemberUpdate,
+  TeamMemberRole
+} from '@core';
 import { Observable, firstValueFrom } from 'rxjs';
-import { TeamRepository, Team, TeamInsert, TeamUpdate, TeamMemberRepository, TeamMember, TeamMemberInsert, TeamMemberUpdate, TeamMemberRole } from '@core';
 
 /**
  * Team Service
- * 
+ *
  * 提供团队相关的业务逻辑和状态管理
  * 使用 Signals 管理状态，暴露 ReadonlySignal 给组件
- * 
+ *
  * @example
  * ```typescript
  * const teamService = inject(TeamService);
- * 
+ *
  * // 订阅团队列表
  * effect(() => {
  *   console.log('Teams:', teamService.teams());
  * });
- * 
+ *
  * // 加载组织下的团队列表
  * await teamService.loadTeamsByOrganizationId('org-id');
  * ```
@@ -51,7 +60,7 @@ export class TeamService {
     this.errorState.set(null);
 
     try {
-      const teams = await firstValueFrom(this.teamRepository.findAll()) as Team[];
+      const teams = (await firstValueFrom(this.teamRepository.findAll())) as Team[];
       this.teamsState.set(teams);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载团队列表失败');
@@ -69,9 +78,7 @@ export class TeamService {
     this.errorState.set(null);
 
     try {
-      const teams = await firstValueFrom(
-        this.teamRepository.findByOrganizationId(organizationId)
-      ) as Team[];
+      const teams = (await firstValueFrom(this.teamRepository.findByOrganizationId(organizationId))) as Team[];
       this.teamsState.set(teams);
       return teams;
     } catch (error) {
@@ -90,7 +97,7 @@ export class TeamService {
     this.errorState.set(null);
 
     try {
-      const team = await firstValueFrom(this.teamRepository.findById(id)) as Team | null;
+      const team = (await firstValueFrom(this.teamRepository.findById(id))) as Team | null;
       if (team) {
         this.selectedTeamState.set(team);
         // 同时加载团队成员
@@ -113,7 +120,7 @@ export class TeamService {
     this.errorState.set(null);
 
     try {
-      const team = await firstValueFrom(this.teamRepository.create(data)) as Team;
+      const team = (await firstValueFrom(this.teamRepository.create(data))) as Team;
       // 更新本地状态
       this.teamsState.update(teams => [...teams, team]);
       return team;
@@ -133,11 +140,9 @@ export class TeamService {
     this.errorState.set(null);
 
     try {
-      const team = await firstValueFrom(this.teamRepository.update(id, data)) as Team;
+      const team = (await firstValueFrom(this.teamRepository.update(id, data))) as Team;
       // 更新本地状态
-      this.teamsState.update(teams =>
-        teams.map(t => t.id === id ? team : t)
-      );
+      this.teamsState.update(teams => teams.map(t => (t.id === id ? team : t)));
       // 如果更新的是当前选中的团队，也更新选中状态
       if (this.selectedTeam()?.id === id) {
         this.selectedTeamState.set(team);
@@ -195,9 +200,7 @@ export class TeamService {
     this.errorState.set(null);
 
     try {
-      const members = await firstValueFrom(
-        this.teamMemberRepository.findByTeamId(teamId)
-      ) as TeamMember[];
+      const members = (await firstValueFrom(this.teamMemberRepository.findByTeamId(teamId))) as TeamMember[];
       this.teamMembersState.set(members);
       return members;
     } catch (error) {
@@ -220,11 +223,9 @@ export class TeamService {
       const memberData = {
         teamId, // 会自动转换为 team_id
         accountId, // 会自动转换为 account_id
-        role,
+        role
       } as any as TeamMemberInsert;
-      const member = await firstValueFrom(
-        this.teamMemberRepository.create(memberData)
-      ) as TeamMember;
+      const member = (await firstValueFrom(this.teamMemberRepository.create(memberData))) as TeamMember;
       // 更新本地状态
       this.teamMembersState.update(members => [...members, member]);
       return member;
@@ -264,13 +265,9 @@ export class TeamService {
 
     try {
       const updateData: TeamMemberUpdate = { role };
-      const member = await firstValueFrom(
-        this.teamMemberRepository.update(memberId, updateData)
-      ) as TeamMember;
+      const member = (await firstValueFrom(this.teamMemberRepository.update(memberId, updateData))) as TeamMember;
       // 更新本地状态
-      this.teamMembersState.update(members =>
-        members.map(m => m.id === memberId ? member : m)
-      );
+      this.teamMembersState.update(members => members.map(m => (m.id === memberId ? member : m)));
       return member;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '更新团队成员角色失败');
@@ -290,4 +287,3 @@ export class TeamService {
     this.errorState.set(null);
   }
 }
-

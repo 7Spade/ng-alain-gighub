@@ -38,4 +38,3 @@ export class IssuePhotosComponent implements OnInit {
     }
   }
 }
-

@@ -1,16 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '@env/environment';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Supabase 客戶端服務
- * 
+ *
  * 提供 Supabase 客戶端單例，用於訪問 Supabase 的所有功能：
  * - Database (PostgreSQL)
  * - Authentication
  * - Storage
  * - Realtime
- * 
+ *
  * @example
  * ```typescript
  * const supabase = inject(SupabaseService);
@@ -45,4 +45,3 @@ export class SupabaseService {
     return this.supabase;
   }
 }
-

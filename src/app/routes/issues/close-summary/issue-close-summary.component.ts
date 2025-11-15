@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type SummaryCard = {
+interface SummaryCard {
   readonly title: string;
   readonly value: string;
   readonly note: string;
-};
+}
 
 @Component({
   selector: 'app-issue-close-summary',

@@ -1,6 +1,4 @@
-import { Injectable, inject } from '@angular/core';
-import { signal, computed } from '@angular/core';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import {
   BlueprintBranchRepository,
   BranchForkRepository,
@@ -11,22 +9,23 @@ import {
   BranchStatus
 } from '@core';
 import { BlueprintBranch, BranchFork } from '@shared';
+import { Observable, firstValueFrom } from 'rxjs';
 
 /**
  * Branch Service
- * 
+ *
  * 提供分支管理相关的业务逻辑和状态管理
  * 实现 Git-like 分支模型：Fork 机制、分支同步等
- * 
+ *
  * @example
  * ```typescript
  * const branchService = inject(BranchService);
- * 
+ *
  * // 订阅分支列表
  * effect(() => {
  *   console.log('Branches:', branchService.branches());
  * });
- * 
+ *
  * // Fork 分支给组织
  * await branchService.forkBranch('blueprint-id', 'org-id', 'branch-name');
  * ```
@@ -53,13 +52,9 @@ export class BranchService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly activeBranches = computed(() =>
-    this.branches().filter(b => b.status === BranchStatus.ACTIVE)
-  );
+  readonly activeBranches = computed(() => this.branches().filter(b => b.status === BranchStatus.ACTIVE));
 
-  readonly mergedBranches = computed(() =>
-    this.branches().filter(b => b.status === BranchStatus.MERGED)
-  );
+  readonly mergedBranches = computed(() => this.branches().filter(b => b.status === BranchStatus.MERGED));
 
   /**
    * 加载所有分支
@@ -87,9 +82,7 @@ export class BranchService {
     this.errorState.set(null);
 
     try {
-      const branches = await firstValueFrom(
-        this.branchRepository.findByBlueprintId(blueprintId)
-      );
+      const branches = await firstValueFrom(this.branchRepository.findByBlueprintId(blueprintId));
       this.branchesState.set(branches);
       return branches;
     } catch (error) {
@@ -108,9 +101,7 @@ export class BranchService {
     this.errorState.set(null);
 
     try {
-      const branches = await firstValueFrom(
-        this.branchRepository.findByOrganizationId(organizationId)
-      );
+      const branches = await firstValueFrom(this.branchRepository.findByOrganizationId(organizationId));
       this.branchesState.set(branches);
       return branches;
     } catch (error) {
@@ -146,7 +137,7 @@ export class BranchService {
 
   /**
    * Fork 分支给组织（创建组织分支）
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param organizationId 组织 ID
    * @param branchName 分支名称
@@ -168,9 +159,7 @@ export class BranchService {
 
     try {
       // 检查是否已存在分支
-      const existing = await firstValueFrom(
-        this.branchRepository.findByBlueprintAndOrganization(blueprintId, organizationId)
-      );
+      const existing = await firstValueFrom(this.branchRepository.findByBlueprintAndOrganization(blueprintId, organizationId));
 
       if (existing) {
         throw new Error('该组织已存在分支');
@@ -220,9 +209,7 @@ export class BranchService {
     try {
       const branch = await firstValueFrom(this.branchRepository.update(id, data));
       // 更新本地状态
-      this.branchesState.update(branches =>
-        branches.map(b => (b.id === id ? branch : b))
-      );
+      this.branchesState.update(branches => branches.map(b => (b.id === id ? branch : b)));
       // 如果更新的是当前选中的分支，也更新选中状态
       if (this.selectedBranch()?.id === id) {
         this.selectedBranchState.set(branch);
@@ -293,7 +280,7 @@ export class BranchService {
 
   /**
    * 同步主分支数据到分支（更新 last_sync_at）
-   * 
+   *
    * @param branchId 分支 ID
    */
   async syncFromMainBranch(branchId: string): Promise<void> {
@@ -340,4 +327,3 @@ export class BranchService {
     this.errorState.set(null);
   }
 }
-

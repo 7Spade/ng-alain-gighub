@@ -1,6 +1,6 @@
 /**
  * 数据模型统一导出
- * 
+ *
  * 按 11 个业务模块分类：
  * - account: 账户与身份系统（4 张表）
  * - collaboration: 组织协作系统（3 张表）
@@ -13,7 +13,7 @@
  * - data: 资料分析系统（6 张表）
  * - bot: 机器人系统（3 张表）
  * - system: 系统管理（2 张表）
- * 
+ *
  * @module shared/models
  */
 
@@ -21,4 +21,3 @@
 export * from './account';
 export * from './collaboration';
 export * from './blueprint';
-

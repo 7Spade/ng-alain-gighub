@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { BaseRepository, QueryOptions } from './base.repository';
 import { Database } from '../types/database.types';
 
@@ -20,9 +21,9 @@ export type { BlueprintConfigInsert, BlueprintConfigUpdate };
 
 /**
  * BlueprintConfig Repository
- * 
+ *
  * 提供蓝图配置相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const configRepo = inject(BlueprintConfigRepository);
@@ -34,16 +35,12 @@ export type { BlueprintConfigInsert, BlueprintConfigUpdate };
 @Injectable({
   providedIn: 'root'
 })
-export class BlueprintConfigRepository extends BaseRepository<
-  BlueprintConfig,
-  BlueprintConfigInsert,
-  BlueprintConfigUpdate
-> {
+export class BlueprintConfigRepository extends BaseRepository<BlueprintConfig, BlueprintConfigInsert, BlueprintConfigUpdate> {
   protected tableName = 'blueprint_configs';
 
   /**
    * 根据蓝图 ID 查询配置列表
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param options 查询选项
    * @returns Observable<BlueprintConfig[]>
@@ -53,14 +50,14 @@ export class BlueprintConfigRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        blueprintId, // 会自动转换为 blueprint_id
-      },
+        blueprintId // 会自动转换为 blueprint_id
+      }
     });
   }
 
   /**
    * 根据配置键查询配置
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param configKey 配置键
    * @returns Observable<BlueprintConfig | null>
@@ -69,36 +66,28 @@ export class BlueprintConfigRepository extends BaseRepository<
     return this.findAll({
       filters: {
         blueprintId, // 会自动转换为 blueprint_id
-        configKey, // 会自动转换为 config_key
-      },
-    }).pipe(
-      map(configs => configs.length > 0 ? configs[0] : null)
-    );
+        configKey // 会自动转换为 config_key
+      }
+    }).pipe(map(configs => (configs.length > 0 ? configs[0] : null)));
   }
 
   /**
    * 更新或创建配置（upsert）
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param configKey 配置键
    * @param configValue 配置值
    * @param updatedBy 更新者 ID
    * @returns Observable<BlueprintConfig>
    */
-  upsertConfig(
-    blueprintId: string,
-    configKey: string,
-    configValue: any,
-    updatedBy?: string
-  ): Observable<BlueprintConfig> {
+  upsertConfig(blueprintId: string, configKey: string, configValue: any, updatedBy?: string): Observable<BlueprintConfig> {
     // 使用类型断言，因为 BaseRepository 会自动进行 camelCase → snake_case 转换
     const data = {
       blueprintId,
       configKey,
       configValue,
-      updatedBy,
+      updatedBy
     } as any as BlueprintConfigInsert;
     return this.create(data);
   }
 }
-

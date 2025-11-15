@@ -52,4 +52,3 @@ export class PrReviewComponent implements OnInit {
     }
   }
 }
-

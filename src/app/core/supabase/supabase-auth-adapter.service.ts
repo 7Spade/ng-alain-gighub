@@ -1,5 +1,5 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { Session, AuthChangeEvent, AuthError } from '@supabase/supabase-js';
 import { Observable, from, of, throwError, EMPTY } from 'rxjs';
@@ -9,13 +9,13 @@ import { SupabaseService } from './supabase.service';
 
 /**
  * Supabase Auth 與 @delon/auth 適配器服務
- * 
+ *
  * 作為 Supabase Auth 與 @delon/auth 之間的橋樑，實現：
  * 1. Session 格式轉換（Supabase Session → @delon/auth Token 格式）
  * 2. 自動同步 Session 到 TokenService
  * 3. 監聽 Auth 狀態變化
  * 4. Token 刷新處理
- * 
+ *
  * @example
  * ```typescript
  * const adapter = inject(SupabaseAuthAdapterService);
@@ -40,7 +40,7 @@ export class SupabaseAuthAdapterService {
 
   /**
    * 登入
-   * 
+   *
    * @param email 用戶郵箱
    * @param password 密碼
    * @returns Observable<{ error: AuthError | null }>
@@ -63,17 +63,13 @@ export class SupabaseAuthAdapterService {
 
   /**
    * 註冊
-   * 
+   *
    * @param email 用戶郵箱
    * @param password 密碼
    * @param metadata 用戶元數據（可選）
    * @returns Observable<{ error: AuthError | null }>
    */
-  signUp(
-    email: string,
-    password: string,
-    metadata?: Record<string, any>
-  ): Observable<{ error: AuthError | null }> {
+  signUp(email: string, password: string, metadata?: Record<string, any>): Observable<{ error: AuthError | null }> {
     return from(
       this.supabaseService.client.auth.signUp({
         email,
@@ -94,7 +90,7 @@ export class SupabaseAuthAdapterService {
 
   /**
    * 登出
-   * 
+   *
    * @returns Observable<{ error: AuthError | null }>
    */
   signOut(): Observable<{ error: AuthError | null }> {
@@ -109,7 +105,7 @@ export class SupabaseAuthAdapterService {
 
   /**
    * 刷新 Session
-   * 
+   *
    * @returns Observable<Session>
    */
   refreshSession(): Observable<Session> {
@@ -129,7 +125,7 @@ export class SupabaseAuthAdapterService {
 
   /**
    * 恢復 Session（應用啟動時調用）
-   * 
+   *
    * @returns Observable<void>
    */
   restoreSession(): Observable<void> {
@@ -157,22 +153,20 @@ export class SupabaseAuthAdapterService {
       return;
     }
 
-    this.supabaseService.client.auth.onAuthStateChange(
-      (event: AuthChangeEvent, session: Session | null) => {
-        if (session) {
-          this.syncSessionToTokenService(session);
-        } else if (event === 'SIGNED_OUT') {
-          this.tokenService.clear();
-        }
+    this.supabaseService.client.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+      if (session) {
+        this.syncSessionToTokenService(session);
+      } else if (event === 'SIGNED_OUT') {
+        this.tokenService.clear();
       }
-    );
+    });
 
     this.authListenerInitialized = true;
   }
 
   /**
    * 將 Supabase Session 轉換為 @delon/auth Token 格式
-   * 
+   *
    * @param session Supabase Session
    * @returns @delon/auth Token 格式對象
    */
@@ -204,7 +198,7 @@ export class SupabaseAuthAdapterService {
 
   /**
    * 同步 Supabase Session 到 @delon/auth TokenService
-   * 
+   *
    * @param session Supabase Session
    */
   private syncSessionToTokenService(session: Session): void {
@@ -214,13 +208,10 @@ export class SupabaseAuthAdapterService {
 
   /**
    * 獲取當前 Session
-   * 
+   *
    * @returns Observable<Session | null>
    */
   getCurrentSession(): Observable<Session | null> {
-    return from(this.supabaseService.client.auth.getSession()).pipe(
-      map(({ data }) => data.session)
-    );
+    return from(this.supabaseService.client.auth.getSession()).pipe(map(({ data }) => data.session));
   }
 }
-

@@ -1,24 +1,23 @@
-import { Injectable, inject } from '@angular/core';
-import { signal, computed } from '@angular/core';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { AccountRepository, AccountInsert, AccountUpdate } from '@core';
 import { Account, AccountType, AccountStatus } from '@shared';
+import { Observable, firstValueFrom } from 'rxjs';
 
 /**
  * Account Service
- * 
+ *
  * 提供账户相关的业务逻辑和状态管理
  * 使用 Signals 管理状态，暴露 ReadonlySignal 给组件
- * 
+ *
  * @example
  * ```typescript
  * const accountService = inject(AccountService);
- * 
+ *
  * // 订阅账户列表
  * effect(() => {
  *   console.log('Accounts:', accountService.accounts());
  * });
- * 
+ *
  * // 加载账户列表
  * await accountService.loadAccounts();
  * ```
@@ -42,17 +41,11 @@ export class AccountService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly activeAccounts = computed(() =>
-    this.accounts().filter(a => a.status === AccountStatus.ACTIVE)
-  );
+  readonly activeAccounts = computed(() => this.accounts().filter(a => a.status === AccountStatus.ACTIVE));
 
-  readonly userAccounts = computed(() =>
-    this.accounts().filter(a => a.type === AccountType.USER)
-  );
+  readonly userAccounts = computed(() => this.accounts().filter(a => a.type === AccountType.USER));
 
-  readonly organizationAccounts = computed(() =>
-    this.accounts().filter(a => a.type === AccountType.ORGANIZATION)
-  );
+  readonly organizationAccounts = computed(() => this.accounts().filter(a => a.type === AccountType.ORGANIZATION));
 
   /**
    * 加载所有账户
@@ -159,9 +152,7 @@ export class AccountService {
     try {
       const account = await firstValueFrom(this.accountRepository.update(id, data));
       // 更新本地状态
-      this.accountsState.update(accounts =>
-        accounts.map(a => a.id === id ? account : a)
-      );
+      this.accountsState.update(accounts => accounts.map(a => (a.id === id ? account : a)));
       // 如果更新的是当前选中的账户，也更新选中状态
       if (this.selectedAccount()?.id === id) {
         this.selectedAccountState.set(account);
@@ -250,4 +241,3 @@ export class AccountService {
     this.errorState.set(null);
   }
 }
-

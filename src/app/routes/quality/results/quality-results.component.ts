@@ -26,4 +26,3 @@ export class QualityResultsComponent implements OnInit {
     // TODO: 加载验收结果数据
   }
 }
-

@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { SupabaseService } from '../../supabase/supabase.service';
-import { OrganizationCollaborationRepository } from './organization-collaboration.repository';
-import { CollaborationType, CollaborationStatus } from '../types/collaboration.types';
 import { OrganizationCollaboration } from '@shared';
+import { of } from 'rxjs';
+
+import { OrganizationCollaborationRepository } from './organization-collaboration.repository';
+import { SupabaseService } from '../../supabase/supabase.service';
+import { CollaborationType, CollaborationStatus } from '../types/collaboration.types';
 
 describe('OrganizationCollaborationRepository', () => {
   let repository: OrganizationCollaborationRepository;
@@ -31,9 +32,7 @@ describe('OrganizationCollaborationRepository', () => {
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
             order: jasmine.createSpy('order').and.returnValue({
-              range: jasmine.createSpy('range').and.returnValue(
-                Promise.resolve({ data: [mockCollaboration], error: null })
-              )
+              range: jasmine.createSpy('range').and.returnValue(Promise.resolve({ data: [mockCollaboration], error: null }))
             })
           })
         })
@@ -45,10 +44,7 @@ describe('OrganizationCollaborationRepository', () => {
     });
 
     TestBed.configureTestingModule({
-      providers: [
-        OrganizationCollaborationRepository,
-        { provide: SupabaseService, useValue: supabaseServiceSpy }
-      ]
+      providers: [OrganizationCollaborationRepository, { provide: SupabaseService, useValue: supabaseServiceSpy }]
     });
 
     repository = TestBed.inject(OrganizationCollaborationRepository);
@@ -60,9 +56,9 @@ describe('OrganizationCollaborationRepository', () => {
   });
 
   describe('findByBlueprintId', () => {
-    it('should find collaborations by blueprint id', (done) => {
+    it('should find collaborations by blueprint id', done => {
       repository.findByBlueprintId('blueprint-1').subscribe({
-        next: (collaborations) => {
+        next: collaborations => {
           expect(collaborations.length).toBeGreaterThan(0);
           expect(mockSupabaseClient.from).toHaveBeenCalledWith('organization_collaborations');
           done();
@@ -73,9 +69,9 @@ describe('OrganizationCollaborationRepository', () => {
   });
 
   describe('findByOwnerOrgId', () => {
-    it('should find collaborations by owner org id', (done) => {
+    it('should find collaborations by owner org id', done => {
       repository.findByOwnerOrgId('org-1').subscribe({
-        next: (collaborations) => {
+        next: collaborations => {
           expect(mockSupabaseClient.from).toHaveBeenCalledWith('organization_collaborations');
           done();
         },
@@ -85,9 +81,9 @@ describe('OrganizationCollaborationRepository', () => {
   });
 
   describe('findByCollaboratorOrgId', () => {
-    it('should find collaborations by collaborator org id', (done) => {
+    it('should find collaborations by collaborator org id', done => {
       repository.findByCollaboratorOrgId('org-2').subscribe({
-        next: (collaborations) => {
+        next: collaborations => {
           expect(mockSupabaseClient.from).toHaveBeenCalledWith('organization_collaborations');
           done();
         },
@@ -97,9 +93,9 @@ describe('OrganizationCollaborationRepository', () => {
   });
 
   describe('findByCollaborationType', () => {
-    it('should find collaborations by type', (done) => {
+    it('should find collaborations by type', done => {
       repository.findByCollaborationType(CollaborationType.CONTRACTOR).subscribe({
-        next: (collaborations) => {
+        next: collaborations => {
           expect(mockSupabaseClient.from).toHaveBeenCalledWith('organization_collaborations');
           done();
         },
@@ -109,9 +105,9 @@ describe('OrganizationCollaborationRepository', () => {
   });
 
   describe('findByStatus', () => {
-    it('should find collaborations by status', (done) => {
+    it('should find collaborations by status', done => {
       repository.findByStatus(CollaborationStatus.ACTIVE).subscribe({
-        next: (collaborations) => {
+        next: collaborations => {
           expect(mockSupabaseClient.from).toHaveBeenCalledWith('organization_collaborations');
           done();
         },
@@ -120,4 +116,3 @@ describe('OrganizationCollaborationRepository', () => {
     });
   });
 });
-

@@ -42,4 +42,3 @@ export class IssueListComponent implements OnInit {
     this.router.navigate(['/issues/create']);
   }
 }
-

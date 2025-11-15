@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { SettingsService } from '@delon/theme';
-import { SHARED_IMPORTS } from '@shared';
-import { CollaborationService } from '@shared';
-import { CollaborationListComponent } from './collaboration-list.component';
-import { OrganizationCollaboration } from '@shared';
+import { Router } from '@angular/router';
 import { CollaborationType, CollaborationStatus } from '@core';
+import { SettingsService } from '@delon/theme';
+import { SHARED_IMPORTS, CollaborationService, OrganizationCollaboration } from '@shared';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
+import { NzMessageService } from 'ng-zorro-antd/message';
+
+import { CollaborationListComponent } from './collaboration-list.component';
 
 describe('CollaborationListComponent', () => {
   let component: CollaborationListComponent;
@@ -34,15 +33,15 @@ describe('CollaborationListComponent', () => {
   ];
 
   beforeEach(async () => {
-    const collaborationServiceSpy = jasmine.createSpyObj('CollaborationService', [
-      'loadCollaborations',
-      'createCollaboration',
-      'deleteCollaboration'
-    ], {
-      collaborations: jasmine.createSpy('collaborations').and.returnValue(mockCollaborations),
-      loading: jasmine.createSpy('loading').and.returnValue(false),
-      error: jasmine.createSpy('error').and.returnValue(null)
-    });
+    const collaborationServiceSpy = jasmine.createSpyObj(
+      'CollaborationService',
+      ['loadCollaborations', 'createCollaboration', 'deleteCollaboration'],
+      {
+        collaborations: jasmine.createSpy('collaborations').and.returnValue(mockCollaborations),
+        loading: jasmine.createSpy('loading').and.returnValue(false),
+        error: jasmine.createSpy('error').and.returnValue(null)
+      }
+    );
 
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const messageServiceSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
@@ -53,11 +52,7 @@ describe('CollaborationListComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        CollaborationListComponent,
-        SHARED_IMPORTS
-      ],
+      imports: [NoopAnimationsModule, CollaborationListComponent, SHARED_IMPORTS],
       providers: [
         { provide: CollaborationService, useValue: collaborationServiceSpy },
         { provide: Router, useValue: routerSpy },
@@ -100,4 +95,3 @@ describe('CollaborationListComponent', () => {
     expect(compiled.querySelector('st')).toBeTruthy();
   });
 });
-

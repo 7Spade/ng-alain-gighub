@@ -1,6 +1,6 @@
 /**
  * 数据转换工具
- * 
+ *
  * 提供 snake_case ↔ camelCase 转换功能
  * 用于数据库字段名（snake_case）与 TypeScript 属性名（camelCase）之间的映射
  */
@@ -73,10 +73,10 @@ function convertKeysToSnakeCase<T extends Record<string, any>>(obj: T): Record<s
 
 /**
  * 将数据库数据（snake_case）转换为应用数据（camelCase）
- * 
+ *
  * @param data 数据库数据
  * @returns 转换后的数据
- * 
+ *
  * @example
  * ```typescript
  * const dbData = { user_id: '123', created_at: '2025-01-01' };
@@ -90,10 +90,10 @@ export function toCamelCaseData<T>(data: any): T {
 
 /**
  * 将应用数据（camelCase）转换为数据库数据（snake_case）
- * 
+ *
  * @param data 应用数据
  * @returns 转换后的数据
- * 
+ *
  * @example
  * ```typescript
  * const appData = { userId: '123', createdAt: '2025-01-01' };
@@ -104,4 +104,3 @@ export function toCamelCaseData<T>(data: any): T {
 export function toSnakeCaseData<T extends Record<string, any>>(data: T): Record<string, any> {
   return convertKeysToSnakeCase(data);
 }
-

@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type BranchSnapshot = {
+interface BranchSnapshot {
   readonly name: string;
   readonly commits: number;
   readonly reviewer: string;
   readonly status: string;
-};
+}
 
-type TimelineItem = {
+interface TimelineItem {
   readonly title: string;
   readonly detail: string;
   readonly color: string;
-};
+}
 
 @Component({
   selector: 'app-blueprint-main-branch',
@@ -130,4 +130,3 @@ export class BlueprintMainBranchComponent {
     { title: 'Branch Bot 自動同步', detail: '完成 staging 對齊 · 08:12', color: 'blue' }
   ];
 }
-

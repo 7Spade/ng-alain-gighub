@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type SettingTab = {
+interface SettingTab {
   readonly key: string;
   readonly title: string;
   readonly description: string;
-};
+}
 
-type Reviewer = {
+interface Reviewer {
   readonly name: string;
   readonly role: string;
   readonly availability: string;
-};
+}
 
 @Component({
   selector: 'app-blueprint-settings-shell',
@@ -143,4 +143,3 @@ export class BlueprintSettingsShellComponent {
     { name: 'Lucas', role: 'DevOps', availability: '需提前預約' }
   ];
 }
-

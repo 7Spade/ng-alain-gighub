@@ -38,4 +38,3 @@ export class IssueHandleComponent implements OnInit {
     }
   }
 }
-

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
 import { BlueprintStatus } from '../types/blueprint.types';
+import { Database } from '../types/database.types';
 
 /**
  * Blueprint 实体类型（camelCase）
@@ -22,9 +23,9 @@ export type { BlueprintInsert, BlueprintUpdate };
 
 /**
  * Blueprint Repository
- * 
+ *
  * 提供蓝图相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const blueprintRepo = inject(BlueprintRepository);
@@ -41,7 +42,7 @@ export class BlueprintRepository extends BaseRepository<Blueprint, BlueprintInse
 
   /**
    * 根据拥有者 ID 查询蓝图
-   * 
+   *
    * @param ownerId 拥有者 ID
    * @param options 查询选项
    * @returns Observable<Blueprint[]>
@@ -51,14 +52,14 @@ export class BlueprintRepository extends BaseRepository<Blueprint, BlueprintInse
       ...options,
       filters: {
         ...options?.filters,
-        ownerId, // 会自动转换为 owner_id
-      },
+        ownerId // 会自动转换为 owner_id
+      }
     });
   }
 
   /**
    * 根据状态查询蓝图
-   * 
+   *
    * @param status 蓝图状态
    * @param options 查询选项
    * @returns Observable<Blueprint[]>
@@ -68,30 +69,28 @@ export class BlueprintRepository extends BaseRepository<Blueprint, BlueprintInse
       ...options,
       filters: {
         ...options?.filters,
-        status,
-      },
+        status
+      }
     });
   }
 
   /**
    * 根据项目代码查询蓝图
-   * 
+   *
    * @param projectCode 项目代码
    * @returns Observable<Blueprint | null>
    */
   findByProjectCode(projectCode: string): Observable<Blueprint | null> {
     return this.findAll({
       filters: {
-        projectCode, // 会自动转换为 project_code
-      },
-    }).pipe(
-      map(blueprints => blueprints.length > 0 ? blueprints[0] : null)
-    );
+        projectCode // 会自动转换为 project_code
+      }
+    }).pipe(map(blueprints => (blueprints.length > 0 ? blueprints[0] : null)));
   }
 
   /**
    * 查询活跃的蓝图（状态为 active）
-   * 
+   *
    * @param options 查询选项
    * @returns Observable<Blueprint[]>
    */
@@ -99,4 +98,3 @@ export class BlueprintRepository extends BaseRepository<Blueprint, BlueprintInse
     return this.findByStatus(BlueprintStatus.ACTIVE, options);
   }
 }
-

@@ -1,14 +1,14 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
+import { CollaborationType, CollaborationStatus } from '@core';
 import {
+  SHARED_IMPORTS,
   CollaborationService,
   OrganizationCollaboration,
   OrganizationCollaborationInsert,
   OrganizationCollaborationUpdate
 } from '@shared';
-import { CollaborationType, CollaborationStatus } from '@core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
@@ -119,18 +119,11 @@ interface CollaborationFormValue {
 
             <nz-form-item>
               <nz-form-control [nzSpan]="24" [nzOffset]="4">
-                <button
-                  nz-button
-                  nzType="primary"
-                  [nzLoading]="collaborationService.loading()"
-                  [disabled]="form.invalid"
-                >
+                <button nz-button nzType="primary" [nzLoading]="collaborationService.loading()" [disabled]="form.invalid">
                   <span nz-icon nzType="save"></span>
                   {{ isEditMode() ? '保存' : '创建' }}
                 </button>
-                <button nz-button nzType="default" type="button" (click)="goBack()" style="margin-left: 8px;">
-                  取消
-                </button>
+                <button nz-button nzType="default" type="button" (click)="goBack()" style="margin-left: 8px;"> 取消 </button>
               </nz-form-control>
             </nz-form-item>
           </form>
@@ -274,4 +267,3 @@ export class CollaborationFormComponent implements OnInit {
     }
   }
 }
-

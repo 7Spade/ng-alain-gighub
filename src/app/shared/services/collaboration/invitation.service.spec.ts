@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
 import { CollaborationInvitationRepository, InvitationStatus } from '@core';
-import { InvitationService } from './invitation.service';
 import { CollaborationInvitation } from '@shared';
+import { of, throwError } from 'rxjs';
+
+import { InvitationService } from './invitation.service';
 
 describe('InvitationService', () => {
   let service: InvitationService;
@@ -52,16 +53,11 @@ describe('InvitationService', () => {
     ]);
 
     TestBed.configureTestingModule({
-      providers: [
-        InvitationService,
-        { provide: CollaborationInvitationRepository, useValue: repositorySpy }
-      ]
+      providers: [InvitationService, { provide: CollaborationInvitationRepository, useValue: repositorySpy }]
     });
 
     service = TestBed.inject(InvitationService);
-    repository = TestBed.inject(
-      CollaborationInvitationRepository
-    ) as jasmine.SpyObj<CollaborationInvitationRepository>;
+    repository = TestBed.inject(CollaborationInvitationRepository) as jasmine.SpyObj<CollaborationInvitationRepository>;
   });
 
   it('should be created', () => {
@@ -341,4 +337,3 @@ describe('InvitationService', () => {
     });
   });
 });
-

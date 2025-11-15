@@ -8,8 +8,7 @@ export const COMMUNICATION_ROUTES: Routes = [
   },
   {
     path: 'discussions',
-    loadComponent: () =>
-      import('./discussions/discussion-list.component').then(m => m.DiscussionListComponent)
+    loadComponent: () => import('./discussions/discussion-list.component').then(m => m.DiscussionListComponent)
   },
   {
     path: 'comments',
@@ -17,18 +16,15 @@ export const COMMUNICATION_ROUTES: Routes = [
   },
   {
     path: 'comments/create',
-    loadComponent: () =>
-      import('./comments/comment-create.component').then(m => m.CommentCreateComponent)
+    loadComponent: () => import('./comments/comment-create.component').then(m => m.CommentCreateComponent)
   },
   {
     path: 'notifications',
-    loadComponent: () =>
-      import('./notifications/notification-center.component').then(m => m.NotificationCenterComponent)
+    loadComponent: () => import('./notifications/notification-center.component').then(m => m.NotificationCenterComponent)
   },
   {
     path: 'realtime',
-    loadComponent: () =>
-      import('./realtime/realtime-notify.component').then(m => m.RealtimeNotifyComponent)
+    loadComponent: () => import('./realtime/realtime-notify.component').then(m => m.RealtimeNotifyComponent)
   },
   {
     path: 'todos',
@@ -36,9 +32,6 @@ export const COMMUNICATION_ROUTES: Routes = [
   },
   {
     path: 'team-notify',
-    loadComponent: () =>
-      import('./team-notify/team-notify.component').then(m => m.TeamNotifyComponent)
+    loadComponent: () => import('./team-notify/team-notify.component').then(m => m.TeamNotifyComponent)
   }
 ];
-
-

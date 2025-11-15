@@ -3,15 +3,15 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { Observable, from, throwError } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
 
-import { SupabaseService } from '../supabase/supabase.service';
 import { PermissionService } from './permission.service';
 import { Role, Permission, UserRole } from './types';
+import { SupabaseService } from '../supabase/supabase.service';
 
 /**
  * 角色管理服务
- * 
+ *
  * 提供角色查询和管理功能
- * 
+ *
  * @example
  * ```typescript
  * const roleService = inject(RoleService);
@@ -38,16 +38,11 @@ export class RoleService {
 
   /**
    * 获取所有角色
-   * 
+   *
    * @returns Observable<Role[]>
    */
   getRoles(): Observable<Role[]> {
-    return from(
-      this.supabaseService.client
-        .from('roles')
-        .select('*')
-        .order('priority', { ascending: false })
-    ).pipe(
+    return from(this.supabaseService.client.from('roles').select('*').order('priority', { ascending: false })).pipe(
       map(({ data, error }) => {
         if (error) {
           throw new Error(`Failed to get roles: ${error.message}`);
@@ -59,17 +54,12 @@ export class RoleService {
 
   /**
    * 获取用户角色
-   * 
+   *
    * @param userId 用户 ID
    * @returns Observable<Role[]>
    */
   getUserRoles(userId: string): Observable<Role[]> {
-    return from(
-      this.supabaseService.client
-        .from('user_roles')
-        .select('roles(*)')
-        .eq('account_id', userId)
-    ).pipe(
+    return from(this.supabaseService.client.from('user_roles').select('roles(*)').eq('account_id', userId)).pipe(
       map(({ data, error }) => {
         if (error) {
           throw new Error(`Failed to get user roles: ${error.message}`);
@@ -81,17 +71,12 @@ export class RoleService {
 
   /**
    * 获取角色权限
-   * 
+   *
    * @param roleId 角色 ID
    * @returns Observable<Permission[]>
    */
   getRolePermissions(roleId: string): Observable<Permission[]> {
-    return from(
-      this.supabaseService.client
-        .from('role_permissions')
-        .select('permissions(*)')
-        .eq('role_id', roleId)
-    ).pipe(
+    return from(this.supabaseService.client.from('role_permissions').select('permissions(*)').eq('role_id', roleId)).pipe(
       map(({ data, error }) => {
         if (error) {
           throw new Error(`Failed to get role permissions: ${error.message}`);
@@ -103,18 +88,12 @@ export class RoleService {
 
   /**
    * 根据 ID 获取角色
-   * 
+   *
    * @param roleId 角色 ID
    * @returns Observable<Role | null>
    */
   getRoleById(roleId: string): Observable<Role | null> {
-    return from(
-      this.supabaseService.client
-        .from('roles')
-        .select('*')
-        .eq('id', roleId)
-        .single()
-    ).pipe(
+    return from(this.supabaseService.client.from('roles').select('*').eq('id', roleId).single()).pipe(
       map(({ data, error }) => {
         if (error) {
           if (error.code === 'PGRST116') {
@@ -129,20 +108,16 @@ export class RoleService {
 
   /**
    * 分配角色给用户
-   * 
+   *
    * 需要权限：role.assign
-   * 
+   *
    * @param userId 用户 ID
    * @param roleId 角色 ID
    * @param scope 作用域（可选）
    * @returns Observable<void>
    * @throws Error 如果权限不足
    */
-  assignRole(
-    userId: string,
-    roleId: string,
-    scope?: { blueprintId?: string; branchId?: string }
-  ): Observable<void> {
+  assignRole(userId: string, roleId: string, scope?: { blueprintId?: string; branchId?: string }): Observable<void> {
     const currentUserId = this.getCurrentUserId();
     if (!currentUserId) {
       return throwError(() => new Error('User not authenticated'));
@@ -156,15 +131,13 @@ export class RoleService {
         }
 
         return from(
-          this.supabaseService.client
-            .from('user_roles')
-            .insert({
-              account_id: userId,
-              role_id: roleId,
-              blueprint_id: scope?.blueprintId || null,
-              branch_id: scope?.branchId || null,
-              granted_by: currentUserId
-            })
+          this.supabaseService.client.from('user_roles').insert({
+            account_id: userId,
+            role_id: roleId,
+            blueprint_id: scope?.blueprintId || null,
+            branch_id: scope?.branchId || null,
+            granted_by: currentUserId
+          })
         ).pipe(
           map(({ error }) => {
             if (error) {
@@ -178,20 +151,16 @@ export class RoleService {
 
   /**
    * 移除用户角色
-   * 
+   *
    * 需要权限：role.remove
-   * 
+   *
    * @param userId 用户 ID
    * @param roleId 角色 ID
    * @param scope 作用域（可选）
    * @returns Observable<void>
    * @throws Error 如果权限不足
    */
-  removeRole(
-    userId: string,
-    roleId: string,
-    scope?: { blueprintId?: string; branchId?: string }
-  ): Observable<void> {
+  removeRole(userId: string, roleId: string, scope?: { blueprintId?: string; branchId?: string }): Observable<void> {
     const currentUserId = this.getCurrentUserId();
     if (!currentUserId) {
       return throwError(() => new Error('User not authenticated'));
@@ -204,11 +173,7 @@ export class RoleService {
           return throwError(() => new Error('Permission denied: role.remove'));
         }
 
-        let query = this.supabaseService.client
-          .from('user_roles')
-          .delete()
-          .eq('account_id', userId)
-          .eq('role_id', roleId);
+        let query = this.supabaseService.client.from('user_roles').delete().eq('account_id', userId).eq('role_id', roleId);
 
         if (scope?.blueprintId) {
           query = query.eq('blueprint_id', scope.blueprintId);
@@ -230,9 +195,9 @@ export class RoleService {
 
   /**
    * 更新角色
-   * 
+   *
    * 需要权限：role.update
-   * 
+   *
    * @param roleId 角色 ID
    * @param data 更新数据
    * @returns Observable<void>
@@ -251,12 +216,7 @@ export class RoleService {
           return throwError(() => new Error('Permission denied: role.update'));
         }
 
-        return from(
-          this.supabaseService.client
-            .from('roles')
-            .update(data)
-            .eq('id', roleId)
-        ).pipe(
+        return from(this.supabaseService.client.from('roles').update(data).eq('id', roleId)).pipe(
           map(({ error }) => {
             if (error) {
               throw new Error(`Failed to update role: ${error.message}`);
@@ -269,9 +229,9 @@ export class RoleService {
 
   /**
    * 分配权限给角色
-   * 
+   *
    * 需要权限：role.permission.assign
-   * 
+   *
    * @param roleId 角色 ID
    * @param permissionId 权限 ID
    * @returns Observable<void>
@@ -291,12 +251,10 @@ export class RoleService {
         }
 
         return from(
-          this.supabaseService.client
-            .from('role_permissions')
-            .insert({
-              role_id: roleId,
-              permission_id: permissionId
-            })
+          this.supabaseService.client.from('role_permissions').insert({
+            role_id: roleId,
+            permission_id: permissionId
+          })
         ).pipe(
           map(({ error }) => {
             if (error) {
@@ -310,9 +268,9 @@ export class RoleService {
 
   /**
    * 移除角色权限
-   * 
+   *
    * 需要权限：role.permission.remove
-   * 
+   *
    * @param roleId 角色 ID
    * @param permissionId 权限 ID
    * @returns Observable<void>
@@ -332,11 +290,7 @@ export class RoleService {
         }
 
         return from(
-          this.supabaseService.client
-            .from('role_permissions')
-            .delete()
-            .eq('role_id', roleId)
-            .eq('permission_id', permissionId)
+          this.supabaseService.client.from('role_permissions').delete().eq('role_id', roleId).eq('permission_id', permissionId)
         ).pipe(
           map(({ error }) => {
             if (error) {
@@ -348,4 +302,3 @@ export class RoleService {
     );
   }
 }
-

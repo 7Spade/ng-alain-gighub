@@ -4,21 +4,21 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { Observable, from, of, throwError, forkJoin } from 'rxjs';
 import { map, switchMap, catchError, tap, shareReplay } from 'rxjs/operators';
 
-import { SupabaseService } from '../supabase/supabase.service';
 import { Permission, PermissionCacheItem } from './types';
+import { SupabaseService } from '../supabase/supabase.service';
 
 /**
  * 权限检查服务
- * 
+ *
  * 整合 @delon/acl 和 Supabase 数据库，实现 RBAC 权限控制
- * 
+ *
  * 功能：
  * 1. 权限检查（can, canAny, canAll）
  * 2. Git-like 分支权限检查
  * 3. 权限缓存（内存缓存）
  * 4. 权限同步到 @delon/acl
  * 5. 权限检查日志记录（后续实现）
- * 
+ *
  * @example
  * ```typescript
  * const permissionService = inject(PermissionService);
@@ -63,7 +63,7 @@ export class PermissionService {
 
   /**
    * 检查单个权限
-   * 
+   *
    * @param permission 权限名称（如 'blueprint.read'）
    * @returns Observable<boolean> 是否有权限
    * @throws Error 如果权限检查失败（根据配置）
@@ -99,7 +99,7 @@ export class PermissionService {
 
   /**
    * 检查任一权限（OR 逻辑）
-   * 
+   *
    * @param permissions 权限数组
    * @returns Observable<boolean> 是否有任一权限
    */
@@ -109,20 +109,14 @@ export class PermissionService {
     }
 
     // 并行检查所有权限，任一为 true 即返回 true
-    const checks = permissions.map(p => 
-      this.can(p).pipe(
-        catchError(() => of(false))
-      )
-    );
+    const checks = permissions.map(p => this.can(p).pipe(catchError(() => of(false))));
 
-    return forkJoin(checks).pipe(
-      map(results => results.some(r => r === true))
-    );
+    return forkJoin(checks).pipe(map(results => results.some(r => r === true)));
   }
 
   /**
    * 检查所有权限（AND 逻辑）
-   * 
+   *
    * @param permissions 权限数组
    * @returns Observable<boolean> 是否有所有权限
    */
@@ -132,20 +126,14 @@ export class PermissionService {
     }
 
     // 并行检查所有权限，全部为 true 才返回 true
-    const checks = permissions.map(p => 
-      this.can(p).pipe(
-        catchError(() => of(false))
-      )
-    );
+    const checks = permissions.map(p => this.can(p).pipe(catchError(() => of(false))));
 
-    return forkJoin(checks).pipe(
-      map(results => results.every(r => r === true))
-    );
+    return forkJoin(checks).pipe(map(results => results.every(r => r === true)));
   }
 
   /**
    * 从数据库查询权限
-   * 
+   *
    * @param permission 权限名称
    * @returns Observable<boolean>
    */
@@ -159,7 +147,8 @@ export class PermissionService {
     return from(
       this.supabaseService.client
         .from('user_roles')
-        .select(`
+        .select(
+          `
           roles!inner(
             role_permissions!inner(
               permissions!inner(
@@ -169,7 +158,8 @@ export class PermissionService {
               )
             )
           )
-        `)
+        `
+        )
         .eq('account_id', userId)
     ).pipe(
       map(({ data, error }) => {
@@ -207,7 +197,7 @@ export class PermissionService {
 
   /**
    * 同步权限到 @delon/acl ACLService
-   * 
+   *
    * @param permission 权限名称
    */
   private syncPermissionToACL(permission: string): void {
@@ -228,7 +218,7 @@ export class PermissionService {
 
   /**
    * 检查蓝图访问权限
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param action 操作类型
    * @returns Observable<boolean>
@@ -240,13 +230,7 @@ export class PermissionService {
     }
 
     // 查询蓝图拥有者或用户角色
-    return from(
-      this.supabaseService.client
-        .from('blueprints')
-        .select('owner_id')
-        .eq('id', blueprintId)
-        .single()
-    ).pipe(
+    return from(this.supabaseService.client.from('blueprints').select('owner_id').eq('id', blueprintId).single()).pipe(
       switchMap(({ data: blueprint, error: blueprintError }) => {
         if (blueprintError || !blueprint) {
           return of(false);
@@ -259,11 +243,7 @@ export class PermissionService {
 
         // 检查用户角色权限
         return from(
-          this.supabaseService.client
-            .from('user_roles')
-            .select('roles(code)')
-            .eq('account_id', userId)
-            .eq('blueprint_id', blueprintId)
+          this.supabaseService.client.from('user_roles').select('roles(code)').eq('account_id', userId).eq('blueprint_id', blueprintId)
         ).pipe(
           map(({ data: userRoles }) => {
             if (!userRoles || userRoles.length === 0) {
@@ -272,7 +252,7 @@ export class PermissionService {
 
             // 根据角色代码判断权限
             const roleCodes = userRoles.map(ur => (ur.roles as any).code);
-            
+
             switch (action) {
               case 'read':
                 return roleCodes.some(code => ['blueprint_owner', 'blueprint_admin', 'project_manager', 'viewer'].includes(code));
@@ -291,7 +271,7 @@ export class PermissionService {
 
   /**
    * 检查分支访问权限
-   * 
+   *
    * @param branchId 分支 ID
    * @param action 操作类型
    * @returns Observable<boolean>
@@ -315,11 +295,7 @@ export class PermissionService {
         // 如果没有分支权限，检查是否是蓝图拥有者
         if (error || !branchPerm) {
           return from(
-            this.supabaseService.client
-              .from('blueprint_branches')
-              .select('blueprint_id, blueprints(owner_id)')
-              .eq('id', branchId)
-              .single()
+            this.supabaseService.client.from('blueprint_branches').select('blueprint_id, blueprints(owner_id)').eq('id', branchId).single()
           ).pipe(
             map(({ data: branch }) => {
               const blueprint = (branch as any)?.blueprints;
@@ -329,7 +305,7 @@ export class PermissionService {
         }
 
         const level = branchPerm.permission_level as 'owner' | 'admin' | 'write' | 'read';
-        
+
         switch (action) {
           case 'read':
             return of(true); // 所有级别都可以读取
@@ -346,7 +322,7 @@ export class PermissionService {
 
   /**
    * 检查是否可以修改任务结构（只有拥有者可以）
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @returns Observable<boolean>
    */
@@ -356,13 +332,7 @@ export class PermissionService {
       return of(false);
     }
 
-    return from(
-      this.supabaseService.client
-        .from('blueprints')
-        .select('owner_id')
-        .eq('id', blueprintId)
-        .single()
-    ).pipe(
+    return from(this.supabaseService.client.from('blueprints').select('owner_id').eq('id', blueprintId).single()).pipe(
       map(({ data, error }) => {
         if (error || !data) {
           return false;
@@ -374,7 +344,7 @@ export class PermissionService {
 
   /**
    * 检查是否可以填写承攬欄位（协作组织可以）
-   * 
+   *
    * @param branchId 分支 ID
    * @returns Observable<boolean>
    */
@@ -385,13 +355,7 @@ export class PermissionService {
     }
 
     // 检查是否是分支所属组织
-    return from(
-      this.supabaseService.client
-        .from('blueprint_branches')
-        .select('organization_id')
-        .eq('id', branchId)
-        .single()
-    ).pipe(
+    return from(this.supabaseService.client.from('blueprint_branches').select('organization_id').eq('id', branchId).single()).pipe(
       map(({ data, error }) => {
         if (error || !data) {
           return false;
@@ -403,7 +367,7 @@ export class PermissionService {
 
   /**
    * 检查是否可以审核 PR（只有拥有者可以）
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @returns Observable<boolean>
    */
@@ -413,7 +377,7 @@ export class PermissionService {
 
   /**
    * 检查是否可以创建 PR（分支所属组织可以）
-   * 
+   *
    * @param branchId 分支 ID
    * @returns Observable<boolean>
    */
@@ -423,7 +387,7 @@ export class PermissionService {
 
   /**
    * 从数据库同步用户角色到 ACLService
-   * 
+   *
    * @param userId 用户 ID
    * @returns Promise<void>
    */
@@ -445,7 +409,7 @@ export class PermissionService {
 
   /**
    * 加载用户所有权限
-   * 
+   *
    * @param userId 用户 ID
    * @returns Observable<Permission[]>
    */
@@ -457,13 +421,15 @@ export class PermissionService {
     this.userPermissions$ = from(
       this.supabaseService.client
         .from('user_roles')
-        .select(`
+        .select(
+          `
           roles!inner(
             role_permissions!inner(
               permissions!inner(*)
             )
           )
-        `)
+        `
+        )
         .eq('account_id', userId)
     ).pipe(
       map(({ data, error }) => {
@@ -505,7 +471,7 @@ export class PermissionService {
 
   /**
    * 刷新当前用户权限
-   * 
+   *
    * @returns Observable<void>
    */
   refreshPermissions(): Observable<void> {
@@ -536,4 +502,3 @@ export class PermissionService {
     this.userPermissions$ = undefined;
   }
 }
-

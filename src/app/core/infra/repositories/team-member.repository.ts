@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
 import { TeamMemberRole } from '../types/account.types';
+import { Database } from '../types/database.types';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -20,9 +21,9 @@ export type { TeamMemberInsert, TeamMemberUpdate };
 
 /**
  * TeamMember Repository
- * 
+ *
  * 提供团队成员相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const teamMemberRepo = inject(TeamMemberRepository);
@@ -39,7 +40,7 @@ export class TeamMemberRepository extends BaseRepository<TeamMember, TeamMemberI
 
   /**
    * 根据团队 ID 查询团队成员列表
-   * 
+   *
    * @param teamId 团队 ID
    * @param options 查询选项
    * @returns Observable<TeamMember[]>
@@ -49,14 +50,14 @@ export class TeamMemberRepository extends BaseRepository<TeamMember, TeamMemberI
       ...options,
       filters: {
         ...options?.filters,
-        teamId, // 会自动转换为 team_id
-      },
+        teamId // 会自动转换为 team_id
+      }
     });
   }
 
   /**
    * 根据账户 ID 查询团队成员关系
-   * 
+   *
    * @param accountId 账户 ID
    * @param options 查询选项
    * @returns Observable<TeamMember[]>
@@ -66,14 +67,14 @@ export class TeamMemberRepository extends BaseRepository<TeamMember, TeamMemberI
       ...options,
       filters: {
         ...options?.filters,
-        accountId, // 会自动转换为 account_id
-      },
+        accountId // 会自动转换为 account_id
+      }
     });
   }
 
   /**
    * 根据角色查询团队成员
-   * 
+   *
    * @param role 成员角色
    * @param options 查询选项
    * @returns Observable<TeamMember[]>
@@ -83,14 +84,14 @@ export class TeamMemberRepository extends BaseRepository<TeamMember, TeamMemberI
       ...options,
       filters: {
         ...options?.filters,
-        role,
-      },
+        role
+      }
     });
   }
 
   /**
    * 查询团队中的负责人（leader）
-   * 
+   *
    * @param teamId 团队 ID
    * @returns Observable<TeamMember[]>
    */
@@ -98,9 +99,8 @@ export class TeamMemberRepository extends BaseRepository<TeamMember, TeamMemberI
     return this.findAll({
       filters: {
         teamId, // 会自动转换为 team_id
-        role: TeamMemberRole.LEADER,
-      },
+        role: TeamMemberRole.LEADER
+      }
     });
   }
 }
-

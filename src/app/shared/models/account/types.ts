@@ -3,7 +3,7 @@ import { Database, AccountType, AccountStatus, TeamMemberRole } from '@core';
 /**
  * 重新导出账户相关枚举（从 core 层导入）
  * 保持向后兼容，允许从 @shared/models/account 导入
- * 
+ *
  * 这些枚举定义在 core 层，因为 Repository 层需要使用它们
  * 符合分层架构：core 不依赖 shared
  */
@@ -37,4 +37,3 @@ export type TeamMemberUpdate = Database['public']['Tables']['team_members']['Upd
 export type OrganizationSchedule = Database['public']['Tables']['organization_schedules']['Row'];
 export type OrganizationScheduleInsert = Database['public']['Tables']['organization_schedules']['Insert'];
 export type OrganizationScheduleUpdate = Database['public']['Tables']['organization_schedules']['Update'];
-

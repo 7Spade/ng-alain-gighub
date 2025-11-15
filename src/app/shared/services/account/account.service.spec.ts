@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
 import { AccountRepository } from '@core';
-import { AccountService } from './account.service';
 import { Account, AccountType, AccountStatus } from '@shared';
+import { of, throwError } from 'rxjs';
+
+import { AccountService } from './account.service';
 
 describe('AccountService', () => {
   let service: AccountService;
@@ -345,4 +346,3 @@ describe('AccountService', () => {
     });
   });
 });
-

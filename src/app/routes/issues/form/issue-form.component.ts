@@ -36,4 +36,3 @@ export class IssueFormComponent implements OnInit {
     this.isEdit = !!this.issueId;
   }
 }
-

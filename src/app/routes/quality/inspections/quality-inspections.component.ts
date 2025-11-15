@@ -26,4 +26,3 @@ export class QualityInspectionsComponent implements OnInit {
     // TODO: 加载验收管理数据
   }
 }
-

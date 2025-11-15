@@ -16,28 +16,23 @@ export const ANALYTICS_ROUTES: Routes = [
   },
   {
     path: 'progress-update',
-    loadComponent: () =>
-      import('./progress-update/progress-update.component').then(m => m.ProgressUpdateComponent)
+    loadComponent: () => import('./progress-update/progress-update.component').then(m => m.ProgressUpdateComponent)
   },
   {
     path: 'main-reports',
-    loadComponent: () =>
-      import('./reports/main-report.component').then(m => m.MainReportComponent)
+    loadComponent: () => import('./reports/main-report.component').then(m => m.MainReportComponent)
   },
   {
     path: 'branch-reports',
-    loadComponent: () =>
-      import('./reports/branch-report.component').then(m => m.BranchReportComponent)
+    loadComponent: () => import('./reports/branch-report.component').then(m => m.BranchReportComponent)
   },
   {
     path: 'cross-branch',
-    loadComponent: () =>
-      import('./reports/cross-branch.component').then(m => m.CrossBranchComponent)
+    loadComponent: () => import('./reports/cross-branch.component').then(m => m.CrossBranchComponent)
   },
   {
     path: 'activity-logs',
-    loadComponent: () =>
-      import('./activity-logs/activity-log.component').then(m => m.ActivityLogComponent)
+    loadComponent: () => import('./activity-logs/activity-log.component').then(m => m.ActivityLogComponent)
   },
   {
     path: 'reports',
@@ -52,5 +47,3 @@ export const ANALYTICS_ROUTES: Routes = [
     loadComponent: () => import('./charts/chart-center.component').then(m => m.ChartCenterComponent)
   }
 ];
-
-

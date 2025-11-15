@@ -8,8 +8,7 @@ export const COLLABORATION_ROUTES: Routes = [
   },
   {
     path: 'list',
-    loadComponent: () =>
-      import('./list/collaboration-list.component').then(m => m.CollaborationListComponent)
+    loadComponent: () => import('./list/collaboration-list.component').then(m => m.CollaborationListComponent)
   },
   {
     path: 'create',
@@ -28,4 +27,3 @@ export const COLLABORATION_ROUTES: Routes = [
     loadComponent: () => import('./detail/collaboration-detail.component').then(m => m.CollaborationDetailComponent)
   }
 ];
-

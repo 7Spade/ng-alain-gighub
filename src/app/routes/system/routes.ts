@@ -12,8 +12,7 @@ export const SYSTEM_ROUTES: Routes = [
   },
   {
     path: 'feature-flags',
-    loadComponent: () =>
-      import('./feature-flags/feature-flag.component').then(m => m.FeatureFlagComponent)
+    loadComponent: () => import('./feature-flags/feature-flag.component').then(m => m.FeatureFlagComponent)
   },
   {
     path: 'roles',
@@ -21,29 +20,22 @@ export const SYSTEM_ROUTES: Routes = [
   },
   {
     path: 'permissions',
-    loadComponent: () =>
-      import('./permissions/permission-assignment.component').then(m => m.PermissionAssignmentComponent)
+    loadComponent: () => import('./permissions/permission-assignment.component').then(m => m.PermissionAssignmentComponent)
   },
   {
     path: 'permission-matrix',
-    loadComponent: () =>
-      import('./permission-matrix/permission-matrix.component').then(m => m.PermissionMatrixComponent)
+    loadComponent: () => import('./permission-matrix/permission-matrix.component').then(m => m.PermissionMatrixComponent)
   },
   {
     path: 'branch-permissions',
-    loadComponent: () =>
-      import('./branch-permissions/branch-permission.component').then(m => m.BranchPermissionComponent)
+    loadComponent: () => import('./branch-permissions/branch-permission.component').then(m => m.BranchPermissionComponent)
   },
   {
     path: 'weather-api',
-    loadComponent: () =>
-      import('./weather-api/weather-api.component').then(m => m.WeatherApiComponent)
+    loadComponent: () => import('./weather-api/weather-api.component').then(m => m.WeatherApiComponent)
   },
   {
     path: 'activity-logs',
-    loadComponent: () =>
-      import('./activity-logs/system-activity-log.component').then(m => m.SystemActivityLogComponent)
+    loadComponent: () => import('./activity-logs/system-activity-log.component').then(m => m.SystemActivityLogComponent)
   }
 ];
-
-

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
 import { InvitationStatus } from '../types/collaboration.types';
+import { Database } from '../types/database.types';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -20,9 +21,9 @@ export type { CollaborationInvitationInsert, CollaborationInvitationUpdate };
 
 /**
  * CollaborationInvitation Repository
- * 
+ *
  * 提供协作邀请相关的数据访问方法
- * 
+ *
  * @example
  * ```typescript
  * const invRepo = inject(CollaborationInvitationRepository);
@@ -43,7 +44,7 @@ export class CollaborationInvitationRepository extends BaseRepository<
 
   /**
    * 根据蓝图 ID 查询邀请列表
-   * 
+   *
    * @param blueprintId 蓝图 ID
    * @param options 查询选项
    * @returns Observable<CollaborationInvitation[]>
@@ -53,14 +54,14 @@ export class CollaborationInvitationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        blueprintId, // 会自动转换为 blueprint_id
-      },
+        blueprintId // 会自动转换为 blueprint_id
+      }
     });
   }
 
   /**
    * 根据发送组织 ID 查询邀请列表
-   * 
+   *
    * @param fromOrgId 发送组织 ID
    * @param options 查询选项
    * @returns Observable<CollaborationInvitation[]>
@@ -70,14 +71,14 @@ export class CollaborationInvitationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        fromOrgId, // 会自动转换为 from_org_id
-      },
+        fromOrgId // 会自动转换为 from_org_id
+      }
     });
   }
 
   /**
    * 根据接收组织 ID 查询邀请列表
-   * 
+   *
    * @param toOrgId 接收组织 ID
    * @param options 查询选项
    * @returns Observable<CollaborationInvitation[]>
@@ -87,14 +88,14 @@ export class CollaborationInvitationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        toOrgId, // 会自动转换为 to_org_id
-      },
+        toOrgId // 会自动转换为 to_org_id
+      }
     });
   }
 
   /**
    * 根据状态查询邀请列表
-   * 
+   *
    * @param status 邀请状态
    * @param options 查询选项
    * @returns Observable<CollaborationInvitation[]>
@@ -104,14 +105,14 @@ export class CollaborationInvitationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        status,
-      },
+        status
+      }
     });
   }
 
   /**
    * 查询过期的邀请列表
-   * 
+   *
    * @param options 查询选项
    * @returns Observable<CollaborationInvitation[]>
    */
@@ -120,14 +121,14 @@ export class CollaborationInvitationRepository extends BaseRepository<
       ...options,
       filters: {
         ...options?.filters,
-        expiresAt: { $lt: new Date().toISOString() }, // 过期时间小于当前时间
-      },
+        expiresAt: { $lt: new Date().toISOString() } // 过期时间小于当前时间
+      }
     });
   }
 
   /**
    * 查询待处理的邀请列表
-   * 
+   *
    * @param options 查询选项
    * @returns Observable<CollaborationInvitation[]>
    */
@@ -135,4 +136,3 @@ export class CollaborationInvitationRepository extends BaseRepository<
     return this.findByStatus(InvitationStatus.PENDING, options);
   }
 }
-

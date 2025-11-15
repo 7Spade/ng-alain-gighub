@@ -1,26 +1,26 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
-type Metric = {
+interface Metric {
   readonly label: string;
   readonly value: string;
   readonly trend: string;
   readonly color: string;
-};
+}
 
-type DeliveryStage = {
+interface DeliveryStage {
   readonly name: string;
   readonly owner: string;
   readonly status: 'wait' | 'process' | 'finish' | 'error';
   readonly updatedAt: string;
-};
+}
 
-type RiskItem = {
+interface RiskItem {
   readonly title: string;
   readonly detail: string;
   readonly owner: string;
   readonly level: 'low' | 'medium' | 'high';
-};
+}
 
 @Component({
   selector: 'app-blueprint-detail-shell',

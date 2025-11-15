@@ -51,4 +51,3 @@ export class IssueDetailComponent implements OnInit {
     this.router.navigate(['/issues', this.issueId, 'close']);
   }
 }
-

@@ -1,28 +1,22 @@
-import { Injectable, inject } from '@angular/core';
-import { signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { OrganizationScheduleRepository, OrganizationSchedule, OrganizationScheduleInsert, OrganizationScheduleUpdate } from '@core';
 import { Observable, firstValueFrom } from 'rxjs';
-import {
-  OrganizationScheduleRepository,
-  OrganizationSchedule,
-  OrganizationScheduleInsert,
-  OrganizationScheduleUpdate
-} from '@core';
 
 /**
  * OrganizationSchedule Service
- * 
+ *
  * 提供组织排班相关的业务逻辑和状态管理
  * 使用 Signals 管理状态，暴露 ReadonlySignal 给组件
- * 
+ *
  * @example
  * ```typescript
  * const scheduleService = inject(OrganizationScheduleService);
- * 
+ *
  * // 订阅排班列表
  * effect(() => {
  *   console.log('Schedules:', scheduleService.schedules());
  * });
- * 
+ *
  * // 加载组织下的排班列表
  * await scheduleService.loadSchedulesByOrganizationId('org-id');
  * ```
@@ -53,9 +47,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedules = await firstValueFrom(
-        this.scheduleRepository.findAll()
-      ) as OrganizationSchedule[];
+      const schedules = (await firstValueFrom(this.scheduleRepository.findAll())) as OrganizationSchedule[];
       this.schedulesState.set(schedules);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载排班列表失败');
@@ -73,9 +65,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedules = await firstValueFrom(
-        this.scheduleRepository.findByOrganizationId(organizationId)
-      ) as OrganizationSchedule[];
+      const schedules = (await firstValueFrom(this.scheduleRepository.findByOrganizationId(organizationId))) as OrganizationSchedule[];
       this.schedulesState.set(schedules);
       return schedules;
     } catch (error) {
@@ -94,9 +84,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedules = await firstValueFrom(
-        this.scheduleRepository.findByBlueprintId(blueprintId)
-      ) as OrganizationSchedule[];
+      const schedules = (await firstValueFrom(this.scheduleRepository.findByBlueprintId(blueprintId))) as OrganizationSchedule[];
       return schedules;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载排班列表失败');
@@ -114,9 +102,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedules = await firstValueFrom(
-        this.scheduleRepository.findByBranchId(branchId)
-      ) as OrganizationSchedule[];
+      const schedules = (await firstValueFrom(this.scheduleRepository.findByBranchId(branchId))) as OrganizationSchedule[];
       return schedules;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载排班列表失败');
@@ -134,9 +120,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedules = await firstValueFrom(
-        this.scheduleRepository.findByAccountId(accountId)
-      ) as OrganizationSchedule[];
+      const schedules = (await firstValueFrom(this.scheduleRepository.findByAccountId(accountId))) as OrganizationSchedule[];
       return schedules;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载排班列表失败');
@@ -154,9 +138,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedules = await firstValueFrom(
-        this.scheduleRepository.findByTeamId(teamId)
-      ) as OrganizationSchedule[];
+      const schedules = (await firstValueFrom(this.scheduleRepository.findByTeamId(teamId))) as OrganizationSchedule[];
       return schedules;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载排班列表失败');
@@ -174,9 +156,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedules = await firstValueFrom(
-        this.scheduleRepository.findByDateRange(startDate, endDate)
-      ) as OrganizationSchedule[];
+      const schedules = (await firstValueFrom(this.scheduleRepository.findByDateRange(startDate, endDate))) as OrganizationSchedule[];
       return schedules;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载排班列表失败');
@@ -194,9 +174,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedule = await firstValueFrom(
-        this.scheduleRepository.findById(id)
-      ) as OrganizationSchedule | null;
+      const schedule = (await firstValueFrom(this.scheduleRepository.findById(id))) as OrganizationSchedule | null;
       if (schedule) {
         this.selectedScheduleState.set(schedule);
       }
@@ -217,9 +195,7 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedule = await firstValueFrom(
-        this.scheduleRepository.create(data)
-      ) as OrganizationSchedule;
+      const schedule = (await firstValueFrom(this.scheduleRepository.create(data))) as OrganizationSchedule;
       // 更新本地状态
       this.schedulesState.update(schedules => [...schedules, schedule]);
       return schedule;
@@ -239,13 +215,9 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
 
     try {
-      const schedule = await firstValueFrom(
-        this.scheduleRepository.update(id, data)
-      ) as OrganizationSchedule;
+      const schedule = (await firstValueFrom(this.scheduleRepository.update(id, data))) as OrganizationSchedule;
       // 更新本地状态
-      this.schedulesState.update(schedules =>
-        schedules.map(s => s.id === id ? schedule : s)
-      );
+      this.schedulesState.update(schedules => schedules.map(s => (s.id === id ? schedule : s)));
       // 如果更新的是当前选中的排班，也更新选中状态
       if (this.selectedSchedule()?.id === id) {
         this.selectedScheduleState.set(schedule);
@@ -298,4 +270,3 @@ export class OrganizationScheduleService {
     this.errorState.set(null);
   }
 }
-

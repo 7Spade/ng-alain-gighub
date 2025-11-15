@@ -43,7 +43,7 @@ export class StartupService {
 
   load(): Observable<void> {
     const defaultLang = this.i18n.defaultLang;
-    
+
     // 先恢復 Supabase Session（如果存在），然後執行原有的啟動邏輯
     return this.supabaseAuthAdapter.restoreSession().pipe(
       switchMap(() => {
