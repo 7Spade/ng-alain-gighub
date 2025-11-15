@@ -7,9 +7,34 @@
 **Project**: ng-alain-github - Enterprise Angular admin panel framework  
 **Tech Stack**: Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.0.x + Supabase  
 **Architecture**: Git-like branching model with 51-table database structure  
-**Package Manager**: Yarn (required)
+**Package Manager**: Yarn (required)  
+**Authentication**: ✅ Supabase Auth + @delon/auth integrated (implemented)
 
 ## 🏗️ Architecture Overview
+
+### Authentication System (✅ Implemented)
+
+The system uses **Supabase Auth** as the underlying authentication service, integrated with **@delon/auth** for frontend authentication:
+
+- **Supabase Auth**: Backend authentication (signIn, signUp, signOut, Session management)
+- **SupabaseSessionAdapter**: Converts Supabase Session to @delon/auth Token format
+- **@delon/auth**: Frontend auth framework (TokenService, route guards, HTTP interceptors)
+- **AuthService**: Business layer service integrating Supabase Auth with AccountRepository
+- **AuthStateService**: Authentication state management using Angular Signals
+
+**Implementation locations**:
+- `src/app/shared/services/auth/` - AuthService, AuthStateService, types
+- `src/app/core/supabase/supabase-session-adapter.service.ts` - Session adapter
+- `src/app/core/repositories/account.repository.ts` - Account data access
+
+**Authentication flow**:
+1. User logs in via Supabase Auth (signInWithPassword)
+2. SupabaseSessionAdapter converts Session to Token format
+3. Syncs to TokenService for @delon system (route guards, interceptors)
+4. Loads user Account data from `accounts` table
+5. Updates AuthStateService with user state
+
+**Reference**: `docs/13-帳戶層流程圖.mermaid.md`, `docs/14-業務流程圖.mermaid.md`
 
 ### Git-like Branching Model
 
