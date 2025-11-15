@@ -1,82 +1,82 @@
 ---
-description: Angular 20 現代化特性與遷移指南
+description: Angular 20 modern features and migration guide
 globs: ["**/*.ts", "**/*.html"]
 alwaysApply: false
 ---
 
-# Angular 20 現代化特性
+# Angular 20 Modern Features
 
-> **相關規則**：參考 [Angular 20 最佳實踐](./angular.mdc)、[類型安全](./typescript.mdc)
+> **Related Rules**: See [Angular 20 Best Practices](./angular.mdc), [Type Safety](./typescript.mdc)
 
-## Signal Inputs 和 Outputs
+## Signal Inputs and Outputs
 
-- 使用 `input()` 替代 `@Input()` 裝飾器
-- 使用 `output()` 替代 `@Output()` 裝飾器
-- 使用 `input.required()` 標記必需的輸入
-- Signal Inputs 自動提供類型安全，無需額外類型標註（參考 [類型安全](./typescript.mdc)）
+- Use `input()` instead of `@Input()` decorator
+- Use `output()` instead of `@Output()` decorator
+- Use `input.required()` to mark required inputs
+- Signal Inputs automatically provide type safety without extra type annotations (see [Type Safety](./typescript.mdc))
 
 ## Signal Queries
 
-- 使用 `viewChild()` 替代 `@ViewChild()` 裝飾器
-- 使用 `contentChild()` 替代 `@ContentChild()` 裝飾器
-- 使用 `viewChildren()` 替代 `@ViewChildren()` 裝飾器
-- 使用 `contentChildren()` 替代 `@ContentChildren()` 裝飾器
-- Signal Queries 返回 Signal，在模板中調用時必須使用括號
+- Use `viewChild()` instead of `@ViewChild()` decorator
+- Use `contentChild()` instead of `@ContentChild()` decorator
+- Use `viewChildren()` instead of `@ViewChildren()` decorator
+- Use `contentChildren()` instead of `@ContentChildren()` decorator
+- Signal Queries return Signals, parentheses must be used when calling in templates
 
-## Standalone 遷移
+## Standalone Migration
 
-- 使用 `ng generate @angular/core:standalone` 進行自動遷移
-- 使用 `bootstrapApplication()` 替代 `bootstrapModule()`
-- 移除不必要的 NgModules
-- 確保所有組件、指令、管道都是 standalone
+- Use `ng generate @angular/core:standalone` for automatic migration
+- Use `bootstrapApplication()` instead of `bootstrapModule()`
+- Remove unnecessary NgModules
+- Ensure all components, directives, and pipes are standalone
 
-## 模板最佳實踐
+## Template Best Practices
 
-- 在模板中調用 Signal 時必須使用括號：`{{ mySignal() }}`
-- 使用 `@empty` 塊處理 `@for` 循環的空列表情況
-- 使用 `track` 函數優化 `@for` 循環性能
-- 避免在模板中使用複雜表達式，優先使用 `computed()` Signal
+- When calling Signals in templates, parentheses must be used: `{{ mySignal() }}`
+- Use `@empty` block to handle empty list cases in `@for` loops
+- Use `track` functions to optimize `@for` loop performance
+- Avoid complex expressions in templates, prefer `computed()` Signals
 
-## Deferrable Views（@defer）
+## Deferrable Views (@defer)
 
-- 使用 `@defer { ... }` 延後非關鍵組件載入，預設 `on idle` 觸發可降低首屏 bundle（參考 [Deferrable Views](https://angular.dev/guide/templates/defer)）
-- 依情境選擇觸發條件：`on viewport`（滾到才載）、`on hover`（互動才載）、`hydrate on viewport`（SSR Hydration）等
-- *務必* 搭配 `@placeholder`、`@loading`、`@error` 提供視覺回饋，並運用 `minimum`、`after` 參數避免閃爍
-- 將 `@defer` 套用於大型 lazy component（如 `article-comments`、`large-cmp`），並保留語義化 placeholder 內容
+- Use `@defer { ... }` to defer loading of non-critical components, default `on idle` trigger can reduce initial bundle size (see [Deferrable Views](https://angular.dev/guide/templates/defer))
+- Choose trigger conditions based on context: `on viewport` (load when scrolled to), `on hover` (load on interaction), `hydrate on viewport` (SSR Hydration), etc.
+- *Must* use with `@placeholder`, `@loading`, `@error` to provide visual feedback, and utilize `minimum`, `after` parameters to avoid flashing
+- Apply `@defer` to large lazy components (like `article-comments`, `large-cmp`), and preserve semantic placeholder content
 
 ## View Transitions API
 
-- Router 層級啟用 View Transitions：`provideRouter(routes, withViewTransitions())` 或 `RouterModule.forRoot(routes, { enableViewTransitions: true })`
-- 透過 `onViewTransitionCreated` 可檢查 `Router` 導航結果，對僅 fragment/query 變更的情況呼叫 `transition.skipTransition()`，避免多餘動畫
-- 以全域 CSS 客製 `::view-transition-old()`／`::view-transition-new()`，製作進出場動畫，並確保對 `prefers-reduced-motion` 友善
+- Enable View Transitions at Router level: `provideRouter(routes, withViewTransitions())` or `RouterModule.forRoot(routes, { enableViewTransitions: true })`
+- Through `onViewTransitionCreated`, check `Router` navigation results, call `transition.skipTransition()` for navigations with only fragment/query changes to avoid unnecessary animations
+- Customize `::view-transition-old()`/`::view-transition-new()` with global CSS to create entrance/exit animations, and ensure `prefers-reduced-motion` friendliness
 
-## Resource API 與資料串流
+## Resource API and Data Streams
 
-- 使用 `resource({ params, loader })` 管理 async 資料，`params` 讀取 Signals，自動重跑 `loader`
-- 需要 RxJS 時改用 `rxResource({ stream })`，或利用 `resource({ stream })` 逐步產出（支援 `ReadableStream` chunk）
-- `resourceRef.value()` 會回傳 Signal，可透過 `computed()`/模板 `userResource.value()?.name` 直接綁定
-- 透過 `resourceRef.reload()` 觸發重新載入，錯誤狀態須在 UI 中顯示
+- Use `resource({ params, loader })` to manage async data, `params` reads Signals, automatically reruns `loader`
+- When RxJS is needed, use `rxResource({ stream })`, or use `resource({ stream })` for progressive output (supports `ReadableStream` chunks)
+- `resourceRef.value()` returns a Signal, can be directly bound through `computed()`/template `userResource.value()?.name`
+- Trigger reload through `resourceRef.reload()`, error states must be displayed in UI
 
-## Signal Forms 與 Typed Forms
+## Signal Forms and Typed Forms
 
-- Reactive Forms 預設啟用 Typed Forms：`new FormControl('', { nonNullable: true })`、`FormRecord<FormControl<string | null>>`
-- 利用 `updateOn: 'blur'` 或 `updateOn: 'submit'` 延後昂貴驗證請求
-- 將表單值映射到 Signals（`const firstName = signalControl(this.form.controls.firstName)`）以便在模板使用 `firstName()`，並保持 `strictNullChecks`
-- 動態欄位使用 `FormArray`/`FormRecord`，新增控制項後需同步更新 UI 輔助文字與驗證訊息
+- Reactive Forms enable Typed Forms by default: `new FormControl('', { nonNullable: true })`, `FormRecord<FormControl<string | null>>`
+- Use `updateOn: 'blur'` or `updateOn: 'submit'` to defer expensive validation requests
+- Map form values to Signals (`const firstName = signalControl(this.form.controls.firstName)`) for template usage `firstName()`, maintaining `strictNullChecks`
+- For dynamic fields, use `FormArray`/`FormRecord`, synchronize UI helper text and validation messages after adding controls
 
-## 診斷和錯誤處理
+## Diagnostics and Error Handling
 
-- 啟用 `strictTemplates` 以獲得更好的類型檢查（參考 [類型安全](./typescript.mdc)）
-- Angular 會自動檢測未使用的 standalone imports
-- 使用 Angular 的擴展診斷功能（如 NG8113）檢測問題
+- Enable `strictTemplates` for better type checking (see [Type Safety](./typescript.mdc))
+- Angular automatically detects unused standalone imports
+- Use Angular's extended diagnostics (e.g., NG8113) to detect issues
 
-## 參考文檔
+## Reference Documentation
 
 - [Angular Signal Inputs](https://angular.dev/api/core/input)
 - [Angular Signal Queries](https://angular.dev/api/core/viewChild)
 - [Angular Standalone Migration](https://angular.dev/reference/migrations/standalone)
-- [Angular 20 最佳實踐](./angular.mdc)
+- [Angular 20 Best Practices](./angular.mdc)
 - [Angular Deferrable Views](https://angular.dev/guide/templates/defer)
 - [Angular View Transitions](https://angular.dev/guide/animations/route-animations)
 - [Angular Signals Resource API](https://angular.dev/guide/signals/resource)
-- [Typed Forms 指南](https://angular.dev/guide/forms/typed-forms)
+- [Typed Forms Guide](https://angular.dev/guide/forms/typed-forms)
