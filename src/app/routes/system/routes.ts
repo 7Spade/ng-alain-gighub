@@ -11,6 +11,18 @@ export const SYSTEM_ROUTES: Routes = [
     loadComponent: () => import('./settings/system-settings.component').then(m => m.SystemSettingsComponent)
   },
   {
+    path: 'settings/personal',
+    loadComponent: () => import('./settings/personal/personal-settings.component').then(m => m.PersonalSettingsComponent)
+  },
+  {
+    path: 'settings/project',
+    loadComponent: () => import('./settings/project/project-settings.component').then(m => m.ProjectSettingsComponent)
+  },
+  {
+    path: 'settings/global',
+    loadComponent: () => import('./settings/global/global-settings.component').then(m => m.GlobalSettingsComponent)
+  },
+  {
     path: 'feature-flags',
     loadComponent: () => import('./feature-flags/feature-flag.component').then(m => m.FeatureFlagComponent)
   },
@@ -37,5 +49,9 @@ export const SYSTEM_ROUTES: Routes = [
   {
     path: 'activity-logs',
     loadComponent: () => import('./activity-logs/system-activity-log.component').then(m => m.SystemActivityLogComponent)
+  },
+  {
+    path: 'backup',
+    loadComponent: () => import('./backup/backup').then(m => m.Backup)
   }
 ];

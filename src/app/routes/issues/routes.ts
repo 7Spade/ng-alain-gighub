@@ -49,5 +49,9 @@ export const ISSUE_ROUTES: Routes = [
   {
     path: ':id/close',
     loadComponent: () => import('./close/issue-close.component').then(m => m.IssueCloseComponent)
+  },
+  {
+    path: 'sync-logs',
+    loadComponent: () => import('./sync-logs/sync-logs').then(m => m.SyncLogs)
   }
 ];

@@ -210,9 +210,12 @@ export class LayoutBasicComponent implements OnInit {
       }
     });
 
-    // 监听身份变化，更新菜单（简化条件检查）
+    // 监听身份变化，更新菜单
+    // 关键：effect 必须读取 Signal 才能响应变化
     effect(() => {
-      if (this.appData) {
+      // 读取 currentIdentity Signal，这样当身份变化时 effect 会重新执行
+      const identity = this.identityContextService.currentIdentity();
+      if (this.appData && identity) {
         this.startupService.reloadMenuByIdentity(this.appData);
       }
     });

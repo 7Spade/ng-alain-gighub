@@ -55,6 +55,10 @@ export const TASK_ROUTES: Routes = [
     loadComponent: () => import('./weather/task-weather.component').then(m => m.TaskWeatherComponent)
   },
   {
+    path: 'progress',
+    loadComponent: () => import('./progress/task-progress').then(m => m.TaskProgress)
+  },
+  {
     path: ':id',
     loadComponent: () => import('./detail/task-detail.component').then(m => m.TaskDetailComponent)
   },

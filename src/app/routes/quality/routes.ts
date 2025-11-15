@@ -11,12 +11,20 @@ export const QUALITY_ROUTES: Routes = [
     loadComponent: () => import('./checks/quality-checks.component').then(m => m.QualityChecksComponent)
   },
   {
+    path: 'checks/detail',
+    loadComponent: () => import('./checks/detail/quality-check-detail').then(m => m.QualityCheckDetail)
+  },
+  {
     path: 'submit',
     loadComponent: () => import('./submit/quality-submit.component').then(m => m.QualitySubmitComponent)
   },
   {
     path: 'inspections',
     loadComponent: () => import('./inspections/quality-inspections.component').then(m => m.QualityInspectionsComponent)
+  },
+  {
+    path: 'inspections/detail',
+    loadComponent: () => import('./inspections/detail/quality-inspection-detail').then(m => m.QualityInspectionDetail)
   },
   {
     path: 'photos',

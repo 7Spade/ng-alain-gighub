@@ -31,12 +31,20 @@ export const BLUEPRINT_ROUTES: Routes = [
     loadComponent: () => import('./branches/blueprint-branches-overview.component').then(m => m.BlueprintBranchesOverviewComponent)
   },
   {
+    path: 'branches/detail',
+    loadComponent: () => import('./branches/branch-detail/branch-detail').then(m => m.BranchDetail)
+  },
+  {
     path: 'fork',
     loadComponent: () => import('./fork/blueprint-fork-landing.component').then(m => m.BlueprintForkLandingComponent)
   },
   {
     path: 'pull-requests',
     loadComponent: () => import('./pull-requests/pull-request-center.component').then(m => m.PullRequestCenterComponent)
+  },
+  {
+    path: 'pull-requests/detail',
+    loadComponent: () => import('./pull-requests/detail/pull-request-detail').then(m => m.PullRequestDetail)
   },
   {
     path: 'review',

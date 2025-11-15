@@ -23,6 +23,14 @@ export const COMMUNICATION_ROUTES: Routes = [
     loadComponent: () => import('./notifications/notification-center.component').then(m => m.NotificationCenterComponent)
   },
   {
+    path: 'notifications/detail',
+    loadComponent: () => import('./notifications/detail/notification-detail').then(m => m.NotificationDetail)
+  },
+  {
+    path: 'notifications/rules',
+    loadComponent: () => import('./notifications/rules/notification-rules.component').then(m => m.NotificationRulesComponent)
+  },
+  {
     path: 'realtime',
     loadComponent: () => import('./realtime/realtime-notify.component').then(m => m.RealtimeNotifyComponent)
   },
