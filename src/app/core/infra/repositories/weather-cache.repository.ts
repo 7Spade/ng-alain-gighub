@@ -74,4 +74,3 @@ export class WeatherCacheRepository extends BaseRepository<WeatherCache, Weather
     return this.findByLocation(location, options);
   }
 }
-

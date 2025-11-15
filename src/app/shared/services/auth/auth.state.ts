@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 
-import { Account } from '../../models';
 import { AuthState } from './auth.types';
+import { Account } from '../../models';
 
 /**
  * 认证状态管理服务（使用 Signals）
@@ -70,4 +70,3 @@ export class AuthStateService {
     this.errorState.set(null);
   }
 }
-

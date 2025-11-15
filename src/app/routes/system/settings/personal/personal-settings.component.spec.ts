@@ -1,4 +1,5 @@
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { PersonalSettingsComponent } from './personal-settings.component';
 
 describe('PersonalSettingsComponent', () => {
@@ -7,11 +8,8 @@ describe('PersonalSettingsComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PersonalSettingsComponent ]
-    })
-    .compileComponents();
-    ;
-
+      declarations: [PersonalSettingsComponent]
+    }).compileComponents();
     fixture = TestBed.createComponent(PersonalSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

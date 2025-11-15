@@ -1,11 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import {
-  TaskRepository,
-  TaskInsert,
-  TaskUpdate,
-  TaskAssignmentRepository,
-  TaskListRepository
-} from '@core';
+import { TaskRepository, TaskInsert, TaskUpdate, TaskAssignmentRepository, TaskListRepository } from '@core';
 import { Task, TaskStatus, TaskType, TaskPriority, TaskDetail, TaskTreeNode } from '@shared';
 import { firstValueFrom, forkJoin } from 'rxjs';
 
@@ -59,7 +53,9 @@ export class TaskService {
 
   readonly stagingTasks = computed(() => this.tasks().filter(t => t.status === TaskStatus.STAGING));
 
-  readonly highPriorityTasks = computed(() => this.tasks().filter(t => t.priority === TaskPriority.HIGH || t.priority === TaskPriority.URGENT));
+  readonly highPriorityTasks = computed(() =>
+    this.tasks().filter(t => t.priority === TaskPriority.HIGH || t.priority === TaskPriority.URGENT)
+  );
 
   /**
    * 加载所有任务（按蓝图）
@@ -137,10 +133,10 @@ export class TaskService {
       // TODO: 自动生成 tree_path 和 tree_level
       // 如果 parent_task_id 存在，需要计算路径
       const task = await firstValueFrom(this.taskRepository.create(data));
-      
+
       // 更新本地状态
       this.tasksState.update(tasks => [...tasks, task]);
-      
+
       return task;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '创建任务失败');
@@ -163,13 +159,13 @@ export class TaskService {
 
     try {
       const task = await firstValueFrom(this.taskRepository.update(id, data));
-      
+
       // 更新本地状态
       this.tasksState.update(tasks => tasks.map(t => (t.id === id ? task : t)));
       if (this.selectedTaskState()?.id === id) {
         this.selectedTaskState.set(task);
       }
-      
+
       return task;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '更新任务失败');
@@ -191,7 +187,7 @@ export class TaskService {
     try {
       // TODO: 检查是否有子任务，如果有需要处理
       await firstValueFrom(this.taskRepository.delete(id));
-      
+
       // 更新本地状态
       this.tasksState.update(tasks => tasks.filter(t => t.id !== id));
       if (this.selectedTaskState()?.id === id) {
@@ -279,4 +275,3 @@ export class TaskService {
     this.errorState.set(null);
   }
 }
-

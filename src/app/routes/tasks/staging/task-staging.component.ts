@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { TaskStagingRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, TaskService, Task, TaskStaging, BlueprintService } from '@shared';
-import { TaskStagingRepository } from '@core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { firstValueFrom } from 'rxjs';
 
@@ -44,13 +44,7 @@ import { firstValueFrom } from 'rxjs';
       } @else if (stagingTasks().length === 0) {
         <nz-empty nzNotFoundContent="暂存区暂无任务"></nz-empty>
       } @else {
-        <st
-          #st
-          [data]="stagingTasks()"
-          [columns]="columns"
-          [loading]="loading()"
-          [page]="{ front: false, show: true, showSize: true }"
-        >
+        <st #st [data]="stagingTasks()" [columns]="columns" [loading]="loading()" [page]="{ front: false, show: true, showSize: true }">
           <ng-template #canWithdraw let-record>
             @if (record.can_withdraw) {
               <nz-tag nzColor="green">可撤回</nz-tag>
@@ -77,7 +71,7 @@ export class TaskStagingComponent implements OnInit {
   readonly stagingTasks = computed(() => {
     const records = this.stagingRecords();
     const tasks = this.taskService.tasks();
-    
+
     // 将暂存记录与任务关联
     return records.map(record => {
       const task = tasks.find(t => t.id === record.task_id);
@@ -135,15 +129,13 @@ export class TaskStagingComponent implements OnInit {
     try {
       // 先加载任务列表
       await this.taskService.loadTasksByBlueprint(blueprintId);
-      
+
       // 然后加载所有任务的暂存记录
       const tasks = this.taskService.tasks();
-      const stagingPromises = tasks.map(task => 
-        firstValueFrom(this.taskStagingRepository.findByTaskId(task.id))
-      );
+      const stagingPromises = tasks.map(task => firstValueFrom(this.taskStagingRepository.findByTaskId(task.id)));
       const stagingArrays = await Promise.all(stagingPromises);
       const allStaging = stagingArrays.flat();
-      
+
       // 过滤出可撤回的记录（48小时内）
       const now = new Date();
       const withdrawable = allStaging.filter(record => {
@@ -151,7 +143,7 @@ export class TaskStagingComponent implements OnInit {
         const expiresAt = new Date(record.expires_at);
         return expiresAt > now;
       });
-      
+
       this.stagingRecords.set(withdrawable);
     } catch (error) {
       this.message.error('加载暂存区数据失败');

@@ -108,4 +108,3 @@ export interface TaskDetail extends Task {
   staging?: TaskStaging;
   dailyReports?: DailyReport[];
 }
-

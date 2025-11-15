@@ -39,42 +39,42 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           @for (column of boardColumns; track column.status) {
             <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
               <nz-card [nzTitle]="column.title" [nzBordered]="true" style="margin-bottom: 16px;">
-              @for (task of column.tasks(); track task.id) {
-                <nz-card
-                  [nzType]="'inner'"
-                  [nzTitle]="task.title"
-                  style="margin-bottom: 8px; cursor: pointer;"
-                  (click)="viewTask(task.id)"
-                >
-                  <p style="margin: 0; color: #666; font-size: 12px;">
-                    {{ task.description || '无描述' }}
-                  </p>
-                  <div style="margin-top: 8px;">
-                    @switch (task.priority) {
-                      @case ('low') {
-                        <nz-tag nzColor="default" nzSize="small">低</nz-tag>
+                @for (task of column.tasks(); track task.id) {
+                  <nz-card
+                    [nzType]="'inner'"
+                    [nzTitle]="task.title"
+                    style="margin-bottom: 8px; cursor: pointer;"
+                    (click)="viewTask(task.id)"
+                  >
+                    <p style="margin: 0; color: #666; font-size: 12px;">
+                      {{ task.description || '无描述' }}
+                    </p>
+                    <div style="margin-top: 8px;">
+                      @switch (task.priority) {
+                        @case ('low') {
+                          <nz-tag nzColor="default" nzSize="small">低</nz-tag>
+                        }
+                        @case ('medium') {
+                          <nz-tag nzColor="blue" nzSize="small">中</nz-tag>
+                        }
+                        @case ('high') {
+                          <nz-tag nzColor="orange" nzSize="small">高</nz-tag>
+                        }
+                        @case ('urgent') {
+                          <nz-tag nzColor="red" nzSize="small">紧急</nz-tag>
+                        }
                       }
-                      @case ('medium') {
-                        <nz-tag nzColor="blue" nzSize="small">中</nz-tag>
-                      }
-                      @case ('high') {
-                        <nz-tag nzColor="orange" nzSize="small">高</nz-tag>
-                      }
-                      @case ('urgent') {
-                        <nz-tag nzColor="red" nzSize="small">紧急</nz-tag>
-                      }
-                    }
-                    <nz-progress
-                      [nzPercent]="task.progress_percentage || 0"
-                      [nzShowInfo]="false"
-                      [nzSize]="'small'"
-                      style="margin-top: 4px;"
-                    ></nz-progress>
-                  </div>
-                </nz-card>
-              } @empty {
-                <nz-empty [nzNotFoundContent]="'暂无任务'"></nz-empty>
-              }
+                      <nz-progress
+                        [nzPercent]="task.progress_percentage || 0"
+                        [nzShowInfo]="false"
+                        [nzSize]="'small'"
+                        style="margin-top: 4px;"
+                      ></nz-progress>
+                    </div>
+                  </nz-card>
+                } @empty {
+                  <nz-empty [nzNotFoundContent]="'暂无任务'"></nz-empty>
+                }
               </nz-card>
             </div>
           }

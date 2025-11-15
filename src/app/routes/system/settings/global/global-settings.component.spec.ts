@@ -1,4 +1,5 @@
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { GlobalSettingsComponent } from './global-settings.component';
 
 describe('GlobalSettingsComponent', () => {
@@ -7,11 +8,8 @@ describe('GlobalSettingsComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GlobalSettingsComponent ]
-    })
-    .compileComponents();
-    ;
-
+      declarations: [GlobalSettingsComponent]
+    }).compileComponents();
     fixture = TestBed.createComponent(GlobalSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

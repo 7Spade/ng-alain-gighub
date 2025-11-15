@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { TaskAssignmentRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, TaskService, Task, TaskStatus, BlueprintService } from '@shared';
-import { TaskAssignmentRepository } from '@core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { firstValueFrom } from 'rxjs';
 
@@ -104,10 +104,8 @@ export class TaskTodoComponent implements OnInit {
   readonly todoTasks = computed(() => {
     const tasks = this.taskService.tasks();
     // 过滤出待办任务（待处理、已指派、进行中）
-    return tasks.filter(task => 
-      task.status === TaskStatus.PENDING ||
-      task.status === TaskStatus.ASSIGNED ||
-      task.status === TaskStatus.IN_PROGRESS
+    return tasks.filter(
+      task => task.status === TaskStatus.PENDING || task.status === TaskStatus.ASSIGNED || task.status === TaskStatus.IN_PROGRESS
     );
   });
 

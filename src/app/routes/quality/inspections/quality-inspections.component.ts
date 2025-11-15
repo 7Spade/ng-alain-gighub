@@ -32,13 +32,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-spin nzSize="large"></nz-spin>
         </div>
       } @else {
-        <st
-          #st
-          [data]="inspections()"
-          [columns]="columns"
-          [loading]="loading()"
-          [page]="{ front: false, show: true, showSize: true }"
-        >
+        <st #st [data]="inspections()" [columns]="columns" [loading]="loading()" [page]="{ front: false, show: true, showSize: true }">
         </st>
       }
     </nz-card>

@@ -9,8 +9,7 @@ describe('SyncLogs', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SyncLogs]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SyncLogs);
     component = fixture.componentInstance;

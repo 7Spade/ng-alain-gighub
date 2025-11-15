@@ -9,8 +9,7 @@ describe('TaskProgress', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TaskProgress]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TaskProgress);
     component = fixture.componentInstance;

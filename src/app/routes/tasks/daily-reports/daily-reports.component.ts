@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { DailyReportRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, TaskService, Task, DailyReport, BlueprintService } from '@shared';
-import { DailyReportRepository } from '@core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { firstValueFrom } from 'rxjs';
 
@@ -38,13 +38,7 @@ import { firstValueFrom } from 'rxjs';
           <nz-spin nzSize="large"></nz-spin>
         </div>
       } @else {
-        <st
-          #st
-          [data]="reports()"
-          [columns]="columns"
-          [loading]="loading()"
-          [page]="{ front: false, show: true, showSize: true }"
-        >
+        <st #st [data]="reports()" [columns]="columns" [loading]="loading()" [page]="{ front: false, show: true, showSize: true }">
           <ng-template #weather let-record>
             @if (record.weather_data) {
               <nz-tag>{{ record.weather_data }}</nz-tag>
@@ -109,15 +103,13 @@ export class DailyReportsComponent implements OnInit {
     try {
       // 先加载任务列表
       await this.taskService.loadTasksByBlueprint(blueprintId);
-      
+
       // 然后加载所有任务的施工日志
       const tasks = this.taskService.tasks();
-      const reportPromises = tasks.map(task => 
-        firstValueFrom(this.dailyReportRepository.findByTaskId(task.id))
-      );
+      const reportPromises = tasks.map(task => firstValueFrom(this.dailyReportRepository.findByTaskId(task.id)));
       const reportArrays = await Promise.all(reportPromises);
       const allReports = reportArrays.flat();
-      
+
       // 关联任务标题
       const reportsWithTitle = allReports.map(report => {
         const task = tasks.find(t => t.id === report.task_id);
@@ -126,7 +118,7 @@ export class DailyReportsComponent implements OnInit {
           taskTitle: task?.title || '任务不存在'
         } as any;
       });
-      
+
       this.reports.set(reportsWithTitle as DailyReport[]);
     } catch (error) {
       this.message.error('加载施工日志失败');

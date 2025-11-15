@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { MenuContextService } from '@core';
 import { SettingsService } from '@delon/theme';
+import { AccountService, SHARED_IMPORTS } from '@shared';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-
-import { MenuContextService } from '@core';
-import { AccountService, SHARED_IMPORTS } from '@shared';
 
 /**
  * 账户上下文切换器组件

@@ -9,8 +9,7 @@ describe('NotificationDetail', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NotificationDetail]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NotificationDetail);
     component = fixture.componentInstance;

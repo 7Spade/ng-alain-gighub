@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { TaskDependencyType } from '../types/task.types';
 import { Database } from '../types/database.types';
+import { TaskDependencyType } from '../types/task.types';
 
 /**
  * TaskDependency 实体类型（camelCase）
@@ -77,4 +77,3 @@ export class TaskDependencyRepository extends BaseRepository<TaskDependency, Tas
     });
   }
 }
-

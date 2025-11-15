@@ -21,12 +21,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
           }
         </nz-select>
-        <nz-select
-          [ngModel]="selectedStatus()"
-          (ngModelChange)="selectedStatus.set($event)"
-          nzPlaceHolder="筛选状态"
-          style="width: 150px;"
-        >
+        <nz-select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)" nzPlaceHolder="筛选状态" style="width: 150px;">
           <nz-option [nzValue]="'all'" nzLabel="全部"></nz-option>
           <nz-option [nzValue]="'passed'" nzLabel="通过"></nz-option>
           <nz-option [nzValue]="'failed'" nzLabel="不通过"></nz-option>
@@ -43,13 +38,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-spin nzSize="large"></nz-spin>
         </div>
       } @else {
-        <st
-          #st
-          [data]="filteredResults()"
-          [columns]="columns"
-          [loading]="loading()"
-          [page]="{ front: false, show: true, showSize: true }"
-        >
+        <st #st [data]="filteredResults()" [columns]="columns" [loading]="loading()" [page]="{ front: false, show: true, showSize: true }">
           <ng-template #result let-record>
             @switch (record.result) {
               @case ('passed') {
