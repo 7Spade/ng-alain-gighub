@@ -1,5 +1,6 @@
 > **📌 重要提示**：
 > - 基礎開發規範已遷移至 `.cursor/rules/` 目錄，這些規則會自動應用於 Cursor IDE 的 AI 功能
+> - GitHub Copilot 指引位於 `.github/copilot-instructions.md` 和 `.github/instructions/` 目錄
 > - 模組特定規範請參考各模組目錄下的 `AGENTS.md` 文件
 > - 詳細規範請參考對應的規則文件
 
@@ -41,6 +42,32 @@
 
 ### 工具使用規範
 - [MCP 工具](./.cursor/rules/mcp-tools.mdc) - MCP 工具使用規範
+
+---
+
+## 🤖 GitHub Copilot 指引
+
+GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
+
+### 主要指引文件
+- [GitHub Copilot Instructions](./.github/copilot-instructions.md) - 完整的專案指引和開發規範
+  - 專案架構概覽（Git-like 分支模型，51 張資料表）
+  - 開發標準和最佳實踐
+  - 模組結構和依賴規則
+  - 測試要求和安全指南
+
+### 模組特定指引
+位於 `.github/instructions/` 目錄，會根據編輯的文件自動應用：
+
+- [Shared Module](./.github/instructions/shared.instructions.md) - 共享模組指引（`src/app/shared/**/*`）
+- [Routes Module](./.github/instructions/routes.instructions.md) - 路由模組指引（`src/app/routes/**/*`）
+- [Core Module](./.github/instructions/core.instructions.md) - 核心模組指引（`src/app/core/**/*`）
+- [Testing](./.github/instructions/testing.instructions.md) - 測試指引（`**/*.spec.ts`）
+- [Documentation](./.github/instructions/documentation.instructions.md) - 文檔指引（`docs/**/*.md`）
+
+詳細說明請參考 [.github/instructions/README.md](./.github/instructions/README.md)
+
+---
 
 ## 📝 模板文件
 
