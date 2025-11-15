@@ -11,7 +11,7 @@ export * from './models';
 export * from './services';
 
 // Module
-export * from './shared-imports';
-export * from './json-schema/index';
-export * from './st-widget/index';
 export * from './cell-widget/index';
+export * from './json-schema/index';
+export * from './shared-imports';
+export * from './st-widget/index';

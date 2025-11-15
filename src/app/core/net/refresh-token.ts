@@ -1,10 +1,10 @@
-import { HttpClient, HttpHandlerFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
+import { HttpHandlerFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
 import { EnvironmentProviders, Injector, inject, provideAppInitializer } from '@angular/core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
-import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError, map } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, filter, map, switchMap, take, throwError } from 'rxjs';
 
+import { SupabaseSessionAdapterService } from '../supabase';
 import { toLogin } from './helper';
-import { SupabaseAuthAdapterService } from '../supabase';
 
 let refreshToking = false;
 let refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -24,7 +24,7 @@ function reAttachToken(injector: Injector, req: HttpRequest<any>): HttpRequest<a
 }
 
 function refreshTokenRequest(injector: Injector): Observable<any> {
-  const adapter = injector.get(SupabaseAuthAdapterService);
+  const adapter = injector.get(SupabaseSessionAdapterService);
   return adapter.refreshSession().pipe(map(session => adapter.convertSessionToTokenFormat(session)));
 }
 

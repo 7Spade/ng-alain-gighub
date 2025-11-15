@@ -1,31 +1,33 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
-import { Session, AuthChangeEvent, AuthError } from '@supabase/supabase-js';
-import { Observable, from, of, throwError, EMPTY } from 'rxjs';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { Observable, from, of, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { SupabaseService } from './supabase.service';
 
 /**
- * Supabase Auth 與 @delon/auth 適配器服務
+ * Supabase Session 适配器服务（基础设施层）
  *
- * 作為 Supabase Auth 與 @delon/auth 之間的橋樑，實現：
- * 1. Session 格式轉換（Supabase Session → @delon/auth Token 格式）
- * 2. 自動同步 Session 到 TokenService
- * 3. 監聽 Auth 狀態變化
- * 4. Token 刷新處理
+ * 职责：
+ * 1. Session 格式转换（Supabase Session → @delon/auth Token 格式）
+ * 2. Token 同步到 TokenService
+ * 3. Auth 状态监听和同步
+ * 4. Session 恢复和刷新
+ *
+ * 不包含业务逻辑（如 signIn, signUp, signOut），这些应该在 shared/services/auth 中实现
  *
  * @example
  * ```typescript
- * const adapter = inject(SupabaseAuthAdapterService);
- * adapter.signIn('user@example.com', 'password').subscribe();
+ * const adapter = inject(SupabaseSessionAdapterService);
+ * adapter.restoreSession().subscribe();
  * ```
  */
 @Injectable({
   providedIn: 'root'
 })
-export class SupabaseAuthAdapterService {
+export class SupabaseSessionAdapterService {
   private readonly supabaseService = inject(SupabaseService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
   private readonly platformId = inject(PLATFORM_ID);
@@ -36,71 +38,6 @@ export class SupabaseAuthAdapterService {
     if (isPlatformBrowser(this.platformId)) {
       this.initializeAuthListener();
     }
-  }
-
-  /**
-   * 登入
-   *
-   * @param email 用戶郵箱
-   * @param password 密碼
-   * @returns Observable<{ error: AuthError | null }>
-   */
-  signIn(email: string, password: string): Observable<{ error: AuthError | null }> {
-    return from(
-      this.supabaseService.client.auth.signInWithPassword({
-        email,
-        password
-      })
-    ).pipe(
-      tap(({ data, error }) => {
-        if (!error && data.session) {
-          this.syncSessionToTokenService(data.session);
-        }
-      }),
-      map(({ error }) => ({ error }))
-    );
-  }
-
-  /**
-   * 註冊
-   *
-   * @param email 用戶郵箱
-   * @param password 密碼
-   * @param metadata 用戶元數據（可選）
-   * @returns Observable<{ error: AuthError | null }>
-   */
-  signUp(email: string, password: string, metadata?: Record<string, any>): Observable<{ error: AuthError | null }> {
-    return from(
-      this.supabaseService.client.auth.signUp({
-        email,
-        password,
-        options: {
-          data: metadata
-        }
-      })
-    ).pipe(
-      tap(({ data, error }) => {
-        if (!error && data.session) {
-          this.syncSessionToTokenService(data.session);
-        }
-      }),
-      map(({ error }) => ({ error }))
-    );
-  }
-
-  /**
-   * 登出
-   *
-   * @returns Observable<{ error: AuthError | null }>
-   */
-  signOut(): Observable<{ error: AuthError | null }> {
-    return from(this.supabaseService.client.auth.signOut()).pipe(
-      tap(() => {
-        // 清除 TokenService
-        this.tokenService.clear();
-      }),
-      map(({ error }) => ({ error }))
-    );
   }
 
   /**
@@ -201,9 +138,16 @@ export class SupabaseAuthAdapterService {
    *
    * @param session Supabase Session
    */
-  private syncSessionToTokenService(session: Session): void {
+  syncSessionToTokenService(session: Session): void {
     const tokenData = this.convertSessionToTokenFormat(session);
     this.tokenService.set(tokenData);
+  }
+
+  /**
+   * 清除 TokenService（登出时调用）
+   */
+  clearTokenService(): void {
+    this.tokenService.clear();
   }
 
   /**

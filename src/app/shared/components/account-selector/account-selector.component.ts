@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SupabaseAuthAdapterService } from '@core';
 import { AccountService, AccountType, SHARED_IMPORTS } from '@shared';
 
 /**
@@ -100,7 +99,6 @@ import { AccountService, AccountType, SHARED_IMPORTS } from '@shared';
 })
 export class AccountSelectorComponent implements OnInit, AfterViewInit {
   accountService = inject(AccountService);
-  authAdapter = inject(SupabaseAuthAdapterService);
 
   // Inputs
   labelSpan = input<number>(4);

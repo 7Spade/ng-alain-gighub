@@ -142,6 +142,21 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
   }
 
   /**
+   * 根据名称查询账户
+   * 用于通过用户名/组织名查找账户（类似 GitHub 的 /:username 路由）
+   *
+   * @param name 账户名称
+   * @returns Observable<Account | null>
+   */
+  findByName(name: string): Observable<Account | null> {
+    return this.findAll({
+      filters: {
+        name
+      }
+    }).pipe(map(accounts => (accounts.length > 0 ? accounts[0] : null)));
+  }
+
+  /**
    * 查询活跃的账户（状态为 active）
    *
    * @param options 查询选项

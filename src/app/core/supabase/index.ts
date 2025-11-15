@@ -1,2 +1,2 @@
 export * from './supabase.service';
-export * from './supabase-auth-adapter.service';
+export * from './supabase-session-adapter.service';

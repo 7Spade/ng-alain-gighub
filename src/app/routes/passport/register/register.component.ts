@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { SupabaseAuthAdapterService } from '@core';
+import { AuthService } from '@shared';
 import { I18nPipe } from '@delon/theme';
 import { MatchControl } from '@delon/util/form';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
@@ -33,7 +33,7 @@ import { finalize } from 'rxjs';
 export class UserRegisterComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly supabaseAuthAdapter = inject(SupabaseAuthAdapterService);
+  private readonly authService = inject(AuthService);
 
   // #region fields
 
@@ -101,8 +101,8 @@ export class UserRegisterComponent implements OnDestroy {
     this.loading = true;
     this.cdr.detectChanges();
 
-    this.supabaseAuthAdapter
-      .signUp(email, password)
+    this.authService
+      .signUp({ email, password })
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -111,8 +111,8 @@ export class UserRegisterComponent implements OnDestroy {
       )
       .subscribe({
         next: result => {
-          if (result.error) {
-            this.error = result.error.message || '註冊失敗';
+          if (!result.success || result.error) {
+            this.error = result.error?.message || '註冊失敗';
             this.cdr.detectChanges();
             return;
           }

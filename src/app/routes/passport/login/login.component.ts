@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { StartupService, SupabaseAuthAdapterService } from '@core';
+import { StartupService } from '@core';
 import { ReuseTabService } from '@delon/abc/reuse-tab';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { I18nPipe } from '@delon/theme';
+import { AuthService } from '@shared';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -25,7 +26,7 @@ export class UserLoginComponent implements OnDestroy {
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
   private readonly startupSrv = inject(StartupService);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly supabaseAuthAdapter = inject(SupabaseAuthAdapterService);
+  private readonly authService = inject(AuthService);
 
   form = inject(FormBuilder).nonNullable.group({
     userName: ['', [Validators.required, Validators.email]],
@@ -46,8 +47,7 @@ export class UserLoginComponent implements OnDestroy {
       return;
     }
 
-    // 使用 Supabase Auth 進行登入
-    // 適配器會自動將 Session 同步到 @delon/auth TokenService
+    // 使用 AuthService 進行登入
     const email = String(this.form.value.userName || '');
     const pwd = String(this.form.value.password || '');
 
@@ -60,8 +60,8 @@ export class UserLoginComponent implements OnDestroy {
     this.loading = true;
     this.cdr.detectChanges();
 
-    this.supabaseAuthAdapter
-      .signIn(email, pwd)
+    this.authService
+      .signIn({ email, password: pwd })
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -70,14 +70,14 @@ export class UserLoginComponent implements OnDestroy {
       )
       .subscribe({
         next: result => {
-          if (result.error) {
-            this.error = result.error.message || '登入失敗';
+          if (!result.success || result.error) {
+            this.error = result.error?.message || '登入失敗';
             this.cdr.detectChanges();
             return;
           }
           // 清空路由复用信息
           this.reuseTabService?.clear();
-          // 適配器已自動同步 Session 到 TokenService
+          // AuthService 已自動同步 Session 到 TokenService
           // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
           this.startupSrv.load().subscribe(() => {
             let url = this.tokenService.referrer!.url || '/';

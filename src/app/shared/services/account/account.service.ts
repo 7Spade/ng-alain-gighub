@@ -1,7 +1,7 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { AccountRepository, AccountInsert, AccountUpdate } from '@core';
-import { Account, AccountType, AccountStatus } from '@shared';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { AccountInsert, AccountRepository, AccountUpdate } from '@core';
+import { Account, AccountStatus, AccountType } from '@shared';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Account Service
@@ -50,9 +50,7 @@ export class AccountService {
   readonly botAccounts = computed(() => this.accounts().filter(a => a.type === AccountType.BOT));
 
   /** 个人 Bot 账户（auth_organization_id 为 NULL） */
-  readonly personalBotAccounts = computed(() =>
-    this.accounts().filter(a => a.type === AccountType.BOT && !(a as any).authOrganizationId)
-  );
+  readonly personalBotAccounts = computed(() => this.accounts().filter(a => a.type === AccountType.BOT && !(a as any).authOrganizationId));
 
   /** 组织 Bot 账户（auth_organization_id 不为 NULL） */
   readonly organizationBotAccounts = computed(() =>
@@ -224,9 +222,7 @@ export class AccountService {
     this.errorState.set(null);
 
     try {
-      const account = await firstValueFrom(
-        this.accountRepository.createBotAccount(name, email, status, organizationId)
-      );
+      const account = await firstValueFrom(this.accountRepository.createBotAccount(name, email, status, organizationId));
       // 更新本地状态
       this.accountsState.update(accounts => [...accounts, account]);
       return account;
