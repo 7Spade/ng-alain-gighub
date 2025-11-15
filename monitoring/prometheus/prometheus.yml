@@ -1,0 +1,64 @@
+# Prometheus 配置
+
+global:
+  scrape_interval: 15s # 每 15 秒抓取一次指標
+  evaluation_interval: 15s # 每 15 秒評估一次告警規則
+  external_labels:
+    cluster: 'ng-alain-github'
+    environment: 'production'
+
+# 告警管理器配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+
+# 規則檔案
+rule_files:
+  - '../alerts/alert-rules.yml'
+
+# 抓取配置
+scrape_configs:
+  # Prometheus 自身
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Supabase PostgreSQL
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'supabase-postgres'
+
+  # Angular 應用（透過 Web Vitals）
+  - job_name: 'angular-app'
+    metrics_path: '/api/metrics'
+    static_configs:
+      - targets: ['app.example.com:443']
+    scheme: https
+
+  # Supabase Realtime
+  - job_name: 'realtime'
+    static_configs:
+      - targets: ['realtime-metrics:9090']
+
+  # Edge Functions
+  - job_name: 'edge-functions'
+    static_configs:
+      - targets: ['edge-functions-metrics:9090']
+
+  # Node Exporter（系統指標）
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+# 遠端儲存（可選）
+# remote_write:
+#   - url: 'https://prometheus-remote-storage.example.com/api/v1/write'
+#     basic_auth:
+#       username: 'username'
+#       password: 'password'

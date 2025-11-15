@@ -1,0 +1,148 @@
+# 告警規則配置
+
+groups:
+  # 系統資源告警
+  - name: system_alerts
+    interval: 30s
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "高 CPU 使用率 (實例 {{ $labels.instance }})"
+          description: "CPU 使用率超過 80%，當前值: {{ $value }}%"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "高記憶體使用率 (實例 {{ $labels.instance }})"
+          description: "記憶體使用率超過 85%，當前值: {{ $value }}%"
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 75
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "磁碟空間不足 (實例 {{ $labels.instance }})"
+          description: "磁碟使用率超過 75%，當前值: {{ $value }}%"
+
+  # 資料庫告警
+  - name: database_alerts
+    interval: 30s
+    rules:
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL 資料庫停機"
+          description: "PostgreSQL 資料庫無法連線"
+
+      - alert: HighDatabaseConnections
+        expr: (pg_stat_database_numbackends / pg_settings_max_connections) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "資料庫連線數過高"
+          description: "資料庫連線數超過 80%，當前值: {{ $value }}%"
+
+      - alert: SlowQueries
+        expr: rate(pg_stat_statements_mean_exec_time[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "資料庫查詢速度慢"
+          description: "平均查詢時間超過 1 秒"
+
+  # 應用程式告警
+  - name: application_alerts
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: (rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])) * 100 > 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "高錯誤率"
+          description: "5xx 錯誤率超過 1%，當前值: {{ $value }}%"
+
+      - alert: SlowAPIResponse
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API 回應速度慢"
+          description: "95% 的 API 請求回應時間超過 2 秒"
+
+      - alert: HighRequestRate
+        expr: rate(http_requests_total[5m]) > 1000
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "高請求率"
+          description: "每秒請求數超過 1000"
+
+  # Core Web Vitals 告警
+  - name: web_vitals_alerts
+    interval: 30s
+    rules:
+      - alert: PoorLCP
+        expr: web_vitals_lcp_p95 > 2500
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "LCP 性能不佳"
+          description: "95% 的頁面 LCP 超過 2.5 秒，當前值: {{ $value }}ms"
+
+      - alert: PoorFID
+        expr: web_vitals_fid_p95 > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FID 性能不佳"
+          description: "95% 的頁面 FID 超過 100ms，當前值: {{ $value }}ms"
+
+      - alert: PoorCLS
+        expr: web_vitals_cls_p95 > 0.1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CLS 性能不佳"
+          description: "95% 的頁面 CLS 超過 0.1，當前值: {{ $value }}"
+
+  # 業務指標告警
+  - name: business_alerts
+    interval: 60s
+    rules:
+      - alert: LowActiveUsers
+        expr: active_users_count < 10
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "活躍用戶數低"
+          description: "活躍用戶數低於 10 人，當前值: {{ $value }}"
+
+      - alert: HighTaskFailureRate
+        expr: (rate(tasks_failed_total[1h]) / rate(tasks_total[1h])) * 100 > 5
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "任務失敗率高"
+          description: "任務失敗率超過 5%，當前值: {{ $value }}%"
