@@ -1,8 +1,13 @@
 # NG-ZORRO-ANTD 組件清單與 CLI 指令
 
-> **最後更新**：2025-01-15  
-> **版本**：基於 ng-zorro-antd 最新版本  
-> **驗證來源**：Context7 官方文檔、專案 `shared-zorro.module.ts`
+> 📋 **目的**：提供 ng-zorro-antd 組件清單和 CLI Schematics 指令參考
+
+**最後更新**：2025-11-15  
+**維護者**：開發團隊  
+**版本**：基於 ng-zorro-antd 最新版本  
+**驗證來源**：Context7 官方文檔、專案 `shared-zorro.module.ts`
+
+---
 
 ## 📋 目錄
 
