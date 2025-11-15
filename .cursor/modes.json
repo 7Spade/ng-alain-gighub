@@ -1,9 +1,9 @@
 {
-  "description": "Cursor IDE 自定義模式配置",
+  "description": "Cursor IDE custom mode configuration",
   "version": "1.0.0",
   "modes": {
     "development": {
-      "description": "開發模式 - 用於日常開發工作",
+      "description": "Development mode - for daily development work",
       "contextFiles": [
         ".ai/quick-reference.md",
         ".ai/architecture.md",
@@ -23,7 +23,7 @@
       "tools": ["codebase_search", "read_file", "edit_file", "terminal"]
     },
     "architecture": {
-      "description": "架構模式 - 用於架構設計和決策",
+      "description": "Architecture mode - for architecture design and decisions",
       "contextFiles": [
         ".ai/architecture.md",
         ".ai/database-overview.md",
@@ -46,7 +46,7 @@
       "tools": ["codebase_search", "read_file", "mcp_Sequential_Thinking_sequentialthinking", "mcp_Software_Planning_Tool_*"]
     },
     "testing": {
-      "description": "測試模式 - 用於編寫和執行測試",
+      "description": "Testing mode - for writing and executing tests",
       "contextFiles": [
         ".ai/tech-stack.md",
         ".ai/quick-reference.md",
@@ -60,7 +60,7 @@
       "tools": ["codebase_search", "read_file", "edit_file", "terminal", "run_terminal_cmd"]
     },
     "documentation": {
-      "description": "文檔模式 - 用於編寫和更新文檔",
+      "description": "Documentation mode - for writing and updating documentation",
       "contextFiles": [
         ".ai/architecture.md",
         ".ai/business-context.md",
@@ -73,7 +73,7 @@
       "tools": ["read_file", "edit_file", "codebase_search"]
     },
     "api-development": {
-      "description": "API 開發模式 - 用於 API 和數據庫相關開發",
+      "description": "API development mode - for API and database related development",
       "contextFiles": [
         ".ai/api-overview.md",
         ".ai/database-overview.md",
@@ -94,6 +94,6 @@
     }
   },
   "defaultMode": "development",
-  "note": "此配置文件為示例配置，實際的 Cursor IDE 模式配置應通過 Cursor Settings > Features > Chat > Custom modes 進行設置。此文件僅作為參考和文檔。"
+  "note": "This configuration file is an example configuration. Actual Cursor IDE mode configuration should be set through Cursor Settings > Features > Chat > Custom modes. This file is for reference and documentation purposes only."
 }
 

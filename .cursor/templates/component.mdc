@@ -1,12 +1,12 @@
 ---
-description: Angular Standalone Component 模板
+description: Angular Standalone Component template
 globs: ["src/app/**/*.component.ts"]
 alwaysApply: false
 ---
 
-# Angular Standalone Component 模板
+# Angular Standalone Component Template
 
-## 組件結構
+## Component Structure
 
 ```typescript
 import { Component, signal, computed, inject, input, output, viewChild, resource, ChangeDetectionStrategy } from '@angular/core';
@@ -21,28 +21,28 @@ import { SHARED_IMPORTS } from '@shared/shared-imports';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExampleComponent {
-  // 使用 inject() 進行依賴注入
+  // Use inject() for dependency injection
   private readonly service = inject(ExampleService);
   
-  // 使用 input() 替代 @Input()
+  // Use input() instead of @Input()
   readonly title = input<string>('Default Title');
   readonly count = input.required<number>();
   
-  // 使用 output() 替代 @Output()
+  // Use output() instead of @Output()
   readonly itemClick = output<Item>();
   
-  // 使用 viewChild() 替代 @ViewChild()
+  // Use viewChild() instead of @ViewChild()
   readonly headerElement = viewChild<ElementRef>('header');
   
-  // 使用 signal() 創建響應式狀態
+  // Use signal() to create reactive state
   private readonly state = signal<StateType>(initialValue);
   
-  // 使用 computed() 創建派生狀態
+  // Use computed() to create derived state
   readonly derivedState = computed(() => {
     return this.state().someProperty;
   });
 
-  // 使用 resource() 取得 async 資料（會自動追蹤 userId Signal）
+  // Use resource() to fetch async data (automatically tracks userId Signal)
   readonly userId = signal('current-user-id');
   readonly userResource = resource({
     params: () => ({ id: this.userId() }),
@@ -57,7 +57,7 @@ export class ExampleComponent {
 }
 ```
 
-## 模板結構
+## Template Structure
 
 ```html
 @if (condition()) {
@@ -79,7 +79,7 @@ export class ExampleComponent {
   }
 }
 
-<!-- 在模板中調用 Signal 時必須使用括號 -->
+<!-- When calling Signals in templates, parentheses must be used -->
 <div>{{ mySignal() }}</div>
 
 @defer (on viewport) {
@@ -93,15 +93,15 @@ export class ExampleComponent {
 }
 ```
 
-## 注意事項
+## Important Notes
 
-- 必須使用 `SHARED_IMPORTS`
-- 必須使用 `OnPush` 變更檢測策略
-- 優先使用 Signal Inputs (`input()`) 而非 `@Input()` 裝飾器
-- 優先使用 Signal Outputs (`output()`) 而非 `@Output()` 裝飾器
-- 優先使用 Signal Queries (`viewChild()`, `contentChild()`) 而非裝飾器
-- 使用現代控制流程語法（@if、@for、@switch、@empty）
-- 在模板中調用 Signal 時必須使用括號：`{{ mySignal() }}`
-- 使用 `@defer` + `@placeholder/@loading/@error` 組合延後非關鍵內容並維持 UX，善用 `minimum`、`after`
-- 若 Router 啟用 View Transitions，CSS 動畫需支援 `prefers-reduced-motion` 並視情況使用 `skipTransition()`
-- 使用 `readonly` 修飾符保護不可變屬性
+- Must use `SHARED_IMPORTS`
+- Must use `OnPush` change detection strategy
+- Prefer Signal Inputs (`input()`) over `@Input()` decorator
+- Prefer Signal Outputs (`output()`) over `@Output()` decorator
+- Prefer Signal Queries (`viewChild()`, `contentChild()`) over decorators
+- Use modern control flow syntax (@if, @for, @switch, @empty)
+- When calling Signals in templates, parentheses must be used: `{{ mySignal() }}`
+- Use `@defer` + `@placeholder/@loading/@error` combination to defer non-critical content while maintaining UX, utilize `minimum`, `after`
+- If Router has View Transitions enabled, CSS animations should support `prefers-reduced-motion` and use `skipTransition()` when appropriate
+- Use `readonly` modifier to protect immutable properties
