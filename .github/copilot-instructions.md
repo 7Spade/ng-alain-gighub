@@ -5,9 +5,10 @@
 ## 📋 Project Overview
 
 **Project**: ng-alain-github - Enterprise Angular admin panel framework  
-**Tech Stack**: Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.0.x + Supabase  
+**Tech Stack**: Angular 20.3.x + NG-ZORRO 20.2.x + NG-ALAIN 20.1.x + Supabase  
 **Architecture**: Git-like branching model with 51-table database structure  
-**Package Manager**: Yarn (required)  
+**Package Manager**: Yarn 4.9.2 (required)  
+**Node.js**: v20.19.5 (required)  
 **Authentication**: ✅ Supabase Auth + @delon/auth integrated (implemented)
 
 ## 🏗️ Architecture Overview
@@ -374,7 +375,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 
 ---
 
-**Last Updated**: 2025-01-15  
+**Last Updated**: 2025-11-15  
 **Architecture Version**: v2.0 (Git-like branching model, 51 tables)  
 **Maintained By**: Development Team
 
