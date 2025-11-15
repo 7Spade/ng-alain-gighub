@@ -1,50 +1,50 @@
 ---
-description: 分層架構與依賴關係規範
+description: Layered architecture and dependency relationship standards
 globs: ["src/app/**/*.ts"]
 alwaysApply: true
 ---
 
-# 分層架構規範
+# Layered Architecture Standards
 
-> **相關規則**：參考 [Git-like 分支模型](./git-model.mdc)、[模組特定規範](./shared-specific.mdc)、[Routes 模組規範](./routes-specific.mdc)、[Core 模組規範](./core-specific.mdc)
+> **Related Rules**: See [Git-like Branching Model](./git-model.mdc), [Module-Specific Standards](./shared-specific.mdc), [Routes Module Standards](./routes-specific.mdc), [Core Module Standards](./core-specific.mdc)
 
-## 依賴方向
+## Dependency Direction
 
-- 嚴格遵守分層依賴方向：`routes` → `shared` → `core`
-- 禁止 `routes` 直接依賴 `core`（除必要服務外）
-- 禁止 `shared` 直接依賴 `routes`
-- 使用 `inject()` 進行依賴注入
+- Strictly follow layered dependency direction: `routes` → `shared` → `core`
+- Prohibit `routes` from directly depending on `core` (except necessary services)
+- Prohibit `shared` from directly depending on `routes`
+- Use `inject()` for dependency injection
 
-## 架構理解
+## Architecture Understanding
 
-### Git-like 分支模型
+### Git-like Branching Model
 
-- 系統採用 Git-like 分支模型，包含主分支、組織分支、PR 機制
-- 參考 `docs/27-完整架構流程圖.mermaid.md` 和 `docs/28-架構審查報告.md` 了解完整架構
-- 詳細規範參考 [Git-like 分支模型規範](./git-model.mdc)
+- System adopts a Git-like branching model, including main branch, organization branches, and PR mechanism
+- Refer to `docs/27-完整架構流程圖.mermaid.md` and `docs/28-架構審查報告.md` for complete architecture
+- For detailed standards, see [Git-like Branching Model Standards](./git-model.mdc)
 
-### 51 張資料表架構
+### 51-Table Database Architecture
 
-- 系統共包含 51 張資料表，分為 11 個模組
-- 參考 `docs/30-0-完整SQL表結構定義.md` 了解完整資料表結構
-- TypeScript 模型定義需與資料庫結構保持一致（參考 [類型安全](./typescript.mdc)）
+- System includes 51 tables in total, divided into 11 modules
+- Refer to `docs/30-0-完整SQL表結構定義.md` for complete database table structure
+- TypeScript model definitions must be consistent with database structure (see [Type Safety](./typescript.mdc))
 
-### 核心設計原則
+### Core Design Principles
 
-- **暫存區機制**：48h 可撤回
-- **待辦中心**：五種狀態
-- **問題同步**：即時同步至主分支
-- **活動記錄**：集中記錄
-- **文件管理**：版本控制、縮圖、軟刪除
+- **Staging Mechanism**: 48h rollback window
+- **Todo Center**: Five status categories
+- **Issue Sync**: Real-time sync to main branch
+- **Activity Logs**: Centralized logging
+- **Document Management**: Version control, thumbnails, soft delete
 
-## 設計與實現同步
+## Design and Implementation Synchronization
 
-- 設計文檔應該反映實際實現，或明確標註差異
-- 架構變更需同步更新 `docs/27-完整架構流程圖.mermaid.md`, `docs/28-架構審查報告.md`, `docs/30-0-完整SQL表結構定義.md` 等架構文檔
-- 文檔化要求參考 [代碼質量規範](./code-quality.mdc)
+- Design documentation should reflect actual implementation, or clearly mark differences
+- Architecture changes need to synchronize updates to `docs/27-完整架構流程圖.mermaid.md`, `docs/28-架構審查報告.md`, `docs/30-0-完整SQL表結構定義.md` and other architecture documents
+- For documentation requirements, see [Code Quality Standards](./code-quality.mdc)
 
-## 參考文檔
+## Reference Documentation
 
-- [完整架構流程圖](../../docs/27-完整架構流程圖.mermaid.md) ⭐⭐⭐⭐⭐
-- [架構審查報告](../../docs/28-架構審查報告.md) ⭐⭐⭐⭐⭐
-- [資料表結構定義](../../docs/30-0-完整SQL表結構定義.md) ⭐⭐⭐⭐⭐
+- [Complete Architecture Flowchart](../../docs/27-完整架構流程圖.mermaid.md) ⭐⭐⭐⭐⭐
+- [Architecture Review Report](../../docs/28-架構審查報告.md) ⭐⭐⭐⭐⭐
+- [Database Table Structure Definition](../../docs/30-0-完整SQL表結構定義.md) ⭐⭐⭐⭐⭐
