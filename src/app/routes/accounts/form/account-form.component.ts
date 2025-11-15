@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS, AccountService, Account, AccountType, AccountStatus, AccountInsert, AccountUpdate } from '@shared';
+import { AppError } from '@core';
+import { AccountInsert, AccountService, AccountStatus, AccountType, AccountUpdate, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
@@ -144,7 +145,24 @@ export class AccountFormComponent implements OnInit {
         this.goBack();
       }
     } catch (error) {
-      this.message.error('加载账户信息失败');
+      // 显示详细的错误信息
+      let errorMessage = '加载账户信息失败';
+
+      if (error instanceof Error) {
+        // 检查是否是 AppError 类型
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          errorMessage = appError.message || errorMessage;
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      console.error('加载账户信息失败:', error);
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 
@@ -186,7 +204,41 @@ export class AccountFormComponent implements OnInit {
         this.router.navigate(['/accounts', account.id]);
       }
     } catch (error) {
-      this.message.error(this.isEditMode() ? '更新失败' : '创建失败');
+      // 显示详细的错误信息
+      let errorMessage = this.isEditMode() ? '更新失败' : '创建失败';
+
+      if (error instanceof Error) {
+        // 检查是否是 AppError 类型
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          // 使用 AppError 的详细错误信息
+          errorMessage = appError.message || errorMessage;
+
+          // 如果有错误代码，添加到消息中
+          if (appError.code) {
+            errorMessage += ` (错误代码: ${appError.code})`;
+          }
+
+          // 如果有详细信息，添加到消息中
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+
+          // 如果有提示信息，添加到消息中
+          if (appError.metadata && appError.metadata['hint']) {
+            errorMessage += `\n提示: ${appError.metadata['hint']}`;
+          }
+        } else {
+          // 普通 Error，使用错误消息
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      // 在控制台记录详细错误信息，便于调试
+      console.error('账户操作失败:', error);
+
+      // 显示错误消息（使用 NzMessageService 的 duration 参数确保消息显示足够长时间）
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 
