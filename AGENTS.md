@@ -57,6 +57,14 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
   - 模組結構和依賴規則
   - 測試要求和安全指南
 
+### 專案特定 Agent ⭐
+- [ng-alain-project-agent.md](./.github/agents/ng-alain-project-agent.md) - **ng-alain-github 專案開發代理**
+  - 專案核心架構（Git-like 分支模型 + 51 張表）
+  - 認證系統整合（Supabase Auth + @delon/auth）
+  - SHARED_IMPORTS 模式
+  - 完整開發工作流程
+  - 常見任務和問題排查
+
 ### 模組特定指引
 位於 `.github/instructions/` 目錄，會根據編輯的文件自動應用：
 
