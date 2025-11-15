@@ -115,11 +115,30 @@ source-map-explorer-report.*
 # TypeScript build info
 *.tsbuildinfo
 
-# Documentation (exclude large markdown sets)
-docs/
+# ============================================================================
+# Documentation (exclude only oversized or generated files)
+# ============================================================================
+# Exclude archived documentation
+docs/Archive/
+
+# Exclude large generated codebase files (796KB, 23K+ lines)
+docs/fyi-codebase.md
+docs/Archive/fyi-codebase.md
+
+# Exclude large component index directories (200KB+)
+docs/DELON-Index/
+docs/NG-ZORRO-Index/
+
+# Note: Core documentation IS indexed for AI agent access
+# This includes:
+# - Architecture docs (27-完整架構流程圖, 28-架構審查報告, etc.)
+# - Development guides (00-開發作業指引, SHARED_IMPORTS, etc.)
+# - Database schema (30-0-完整SQL表結構定義)
+# - FAQ and best practices
 
 # ============================================================================
-# Project scripts and templates
+# Project scripts and templates (allow for agent access)
 # ============================================================================
-scripts/
+# Scripts are now indexed to help agents understand build/deployment
+# _cli-tpl/ remains excluded as it's template files
 _cli-tpl/

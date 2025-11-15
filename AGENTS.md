@@ -3,6 +3,7 @@
 > - GitHub Copilot 指引位於 `.github/copilot-instructions.md` 和 `.github/instructions/` 目錄
 > - 模組特定規範請參考各模組目錄下的 `AGENTS.md` 文件
 > - 詳細規範請參考對應的規則文件
+> - **⭐ [Agent 開發指南與限制說明](./docs/52-Agent開發指南與限制說明.md)** - 了解 AI Agent 開發的限制和最佳實踐
 
 ## 📋 Cursor 規則文件
 
