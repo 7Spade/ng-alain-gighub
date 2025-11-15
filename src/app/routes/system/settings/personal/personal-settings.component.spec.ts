@@ -8,7 +8,7 @@ describe('PersonalSettingsComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PersonalSettingsComponent]
+      imports: [PersonalSettingsComponent]
     }).compileComponents();
     fixture = TestBed.createComponent(PersonalSettingsComponent);
     component = fixture.componentInstance;

@@ -95,7 +95,8 @@ export abstract class BaseRepository<T, TInsert = Partial<T>, TUpdate = Partial<
       query = query.range(fromIndex, toIndex);
     }
 
-    return from(query as Promise<PostgrestResponse<any>>).pipe(
+    // Convert PromiseLike query builder to actual Promise for RxJS from()
+    return from(Promise.resolve(query) as Promise<PostgrestResponse<any>>).pipe(
       map((response: PostgrestResponse<any>) => {
         const data = handleSupabaseResponse(response, `${this.constructor.name}.findAll`);
         return Array.isArray(data) ? data.map(item => toCamelCaseData<T>(item)) : [toCamelCaseData<T>(data)];
