@@ -8,7 +8,7 @@ describe('NotificationRulesComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [NotificationRulesComponent]
+      imports: [NotificationRulesComponent]
     }).compileComponents();
     fixture = TestBed.createComponent(NotificationRulesComponent);
     component = fixture.componentInstance;

@@ -101,7 +101,7 @@ describe('InvitationService', () => {
       try {
         await service.loadInvitations();
         fail('should have thrown error');
-      } catch (e) {
+      } catch (_e) {
         expect(service.error()).toBe('Load failed');
         expect(service.loading()).toBe(false);
       }

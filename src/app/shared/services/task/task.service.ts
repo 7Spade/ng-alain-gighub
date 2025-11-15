@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { TaskRepository, TaskInsert, TaskUpdate, TaskAssignmentRepository, TaskListRepository } from '@core';
-import { Task, TaskStatus, TaskType, TaskPriority, TaskDetail, TaskTreeNode } from '@shared';
-import { firstValueFrom, forkJoin } from 'rxjs';
+import { Task, TaskStatus, TaskPriority, TaskDetail, TaskTreeNode } from '@shared';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Task Service

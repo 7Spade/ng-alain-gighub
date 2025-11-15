@@ -8,7 +8,7 @@ describe('GlobalSettingsComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [GlobalSettingsComponent]
+      imports: [GlobalSettingsComponent]
     }).compileComponents();
     fixture = TestBed.createComponent(GlobalSettingsComponent);
     component = fixture.componentInstance;

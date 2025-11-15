@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { CollaborationInvitationRepository, CollaborationInvitationInsert, CollaborationInvitationUpdate, InvitationStatus } from '@core';
 import { CollaborationInvitation } from '@shared';
-import { Observable, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Invitation Service
