@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-pull-request-detail',
   imports: [],
   templateUrl: './pull-request-detail.html',
-  styleUrl: './pull-request-detail.css'
+  styleUrl: './pull-request-detail.less'
 })
 export class PullRequestDetail {}

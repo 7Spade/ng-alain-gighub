@@ -17,7 +17,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   selector: 'app-notification-rules',
   imports: [ReactiveFormsModule, NzButtonModule, NzFormModule, NzInputModule],
   templateUrl: './notification-rules.component.html',
-  styleUrls: ['./notification-rules.component.css']
+  styleUrls: ['./notification-rules.component.less']
 })
 export class NotificationRulesComponent implements OnInit, OnDestroy {
   private fb = inject(NonNullableFormBuilder);

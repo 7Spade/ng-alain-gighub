@@ -17,7 +17,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   selector: 'app-personal-settings',
   imports: [ReactiveFormsModule, NzButtonModule, NzFormModule, NzInputModule],
   templateUrl: './personal-settings.component.html',
-  styleUrls: ['./personal-settings.component.css']
+  styleUrls: ['./personal-settings.component.less']
 })
 export class PersonalSettingsComponent implements OnInit, OnDestroy {
   private fb = inject(NonNullableFormBuilder);

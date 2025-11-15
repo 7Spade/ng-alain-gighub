@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-branch-detail',
   imports: [],
   templateUrl: './branch-detail.html',
-  styleUrl: './branch-detail.css'
+  styleUrl: './branch-detail.less'
 })
 export class BranchDetail {}

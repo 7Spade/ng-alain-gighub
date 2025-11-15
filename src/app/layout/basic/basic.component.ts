@@ -204,12 +204,15 @@ export class LayoutBasicComponent implements OnInit {
     // 加载应用数据
     firstValueFrom(this.httpClient.get('./assets/tmp/app-data.json')).then(data => {
       this.appData = data;
+      // 立即加载一次菜单
+      if (this.identityContextService.currentIdentity()) {
+        this.startupService.reloadMenuByIdentity(data);
+      }
     });
 
-    // 监听身份变化，更新菜单
+    // 监听身份变化，更新菜单（简化条件检查）
     effect(() => {
-      const identity = this.identityContextService.currentIdentity();
-      if (identity && this.appData) {
+      if (this.appData) {
         this.startupService.reloadMenuByIdentity(this.appData);
       }
     });

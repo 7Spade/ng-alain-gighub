@@ -153,11 +153,17 @@ export class BlueprintFormComponent implements OnInit {
   }
 
   onOwnerAccountChange(accountId: string): void {
-    if (accountId) {
+    // 处理空字符串和null/undefined
+    if (accountId && accountId.trim() !== '') {
       this.form.patchValue({ ownerId: accountId });
       // 手动触发验证
       this.form.get('ownerId')?.updateValueAndValidity();
       // 手动触发表单验证状态更新
+      this.form.updateValueAndValidity();
+    } else {
+      // 清空ownerId，但保持表单验证状态
+      this.form.patchValue({ ownerId: '' });
+      this.form.get('ownerId')?.updateValueAndValidity();
       this.form.updateValueAndValidity();
     }
   }

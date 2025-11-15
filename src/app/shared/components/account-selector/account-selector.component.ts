@@ -145,9 +145,10 @@ export class AccountSelectorComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // 在视图初始化后设置默认值，确保父组件已准备好接收事件
+    // 使用更长的延迟，确保Angular变更检测完成
     setTimeout(() => {
       this.setDefaultValue();
-    }, 0);
+    }, 100);
   }
 
   private async setDefaultValue(): Promise<void> {

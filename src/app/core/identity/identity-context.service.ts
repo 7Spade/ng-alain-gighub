@@ -3,7 +3,7 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { firstValueFrom } from 'rxjs';
 
 import { AccountRepository, AccountType, TeamMemberRepository, TeamRepository } from '../infra';
-import { IdentityChangeEvent, IdentityInfo, IdentityType } from './types';
+import { IdentityInfo, IdentityType } from './types';
 
 /**
  * 身份上下文服务
@@ -33,8 +33,14 @@ export class IdentityContextService {
   private readonly teamRepository = inject(TeamRepository);
   private readonly teamMemberRepository = inject(TeamMemberRepository);
 
-  // 私有状态 Signal
-  private readonly currentIdentityState = signal<IdentityInfo | null>(null);
+  // 默认个人身份常量
+  private readonly DEFAULT_PERSONAL_IDENTITY: IdentityInfo = {
+    type: 'personal',
+    name: '个人'
+  };
+
+  // 私有状态 Signal - 使用工厂函数初始化
+  private readonly currentIdentityState = signal<IdentityInfo>(this.restoreIdentityFromStorage());
   private readonly availableIdentitiesState = signal<IdentityInfo[]>([]);
   private readonly loadingState = signal<boolean>(false);
   private readonly errorState = signal<string | null>(null);
@@ -45,21 +51,10 @@ export class IdentityContextService {
   readonly loading = this.loadingState.asReadonly();
   readonly error = this.errorState.asReadonly();
 
-  // Computed signals - 派生状态
-  readonly currentIdentityName = computed(() => {
-    const identity = this.currentIdentity();
-    return identity?.name || '个人';
-  });
-
-  readonly currentIdentityAvatar = computed(() => {
-    const identity = this.currentIdentity();
-    return identity?.avatar;
-  });
-
-  readonly currentIdentityType = computed(() => {
-    const identity = this.currentIdentity();
-    return identity?.type || 'personal';
-  });
+  // Computed signals - 派生状态（优化：减少重复调用）
+  readonly currentIdentityName = computed(() => this.currentIdentity().name || '个人');
+  readonly currentIdentityAvatar = computed(() => this.currentIdentity().avatar);
+  readonly currentIdentityType = computed(() => this.currentIdentity().type || 'personal');
 
   readonly availableOrganizations = computed(() => {
     return this.availableIdentities().filter(i => i.type === 'organization');
@@ -73,45 +68,27 @@ export class IdentityContextService {
     // 使用 effect() 处理持久化
     effect(() => {
       const identity = this.currentIdentity();
-      if (identity) {
-        try {
-          localStorage.setItem('currentIdentity', JSON.stringify(identity));
-        } catch (error) {
-          console.warn('Failed to save identity to localStorage:', error);
-        }
-      } else {
-        localStorage.removeItem('currentIdentity');
+      try {
+        localStorage.setItem('currentIdentity', JSON.stringify(identity));
+      } catch (error) {
+        console.warn('Failed to save identity to localStorage:', error);
       }
     });
-
-    // 从 localStorage 恢复身份
-    this.restoreIdentityFromStorage();
   }
 
   /**
-   * 从 localStorage 恢复身份
+   * 从 localStorage 恢复身份（用于 Signal 初始化）
    */
-  private restoreIdentityFromStorage(): void {
+  private restoreIdentityFromStorage(): IdentityInfo {
     try {
       const stored = localStorage.getItem('currentIdentity');
       if (stored) {
-        const identity = JSON.parse(stored) as IdentityInfo;
-        this.currentIdentityState.set(identity);
-      } else {
-        // 默认使用个人身份
-        this.currentIdentityState.set({
-          type: 'personal',
-          name: '个人'
-        });
+        return JSON.parse(stored) as IdentityInfo;
       }
     } catch (error) {
       console.warn('Failed to restore identity from localStorage:', error);
-      // 默认使用个人身份
-      this.currentIdentityState.set({
-        type: 'personal',
-        name: '个人'
-      });
     }
+    return this.DEFAULT_PERSONAL_IDENTITY;
   }
 
   /**
@@ -150,24 +127,10 @@ export class IdentityContextService {
 
     try {
       const userId = this.getCurrentUserId();
-      if (!userId) {
-        this.availableIdentitiesState.set([
-          {
-            type: 'personal',
-            name: '个人'
-          }
-        ]);
-        return;
-      }
+      const accountId = userId ? await this.getCurrentUserAccountId() : null;
 
-      const accountId = await this.getCurrentUserAccountId();
-      if (!accountId) {
-        this.availableIdentitiesState.set([
-          {
-            type: 'personal',
-            name: '个人'
-          }
-        ]);
+      if (!userId || !accountId) {
+        this.availableIdentitiesState.set([this.DEFAULT_PERSONAL_IDENTITY]);
         return;
       }
 
@@ -175,14 +138,7 @@ export class IdentityContextService {
       const [organizations, teams] = await Promise.all([this.loadUserOwnedOrganizations(userId), this.loadUserTeams(accountId)]);
 
       // 构建身份列表
-      const identities: IdentityInfo[] = [
-        {
-          type: 'personal',
-          name: '个人'
-        },
-        ...organizations,
-        ...teams
-      ];
+      const identities: IdentityInfo[] = [this.DEFAULT_PERSONAL_IDENTITY, ...organizations, ...teams];
 
       this.availableIdentitiesState.set(identities);
 
@@ -191,7 +147,7 @@ export class IdentityContextService {
       if (current && current.type !== 'personal') {
         const exists = identities.some(i => i.type === current.type && i.id === current.id);
         if (!exists) {
-          this.switchIdentity('personal');
+          await this.switchIdentity('personal');
         }
       }
     } catch (error) {
@@ -203,26 +159,33 @@ export class IdentityContextService {
   }
 
   /**
+   * 统一错误处理辅助方法
+   */
+  private handleError<T>(defaultValue: T, message: string) {
+    return (error: unknown): T => {
+      console.warn(message, error);
+      return defaultValue;
+    };
+  }
+
+  /**
    * 加载用户拥有的组织
    */
   private async loadUserOwnedOrganizations(authUserId: string): Promise<IdentityInfo[]> {
     try {
-      // 查询用户创建的组织账户
       const organizations = await firstValueFrom(this.accountRepository.findByAuthOrganizationId(authUserId));
 
-      // 过滤出组织类型的账户
-      const orgAccounts = organizations.filter(org => org.type === AccountType.ORGANIZATION);
-
-      return orgAccounts.map(org => ({
-        type: 'organization' as IdentityType,
-        id: org.id,
-        name: org.name,
-        avatar: (org as any).avatar_url || undefined,
-        email: org.email || undefined
-      }));
+      return organizations
+        .filter(org => org.type === AccountType.ORGANIZATION)
+        .map(org => ({
+          type: 'organization' as IdentityType,
+          id: org.id,
+          name: org.name,
+          avatar: (org as any).avatar_url || undefined,
+          email: org.email || undefined
+        }));
     } catch (error) {
-      console.warn('Failed to load user organizations:', error);
-      return [];
+      return this.handleError([], 'Failed to load user organizations:')(error);
     }
   }
 
@@ -253,8 +216,7 @@ export class IdentityContextService {
         email: undefined
       }));
     } catch (error) {
-      console.warn('Failed to load user teams:', error);
-      return [];
+      return this.handleError([], 'Failed to load user teams:')(error);
     }
   }
 
@@ -267,35 +229,16 @@ export class IdentityContextService {
   async switchIdentity(type: IdentityType, id?: string): Promise<void> {
     const previous = this.currentIdentity();
 
-    let newIdentity: IdentityInfo;
-
-    if (type === 'personal') {
-      newIdentity = {
-        type: 'personal',
-        name: '个人'
-      };
-    } else {
-      // 从可用身份列表中找到对应的身份
-      const available = this.availableIdentities();
-      const identity = available.find(i => i.type === type && i.id === id);
-
-      if (!identity) {
-        throw new Error(`Identity not found: ${type} ${id}`);
-      }
-
-      newIdentity = identity;
-    }
+    const newIdentity =
+      type === 'personal'
+        ? this.DEFAULT_PERSONAL_IDENTITY
+        : (this.availableIdentities().find(i => i.type === type && i.id === id) ??
+          (() => {
+            throw new Error(`Identity not found: ${type} ${id}`);
+          })());
 
     this.currentIdentityState.set(newIdentity);
-
-    // 触发身份切换事件（可以通过 Subject 或 EventEmitter 实现）
-    const event: IdentityChangeEvent = {
-      previous,
-      current: newIdentity
-    };
-
-    // 可以在这里添加事件通知逻辑
-    console.log('Identity changed:', event);
+    console.log('Identity changed:', { previous, current: newIdentity });
   }
 
   /**
@@ -309,10 +252,7 @@ export class IdentityContextService {
    * 重置身份上下文
    */
   reset(): void {
-    this.currentIdentityState.set({
-      type: 'personal',
-      name: '个人'
-    });
+    this.currentIdentityState.set(this.DEFAULT_PERSONAL_IDENTITY);
     this.availableIdentitiesState.set([]);
     this.errorState.set(null);
     localStorage.removeItem('currentIdentity');

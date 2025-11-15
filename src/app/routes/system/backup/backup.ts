@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-backup',
   imports: [],
   templateUrl: './backup.html',
-  styleUrl: './backup.css'
+  styleUrl: './backup.less'
 })
 export class Backup {}

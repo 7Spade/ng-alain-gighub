@@ -2,7 +2,7 @@ import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRStatus } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, PullRequestService, PullRequest } from '@shared';
+import { AccountService, AccountType, BlueprintService, PullRequest, PullRequestService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -16,10 +16,19 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <span nz-icon nzType="arrow-left"></span>
           返回
         </button>
-        <button nz-button nzType="primary" (click)="createPR()">
-          <span nz-icon nzType="plus"></span>
-          创建 PR
-        </button>
+        @if (!isPersonalBlueprint()) {
+          <button nz-button nzType="primary" (click)="createPR()">
+            <span nz-icon nzType="plus"></span>
+            创建 PR
+          </button>
+        } @else {
+          <nz-tooltip nzTitle="个人蓝图不支持PR功能（需要组织分支）">
+            <button nz-button nzType="primary" nzDisabled>
+              <span nz-icon nzType="plus"></span>
+              创建 PR
+            </button>
+          </nz-tooltip>
+        }
       </ng-template>
     </page-header>
 
@@ -63,11 +72,27 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class PullRequestListComponent implements OnInit {
   prService = inject(PullRequestService);
+  accountService = inject(AccountService);
+  blueprintService = inject(BlueprintService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
 
   blueprintId = computed(() => this.route.snapshot.paramMap.get('id') || '');
+
+  // 蓝图信息
+  blueprint = computed(() => this.blueprintService.selectedBlueprint());
+
+  // 判断是否为个人蓝图
+  isPersonalBlueprint = computed(() => {
+    const bp = this.blueprint();
+    if (!bp) return false;
+    const owner = this.accountService.accounts().find(a => a.id === bp.owner_id);
+    return owner?.type === AccountType.USER;
+  });
+
+  // 导出枚举供模板使用
+  AccountType = AccountType;
 
   columns: STColumn[] = [
     { title: 'ID', index: 'id', width: 100 },
@@ -99,7 +124,22 @@ export class PullRequestListComponent implements OnInit {
   ngOnInit(): void {
     const id = this.blueprintId();
     if (id) {
+      this.loadBlueprint(id);
       this.loadPRs(id);
+    }
+  }
+
+  async loadBlueprint(id: string): Promise<void> {
+    try {
+      await this.blueprintService.loadBlueprintById(id);
+      // 加载拥有者账户信息
+      const blueprint = this.blueprint();
+      if (blueprint) {
+        await this.accountService.loadAccountById(blueprint.owner_id);
+      }
+    } catch (error) {
+      // 静默失败，不影响主流程
+      console.error('加载蓝图信息失败:', error);
     }
   }
 

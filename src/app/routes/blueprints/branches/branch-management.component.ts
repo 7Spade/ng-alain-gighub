@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BranchType } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
-import { AccountService, BlueprintBranch, BranchService, SHARED_IMPORTS } from '@shared';
+import { AccountService, AccountType, BlueprintBranch, BlueprintService, BranchService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
@@ -104,10 +104,19 @@ class ForkBranchDialogComponent implements OnInit {
           <span nz-icon nzType="arrow-left"></span>
           返回
         </button>
-        <button nz-button nzType="primary" (click)="forkBranch()">
-          <span nz-icon nzType="git-branch"></span>
-          Fork 分支
-        </button>
+        @if (!isPersonalBlueprint()) {
+          <button nz-button nzType="primary" (click)="forkBranch()">
+            <span nz-icon nzType="git-branch"></span>
+            Fork 分支
+          </button>
+        } @else {
+          <nz-tooltip nzTitle="个人蓝图不支持Fork功能">
+            <button nz-button nzType="primary" nzDisabled>
+              <span nz-icon nzType="git-branch"></span>
+              Fork 分支
+            </button>
+          </nz-tooltip>
+        }
       </ng-template>
     </page-header>
 
@@ -160,6 +169,7 @@ class ForkBranchDialogComponent implements OnInit {
 export class BranchManagementComponent implements OnInit {
   branchService = inject(BranchService);
   accountService = inject(AccountService);
+  blueprintService = inject(BlueprintService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
@@ -167,6 +177,20 @@ export class BranchManagementComponent implements OnInit {
   tokenService = inject(DA_SERVICE_TOKEN);
 
   blueprintId = computed(() => this.route.snapshot.paramMap.get('id') || '');
+
+  // 蓝图信息
+  blueprint = computed(() => this.blueprintService.selectedBlueprint());
+
+  // 判断是否为个人蓝图
+  isPersonalBlueprint = computed(() => {
+    const bp = this.blueprint();
+    if (!bp) return false;
+    const owner = this.accountService.accounts().find(a => a.id === bp.owner_id);
+    return owner?.type === AccountType.USER;
+  });
+
+  // 导出枚举供模板使用
+  AccountType = AccountType;
 
   columns: STColumn[] = [
     { title: 'ID', index: 'id', width: 100 },
@@ -198,7 +222,22 @@ export class BranchManagementComponent implements OnInit {
   ngOnInit(): void {
     const id = this.blueprintId();
     if (id) {
+      this.loadBlueprint(id);
       this.loadBranches(id);
+    }
+  }
+
+  async loadBlueprint(id: string): Promise<void> {
+    try {
+      await this.blueprintService.loadBlueprintById(id);
+      // 加载拥有者账户信息
+      const blueprint = this.blueprint();
+      if (blueprint) {
+        await this.accountService.loadAccountById(blueprint.owner_id);
+      }
+    } catch (error) {
+      // 静默失败，不影响主流程
+      console.error('加载蓝图信息失败:', error);
     }
   }
 

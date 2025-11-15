@@ -17,7 +17,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   selector: 'app-global-settings',
   imports: [ReactiveFormsModule, NzButtonModule, NzFormModule, NzInputModule],
   templateUrl: './global-settings.component.html',
-  styleUrls: ['./global-settings.component.css']
+  styleUrls: ['./global-settings.component.less']
 })
 export class GlobalSettingsComponent implements OnInit, OnDestroy {
   private fb = inject(NonNullableFormBuilder);

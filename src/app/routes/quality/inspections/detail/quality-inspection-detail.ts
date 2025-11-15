@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-quality-inspection-detail',
   imports: [],
   templateUrl: './quality-inspection-detail.html',
-  styleUrl: './quality-inspection-detail.css'
+  styleUrl: './quality-inspection-detail.less'
 })
 export class QualityInspectionDetail {}

@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-task-progress',
   imports: [],
   templateUrl: './task-progress.html',
-  styleUrl: './task-progress.css'
+  styleUrl: './task-progress.less'
 })
 export class TaskProgress {}

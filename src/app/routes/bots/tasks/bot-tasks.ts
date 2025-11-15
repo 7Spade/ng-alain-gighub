@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-bot-tasks',
   imports: [],
   templateUrl: './bot-tasks.html',
-  styleUrl: './bot-tasks.css'
+  styleUrl: './bot-tasks.less'
 })
 export class BotTasks {}

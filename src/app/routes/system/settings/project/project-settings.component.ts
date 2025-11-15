@@ -17,7 +17,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   selector: 'app-project-settings',
   imports: [ReactiveFormsModule, NzButtonModule, NzFormModule, NzInputModule],
   templateUrl: './project-settings.component.html',
-  styleUrls: ['./project-settings.component.css']
+  styleUrls: ['./project-settings.component.less']
 })
 export class ProjectSettingsComponent implements OnInit, OnDestroy {
   private fb = inject(NonNullableFormBuilder);

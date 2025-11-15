@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-activity-log-detail',
   imports: [],
   templateUrl: './activity-log-detail.html',
-  styleUrl: './activity-log-detail.css'
+  styleUrl: './activity-log-detail.less'
 })
 export class ActivityLogDetail {}
