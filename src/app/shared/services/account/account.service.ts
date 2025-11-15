@@ -47,6 +47,18 @@ export class AccountService {
 
   readonly organizationAccounts = computed(() => this.accounts().filter(a => a.type === AccountType.ORGANIZATION));
 
+  readonly botAccounts = computed(() => this.accounts().filter(a => a.type === AccountType.BOT));
+
+  /** 个人 Bot 账户（auth_organization_id 为 NULL） */
+  readonly personalBotAccounts = computed(() =>
+    this.accounts().filter(a => a.type === AccountType.BOT && !(a as any).authOrganizationId)
+  );
+
+  /** 组织 Bot 账户（auth_organization_id 不为 NULL） */
+  readonly organizationBotAccounts = computed(() =>
+    this.accounts().filter(a => a.type === AccountType.BOT && !!(a as any).authOrganizationId)
+  );
+
   /**
    * 加载所有账户
    */
@@ -136,6 +148,64 @@ export class AccountService {
       return account;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '创建账户失败');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 创建 Organization 账户（使用 SECURITY DEFINER 函数绕过 RLS）
+   *
+   * @param name 组织名称
+   * @param email 邮箱（可选）
+   * @param status 账户状态（默认 'active'）
+   * @returns Promise<Account>
+   */
+  async createOrganizationAccount(name: string, email?: string | null, status: AccountStatus = AccountStatus.ACTIVE): Promise<Account> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const account = await firstValueFrom(this.accountRepository.createOrganizationAccount(name, email, status));
+      // 更新本地状态
+      this.accountsState.update(accounts => [...accounts, account]);
+      return account;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '创建组织账户失败');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 创建 Bot 账户（使用 SECURITY DEFINER 函数绕过 RLS）
+   *
+   * @param name 机器人名称
+   * @param email 邮箱（可选）
+   * @param status 账户状态（默认 'active'）
+   * @param organizationId 组织账户 ID（可选，NULL = 个人 Bot，有值 = 组织 Bot）
+   * @returns Promise<Account>
+   */
+  async createBotAccount(
+    name: string,
+    email?: string | null,
+    status: AccountStatus = AccountStatus.ACTIVE,
+    organizationId?: string | null
+  ): Promise<Account> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const account = await firstValueFrom(
+        this.accountRepository.createBotAccount(name, email, status, organizationId)
+      );
+      // 更新本地状态
+      this.accountsState.update(accounts => [...accounts, account]);
+      return account;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '创建机器人账户失败');
       throw error;
     } finally {
       this.loadingState.set(false);

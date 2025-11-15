@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppError } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, AccountService, Account } from '@shared';
+import { Account, AccountService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -49,7 +50,7 @@ export class BotListComponent implements OnInit {
   router = inject(Router);
   message = inject(NzMessageService);
 
-  bots = this.accountService.accounts;
+  bots = this.accountService.botAccounts;
   loading = this.accountService.loading;
 
   columns: STColumn[] = [
@@ -91,10 +92,25 @@ export class BotListComponent implements OnInit {
   async loadBots(): Promise<void> {
     try {
       await this.accountService.loadAccounts();
-      // 过滤出机器人类型的账户
-      // 注意：这里需要根据实际业务逻辑过滤
+      // botAccounts computed signal 会自动过滤出机器人类型的账户
     } catch (error) {
-      this.message.error('加载机器人列表失败');
+      // 显示详细的错误信息
+      let errorMessage = '加载机器人列表失败';
+
+      if (error instanceof Error) {
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          errorMessage = appError.message || errorMessage;
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      console.error('加载机器人列表失败:', error);
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 
@@ -103,7 +119,7 @@ export class BotListComponent implements OnInit {
   }
 
   createBot(): void {
-    this.router.navigate(['/accounts/create'], { queryParams: { type: 'Bot' } });
+    this.router.navigate(['/accounts/create/bot']);
   }
 
   viewDetail(id: string): void {
@@ -115,8 +131,8 @@ export class BotListComponent implements OnInit {
   }
 
   configure(id: string): void {
-    // TODO: 导航到机器人配置页面
-    this.message.info('机器人配置功能开发中');
+    // 导航到机器人详情页面（可以在详情页面中配置）
+    this.router.navigate(['/accounts', id]);
   }
 
   async delete(id: string): Promise<void> {
@@ -125,7 +141,23 @@ export class BotListComponent implements OnInit {
       this.message.success('删除成功');
       await this.loadBots();
     } catch (error) {
-      this.message.error('删除失败');
+      // 显示详细的错误信息
+      let errorMessage = '删除失败';
+
+      if (error instanceof Error) {
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          errorMessage = appError.message || errorMessage;
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      console.error('删除失败:', error);
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 }

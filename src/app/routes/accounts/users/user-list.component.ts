@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { STColumn } from '@delon/abc/st';
+import { AppError } from '@core';
 import { SHARED_IMPORTS, AccountService, Account } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -49,7 +50,7 @@ export class UserListComponent implements OnInit {
   router = inject(Router);
   message = inject(NzMessageService);
 
-  users = this.accountService.accounts;
+  users = this.accountService.userAccounts;
   loading = this.accountService.loading;
 
   columns: STColumn[] = [
@@ -87,10 +88,26 @@ export class UserListComponent implements OnInit {
   async loadUsers(): Promise<void> {
     try {
       await this.accountService.loadAccounts();
-      // 过滤出用户类型的账户
-      // 注意：这里需要根据实际业务逻辑过滤
+      // userAccounts computed signal 会自动过滤出用户类型的账户
     } catch (error) {
-      this.message.error('加载用户列表失败');
+      // 显示详细的错误信息
+      let errorMessage = '加载用户列表失败';
+
+      if (error instanceof Error) {
+        // 检查是否是 AppError 类型
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          errorMessage = appError.message || errorMessage;
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      console.error('加载用户列表失败:', error);
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 
@@ -99,7 +116,7 @@ export class UserListComponent implements OnInit {
   }
 
   createUser(): void {
-    this.router.navigate(['/accounts/create'], { queryParams: { type: 'User' } });
+    this.router.navigate(['/accounts/create/user']);
   }
 
   viewDetail(id: string): void {
@@ -116,7 +133,23 @@ export class UserListComponent implements OnInit {
       this.message.success('删除成功');
       await this.loadUsers();
     } catch (error) {
-      this.message.error('删除失败');
+      // 显示详细的错误信息
+      let errorMessage = '删除失败';
+
+      if (error instanceof Error) {
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          errorMessage = appError.message || errorMessage;
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      console.error('删除失败:', error);
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 }

@@ -109,7 +109,8 @@ export class AccountListComponent implements OnInit {
   }
 
   createAccount(): void {
-    this.router.navigate(['/accounts/create']);
+    // 默认创建用户账户，也可以导航到一个选择页面
+    this.router.navigate(['/accounts/create/user']);
   }
 
   viewDetail(id: string): void {

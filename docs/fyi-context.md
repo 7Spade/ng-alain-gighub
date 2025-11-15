@@ -54,6 +54,47 @@
 
 ---
 
+## 賬戶系統用語
+
+### 賬戶類型 (Account Type)
+
+#### User（用戶賬戶）
+- **定義**：個人用戶賬戶
+- **特點**：與 Supabase Auth 的 `auth.users` 表一對一關聯
+- **創建方式**：通過註冊流程自動創建（觸發器）
+
+#### Organization（組織賬戶）
+- **定義**：組織/公司賬戶
+- **特點**：由用戶創建，`auth_organization_id` 記錄創建者
+- **創建方式**：通過 `create_organization_account` SECURITY DEFINER 函數創建
+- **專有功能**：團隊管理、排班管理
+
+#### Bot（機器人賬戶）
+- **定義**：自動化機器人賬戶
+- **分類**：
+  - **個人 Bot**：`auth_organization_id = NULL`，只有創建者可查看
+  - **組織 Bot**：`auth_organization_id = 組織ID`，創建者和組織成員都可查看
+- **創建方式**：通過 `create_bot_account` SECURITY DEFINER 函數創建
+- **字段語義**：
+  - `auth_bot_id`：記錄創建者（用戶ID）
+  - `auth_organization_id`：記錄所屬組織（NULL = 個人 Bot，有值 = 組織 Bot）
+
+### 團隊 (Team)
+
+- **定義**：組織內部的團隊分組
+- **特點**：必須關聯到組織（`organization_id`）
+- **權限**：組織成員可以查看所屬組織的團隊
+- **管理**：通過組織選擇器選擇組織後管理
+
+### 排班 (Organization Schedule)
+
+- **定義**：組織內部人員排班
+- **特點**：必須關聯到組織（`organization_id`）
+- **權限**：組織成員可以查看所屬組織的排班
+- **管理**：通過組織選擇器選擇組織後管理
+
+---
+
 ## 權限系統用語
 
 ### 角色 (Role)

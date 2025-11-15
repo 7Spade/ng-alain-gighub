@@ -94,7 +94,38 @@
 
 ---
 
-### 📄 9. 代碼庫索引（Codebase）
+### 📄 9. RLS 安全脈絡（RLS）
+➡ [fyi-rls.md](./fyi-rls.md)
+
+記錄 Row Level Security (RLS) 策略的設計決策、實施細節、權限控制邏輯、安全考量等。
+
+**主要內容**：
+- RLS 核心概念與策略類型
+- Git-like 分支模型與 RLS 整合
+- 51 張資料表的 RLS 策略設計
+- 角色系統與 RLS 策略
+- 特殊場景的 RLS 策略（暫存區、PR、分支權限）
+- RLS 與應用層權限驗證的雙重驗證原則
+
+---
+
+### 📄 10. 數據脈絡（Data）
+➡ [fyi-data.md](./fyi-data.md)
+
+記錄數據模型設計、數據訪問模式、數據轉換邏輯、數據一致性保證等相關決策和實施細節。
+
+**主要內容**：
+- 51 張資料表的分類與架構
+- 數據模型設計與命名規範
+- Repository 模式與數據訪問
+- 數據轉換（snake_case ↔ camelCase）
+- 數據一致性保證（外鍵、唯一約束、檢查約束）
+- 特殊數據處理（軟刪除、版本控制、暫存區機制）
+- 數據查詢優化與索引策略
+
+---
+
+### 📄 11. 代碼庫索引（Codebase）
 ➡ [fyi-codebase.md](./fyi-codebase.md) ｜ 歷史：[`Archive`](./Archive/fyi-codebase.md)
 
 - 主檔目前僅提供重新生成指引，避免舊快照誤導。
@@ -120,6 +151,17 @@
 - 2025-11-14 以前的更新紀錄已搬遷至 `docs/Archive/fyi-history.md` 與對應 FYI Archive 檔案。
 - 若需要補充新事件，請在此以倒序方式紀錄，並同步更新對應 FYI/Archive 文件。
 - 新增/調整後請更新「最後更新」日期與維護者資訊。
+
+### 2025-01-15 更新
+
+- ✅ 新增 `fyi-rls.md` - RLS 安全脈絡文檔
+- ✅ 新增 `fyi-data.md` - 數據脈絡文檔
+- ✅ 更新 `fyi.md` 索引，添加兩個新文檔的引用
+- ✅ **Bot 與組織功能完善**（2025-01-15 下午）
+  - Bot 賬戶區分機制實施（個人 Bot vs 組織 Bot）
+  - 團隊和排班功能改為組織專有
+  - 構建錯誤修復
+  - 更新相關 FYI 文檔（history, development, context, rls, data）
 
 ---
 

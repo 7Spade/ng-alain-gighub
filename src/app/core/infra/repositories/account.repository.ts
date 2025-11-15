@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Injectable, inject } from '@angular/core';
+import { Observable, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
-import { BaseRepository, QueryOptions } from './base.repository';
-import { AccountType, AccountStatus } from '../types/account.types';
+import { SupabaseService } from '../../supabase/supabase.service';
+import { AccountStatus, AccountType } from '../types/account.types';
 import { Database } from '../types/database.types';
+import { BaseRepository, QueryOptions } from './base.repository';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -38,6 +39,7 @@ export type { AccountInsert, AccountUpdate };
 })
 export class AccountRepository extends BaseRepository<Account, AccountInsert, AccountUpdate> {
   protected tableName = 'accounts';
+  private readonly supabaseService = inject(SupabaseService);
 
   /**
    * 根据账户类型查询账户
@@ -88,6 +90,21 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
   }
 
   /**
+   * 根据 auth_organization_id 查询账户（用于查询用户创建的组织账户）
+   * 注意：一个用户可能创建多个组织账户，所以返回数组
+   *
+   * @param authOrganizationId 创建者用户 ID
+   * @returns Observable<Account[]>
+   */
+  findByAuthOrganizationId(authOrganizationId: string): Observable<Account[]> {
+    return this.findAll({
+      filters: {
+        authOrganizationId // 会自动转换为 auth_organization_id
+      }
+    });
+  }
+
+  /**
    * 根据邮箱查询账户
    *
    * @param email 邮箱地址
@@ -109,5 +126,95 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
    */
   findActive(options?: QueryOptions): Observable<Account[]> {
     return this.findByStatus(AccountStatus.ACTIVE, options);
+  }
+
+  /**
+   * 创建 Organization 账户（使用 SECURITY DEFINER 函数绕过 RLS）
+   *
+   * @param name 组织名称
+   * @param email 邮箱（可选）
+   * @param status 账户状态（默认 'active'）
+   * @returns Observable<Account>
+   */
+  createOrganizationAccount(name: string, email?: string | null, status: AccountStatus = AccountStatus.ACTIVE): Observable<Account> {
+    // 调用 RPC 函数创建组织账户
+    return from(
+      this.supabaseService.client.rpc('create_organization_account', {
+        p_name: name,
+        p_email: email || null,
+        p_status: status
+      })
+    ).pipe(
+      map((response: { data: string | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '创建组织账户失败');
+        }
+        if (!response.data) {
+          throw new Error('创建组织账户失败：未返回账户 ID');
+        }
+        return response.data;
+      }),
+      // 使用返回的账户 ID 查询完整的账户信息
+      // RLS 策略已更新，允许用户查看自己创建的组织账户（auth_organization_id = auth.uid()）
+      switchMap((accountId: string) =>
+        this.findById(accountId).pipe(
+          map((account: Account | null) => {
+            if (!account) {
+              throw new Error('创建组织账户失败：无法查询到创建的账户。请检查 RLS 策略是否允许查看自己创建的组织账户。');
+            }
+            return account;
+          })
+        )
+      )
+    );
+  }
+
+  /**
+   * 创建 Bot 账户（使用 SECURITY DEFINER 函数绕过 RLS）
+   *
+   * @param name 机器人名称
+   * @param email 邮箱（可选）
+   * @param status 账户状态（默认 'active'）
+   * @param organizationId 组织账户 ID（可选，NULL = 个人 Bot，有值 = 组织 Bot）
+   * @returns Observable<Account>
+   */
+  createBotAccount(
+    name: string,
+    email?: string | null,
+    status: AccountStatus = AccountStatus.ACTIVE,
+    organizationId?: string | null
+  ): Observable<Account> {
+    // 调用 RPC 函数创建 Bot 账户
+    return from(
+      this.supabaseService.client.rpc('create_bot_account', {
+        p_name: name,
+        p_email: email || null,
+        p_status: status,
+        p_organization_id: organizationId || null
+      })
+    ).pipe(
+      map((response: { data: string | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '创建机器人账户失败');
+        }
+        if (!response.data) {
+          throw new Error('创建机器人账户失败：未返回账户 ID');
+        }
+        return response.data;
+      }),
+      // 使用返回的账户 ID 查询完整的账户信息
+      // RLS 策略已更新，允许用户查看自己创建的 Bot 账户（auth_bot_id = auth.uid()）
+      // 以及组织成员查看组织 Bot（auth_organization_id 对应的组织成员）
+      switchMap((accountId: string) =>
+        this.findById(accountId).pipe(
+          map((account: Account | null) => {
+            if (!account) {
+              throw new Error('创建机器人账户失败：无法查询到创建的账户。请检查 RLS 策略是否允许查看。');
+            }
+            return account;
+          })
+        )
+      )
+    );
   }
 }

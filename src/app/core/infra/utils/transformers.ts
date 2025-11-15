@@ -47,6 +47,9 @@ function convertKeysToCamelCase<T>(obj: any): T {
 
 /**
  * 递归转换对象的键名从 camelCase 到 snake_case
+ * 
+ * 注意: undefined 值会被过滤掉,不会被包含在转换后的对象中
+ * 这样 Supabase 就不会发送 undefined 字段,避免 RLS 策略评估问题
  */
 function convertKeysToSnakeCase<T extends Record<string, any>>(obj: T): Record<string, any> {
   if (obj === null || obj === undefined) {
@@ -61,8 +64,17 @@ function convertKeysToSnakeCase<T extends Record<string, any>>(obj: T): Record<s
     const converted: Record<string, any> = {};
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const snakeKey = toSnakeCase(key);
-        converted[snakeKey] = convertKeysToSnakeCase(obj[key]);
+        const value = obj[key];
+        // 过滤掉 undefined 值,避免 Supabase 接收到 undefined 字段
+        // undefined 值会被 JSON.stringify 忽略,但为了明确性,我们在这里也过滤
+        if (value !== undefined) {
+          const snakeKey = toSnakeCase(key);
+          const convertedValue = convertKeysToSnakeCase(value);
+          // 如果转换后的值不是 undefined,才添加到结果对象中
+          if (convertedValue !== undefined) {
+            converted[snakeKey] = convertedValue;
+          }
+        }
       }
     }
     return converted;

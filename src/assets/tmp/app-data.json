@@ -42,8 +42,19 @@
             },
             {
               "text": "Create Account",
-              "link": "/accounts/create",
-              "i18n": "menu.development.account.create"
+              "i18n": "menu.development.account.create",
+              "children": [
+                {
+                  "text": "Create Organization",
+                  "link": "/accounts/create/organization",
+                  "i18n": "menu.development.account.create.organization"
+                },
+                {
+                  "text": "Create Bot",
+                  "link": "/accounts/create/bot",
+                  "i18n": "menu.development.account.create.bot"
+                }
+              ]
             },
             {
               "text": "User Management",
@@ -130,6 +141,11 @@
               "i18n": "menu.development.blueprint.branches"
             },
             {
+              "text": "Branch Detail",
+              "link": "/blueprints/branch-detail",
+              "i18n": "menu.development.blueprint.branchDetail"
+            },
+            {
               "text": "Fork Task",
               "link": "/blueprints/fork",
               "i18n": "menu.development.blueprint.fork"
@@ -138,6 +154,11 @@
               "text": "Pull Request",
               "link": "/blueprints/pull-requests",
               "i18n": "menu.development.blueprint.pullRequests"
+            },
+            {
+              "text": "PR Detail",
+              "link": "/blueprints/pull-requests/detail",
+              "i18n": "menu.development.blueprint.pullRequestDetail"
             },
             {
               "text": "PR Review",
@@ -210,6 +231,11 @@
               "text": "Weather Records",
               "link": "/tasks/weather",
               "i18n": "menu.development.task.weather"
+            },
+            {
+              "text": "Task Progress",
+              "link": "/tasks/progress",
+              "i18n": "menu.development.task.progress"
             }
           ]
         },
@@ -224,6 +250,11 @@
               "i18n": "menu.development.quality.checks"
             },
             {
+              "text": "Quality Check Detail",
+              "link": "/quality/checks/detail",
+              "i18n": "menu.development.quality.checkDetail"
+            },
+            {
               "text": "Submit Acceptance",
               "link": "/quality/submit",
               "i18n": "menu.development.quality.submit"
@@ -232,6 +263,11 @@
               "text": "Acceptance Management",
               "link": "/quality/inspections",
               "i18n": "menu.development.quality.inspections"
+            },
+            {
+              "text": "Inspection Detail",
+              "link": "/quality/inspections/detail",
+              "i18n": "menu.development.quality.inspectionDetail"
             },
             {
               "text": "Acceptance Photos",
@@ -284,6 +320,11 @@
               "text": "Close Issue",
               "link": "/issues/close",
               "i18n": "menu.development.issue.close"
+            },
+            {
+              "text": "Issue Sync Logs",
+              "link": "/issues/sync-logs",
+              "i18n": "menu.development.issue.syncLogs"
             }
           ]
         },
@@ -311,6 +352,16 @@
               "text": "Notification Center",
               "link": "/communication/notifications",
               "i18n": "menu.development.communication.notifications"
+            },
+            {
+              "text": "Notification Detail",
+              "link": "/communication/notifications/detail",
+              "i18n": "menu.development.communication.notificationDetail"
+            },
+            {
+              "text": "Notification Rules",
+              "link": "/communication/notifications/rules",
+              "i18n": "menu.development.communication.notificationRules"
             },
             {
               "text": "Realtime Notifications",
@@ -368,6 +419,11 @@
               "text": "Activity Logs",
               "link": "/analytics/activity-logs",
               "i18n": "menu.development.analytics.activityLogs"
+            },
+            {
+              "text": "Activity Log Detail",
+              "link": "/analytics/activity-logs/detail",
+              "i18n": "menu.development.analytics.activityLogDetail"
             },
             {
               "text": "Data Reports",
@@ -452,6 +508,11 @@
               "text": "Execution Logs",
               "link": "/bots/executions",
               "i18n": "menu.development.bot.executions"
+            },
+            {
+              "text": "Bot Tasks",
+              "link": "/bots/tasks",
+              "i18n": "menu.development.bot.tasks"
             }
           ]
         },
@@ -463,7 +524,24 @@
             {
               "text": "System Settings",
               "link": "/system/settings",
-              "i18n": "menu.development.system.settings"
+              "i18n": "menu.development.system.settings",
+              "children": [
+                {
+                  "text": "Global Settings",
+                  "link": "/system/settings/global",
+                  "i18n": "menu.development.system.settings.global"
+                },
+                {
+                  "text": "Project Settings",
+                  "link": "/system/settings/project",
+                  "i18n": "menu.development.system.settings.project"
+                },
+                {
+                  "text": "Personal Preferences",
+                  "link": "/system/settings/personal",
+                  "i18n": "menu.development.system.settings.personal"
+                }
+              ]
             },
             {
               "text": "Feature Flags",
@@ -499,6 +577,11 @@
               "text": "Activity Logs View",
               "link": "/system/activity-logs",
               "i18n": "menu.development.system.activityLogs"
+            },
+            {
+              "text": "Backup & Restore",
+              "link": "/system/backup",
+              "i18n": "menu.development.system.backup"
             }
           ]
         }

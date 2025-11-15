@@ -248,6 +248,92 @@ StartupService
 
 ---
 
+## 賬戶系統架構
+
+### 賬戶類型與關係
+
+系統支持三種賬戶類型，通過 `accounts` 表統一管理：
+
+1. **User（用戶賬戶）**
+   - 與 Supabase Auth 的 `auth.users` 表一對一關聯
+   - 通過註冊流程自動創建（觸發器）
+
+2. **Organization（組織賬戶）**
+   - 由用戶創建，`auth_organization_id` 記錄創建者
+   - 專有功能：團隊管理、排班管理
+   - 通過 `create_organization_account` SECURITY DEFINER 函數創建
+
+3. **Bot（機器人賬戶）**
+   - 分類：個人 Bot 和組織 Bot
+   - 個人 Bot：`auth_organization_id = NULL`，只有創建者可查看
+   - 組織 Bot：`auth_organization_id = 組織ID`，創建者和組織成員都可查看
+   - 通過 `create_bot_account` SECURITY DEFINER 函數創建
+
+### 組織專有功能
+
+#### 團隊管理（Teams）
+
+- **數據模型**：`teams` 表，必須關聯到組織（`organization_id`）
+- **Service 層**：`TeamService`，提供 `loadTeamsByOrganizationId` 方法
+- **UI 層**：`TeamListComponent`，包含組織選擇器
+- **權限控制**：RLS 策略確保用戶只能查看所屬組織的團隊
+
+#### 排班管理（Organization Schedules）
+
+- **數據模型**：`organization_schedules` 表，必須關聯到組織（`organization_id`）
+- **Service 層**：`OrganizationScheduleService`，提供 `loadSchedulesByOrganizationId` 方法
+- **UI 層**：`ScheduleListComponent`，包含組織選擇器
+- **權限控制**：RLS 策略確保用戶只能查看所屬組織的排班
+
+### Service 層架構
+
+#### AccountService
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class AccountService {
+  // Signals
+  readonly accounts: ReadonlySignal<Account[]>
+  readonly userAccounts: ReadonlySignal<Account[]>
+  readonly organizationAccounts: ReadonlySignal<Account[]>
+  readonly botAccounts: ReadonlySignal<Account[]>
+  readonly personalBotAccounts: ReadonlySignal<Account[]>  // 新增
+  readonly organizationBotAccounts: ReadonlySignal<Account[]>  // 新增
+
+  // 方法
+  async createOrganizationAccount(name, email?, status?): Promise<Account>
+  async createBotAccount(name, email?, status?, organizationId?): Promise<Account>  // 新增 organizationId 參數
+}
+```
+
+#### TeamService
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class TeamService {
+  // Signals
+  readonly teams: ReadonlySignal<Team[]>
+  
+  // 方法
+  async loadTeamsByOrganizationId(organizationId: string): Promise<Team[]>
+}
+```
+
+#### OrganizationScheduleService
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class OrganizationScheduleService {
+  // Signals
+  readonly schedules: ReadonlySignal<OrganizationSchedule[]>
+  
+  // 方法
+  async loadSchedulesByOrganizationId(organizationId: string): Promise<OrganizationSchedule[]>
+}
+```
+
+---
+
 ## 技術架構
 
 ### 前端技術棧

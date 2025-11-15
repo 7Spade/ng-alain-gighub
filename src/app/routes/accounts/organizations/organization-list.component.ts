@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppError } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, AccountService, Account } from '@shared';
+import { Account, AccountService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -49,7 +50,7 @@ export class OrganizationListComponent implements OnInit {
   router = inject(Router);
   message = inject(NzMessageService);
 
-  organizations = this.accountService.accounts;
+  organizations = this.accountService.organizationAccounts;
   loading = this.accountService.loading;
 
   columns: STColumn[] = [
@@ -91,10 +92,25 @@ export class OrganizationListComponent implements OnInit {
   async loadOrganizations(): Promise<void> {
     try {
       await this.accountService.loadAccounts();
-      // 过滤出组织类型的账户
-      // 注意：这里需要根据实际业务逻辑过滤
+      // organizationAccounts computed signal 会自动过滤出组织类型的账户
     } catch (error) {
-      this.message.error('加载组织列表失败');
+      // 显示详细的错误信息
+      let errorMessage = '加载组织列表失败';
+
+      if (error instanceof Error) {
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          errorMessage = appError.message || errorMessage;
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      console.error('加载组织列表失败:', error);
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 
@@ -103,7 +119,7 @@ export class OrganizationListComponent implements OnInit {
   }
 
   createOrganization(): void {
-    this.router.navigate(['/accounts/create'], { queryParams: { type: 'Organization' } });
+    this.router.navigate(['/accounts/create/organization']);
   }
 
   viewDetail(id: string): void {
@@ -115,8 +131,8 @@ export class OrganizationListComponent implements OnInit {
   }
 
   manageMembers(id: string): void {
-    // TODO: 导航到成员管理页面
-    this.message.info('成员管理功能开发中');
+    // 导航到组织详情页面（可以在详情页面中管理成员）
+    this.router.navigate(['/accounts', id]);
   }
 
   async delete(id: string): Promise<void> {
@@ -125,7 +141,23 @@ export class OrganizationListComponent implements OnInit {
       this.message.success('删除成功');
       await this.loadOrganizations();
     } catch (error) {
-      this.message.error('删除失败');
+      // 显示详细的错误信息
+      let errorMessage = '删除失败';
+
+      if (error instanceof Error) {
+        const appError = error as AppError;
+        if (appError.type && appError.severity) {
+          errorMessage = appError.message || errorMessage;
+          if (appError.details) {
+            errorMessage += `: ${appError.details}`;
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      console.error('删除失败:', error);
+      this.message.error(errorMessage, { nzDuration: 5000 });
     }
   }
 }

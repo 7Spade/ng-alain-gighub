@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isValidUUID } from '@core';
 import { SHARED_IMPORTS, AccountService, Account, AccountType, AccountStatus, TeamService, OrganizationScheduleService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -171,6 +172,13 @@ export class AccountDetailComponent implements OnInit {
   ngOnInit(): void {
     const accountId = this.route.snapshot.paramMap.get('id');
     if (accountId) {
+      // 验证 id 是否为有效的 UUID 格式，避免将非 UUID 字符串（如 "users", "teams" 等）传递给数据库查询
+      if (!isValidUUID(accountId)) {
+        // 如果不是有效的 UUID，可能是路由匹配错误，导航回账户列表
+        console.warn(`Invalid account ID format: ${accountId}. Redirecting to account list.`);
+        this.goBack();
+        return;
+      }
       this.loadAccount(accountId);
     }
   }
