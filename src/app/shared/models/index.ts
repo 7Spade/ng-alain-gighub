@@ -30,8 +30,7 @@ export * from './data';
 export * from './bot';
 export * from './system';
 
-// 注意：quality-check.model.ts 和 activity-log.model.ts 已迁移到模块目录
+// 注意：quality-check.model.ts 和 activity-log.model.ts 已迁移到模块目录并删除
 // 请使用 @shared/models/quality 和 @shared/models/data 导入
-// 以下导出仅用于向后兼容，建议迁移到新模块
-// export * from './quality-check.model';
-// export * from './activity-log.model';
+// - QualityCheck 相关类型：从 @shared/models/quality 导入
+// - ActivityLog 相关类型：从 @shared/models/data 导入
