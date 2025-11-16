@@ -157,7 +157,45 @@ export class TaskStagingComponent implements OnInit {
   }
 
   async withdraw(record: any): Promise<void> {
-    // TODO: 实现撤回逻辑
-    this.message.info('撤回功能待实现');
+    if (!record.can_withdraw) {
+      this.message.warning('该任务已不可撤回');
+      return;
+    }
+
+    // 检查是否在48小时内
+    const now = new Date();
+    const expiresAt = new Date(record.expires_at);
+    if (expiresAt <= now) {
+      this.message.warning('撤回时间已过（超过48小时）');
+      return;
+    }
+
+    try {
+      // 更新暂存记录状态
+      await firstValueFrom(
+        this.taskStagingRepository.update(record.id, {
+          can_withdraw: false,
+          confirmed_at: new Date().toISOString()
+        })
+      );
+
+      // 更新任务状态，将任务从 staging 恢复到之前的状态
+      // 这里简化处理，实际应该记录任务之前的状态
+      const task = this.taskService.tasks().find(t => t.id === record.task_id);
+      if (task) {
+        // 假设撤回后任务回到 assigned 状态
+        await this.taskService.updateTask(record.task_id, {
+          status: 'assigned'
+        });
+      }
+
+      this.message.success('任务已成功撤回');
+      
+      // 刷新列表
+      await this.onBlueprintChange();
+    } catch (error: any) {
+      console.error('撤回任务失败:', error);
+      this.message.error(error.message || '撤回失败，请重试');
+    }
   }
 }
