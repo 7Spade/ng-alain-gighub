@@ -2,8 +2,8 @@
 
 > 📚 **目的**：提供完整的文檔導航和快速查找功能，幫助開發者快速找到所需文檔
 
-**最後更新**：2025-11-15  
-**總文檔數**：52+ 個（不包括 README.md、CHANGELOG.md、PRD.md 和 fyi.md）  
+**最後更新**：2025-11-16  
+**總文檔數**：53+ 個（不包括 README.md、CHANGELOG.md、PRD.md 和 fyi.md）  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
 **技術棧版本**：Angular 20.3.x + NG-ZORRO 20.2.x + NG-ALAIN 20.1.x + Supabase  
 **認證系統**：✅ Supabase Auth + @delon/auth 已實現整合
@@ -22,6 +22,7 @@
 
 ### 🤖 AI Agent 開發者
 
+- [AI 助手角色配置](./50-AI助手角色配置.md) - 🆕 工程師級 AI 助手角色定義（含系統架構導圖遵循規則）
 - [Agent 開發指南與限制說明](./52-Agent開發指南與限制說明.md) - 了解 AI Agent 開發的限制和最佳實踐
 - [AGENTS.md](../AGENTS.md) - Agent 指引總覽
 - [GitHub Copilot Instructions](../.github/copilot-instructions.md) - 完整指引
@@ -34,7 +35,12 @@
 - [🧪 測試人員](#測試人員路徑)
 - [📊 資料庫管理員](#資料庫管理員路徑)
 
-### 🆕 最新更新（2025-11-15）
+### 🆕 最新更新（2025-11-16）
+
+- **AI 助手角色文檔**：🆕 新增完整的 AI 助手角色定義
+  - [50-AI助手角色配置.md](./50-AI助手角色配置.md) - 工程師級 AI 助手角色 prompt（含系統架構導圖遵循規則）
+
+### 📅 最近更新（2025-11-15）
 
 - **認證系統文檔更新**：已完成 Supabase Auth + @delon/auth 整合文檔
   - [13-帳戶層流程圖.mermaid.md](./13-帳戶層流程圖.mermaid.md) - 新增認證系統層架構圖
@@ -123,6 +129,7 @@
 | [45-SHARED_IMPORTS-使用指南.md](./45-SHARED_IMPORTS-使用指南.md) | SHARED_IMPORTS 使用指南 | ⭐⭐⭐⭐⭐ |
 | [46-ng-zorro-antd-組件清單與CLI指令.md](./46-ng-zorro-antd-組件清單與CLI指令.md) | NG-ZORRO 組件清單與 CLI 指令 | ⭐⭐⭐⭐ |
 | [47-DELON-Index-索引.md](./47-DELON-Index-索引.md) | DELON 套件索引與常用配置 | ⭐⭐⭐⭐ |
+| [50-AI助手角色配置.md](./50-AI助手角色配置.md) | 🆕 **AI 助手角色配置（含系統架構導圖遵循規則）** | ⭐⭐⭐⭐⭐ |
 | [51-開發最佳實踐指南.md](./51-開發最佳實踐指南.md) | **開發最佳實踐指南（代碼示例、開發模式）** | ⭐⭐⭐⭐⭐ |
 | [52-Agent開發指南與限制說明.md](./52-Agent開發指南與限制說明.md) | **AI Agent 開發指南與限制說明** | ⭐⭐⭐⭐⭐ |
 
