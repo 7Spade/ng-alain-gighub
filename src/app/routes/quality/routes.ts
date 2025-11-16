@@ -11,8 +11,8 @@ export const QUALITY_ROUTES: Routes = [
     loadComponent: () => import('./checks/quality-checks.component').then(m => m.QualityChecksComponent)
   },
   {
-    path: 'checks/detail',
-    loadComponent: () => import('./checks/detail/quality-check-detail').then(m => m.QualityCheckDetail)
+    path: 'checks/:id',
+    loadComponent: () => import('./checks/detail/quality-check-detail.component').then(m => m.QualityCheckDetailComponent)
   },
   {
     path: 'submit',

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS, QualityCheckService, QualityCheckStatus } from '@shared';
 import type { QualityCheckDetail } from '@shared';
@@ -27,9 +27,9 @@ export class QualityCheckDetailComponent implements OnInit {
 
   // Typed reactive form
   editForm!: FormGroup<{
-    status: any;
-    findings: any;
-    recommendations: any;
+    status: FormControl<QualityCheckStatus | null>;
+    findings: FormControl<string | null>;
+    recommendations: FormControl<string | null>;
   }>;
 
   // Status options
@@ -48,9 +48,9 @@ export class QualityCheckDetailComponent implements OnInit {
 
   private initForm(): void {
     this.editForm = this.fb.group({
-      status: [QualityCheckStatus.PENDING, Validators.required],
-      findings: [''],
-      recommendations: ['']
+      status: this.fb.control<QualityCheckStatus | null>(QualityCheckStatus.PENDING, Validators.required),
+      findings: this.fb.control<string | null>(''),
+      recommendations: this.fb.control<string | null>('')
     });
   }
 
@@ -104,8 +104,8 @@ export class QualityCheckDetailComponent implements OnInit {
 
     try {
       const formValue = this.editForm.value;
-      const updated = await this.qualityCheckService.update(this.qualityCheck()!.id, {
-        status: formValue.status,
+      await this.qualityCheckService.update(this.qualityCheck()!.id, {
+        status: formValue.status ?? undefined,
         findings: formValue.findings || null,
         recommendations: formValue.recommendations || null,
         completedAt:

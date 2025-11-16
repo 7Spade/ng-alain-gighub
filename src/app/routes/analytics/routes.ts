@@ -35,8 +35,8 @@ export const ANALYTICS_ROUTES: Routes = [
     loadComponent: () => import('./activity-logs/activity-log.component').then(m => m.ActivityLogComponent)
   },
   {
-    path: 'activity-logs/detail',
-    loadComponent: () => import('./activity-logs/detail/activity-log-detail').then(m => m.ActivityLogDetail)
+    path: 'activity-logs/:id',
+    loadComponent: () => import('./activity-logs/detail/activity-log-detail.component').then(m => m.ActivityLogDetailComponent)
   },
   {
     path: 'reports',
