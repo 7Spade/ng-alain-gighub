@@ -4,7 +4,11 @@ import { DailyReportRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, TaskService, Task, DailyReport, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
+
+import { DailyReportDetailComponent } from './daily-report-detail.component';
+import { DailyReportFormComponent } from './daily-report-form.component';
 
 @Component({
   selector: 'app-daily-reports',
@@ -57,6 +61,7 @@ export class DailyReportsComponent implements OnInit {
   private readonly dailyReportRepository = inject(DailyReportRepository);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
+  private readonly modal = inject(NzModalService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
@@ -128,12 +133,50 @@ export class DailyReportsComponent implements OnInit {
   }
 
   createReport(): void {
-    // TODO: 导航到创建日志页面
-    this.message.info('创建日志功能待实现');
+    const blueprintId = this.selectedBlueprintId();
+    if (!blueprintId) {
+      this.message.warning('请先选择蓝图');
+      return;
+    }
+
+    const tasks = this.taskService.tasks();
+    if (tasks.length === 0) {
+      this.message.warning('当前蓝图没有任务，请先创建任务');
+      return;
+    }
+
+    // 简单起见，使用第一个任务。实际应该让用户选择任务
+    const task = tasks[0];
+
+    const modalRef = this.modal.create({
+      nzTitle: '创建施工日志',
+      nzContent: DailyReportFormComponent,
+      nzData: {
+        task,
+        blueprintId,
+        branchId: null // TODO: 如果在分支中，传递 branchId
+      },
+      nzWidth: 720,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe(result => {
+      if (result) {
+        // 刷新列表
+        this.onBlueprintChange();
+      }
+    });
   }
 
   viewReport(id: string): void {
-    // TODO: 导航到日志详情页面
-    this.message.info('日志详情功能待实现');
+    this.modal.create({
+      nzTitle: '施工日志详情',
+      nzContent: DailyReportDetailComponent,
+      nzData: {
+        reportId: id
+      },
+      nzWidth: 800,
+      nzFooter: null
+    });
   }
 }
