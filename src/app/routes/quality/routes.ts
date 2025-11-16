@@ -24,7 +24,7 @@ export const QUALITY_ROUTES: Routes = [
   },
   {
     path: 'inspections/detail',
-    loadComponent: () => import('./inspections/detail/quality-inspection-detail').then(m => m.QualityInspectionDetail)
+    loadComponent: () => import('./inspections/detail/quality-inspection-detail').then(m => m.QualityInspectionDetailComponent)
   },
   {
     path: 'photos',

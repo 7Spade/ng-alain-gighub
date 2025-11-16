@@ -1,1 +1,148 @@
-<p>pull-request-detail works!</p>
+<page-header [title]="'Pull Request 詳情'">
+  <ng-template #extra>
+    <button nz-button nzType="default" (click)="goBack()" style="margin-right: 8px;">
+      <span nz-icon nzType="arrow-left"></span>
+      返回
+    </button>
+    @if (pullRequest() && pullRequest()!.status === 'open') {
+      <button nz-button nzType="primary" (click)="approve()" style="margin-right: 8px;">
+        <span nz-icon nzType="check-circle"></span>
+        核准
+      </button>
+      <button nz-button nzType="default" (click)="requestChanges()" style="margin-right: 8px;">
+        <span nz-icon nzType="edit"></span>
+        請求變更
+      </button>
+      <button nz-button nzType="primary" nzDanger (click)="close()" style="margin-right: 8px;">
+        <span nz-icon nzType="close-circle"></span>
+        關閉
+      </button>
+      <button nz-button nzType="primary" (click)="merge()">
+        <span nz-icon nzType="merge-cells"></span>
+        合併
+      </button>
+    }
+  </ng-template>
+</page-header>
+
+@if (loading()) {
+  <nz-spin nzSimple [nzSize]="'large'" style="display: block; padding: 50px; text-align: center;">
+    <ng-template #indicator>
+      <span nz-icon nzType="loading" style="font-size: 24px;"></span>
+    </ng-template>
+  </nz-spin>
+} @else if (error()) {
+  <nz-alert
+    nzType="error"
+    [nzMessage]="'載入失敗'"
+    [nzDescription]="error()"
+    nzShowIcon
+    style="margin: 16px;"
+  ></nz-alert>
+} @else if (pullRequest()) {
+  <div class="page-content">
+    <!-- Pull Request 基本資訊 -->
+    <nz-card nzTitle="基本資訊" class="info-card">
+      <nz-descriptions nzBordered [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }">
+        <nz-descriptions-item nzTitle="標題" [nzSpan]="3">
+          {{ pullRequest()!.title }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="描述" [nzSpan]="3">
+          {{ pullRequest()!.description }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="狀態">
+          <nz-tag [nzColor]="statusColor()">{{ statusText() }}</nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="作者">
+          <span nz-icon nzType="user"></span>
+          {{ pullRequest()!.author }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="審查者">
+          @if (pullRequest()!.reviewers && pullRequest()!.reviewers!.length > 0) {
+            @for (reviewer of pullRequest()!.reviewers!; track reviewer) {
+              <nz-tag nzColor="blue" style="margin: 2px;">{{ reviewer }}</nz-tag>
+            }
+          } @else {
+            <span style="color: #999;">未指派</span>
+          }
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="來源分支">
+          <nz-tag nzColor="purple">
+            <span nz-icon nzType="branches"></span>
+            {{ pullRequest()!.source_branch }}
+          </nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="目標分支">
+          <nz-tag nzColor="green">
+            <span nz-icon nzType="apartment"></span>
+            {{ pullRequest()!.target_branch }}
+          </nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="PR ID">
+          <code>{{ pullRequest()!.id }}</code>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="建立時間">
+          {{ pullRequest()!.created_at }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="最後更新">
+          {{ pullRequest()!.updated_at }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+    </nz-card>
+
+    <!-- 變更概覽 -->
+    <nz-card nzTitle="變更概覽" class="changes-card">
+      <nz-row [nzGutter]="16">
+        <nz-col [nzSpan]="8">
+          <nz-statistic [nzValue]="5" nzTitle="檔案變更">
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="file-text" style="color: #1890ff;"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <nz-statistic [nzValue]="128" nzTitle="新增行數" [nzValueStyle]="{ color: '#52c41a' }">
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="plus-circle"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <nz-statistic [nzValue]="42" nzTitle="刪除行數" [nzValueStyle]="{ color: '#ff4d4f' }">
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="minus-circle"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+      </nz-row>
+    </nz-card>
+
+    <!-- 活動時間線 -->
+    <nz-card nzTitle="活動時間線" class="timeline-card">
+      <nz-timeline>
+        @for (activity of activities(); track activity.id) {
+          <nz-timeline-item [nzColor]="activity.color">
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <strong>{{ activity.title }}</strong>
+                <span class="timeline-time">{{ activity.timestamp }}</span>
+              </div>
+              <div class="timeline-description">{{ activity.description }}</div>
+              <div class="timeline-author">
+                <span nz-icon nzType="user"></span>
+                {{ activity.author }}
+              </div>
+            </div>
+          </nz-timeline-item>
+        }
+      </nz-timeline>
+    </nz-card>
+
+    <!-- 審查意見（佔位） -->
+    <nz-card nzTitle="審查意見" class="reviews-card">
+      <nz-empty nzNotFoundContent="暫無審查意見"></nz-empty>
+    </nz-card>
+  </div>
+} @else {
+  <nz-empty nzNotFoundContent="Pull Request 不存在" style="margin: 50px;"></nz-empty>
+}
