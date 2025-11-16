@@ -7,6 +7,7 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { AccountService, AccountType, BlueprintBranch, BlueprintService, BranchService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { BranchDetailComponent } from './branch-detail.component';
 
 // Fork 分支对话框组件
 @Component({
@@ -348,8 +349,15 @@ export class BranchManagementComponent implements OnInit {
   }
 
   viewBranch(branchId: string): void {
-    // TODO: 实现查看分支详情
-    this.message.info('查看分支详情功能待实现');
+    this.modal.create({
+      nzTitle: '分支详情',
+      nzContent: BranchDetailComponent,
+      nzData: {
+        branchId
+      },
+      nzWidth: 800,
+      nzFooter: null
+    });
   }
 
   async syncBranch(branchId: string): Promise<void> {

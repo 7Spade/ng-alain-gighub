@@ -3,7 +3,10 @@ import { Router } from '@angular/router';
 import { ReportPhotoRepository, DailyReportRepository } from '@core';
 import { SHARED_IMPORTS, TaskService, Task, ReportPhoto, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
+import { PhotoUploadComponent } from './photo-upload.component';
+import { PhotoViewerComponent } from './photo-viewer.component';
 
 @Component({
   selector: 'app-task-photos',
@@ -79,6 +82,7 @@ export class TaskPhotosComponent implements OnInit {
   private readonly dailyReportRepository = inject(DailyReportRepository);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
+  private readonly modal = inject(NzModalService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
@@ -124,9 +128,43 @@ export class TaskPhotosComponent implements OnInit {
     }
   }
 
-  uploadPhoto(): void {
-    // TODO: 实现照片上传功能
-    this.message.info('照片上传功能待实现');
+  async uploadPhoto(): Promise<void> {
+    const blueprintId = this.selectedBlueprintId();
+    if (!blueprintId) {
+      this.message.warning('请先选择蓝图');
+      return;
+    }
+
+    const tasks = this.taskService.tasks();
+    if (tasks.length === 0) {
+      this.message.warning('当前蓝图没有任务，请先创建任务');
+      return;
+    }
+
+    // 简化处理：需要先有日志才能上传照片
+    const reports = await firstValueFrom(this.dailyReportRepository.findByBlueprintId(blueprintId));
+    if (reports.length === 0) {
+      this.message.warning('请先创建施工日志，然后才能上传照片');
+      return;
+    }
+
+    const modalRef = this.modal.create({
+      nzTitle: '上传施工照片',
+      nzContent: PhotoUploadComponent,
+      nzData: {
+        reportId: reports[0].id, // 使用第一个报告，实际应该让用户选择
+        reportType: 'daily'
+      },
+      nzWidth: 600,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result) {
+        // 刷新列表
+        this.onBlueprintChange();
+      }
+    });
   }
 
   getPhotoUrl(documentId: string): string {
@@ -135,7 +173,15 @@ export class TaskPhotosComponent implements OnInit {
   }
 
   viewPhoto(photo: ReportPhoto): void {
-    // TODO: 实现照片查看功能（预览大图）
-    this.message.info('照片查看功能待实现');
+    this.modal.create({
+      nzTitle: '查看照片',
+      nzContent: PhotoViewerComponent,
+      nzData: {
+        photo,
+        photoUrl: this.getPhotoUrl(photo.document_id)
+      },
+      nzWidth: 900,
+      nzFooter: null
+    });
   }
 }
