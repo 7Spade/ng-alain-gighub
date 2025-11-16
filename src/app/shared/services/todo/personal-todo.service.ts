@@ -291,9 +291,7 @@ export class PersonalTodoService {
           related_id: data.relatedId || null,
           status: TodoStatus.PENDING,
           priority: data.priority || TodoPriority.MEDIUM,
-          due_date: data.dueDate || null,
-          tags: data.tags || [],
-          metadata: data.metadata || {}
+          due_date: data.dueDate || null
         })
       );
 
@@ -353,7 +351,7 @@ export class PersonalTodoService {
           to_status: newStatus,
           changed_by: changedBy,
           changed_at: new Date().toISOString(),
-          reason: reason || null
+          change_note: reason || null
         })
       );
 
