@@ -1,7 +1,7 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { InspectionRepository, Inspection } from '@core';
 import { SHARED_IMPORTS } from '@shared';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
 
 export interface InspectionDetailData {
@@ -111,15 +111,15 @@ export interface InspectionDetailData {
         }
         <nz-descriptions-item nzTitle="验收人ID" [nzSpan]="1">{{ inspection()!.inspector_id }}</nz-descriptions-item>
         <nz-descriptions-item nzTitle="验收时间" [nzSpan]="1">
-          {{ inspection()!.inspected_at | date:'yyyy-MM-dd HH:mm:ss' }}
+          {{ inspection()!.inspected_at | date: 'yyyy-MM-dd HH:mm:ss' }}
         </nz-descriptions-item>
         @if (inspection()!.completed_at) {
           <nz-descriptions-item nzTitle="完成时间" [nzSpan]="2">
-            {{ inspection()!.completed_at | date:'yyyy-MM-dd HH:mm:ss' }}
+            {{ inspection()!.completed_at | date: 'yyyy-MM-dd HH:mm:ss' }}
           </nz-descriptions-item>
         }
       </nz-descriptions>
-      
+
       <div style="margin-top: 16px; text-align: right;">
         <button nz-button nzType="default" (click)="close()">关闭</button>
       </div>
@@ -131,15 +131,15 @@ export interface InspectionDetailData {
 export class InspectionDetailComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private inspectionRepo = inject(InspectionRepository);
-  
+
   readonly data: InspectionDetailData = inject(NZ_MODAL_DATA);
   readonly loading = signal(false);
   readonly inspection = signal<Inspection | null>(null);
-  
+
   readonly inspectionItemsArray = computed(() => {
     const insp = this.inspection();
     if (!insp || !insp.inspection_items) return [];
-    
+
     if (Array.isArray(insp.inspection_items)) {
       return insp.inspection_items as string[];
     } else if (typeof insp.inspection_items === 'object') {
@@ -151,7 +151,7 @@ export class InspectionDetailComponent implements OnInit {
   readonly defectsArray = computed(() => {
     const insp = this.inspection();
     if (!insp || !insp.defects_found) return [];
-    
+
     if (Array.isArray(insp.defects_found)) {
       return insp.defects_found as string[];
     } else if (typeof insp.defects_found === 'object') {

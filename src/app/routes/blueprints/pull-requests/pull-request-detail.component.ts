@@ -1,6 +1,6 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { SHARED_IMPORTS, PullRequestService, PullRequest } from '@shared';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
 export interface PRDetailData {
   prId: string;
@@ -60,22 +60,22 @@ export interface PRDetailData {
         }
         <nz-descriptions-item nzTitle="提交者ID" [nzSpan]="1">{{ pr()!.submitted_by }}</nz-descriptions-item>
         <nz-descriptions-item nzTitle="提交时间" [nzSpan]="1">
-          {{ pr()!.submitted_at | date:'yyyy-MM-dd HH:mm:ss' }}
+          {{ pr()!.submitted_at | date: 'yyyy-MM-dd HH:mm:ss' }}
         </nz-descriptions-item>
         @if (pr()!.reviewed_by) {
           <nz-descriptions-item nzTitle="审核者ID" [nzSpan]="1">{{ pr()!.reviewed_by }}</nz-descriptions-item>
           <nz-descriptions-item nzTitle="审核时间" [nzSpan]="1">
-            {{ pr()!.reviewed_at | date:'yyyy-MM-dd HH:mm:ss' }}
+            {{ pr()!.reviewed_at | date: 'yyyy-MM-dd HH:mm:ss' }}
           </nz-descriptions-item>
         }
         @if (pr()!.merged_by) {
           <nz-descriptions-item nzTitle="合并者ID" [nzSpan]="1">{{ pr()!.merged_by }}</nz-descriptions-item>
           <nz-descriptions-item nzTitle="合并时间" [nzSpan]="1">
-            {{ pr()!.merged_at | date:'yyyy-MM-dd HH:mm:ss' }}
+            {{ pr()!.merged_at | date: 'yyyy-MM-dd HH:mm:ss' }}
           </nz-descriptions-item>
         }
       </nz-descriptions>
-      
+
       <div style="margin-top: 16px; text-align: right;">
         <button nz-button nzType="default" (click)="close()">关闭</button>
       </div>
@@ -87,15 +87,15 @@ export interface PRDetailData {
 export class PullRequestDetailComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private prService = inject(PullRequestService);
-  
+
   readonly data: PRDetailData = inject(NZ_MODAL_DATA);
   readonly loading = signal(false);
   readonly pr = signal<PullRequest | null>(null);
-  
+
   readonly changesList = computed(() => {
     const prData = this.pr();
     if (!prData || !prData.changes_summary) return [];
-    
+
     // Try to parse changes_summary
     if (typeof prData.changes_summary === 'object') {
       const summary: any = prData.changes_summary;
@@ -105,7 +105,7 @@ export class PullRequestDetailComponent implements OnInit {
       // Try to extract any array values
       return Object.values(summary).filter(v => typeof v === 'string');
     }
-    
+
     return [];
   });
 

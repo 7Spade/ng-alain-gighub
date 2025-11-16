@@ -5,6 +5,7 @@ import { SHARED_IMPORTS, TaskService, Task, ReportPhoto, BlueprintService } from
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
+
 import { PhotoUploadComponent } from './photo-upload.component';
 import { PhotoViewerComponent } from './photo-viewer.component';
 
@@ -159,7 +160,7 @@ export class TaskPhotosComponent implements OnInit {
       nzFooter: null
     });
 
-    modalRef.afterClose.subscribe((result) => {
+    modalRef.afterClose.subscribe(result => {
       if (result) {
         // 刷新列表
         this.onBlueprintChange();

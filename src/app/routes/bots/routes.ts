@@ -20,6 +20,6 @@ export const BOT_ROUTES: Routes = [
   },
   {
     path: 'tasks',
-    loadComponent: () => import('./tasks/bot-tasks').then(m => m.BotTasks)
+    loadComponent: () => import('./tasks/bots-tasks-skeleton.component').then(m => m.BotsTasksSkeletonComponent)
   }
 ];

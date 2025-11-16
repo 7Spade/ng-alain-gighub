@@ -26,3 +26,4 @@ export * from './weather-cache.repository';
 export * from './quality-check.repository';
 export * from './inspection.repository';
 export * from './inspection-photo.repository';
+export * from './activity-log.repository';

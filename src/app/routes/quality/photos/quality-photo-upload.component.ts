@@ -1,9 +1,9 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { InspectionPhotoRepository } from '@core';
 import { SHARED_IMPORTS } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
 
 export interface QualityPhotoUploadData {
@@ -44,12 +44,7 @@ export interface QualityPhotoUploadData {
       <nz-form-item>
         <nz-form-label [nzSpan]="6" nzRequired>选择照片</nz-form-label>
         <nz-form-control [nzSpan]="18" nzErrorTip="请选择照片文件">
-          <nz-upload
-            nzType="drag"
-            [nzMultiple]="false"
-            [nzBeforeUpload]="beforeUpload"
-            nzAccept="image/*"
-          >
+          <nz-upload nzType="drag" [nzMultiple]="false" [nzBeforeUpload]="beforeUpload" nzAccept="image/*">
             <p class="ant-upload-drag-icon">
               <span nz-icon nzType="inbox"></span>
             </p>
@@ -93,7 +88,7 @@ export class QualityPhotoUploadComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private message = inject(NzMessageService);
   private inspectionPhotoRepo = inject(InspectionPhotoRepository);
-  
+
   readonly data: QualityPhotoUploadData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
   readonly selectedFile = signal<File | null>(null);
@@ -108,14 +103,14 @@ export class QualityPhotoUploadComponent implements OnInit {
       this.message.error('只能上传图片文件！');
       return false;
     }
-    
+
     // Validate file size (max 5MB)
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
       this.message.error('图片大小不能超过 5MB！');
       return false;
     }
-    
+
     // Store the original file
     if (file.originFileObj) {
       this.selectedFile.set(file.originFileObj);
@@ -146,7 +141,7 @@ export class QualityPhotoUploadComponent implements OnInit {
     try {
       const formValue = this.form.value;
       const file = this.selectedFile();
-      
+
       if (!file) {
         throw new Error('未选择文件');
       }
@@ -165,7 +160,7 @@ export class QualityPhotoUploadComponent implements OnInit {
       };
 
       await firstValueFrom(this.inspectionPhotoRepo.create(photoRecord));
-      
+
       this.message.success('照片上传成功（演示模式）');
       this.modalRef.close(true);
     } catch (error: any) {

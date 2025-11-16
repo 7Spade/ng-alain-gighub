@@ -1,9 +1,9 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { QualityCheckRepository } from '@core';
 import { SHARED_IMPORTS, Task } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
 
 export interface QualityCheckFormData {
@@ -102,7 +102,7 @@ export class QualityCheckFormComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private message = inject(NzMessageService);
   private qualityCheckRepo = inject(QualityCheckRepository);
-  
+
   readonly data: QualityCheckFormData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
 
@@ -132,7 +132,7 @@ export class QualityCheckFormComponent implements OnInit {
     this.submitting.set(true);
     try {
       const formValue = this.form.value;
-      
+
       // Parse check items as JSON array
       const checkItemsArray = formValue.checkItems
         .split('\n')
@@ -148,9 +148,7 @@ export class QualityCheckFormComponent implements OnInit {
         findings: formValue.findings || null,
         recommendations: formValue.recommendations || null,
         checked_at: new Date().toISOString(),
-        completed_at: ['passed', 'failed', 'conditional_pass'].includes(formValue.status)
-          ? new Date().toISOString()
-          : null
+        completed_at: ['passed', 'failed', 'conditional_pass'].includes(formValue.status) ? new Date().toISOString() : null
       };
 
       await firstValueFrom(this.qualityCheckRepo.create(qualityCheck));

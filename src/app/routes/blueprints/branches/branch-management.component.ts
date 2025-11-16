@@ -7,6 +7,7 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { AccountService, AccountType, BlueprintBranch, BlueprintService, BranchService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+
 import { BranchDetailComponent } from './branch-detail.component';
 
 // Fork 分支对话框组件

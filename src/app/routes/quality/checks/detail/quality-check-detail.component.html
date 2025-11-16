@@ -1,0 +1,163 @@
+<nz-card>
+  <nz-spin [nzSpinning]="loading()">
+    <!-- Error Alert -->
+    @if (error()) {
+      <nz-alert nzType="error" [nzMessage]="error()" nzCloseable (nzOnClose)="error.set(null)" style="margin-bottom: 16px;"></nz-alert>
+    }
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <nz-skeleton [nzActive]="true"></nz-skeleton>
+    }
+
+    <!-- Quality Check Detail -->
+    @if (!loading() && qualityCheck()) {
+      <div>
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div>
+            <h2 style="margin: 0;">品質檢查詳情</h2>
+            <nz-tag [nzColor]="getStatusColor(qualityCheck()!.status)" style="margin-top: 8px;">
+              {{ getStatusLabel(qualityCheck()!.status) }}
+            </nz-tag>
+          </div>
+          <div>
+            @if (!isEditMode()) {
+              <button nz-button nzType="default" (click)="toggleEditMode()" style="margin-right: 8px;">
+                <span nz-icon nzType="edit"></span>
+                編輯
+              </button>
+            }
+            @if (isEditMode()) {
+              <button nz-button nzType="default" (click)="toggleEditMode()" style="margin-right: 8px;">
+                取消
+              </button>
+              <button nz-button nzType="primary" (click)="saveChanges()" [nzLoading]="saving()" [disabled]="editForm.invalid">
+                儲存
+              </button>
+            }
+            @if (!isEditMode()) {
+              <button nz-button nzType="default" (click)="goBack()">
+                返回
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Basic Information (Read-only) -->
+        <nz-descriptions nzBordered [nzColumn]="2" style="margin-bottom: 24px;">
+          <nz-descriptions-item nzTitle="檢查 ID">{{ qualityCheck()!.id }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="檢查類型">{{ qualityCheck()!.checkType }}</nz-descriptions-item>
+          
+          @if (qualityCheck()!.task) {
+            <nz-descriptions-item nzTitle="任務">
+              {{ qualityCheck()!.task!.name }} ({{ qualityCheck()!.task!.code }})
+            </nz-descriptions-item>
+          }
+          
+          @if (qualityCheck()!.inspector) {
+            <nz-descriptions-item nzTitle="檢查人員">
+              {{ qualityCheck()!.inspector!.name }} ({{ qualityCheck()!.inspector!.email }})
+            </nz-descriptions-item>
+          }
+          
+          <nz-descriptions-item nzTitle="檢查時間">
+            {{ qualityCheck()!.checkedAt | date:'yyyy-MM-dd HH:mm' }}
+          </nz-descriptions-item>
+          
+          @if (qualityCheck()!.completedAt) {
+            <nz-descriptions-item nzTitle="完成時間">
+              {{ qualityCheck()!.completedAt | date:'yyyy-MM-dd HH:mm' }}
+            </nz-descriptions-item>
+          }
+        </nz-descriptions>
+
+        <!-- Edit Form -->
+        @if (isEditMode()) {
+          <form nz-form [formGroup]="editForm" nzLayout="vertical" style="margin-bottom: 24px;">
+            <nz-form-item>
+              <nz-form-label nzRequired>狀態</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="status" nzPlaceHolder="選擇狀態">
+                  @for (option of statusOptions; track option.value) {
+                    <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+                  }
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>發現事項</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input formControlName="findings" [nzAutosize]="{ minRows: 3, maxRows: 6 }" placeholder="輸入發現事項"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>建議事項</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input formControlName="recommendations" [nzAutosize]="{ minRows: 3, maxRows: 6 }" placeholder="輸入建議事項"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+        }
+
+        <!-- Read-only Details -->
+        @if (!isEditMode()) {
+          <nz-descriptions nzBordered [nzColumn]="1">
+            <nz-descriptions-item nzTitle="發現事項">
+              {{ qualityCheck()!.findings || '無' }}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="建議事項">
+              {{ qualityCheck()!.recommendations || '無' }}
+            </nz-descriptions-item>
+          </nz-descriptions>
+
+          <!-- Check Items -->
+          @if (qualityCheck()!.checkItems && qualityCheck()!.checkItems.length > 0) {
+            <h3 style="margin-top: 24px; margin-bottom: 16px;">檢查項目</h3>
+            <nz-table #checkItemsTable [nzData]="qualityCheck()!.checkItems" [nzShowPagination]="false">
+              <thead>
+                <tr>
+                  <th>項目名稱</th>
+                  <th>描述</th>
+                  <th>必要</th>
+                  <th>狀態</th>
+                  <th>備註</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of checkItemsTable.data; track item.id) {
+                  <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.description || '-' }}</td>
+                    <td>
+                      @if (item.required) {
+                        <nz-tag nzColor="red">必要</nz-tag>
+                      } @else {
+                        <nz-tag>選用</nz-tag>
+                      }
+                    </td>
+                    <td>
+                      @if (item.passed) {
+                        <nz-tag nzColor="success">通過</nz-tag>
+                      } @else {
+                        <nz-tag nzColor="error">未通過</nz-tag>
+                      }
+                    </td>
+                    <td>{{ item.remarks || '-' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          }
+        }
+      </div>
+    }
+
+    <!-- No Data -->
+    @if (!loading() && !qualityCheck() && !error()) {
+      <nz-empty nzNotFoundContent="找不到品質檢查記錄"></nz-empty>
+    }
+  </nz-spin>
+</nz-card>

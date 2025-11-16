@@ -1,8 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { SHARED_IMPORTS, PullRequestService } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
 export interface PRFormData {
   blueprintId: string;
@@ -19,11 +19,7 @@ export interface PRFormData {
       <nz-form-item>
         <nz-form-label [nzSpan]="6" nzRequired>PR 标题</nz-form-label>
         <nz-form-control [nzSpan]="18" nzErrorTip="请输入 PR 标题">
-          <input
-            nz-input
-            formControlName="title"
-            placeholder="例如：提交第一期施工数据"
-          />
+          <input nz-input formControlName="title" placeholder="例如：提交第一期施工数据" />
         </nz-form-control>
       </nz-form-item>
 
@@ -77,7 +73,7 @@ export class PullRequestFormComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private message = inject(NzMessageService);
   private prService = inject(PullRequestService);
-  
+
   readonly data: PRFormData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
 
@@ -105,7 +101,7 @@ export class PullRequestFormComponent implements OnInit {
     this.submitting.set(true);
     try {
       const formValue = this.form.value;
-      
+
       // Parse changes summary as JSON array
       let changesSummary = null;
       if (formValue.changesSummary) {
@@ -113,7 +109,7 @@ export class PullRequestFormComponent implements OnInit {
           .split('\n')
           .filter((item: string) => item.trim())
           .map((item: string) => item.trim());
-        
+
         if (changesArray.length > 0) {
           changesSummary = { changes: changesArray };
         }

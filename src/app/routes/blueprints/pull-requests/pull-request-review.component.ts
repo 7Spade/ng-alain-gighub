@@ -1,8 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { SHARED_IMPORTS, PullRequestService, PullRequest } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
 export interface PRReviewData {
   pr: PullRequest;
@@ -18,7 +18,7 @@ export interface PRReviewData {
       <nz-descriptions nzBordered [nzColumn]="1" nzSize="small">
         <nz-descriptions-item nzTitle="PR 标题">{{ data.pr.title }}</nz-descriptions-item>
         <nz-descriptions-item nzTitle="提交者">{{ data.pr.submitted_by }}</nz-descriptions-item>
-        <nz-descriptions-item nzTitle="提交时间">{{ data.pr.submitted_at | date:'yyyy-MM-dd HH:mm:ss' }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="提交时间">{{ data.pr.submitted_at | date: 'yyyy-MM-dd HH:mm:ss' }}</nz-descriptions-item>
       </nz-descriptions>
     </div>
 
@@ -83,7 +83,7 @@ export class PullRequestReviewComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private message = inject(NzMessageService);
   private prService = inject(PullRequestService);
-  
+
   readonly data: PRReviewData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
 
@@ -110,17 +110,11 @@ export class PullRequestReviewComponent implements OnInit {
     this.submitting.set(true);
     try {
       const formValue = this.form.value;
-      
+
       if (formValue.decision === 'approved') {
-        await this.prService.approvePullRequest(
-          this.data.pr.id,
-          this.data.reviewerId
-        );
+        await this.prService.approvePullRequest(this.data.pr.id, this.data.reviewerId);
       } else {
-        await this.prService.rejectPullRequest(
-          this.data.pr.id,
-          this.data.reviewerId
-        );
+        await this.prService.rejectPullRequest(this.data.pr.id, this.data.reviewerId);
       }
 
       this.message.success(`Pull Request 已${formValue.decision === 'approved' ? '批准' : '拒绝'}`);

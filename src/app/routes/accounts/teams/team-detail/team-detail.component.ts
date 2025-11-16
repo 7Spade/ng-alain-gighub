@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS, TeamService, Team, TeamMember, TeamMemberRole } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
+
 import { TeamMemberAddComponent } from './team-member-add.component';
 
 @Component({
@@ -116,7 +117,7 @@ export class TeamDetailComponent implements OnInit {
 
   // 使用 computed 从 Service 获取团队信息
   team = computed(() => this.teamService.selectedTeam());
-  
+
   teamId = computed(() => this.route.snapshot.paramMap.get('id') || '');
 
   // 导出枚举供模板使用
@@ -184,7 +185,7 @@ export class TeamDetailComponent implements OnInit {
       nzFooter: null
     });
 
-    modalRef.afterClose.subscribe((result) => {
+    modalRef.afterClose.subscribe(result => {
       if (result) {
         // Reload team to refresh members
         this.loadTeam(teamId);
