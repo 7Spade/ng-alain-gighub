@@ -338,7 +338,7 @@ export class OrganizationScheduleService {
 
 ### 前端技術棧
 - **框架**：Angular 20.3.x
-- **UI 庫**：NG-ZORRO 20.2.x
+- **UI 庫**：NG-ZORRO 20.3.x
 - **企業框架**：NG-ALAIN 20.1.x
 - **後端服務**：Supabase
 - **狀態管理**：RxJS + Angular Signals

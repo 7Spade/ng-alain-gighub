@@ -16,7 +16,7 @@ This document provides detailed role definitions, behavior guidelines, and respo
 ## 📋 Project Overview
 
 **Project**: ng-alain-github - Enterprise Angular admin panel framework  
-**Tech Stack**: Angular 20.3.x + NG-ZORRO 20.2.x + NG-ALAIN 20.1.x + Supabase  
+**Tech Stack**: Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.1.x + Supabase  
 **Architecture**: Git-like branching model with 51-table database structure  
 **Package Manager**: Yarn 4.9.2 (required)  
 **Node.js**: v20.19.5 (required)  
