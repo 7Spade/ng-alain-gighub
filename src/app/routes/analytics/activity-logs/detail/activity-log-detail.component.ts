@@ -6,8 +6,8 @@ import type { ActivityLogDetail } from '@shared';
 @Component({
   selector: 'app-activity-log-detail',
   imports: [SHARED_IMPORTS],
-  templateUrl: './activity-log-detail.html',
-  styleUrl: './activity-log-detail.less',
+  templateUrl: './activity-log-detail.component.html',
+  styleUrl: './activity-log-detail.component.less',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

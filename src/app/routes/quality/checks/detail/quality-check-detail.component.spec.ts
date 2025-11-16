@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { QualityCheckService } from '@shared';
 import { of } from 'rxjs';
 
-import { QualityCheckDetailComponent } from './quality-check-detail';
+import { QualityCheckDetailComponent } from './quality-check-detail.component';
 
 describe('QualityCheckDetailComponent', () => {
   let component: QualityCheckDetailComponent;

@@ -7,8 +7,8 @@ import type { QualityCheckDetail } from '@shared';
 @Component({
   selector: 'app-quality-check-detail',
   imports: [SHARED_IMPORTS],
-  templateUrl: './quality-check-detail.html',
-  styleUrl: './quality-check-detail.less',
+  templateUrl: './quality-check-detail.component.html',
+  styleUrl: './quality-check-detail.component.less',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

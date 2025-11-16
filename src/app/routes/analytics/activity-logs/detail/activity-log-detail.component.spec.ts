@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AnalyticsService } from '@shared';
 import { of } from 'rxjs';
 
-import { ActivityLogDetailComponent } from './activity-log-detail';
+import { ActivityLogDetailComponent } from './activity-log-detail.component';
 
 describe('ActivityLogDetailComponent', () => {
   let component: ActivityLogDetailComponent;

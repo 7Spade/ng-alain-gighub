@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BotTasksComponent } from './bot-tasks';
+import { BotsTasksSkeletonComponent } from './bots-tasks-skeleton.component';
 
-describe('BotTasksComponent', () => {
-  let component: BotTasksComponent;
-  let fixture: ComponentFixture<BotTasksComponent>;
+describe('BotsTasksSkeletonComponent', () => {
+  let component: BotsTasksSkeletonComponent;
+  let fixture: ComponentFixture<BotsTasksSkeletonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BotTasksComponent]
+      imports: [BotsTasksSkeletonComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BotTasksComponent);
+    fixture = TestBed.createComponent(BotsTasksSkeletonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

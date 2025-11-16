@@ -30,7 +30,7 @@ export const routes: Routes = [
       },
       {
         path: ':id',
-        loadComponent: () => import('./checks/detail/quality-check-detail').then(m => m.QualityCheckDetailComponentComponent)
+        loadComponent: () => import('./checks/detail/quality-check-detail.component').then(m => m.QualityCheckDetailComponentComponent)
       }
     ]
   },
@@ -64,7 +64,7 @@ export const routes: Routes = [
       },
       {
         path: ':id',
-        loadComponent: () => import('./activity-logs/detail/activity-log-detail').then(m => m.ActivityLogDetailComponentComponent)
+        loadComponent: () => import('./activity-logs/detail/activity-log-detail.component').then(m => m.ActivityLogDetailComponentComponent)
       }
     ]
   },
@@ -91,7 +91,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: 'tasks',
-    loadComponent: () => import('./tasks/bot-tasks').then(m => m.BotTasksComponent)
+    loadComponent: () => import('./tasks/bots-tasks-skeleton.component').then(m => m.BotsTasksSkeletonComponent)
   },
   // ... 其他路由
 ];
@@ -118,7 +118,7 @@ export const routes: Routes = [
     path: 'checks',
     children: [
       { path: '', loadComponent: () => import('./checks/quality-checks.component').then(m => m.QualityChecksComponent) },
-      { path: ':id', loadComponent: () => import('./checks/detail/quality-check-detail').then(m => m.QualityCheckDetailComponent) }
+      { path: ':id', loadComponent: () => import('./checks/detail/quality-check-detail.component').then(m => m.QualityCheckDetailComponent) }
     ]
   },
   {
@@ -142,7 +142,7 @@ export const routes: Routes = [
     path: 'activity-logs',
     children: [
       { path: '', loadComponent: () => import('./activity-logs/activity-log.component').then(m => m.ActivityLogComponent) },
-      { path: ':id', loadComponent: () => import('./activity-logs/detail/activity-log-detail').then(m => m.ActivityLogDetailComponent) }
+      { path: ':id', loadComponent: () => import('./activity-logs/detail/activity-log-detail.component').then(m => m.ActivityLogDetailComponent) }
     ]
   },
   {
@@ -164,7 +164,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: 'tasks',
-    loadComponent: () => import('./tasks/bot-tasks').then(m => m.BotTasksComponent)
+    loadComponent: () => import('./tasks/bots-tasks-skeleton.component').then(m => m.BotsTasksSkeletonComponent)
   },
   {
     path: 'config',
@@ -211,7 +211,7 @@ import { authGuard } from '@core';
 
 {
   path: 'quality/checks/:id',
-  loadComponent: () => import('./quality/checks/detail/quality-check-detail').then(m => m.QualityCheckDetailComponent),
+  loadComponent: () => import('./quality/checks/detail/quality-check-detail.component').then(m => m.QualityCheckDetailComponent),
   canActivate: [authGuard]
 }
 ```
@@ -223,7 +223,7 @@ import { authGuard } from '@core';
 ```typescript
 {
   path: 'quality/checks/:id',
-  loadComponent: () => import('./quality/checks/detail/quality-check-detail').then(m => m.QualityCheckDetailComponent),
+  loadComponent: () => import('./quality/checks/detail/quality-check-detail.component').then(m => m.QualityCheckDetailComponent),
   data: {
     title: '品質檢查詳情',
     reuse: true
