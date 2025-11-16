@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { BaseRepository, QueryOptions } from './base.repository';
 import { Database } from '../types/database.types';
+import { BaseRepository, QueryOptions } from './base.repository';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -22,14 +22,7 @@ export type { TeamInsert, TeamUpdate };
  * Team Repository
  *
  * 提供团队相关的数据访问方法
- *
- * @example
- * ```typescript
- * const teamRepo = inject(TeamRepository);
- * teamRepo.findByOrganizationId('org-id').subscribe(teams => {
- *   console.log('Organization teams:', teams);
- * });
- * ```
+ * RLS 策略已处理所有权限检查，无需额外逻辑
  */
 @Injectable({
   providedIn: 'root'
@@ -39,34 +32,13 @@ export class TeamRepository extends BaseRepository<Team, TeamInsert, TeamUpdate>
 
   /**
    * 根据组织 ID 查询团队列表
-   *
-   * @param organizationId 组织 ID
-   * @param options 查询选项
-   * @returns Observable<Team[]>
    */
   findByOrganizationId(organizationId: string, options?: QueryOptions): Observable<Team[]> {
     return this.findAll({
       ...options,
       filters: {
         ...options?.filters,
-        organizationId // 会自动转换为 organization_id
-      }
-    });
-  }
-
-  /**
-   * 根据创建者 ID 查询团队列表
-   *
-   * @param createdBy 创建者 ID
-   * @param options 查询选项
-   * @returns Observable<Team[]>
-   */
-  findByCreatedBy(createdBy: string, options?: QueryOptions): Observable<Team[]> {
-    return this.findAll({
-      ...options,
-      filters: {
-        ...options?.filters,
-        createdBy // 会自动转换为 created_by
+        organizationId
       }
     });
   }

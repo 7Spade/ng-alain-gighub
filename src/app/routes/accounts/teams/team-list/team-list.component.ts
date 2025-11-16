@@ -1,43 +1,43 @@
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppError } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, TeamService, Team, AccountService, Account } from '@shared';
+import { AccountService, SHARED_IMPORTS, Team, TeamService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+
+import { TeamCreateComponent } from '../team-create/team-create.component';
+import { TeamDeleteComponent, TeamDeleteData } from '../team-delete/team-delete.component';
 
 @Component({
   selector: 'app-team-list',
   standalone: true,
   imports: [SHARED_IMPORTS],
   template: `
-    <page-header [title]="'团队管理'">
-      <ng-template #extra>
-        @if (selectedOrganizationId()) {
-          <button nz-button nzType="primary" (click)="createTeam()">
-            <span nz-icon nzType="plus"></span>
-            新建团队
-          </button>
-        }
-      </ng-template>
-    </page-header>
+    <page-header [title]="'团队管理'"></page-header>
 
     <div style="padding: 16px;">
-      <!-- 组织选择器 -->
+      <!-- 组织选择器和新建团队按钮 -->
       <nz-card nzTitle="选择组织" style="margin-bottom: 16px;">
         <nz-form-item>
           <nz-form-label>组织</nz-form-label>
           <nz-form-control>
-            <nz-select
-              [ngModel]="selectedOrganizationId()"
-              (ngModelChange)="onOrganizationChange($event)"
-              nzPlaceHolder="请选择组织"
-              [nzLoading]="accountService.loading()"
-              style="width: 300px;"
-            >
-              @for (org of accountService.organizationAccounts(); track org.id) {
-                <nz-option [nzValue]="org.id" [nzLabel]="org.name"></nz-option>
-              }
-            </nz-select>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <nz-select
+                [ngModel]="selectedOrganizationId()"
+                (ngModelChange)="onOrganizationChange($event)"
+                nzPlaceHolder="请选择组织"
+                [nzLoading]="accountService.loading()"
+                style="width: 300px;"
+              >
+                @for (org of accountService.organizationAccounts(); track org.id) {
+                  <nz-option [nzValue]="org.id" [nzLabel]="org.name"></nz-option>
+                }
+              </nz-select>
+              <button nz-button nzType="primary" (click)="createTeam()">
+                <span nz-icon nzType="plus"></span>
+                新建团队
+              </button>
+            </div>
           </nz-form-control>
         </nz-form-item>
         @if (!selectedOrganizationId()) {
@@ -60,7 +60,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             [columns]="columns"
             [loading]="teamService.loading()"
             [page]="{ front: false, show: true, showSize: true }"
-            (change)="onTableChange($event)"
           >
             <ng-template #description let-record>
               {{ record.description || '-' }}
@@ -76,6 +75,7 @@ export class TeamListComponent implements OnInit {
   accountService = inject(AccountService);
   router = inject(Router);
   message = inject(NzMessageService);
+  modal = inject(NzModalService);
 
   selectedOrganizationId = signal<string | null>(null);
 
@@ -100,8 +100,8 @@ export class TeamListComponent implements OnInit {
         {
           text: '删除',
           type: 'del',
-          pop: true,
-          click: (record: Team) => this.delete(record.id)
+          pop: false,
+          click: (record: Team) => this.delete(record)
         }
       ]
     }
@@ -146,38 +146,32 @@ export class TeamListComponent implements OnInit {
     try {
       await this.teamService.loadTeamsByOrganizationId(organizationId);
     } catch (error) {
-      // 显示详细的错误信息
-      let errorMessage = '加载团队列表失败';
-
-      if (error instanceof Error) {
-        const appError = error as AppError;
-        if (appError.type && appError.severity) {
-          errorMessage = appError.message || errorMessage;
-          if (appError.details) {
-            errorMessage += `: ${appError.details}`;
-          }
-        } else {
-          errorMessage = error.message || errorMessage;
-        }
-      }
-
-      console.error('加载团队列表失败:', error);
-      this.message.error(errorMessage, { nzDuration: 5000 });
+      const errorMessage = error instanceof Error ? error.message : '加载团队列表失败';
+      this.message.error(errorMessage);
     }
-  }
-
-  onTableChange(event: any): void {
-    // 处理表格变化事件（分页、排序等）
   }
 
   createTeam(): void {
     const orgId = this.selectedOrganizationId();
-    if (orgId) {
-      // 传递组织 ID 到创建页面
-      this.router.navigate(['/accounts/teams/create'], { queryParams: { organizationId: orgId } });
-    } else {
-      this.message.warning('请先选择组织');
-    }
+
+    const modalRef = this.modal.create({
+      nzTitle: '创建团队',
+      nzContent: TeamCreateComponent,
+      nzData: {
+        organizationId: orgId || null
+      },
+      nzWidth: 800,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe(result => {
+      if (result) {
+        // 如果创建成功，刷新团队列表
+        if (orgId) {
+          this.loadTeams(orgId);
+        }
+      }
+    });
   }
 
   viewDetail(id: string): void {
@@ -188,32 +182,25 @@ export class TeamListComponent implements OnInit {
     this.router.navigate(['/accounts/teams', id, 'edit']);
   }
 
-  async delete(id: string): Promise<void> {
-    try {
-      await this.teamService.deleteTeam(id);
-      this.message.success('删除成功');
-      const orgId = this.selectedOrganizationId();
-      if (orgId) {
-        await this.loadTeams(orgId);
-      }
-    } catch (error) {
-      // 显示详细的错误信息
-      let errorMessage = '删除失败';
+  delete(team: Team): void {
+    const modalRef = this.modal.create({
+      nzTitle: '删除团队',
+      nzContent: TeamDeleteComponent,
+      nzData: {
+        teamId: team.id,
+        teamName: team.name
+      } as TeamDeleteData,
+      nzWidth: 500,
+      nzFooter: null
+    });
 
-      if (error instanceof Error) {
-        const appError = error as AppError;
-        if (appError.type && appError.severity) {
-          errorMessage = appError.message || errorMessage;
-          if (appError.details) {
-            errorMessage += `: ${appError.details}`;
-          }
-        } else {
-          errorMessage = error.message || errorMessage;
+    modalRef.afterClose.subscribe(result => {
+      if (result) {
+        const orgId = this.selectedOrganizationId();
+        if (orgId) {
+          this.loadTeams(orgId);
         }
       }
-
-      console.error('删除失败:', error);
-      this.message.error(errorMessage, { nzDuration: 5000 });
-    }
+    });
   }
 }

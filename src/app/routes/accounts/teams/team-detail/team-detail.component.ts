@@ -1,18 +1,19 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS, TeamService, Team, TeamMember, TeamMemberRole } from '@shared';
+import { SHARED_IMPORTS, TeamService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { TeamMemberAddComponent } from './team-member-add.component';
+import { TeamDeleteComponent, TeamDeleteData } from '../team-delete/team-delete.component';
+import { TeamRoleManageComponent } from '../team-role-manage/team-role-manage.component';
 
 @Component({
   selector: 'app-team-detail',
   standalone: true,
-  imports: [SHARED_IMPORTS],
+  imports: [SHARED_IMPORTS, TeamRoleManageComponent],
   template: `
-    <page-header [title]="'团队详情'">
-      <ng-template #extra>
+    <page-header [title]="'团队详情'" [extra]="headerExtra">
+      <ng-template #headerExtra>
         <button nz-button nzType="default" (click)="goBack()" style="margin-right: 8px;">
           <span nz-icon nzType="arrow-left"></span>
           返回
@@ -56,52 +57,10 @@ import { TeamMemberAddComponent } from './team-member-add.component';
           </nz-descriptions>
         </nz-card>
 
-        <!-- 团队成员列表 -->
-        <nz-card nzTitle="团队成员">
-          <ng-template #extra>
-            <button nz-button nzType="primary" nzSize="small" (click)="addMember()">
-              <span nz-icon nzType="plus"></span>
-              添加成员
-            </button>
-          </ng-template>
-
-          @if (teamService.teamMembers().length > 0) {
-            <nz-table [nzData]="teamService.teamMembers()" [nzShowPagination]="false" [nzSize]="'small'">
-              <thead>
-                <tr>
-                  <th>账户ID</th>
-                  <th>角色</th>
-                  <th>加入时间</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (member of teamService.teamMembers(); track member.id) {
-                  <tr>
-                    <td>{{ member.account_id }}</td>
-                    <td>
-                      @switch (member.role) {
-                        @case ('leader') {
-                          <nz-tag nzColor="red">负责人</nz-tag>
-                        }
-                        @case ('member') {
-                          <nz-tag nzColor="blue">成员</nz-tag>
-                        }
-                      }
-                    </td>
-                    <td>{{ member.joined_at | date: 'yyyy-MM-dd' }}</td>
-                    <td>
-                      <button nz-button nzType="link" nzSize="small" (click)="changeRole(member)"> 变更角色 </button>
-                      <button nz-button nzType="link" nzDanger nzSize="small" (click)="removeMember(member.id)"> 移除 </button>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </nz-table>
-          } @else {
-            <nz-empty nzNotFoundContent="暂无成员"></nz-empty>
-          }
-        </nz-card>
+        <!-- 团队成员和角色管理 -->
+        @if (team()?.id) {
+          <app-team-role-manage [teamId]="team()!.id"></app-team-role-manage>
+        }
       </div>
     } @else {
       <nz-empty nzNotFoundContent="团队不存在"></nz-empty>
@@ -115,13 +74,7 @@ export class TeamDetailComponent implements OnInit {
   private message = inject(NzMessageService);
   private modal = inject(NzModalService);
 
-  // 使用 computed 从 Service 获取团队信息
   team = computed(() => this.teamService.selectedTeam());
-
-  teamId = computed(() => this.route.snapshot.paramMap.get('id') || '');
-
-  // 导出枚举供模板使用
-  TeamMemberRole = TeamMemberRole;
 
   ngOnInit(): void {
     const teamId = this.route.snapshot.paramMap.get('id');
@@ -138,7 +91,8 @@ export class TeamDetailComponent implements OnInit {
         this.goBack();
       }
     } catch (error) {
-      this.message.error('加载团队详情失败');
+      const errorMessage = error instanceof Error ? error.message : '加载团队详情失败';
+      this.message.error(errorMessage);
     }
   }
 
@@ -152,66 +106,26 @@ export class TeamDetailComponent implements OnInit {
     }
   }
 
-  async delete(): Promise<void> {
+  delete(): void {
     if (!this.team()) {
       return;
     }
 
-    if (confirm('确定要删除此团队吗？此操作不可恢复。')) {
-      try {
-        await this.teamService.deleteTeam(this.team()!.id);
-        this.message.success('删除成功');
-        this.goBack();
-      } catch (error) {
-        this.message.error('删除失败');
-      }
-    }
-  }
-
-  addMember(): void {
-    const teamId = this.teamId();
-    if (!teamId) {
-      this.message.warning('无法获取团队ID');
-      return;
-    }
-
     const modalRef = this.modal.create({
-      nzTitle: '添加团队成员',
-      nzContent: TeamMemberAddComponent,
+      nzTitle: '删除团队',
+      nzContent: TeamDeleteComponent,
       nzData: {
-        teamId
-      },
-      nzWidth: 600,
+        teamId: this.team()!.id,
+        teamName: this.team()!.name
+      } as TeamDeleteData,
+      nzWidth: 500,
       nzFooter: null
     });
 
     modalRef.afterClose.subscribe(result => {
       if (result) {
-        // Reload team to refresh members
-        this.loadTeam(teamId);
+        this.goBack();
       }
     });
-  }
-
-  async changeRole(member: TeamMember): Promise<void> {
-    // TODO: 实现变更角色功能
-    const newRole = member.role === TeamMemberRole.LEADER ? TeamMemberRole.MEMBER : TeamMemberRole.LEADER;
-    try {
-      await this.teamService.updateTeamMemberRole(member.id, newRole);
-      this.message.success('角色变更成功');
-    } catch (error) {
-      this.message.error('角色变更失败');
-    }
-  }
-
-  async removeMember(memberId: string): Promise<void> {
-    if (confirm('确定要移除此成员吗？')) {
-      try {
-        await this.teamService.removeTeamMember(memberId);
-        this.message.success('移除成功');
-      } catch (error) {
-        this.message.error('移除失败');
-      }
-    }
   }
 }

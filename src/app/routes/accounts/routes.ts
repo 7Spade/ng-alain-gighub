@@ -8,8 +8,11 @@ import { AccountFormComponent } from './form/account-form.component';
 import { AccountListComponent } from './list/account-list.component';
 import { OrganizationListComponent } from './organizations/organization-list.component';
 import { ScheduleListComponent } from './schedules/schedule-list.component';
+import { TeamCreateComponent } from './teams/team-create/team-create.component';
+import { TeamDeleteComponent } from './teams/team-delete/team-delete.component';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
-import { TeamListComponent } from './teams/team-list.component';
+import { TeamEditComponent } from './teams/team-edit/team-edit.component';
+import { TeamListComponent } from './teams/team-list/team-list.component';
 import { UserListComponent } from './users/user-list.component';
 
 export const routes: Routes = [
@@ -23,7 +26,9 @@ export const routes: Routes = [
   { path: 'users', component: UserListComponent },
   { path: 'organizations', component: OrganizationListComponent },
   { path: 'bots', component: BotListComponent },
+  { path: 'teams/create', component: TeamCreateComponent },
   { path: 'teams', component: TeamListComponent },
+  { path: 'teams/:id/edit', component: TeamEditComponent },
   { path: 'teams/:id', component: TeamDetailComponent },
   { path: 'schedules', component: ScheduleListComponent },
   // 动态路径放在最后
