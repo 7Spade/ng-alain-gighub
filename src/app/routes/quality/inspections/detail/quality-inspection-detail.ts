@@ -48,7 +48,7 @@ interface InspectionHistory {
   styleUrl: './quality-inspection-detail.less',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class QualityInspectionDetail implements OnInit {
+export class QualityInspectionDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private message = inject(NzMessageService);
@@ -98,10 +98,12 @@ export class QualityInspectionDetail implements OnInit {
 
   passRate = computed(() => {
     const items = this.inspectionItems();
-    if (items.length === 0) return '0%';
+    if (items.length === 0) return 0;
     const passCount = items.filter(item => item.result === 'pass').length;
-    return `${Math.round((passCount / items.length) * 100)}%`;
+    return Math.round((passCount / items.length) * 100);
   });
+
+  passRateText = computed(() => `${this.passRate()}%`);
 
   totalItems = computed(() => this.inspectionItems().length);
   passedItems = computed(() => this.inspectionItems().filter(item => item.result === 'pass').length);
@@ -232,7 +234,7 @@ export class QualityInspectionDetail implements OnInit {
     }, 800);
   }
 
-  private async loadInspection(id: string): Promise<void> {
+  private async loadInspection(_id: string): Promise<void> {
     try {
       this.loading.set(true);
       this.error.set(null);
@@ -243,7 +245,7 @@ export class QualityInspectionDetail implements OnInit {
 
       // For now, load mock data
       this.loadMockData();
-    } catch (err) {
+    } catch {
       this.error.set('載入檢查詳情失敗');
       this.message.error('載入失敗');
       this.loading.set(false);

@@ -1,13 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { of } from 'rxjs';
 
-import { PullRequestDetail } from './pull-request-detail';
+import { PullRequestDetailComponent } from './pull-request-detail';
 
 describe('PullRequestDetail', () => {
-  let component: PullRequestDetail;
-  let fixture: ComponentFixture<PullRequestDetail>;
+  let component: PullRequestDetailComponent;
+  let fixture: ComponentFixture<PullRequestDetailComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockMessageService: jasmine.SpyObj<NzMessageService>;
@@ -19,12 +18,12 @@ describe('PullRequestDetail', () => {
         paramMap: {
           get: jasmine.createSpy('get').and.returnValue(null)
         }
-      } as any
+      } as unknown as ActivatedRoute['snapshot']
     };
     mockMessageService = jasmine.createSpyObj('NzMessageService', ['info', 'error', 'success']);
 
     await TestBed.configureTestingModule({
-      imports: [PullRequestDetail],
+      imports: [PullRequestDetailComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -32,7 +31,7 @@ describe('PullRequestDetail', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PullRequestDetail);
+    fixture = TestBed.createComponent(PullRequestDetailComponent);
     component = fixture.componentInstance;
   });
 

@@ -114,7 +114,7 @@
       <div class="pass-rate-section">
         <div class="pass-rate-label">合格率</div>
         <nz-progress
-          [nzPercent]="parseFloat(passRate())"
+          [nzPercent]="passRate()"
           [nzStatus]="failedItems() > 0 ? 'exception' : 'success'"
           [nzStrokeWidth]="20"
         ></nz-progress>

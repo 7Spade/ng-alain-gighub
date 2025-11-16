@@ -34,7 +34,7 @@ interface Activity {
   styleUrl: './pull-request-detail.less',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PullRequestDetail implements OnInit {
+export class PullRequestDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private message = inject(NzMessageService);
@@ -154,7 +154,7 @@ export class PullRequestDetail implements OnInit {
     }, 800);
   }
 
-  private async loadPullRequest(id: string): Promise<void> {
+  private async loadPullRequest(_id: string): Promise<void> {
     try {
       this.loading.set(true);
       this.error.set(null);
@@ -165,7 +165,7 @@ export class PullRequestDetail implements OnInit {
 
       // For now, load mock data
       this.loadMockData();
-    } catch (err) {
+    } catch {
       this.error.set('載入 Pull Request 詳情失敗');
       this.message.error('載入失敗');
       this.loading.set(false);

@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { TaskProgress } from './task-progress';
+import { TaskProgressComponent } from './task-progress';
 
 describe('TaskProgress', () => {
-  let component: TaskProgress;
-  let fixture: ComponentFixture<TaskProgress>;
+  let component: TaskProgressComponent;
+  let fixture: ComponentFixture<TaskProgressComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockMessageService: jasmine.SpyObj<NzMessageService>;
@@ -18,12 +18,12 @@ describe('TaskProgress', () => {
         paramMap: {
           get: jasmine.createSpy('get').and.returnValue(null)
         }
-      } as any
+      } as unknown as ActivatedRoute['snapshot']
     };
     mockMessageService = jasmine.createSpyObj('NzMessageService', ['info', 'error', 'success']);
 
     await TestBed.configureTestingModule({
-      imports: [TaskProgress],
+      imports: [TaskProgressComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -31,7 +31,7 @@ describe('TaskProgress', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TaskProgress);
+    fixture = TestBed.createComponent(TaskProgressComponent);
     component = fixture.componentInstance;
   });
 

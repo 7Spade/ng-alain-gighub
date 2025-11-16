@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-interface TaskProgress {
+interface TaskProgressData {
   readonly task_id: string;
   readonly task_name: string;
   readonly blueprint_name: string;
@@ -43,14 +43,14 @@ interface Milestone {
   styleUrl: './task-progress.less',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TaskProgress implements OnInit {
+export class TaskProgressComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private message = inject(NzMessageService);
 
   // Signals for state management
   loading = signal<boolean>(true);
-  taskProgress = signal<TaskProgress | null>(null);
+  taskProgress = signal<TaskProgressData | null>(null);
   progressItems = signal<ProgressItem[]>([]);
   milestones = signal<Milestone[]>([]);
   error = signal<string | null>(null);
@@ -206,7 +206,7 @@ export class TaskProgress implements OnInit {
     }, 800);
   }
 
-  private async loadTaskProgress(id: string): Promise<void> {
+  private async loadTaskProgress(_id: string): Promise<void> {
     try {
       this.loading.set(true);
       this.error.set(null);
@@ -217,7 +217,7 @@ export class TaskProgress implements OnInit {
 
       // For now, load mock data
       this.loadMockData();
-    } catch (err) {
+    } catch {
       this.error.set('載入任務進度失敗');
       this.message.error('載入失敗');
       this.loading.set(false);
@@ -228,8 +228,8 @@ export class TaskProgress implements OnInit {
     this.router.navigate(['/tasks']);
   }
 
-  viewDetails(itemId: string): void {
-    this.message.info(`查看項目 ${itemId} 詳情`);
+  viewDetails(_itemId: string): void {
+    this.message.info(`查看項目 ${_itemId} 詳情`);
   }
 
   exportReport(): void {

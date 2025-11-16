@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { QualityInspectionDetail } from './quality-inspection-detail';
+import { QualityInspectionDetailComponent } from './quality-inspection-detail';
 
 describe('QualityInspectionDetail', () => {
-  let component: QualityInspectionDetail;
-  let fixture: ComponentFixture<QualityInspectionDetail>;
+  let component: QualityInspectionDetailComponent;
+  let fixture: ComponentFixture<QualityInspectionDetailComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockMessageService: jasmine.SpyObj<NzMessageService>;
@@ -18,12 +18,12 @@ describe('QualityInspectionDetail', () => {
         paramMap: {
           get: jasmine.createSpy('get').and.returnValue(null)
         }
-      } as any
+      } as unknown as ActivatedRoute['snapshot']
     };
     mockMessageService = jasmine.createSpyObj('NzMessageService', ['info', 'error', 'success']);
 
     await TestBed.configureTestingModule({
-      imports: [QualityInspectionDetail],
+      imports: [QualityInspectionDetailComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -31,7 +31,7 @@ describe('QualityInspectionDetail', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(QualityInspectionDetail);
+    fixture = TestBed.createComponent(QualityInspectionDetailComponent);
     component = fixture.componentInstance;
   });
 
@@ -79,7 +79,18 @@ describe('QualityInspectionDetail', () => {
 
     setTimeout(() => {
       const rate = component.passRate();
-      expect(rate).toContain('%');
+      expect(rate).toBeGreaterThanOrEqual(0);
+      expect(rate).toBeLessThanOrEqual(100);
+      done();
+    }, 1000);
+  });
+
+  it('should compute pass rate text correctly', done => {
+    fixture.detectChanges();
+
+    setTimeout(() => {
+      const rateText = component.passRateText();
+      expect(rateText).toContain('%');
       done();
     }, 1000);
   });
