@@ -2,6 +2,17 @@
 
 > **Purpose**: This file provides GitHub Copilot coding agent with essential context about this repository's architecture, coding standards, and development practices.
 
+## 🤖 AI Assistant Role
+
+**For comprehensive AI assistant guidelines, see**: [`docs/50-AI助手角色配置.md`](../docs/50-AI助手角色配置.md)
+
+This document provides detailed role definitions, behavior guidelines, and response formats for AI assistants working on this project. Key requirements include:
+
+- **First Priority**: Always review `docs/10-系統架構思維導圖.mermaid.md` before making any architectural decisions
+- **Enterprise Standards**: Follow strict TypeScript, Angular, and code structure standards
+- **4-Step Response Format**: Conclusion → Implementation → Risk/Testing → Manual Review Flag
+- **Security**: Never expose `.env`, tokens, or sensitive information
+
 ## 📋 Project Overview
 
 **Project**: ng-alain-github - Enterprise Angular admin panel framework  
