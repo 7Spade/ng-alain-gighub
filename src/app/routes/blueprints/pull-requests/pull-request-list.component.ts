@@ -4,6 +4,11 @@ import { PRStatus } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { AccountService, AccountType, BlueprintService, PullRequest, PullRequestService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { PullRequestFormComponent } from './pull-request-form.component';
+import { PullRequestDetailComponent } from './pull-request-detail.component';
+import { PullRequestReviewComponent } from './pull-request-review.component';
+import { PullRequestMergeComponent } from './pull-request-merge.component';
 
 @Component({
   selector: 'app-pull-request-list',
@@ -77,6 +82,7 @@ export class PullRequestListComponent implements OnInit {
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
+  modal = inject(NzModalService);
 
   blueprintId = computed(() => this.route.snapshot.paramMap.get('id') || '');
 
@@ -165,22 +171,107 @@ export class PullRequestListComponent implements OnInit {
   }
 
   createPR(): void {
-    // TODO: 实现创建 PR 对话框
-    this.message.info('创建 PR 功能待实现');
+    const blueprintId = this.blueprintId();
+    if (!blueprintId) {
+      this.message.warning('无法获取蓝图ID');
+      return;
+    }
+
+    // TODO: 实际应该选择具体的分支，这里简化处理
+    const modalRef = this.modal.create({
+      nzTitle: '创建 Pull Request',
+      nzContent: PullRequestFormComponent,
+      nzData: {
+        blueprintId,
+        branchId: 'temp-branch-id', // 实际应该从当前上下文获取
+        submittedBy: 'temp-user-id' // 实际应该从当前登录用户获取
+      },
+      nzWidth: 720,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result) {
+        this.loadPRs(blueprintId);
+      }
+    });
   }
 
   viewPR(prId: string): void {
-    // TODO: 实现查看 PR 详情
-    this.message.info('查看 PR 详情功能待实现');
+    this.modal.create({
+      nzTitle: 'Pull Request 详情',
+      nzContent: PullRequestDetailComponent,
+      nzData: {
+        prId
+      },
+      nzWidth: 900,
+      nzFooter: null
+    });
   }
 
   async reviewPR(prId: string): Promise<void> {
-    // TODO: 实现审核 PR 对话框
-    this.message.info('审核 PR 功能待实现');
+    const pr = this.prService.pullRequests().find(p => p.id === prId);
+    if (!pr) {
+      this.message.error('找不到该 Pull Request');
+      return;
+    }
+
+    if (pr.status !== 'open' && pr.status !== 'reviewing') {
+      this.message.warning('只能审核打开或审核中的 Pull Request');
+      return;
+    }
+
+    const modalRef = this.modal.create({
+      nzTitle: '审核 Pull Request',
+      nzContent: PullRequestReviewComponent,
+      nzData: {
+        pr,
+        reviewerId: 'temp-reviewer-id' // 实际应该从当前登录用户获取
+      },
+      nzWidth: 720,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result) {
+        const blueprintId = this.blueprintId();
+        if (blueprintId) {
+          this.loadPRs(blueprintId);
+        }
+      }
+    });
   }
 
   async mergePR(prId: string): Promise<void> {
-    // TODO: 实现合并 PR 对话框
-    this.message.info('合并 PR 功能待实现');
+    const pr = this.prService.pullRequests().find(p => p.id === prId);
+    if (!pr) {
+      this.message.error('找不到该 Pull Request');
+      return;
+    }
+
+    if (pr.status !== 'approved') {
+      this.message.warning('只能合并已批准的 Pull Request');
+      return;
+    }
+
+    const modalRef = this.modal.create({
+      nzTitle: '合并 Pull Request',
+      nzContent: PullRequestMergeComponent,
+      nzData: {
+        pr,
+        mergedBy: 'temp-merger-id' // 实际应该从当前登录用户获取
+      },
+      nzWidth: 600,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result) {
+        const blueprintId = this.blueprintId();
+        if (blueprintId) {
+          this.loadPRs(blueprintId);
+        }
+      }
+    });
   }
 }
