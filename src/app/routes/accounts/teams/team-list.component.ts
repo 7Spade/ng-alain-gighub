@@ -1,15 +1,14 @@
-import { Component, OnInit, inject, computed, model, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppError } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, TeamService, Team, AccountService } from '@shared';
+import { SHARED_IMPORTS, TeamService, Team, AccountService, Account } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-team-list',
   standalone: true,
   imports: [SHARED_IMPORTS],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <page-header [title]="'团队管理'">
       <ng-template #extra>
@@ -29,7 +28,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           <nz-form-label>组织</nz-form-label>
           <nz-form-control>
             <nz-select
-              [(ngModel)]="selectedOrganizationId"
+              [ngModel]="selectedOrganizationId()"
               (ngModelChange)="onOrganizationChange($event)"
               nzPlaceHolder="请选择组织"
               [nzLoading]="accountService.loading()"
@@ -61,7 +60,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             [columns]="columns"
             [loading]="teamService.loading()"
             [page]="{ front: false, show: true, showSize: true }"
-            (change)="onTableChange()"
+            (change)="onTableChange($event)"
           >
             <ng-template #description let-record>
               {{ record.description || '-' }}
@@ -78,7 +77,7 @@ export class TeamListComponent implements OnInit {
   router = inject(Router);
   message = inject(NzMessageService);
 
-  selectedOrganizationId = model<string | null>(null);
+  selectedOrganizationId = signal<string | null>(null);
 
   columns: STColumn[] = [
     { title: 'ID', index: 'id', width: 100 },
@@ -136,8 +135,7 @@ export class TeamListComponent implements OnInit {
   }
 
   async onOrganizationChange(organizationId: string | null): Promise<void> {
-    // No need to manually set the signal - ngModel already updates it via two-way binding
-    // this.selectedOrganizationId.set(organizationId);
+    this.selectedOrganizationId.set(organizationId);
     if (organizationId) {
       await this.loadTeams(organizationId);
     }
@@ -168,7 +166,7 @@ export class TeamListComponent implements OnInit {
     }
   }
 
-  onTableChange(): void {
+  onTableChange(event: any): void {
     // 处理表格变化事件（分页、排序等）
   }
 
