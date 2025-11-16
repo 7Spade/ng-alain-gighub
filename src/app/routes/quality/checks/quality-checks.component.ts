@@ -1,8 +1,13 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, BlueprintService } from '@shared';
+import { SHARED_IMPORTS, BlueprintService, TaskService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { QualityCheckRepository } from '@core';
+import { firstValueFrom } from 'rxjs';
+import { QualityCheckFormComponent } from './quality-check-form.component';
+import { QualityCheckDetailComponent } from './quality-check-detail.component';
 
 @Component({
   selector: 'app-quality-checks',
@@ -43,8 +48,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class QualityChecksComponent implements OnInit {
   readonly blueprintService = inject(BlueprintService);
+  readonly taskService = inject(TaskService);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
+  private readonly modal = inject(NzModalService);
+  private readonly qualityCheckRepo = inject(QualityCheckRepository);
 
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
@@ -52,12 +60,11 @@ export class QualityChecksComponent implements OnInit {
 
   columns: STColumn[] = [
     { title: 'ID', index: 'id', width: 100 },
-    { title: '检查名称', index: 'name', width: 200 },
-    { title: '检查类型', index: 'type', width: 120 },
+    { title: '任务标题', index: 'taskTitle', width: 200 },
+    { title: '检查类型', index: 'check_type', width: 120 },
     { title: '状态', index: 'status', width: 100 },
-    { title: '检查日期', index: 'check_date', type: 'date', width: 120 },
-    { title: '检查人', index: 'checker', width: 120 },
-    { title: '创建时间', index: 'created_at', type: 'date', width: 180 },
+    { title: '检查时间', index: 'checked_at', type: 'date', width: 180 },
+    { title: '检查员ID', index: 'inspector_id', width: 120 },
     {
       title: '操作',
       width: 150,
@@ -86,20 +93,77 @@ export class QualityChecksComponent implements OnInit {
     const blueprintId = this.selectedBlueprintId();
     if (blueprintId) {
       this.loading.set(true);
-      // TODO: 加载质量检查数据
-      setTimeout(() => {
-        this.checks.set([]);
+      try {
+        // 先加载任务列表
+        await this.taskService.loadTasksByBlueprint(blueprintId);
+        
+        // 然后加载所有任务的品质检查
+        const tasks = this.taskService.tasks();
+        const checkPromises = tasks.map(task => firstValueFrom(this.qualityCheckRepo.findByTaskId(task.id)));
+        const checkArrays = await Promise.all(checkPromises);
+        const allChecks = checkArrays.flat();
+        
+        // 关联任务标题
+        const checksWithTask = allChecks.map(check => {
+          const task = tasks.find(t => t.id === check.task_id);
+          return {
+            ...check,
+            taskTitle: task?.title || '任务不存在'
+          };
+        });
+        
+        this.checks.set(checksWithTask);
+      } catch (error) {
+        this.message.error('加载品质检查数据失败');
+      } finally {
         this.loading.set(false);
-      }, 500);
+      }
     }
   }
 
   createCheck(): void {
-    // TODO: 导航到创建检查页面
-    this.message.info('创建检查功能待实现');
+    const blueprintId = this.selectedBlueprintId();
+    if (!blueprintId) {
+      this.message.warning('请先选择蓝图');
+      return;
+    }
+
+    const tasks = this.taskService.tasks();
+    if (tasks.length === 0) {
+      this.message.warning('当前蓝图没有任务，请先创建任务');
+      return;
+    }
+
+    // 简单起见，使用第一个任务。实际应该让用户选择任务
+    const task = tasks[0];
+
+    const modalRef = this.modal.create({
+      nzTitle: '创建品质检查',
+      nzContent: QualityCheckFormComponent,
+      nzData: {
+        task
+      },
+      nzWidth: 720,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result) {
+        // 刷新列表
+        this.onBlueprintChange();
+      }
+    });
   }
 
   viewDetail(id: string): void {
-    this.router.navigate(['/quality/checks/detail', id]);
+    this.modal.create({
+      nzTitle: '品质检查详情',
+      nzContent: QualityCheckDetailComponent,
+      nzData: {
+        checkId: id
+      },
+      nzWidth: 800,
+      nzFooter: null
+    });
   }
 }
