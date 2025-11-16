@@ -14,10 +14,110 @@
 
 ## 目前狀態
 
+- ✅ 2025-01-15（晚）：組織管理頁面無限加載問題修復（狀態管理問題、單例服務狀態共享問題）
 - ✅ 2025-01-15（晚）：模型結構清理（刪除遺留文件、統一命名規範、確認無衝突）
 - ✅ 2025-01-15（下午）：Bot 與組織功能完善（Bot 區分機制、團隊排班組織專有化、構建錯誤修復）
 - ✅ 2025-01-15（上午）：完整開發工作流程執行（ESLint 配置修復、構建驗證、自驗收測試）
 - 如需參考既有決策與教訓，請查閱 Archive 版本或 `docs/44-專案路線圖.md`。
+
+---
+
+## 2025-01-15（晚）: 組織管理頁面無限加載問題修復
+
+### 背景
+
+在測試組織管理功能時，發現訪問組織詳情頁面時，頁面一直顯示加載狀態，無法顯示內容。這是典型的狀態管理問題，需要立即修復。
+
+### 問題分析
+
+#### 根本原因
+- `OrganizationRoleManageComponent.ngOnInit()` 中調用了 `await this.accountService.loadAccounts()`
+- 這會設置 `AccountService.loading` 為 `true`
+- 由於 `AccountService` 是單例服務，`loading` 狀態是全局共享的
+- `account-detail.component.ts` 的模板條件判斷 `@if (accountService.loading())` 一直為 `true`
+- 導致頁面一直顯示加載狀態，即使 `loadAccountById` 已經完成
+
+#### 問題鏈
+1. 用戶點擊「查看」按鈕 → 導航到 `/accounts/:id`
+2. `AccountDetailComponent.ngOnInit()` 執行 → `loadAccountById()` 完成，設置 `AccountService.loading = false`
+3. **但同時** `OrganizationRoleManageComponent.ngOnInit()` 執行 → `loadAccounts()` 設置 `AccountService.loading = true`
+4. 頁面條件判斷 `accountService.loading()` 為 `true` → 頁面一直顯示加載狀態
+
+### 決策與權衡
+
+#### 修復策略選擇
+- ✅ **方案 A**：調整加載順序，優先加載主要功能，輔助功能非阻塞加載（推薦）
+- ❌ **方案 B**：為子組件創建獨立的 loading 狀態（過度設計）
+- ❌ **方案 C**：移除 `loadAccounts()` 調用（功能缺失）
+
+**決策**：選擇方案 A，因為：
+1. 最小改動，風險最低
+2. 保持功能完整性
+3. 符合常見做法：優先加載主要功能，輔助功能可以異步加載
+
+### 實施細節
+
+#### 修復要點
+1. **優先級調整**：先加載組織成員（主要功能），再考慮加載賬戶列表（輔助功能）
+2. **條件加載**：只在賬戶列表為空時才加載，避免重複加載
+3. **非阻塞加載**：使用 `.catch()` 而不是 `await`，不阻塞頁面渲染
+4. **錯誤處理**：保留錯誤處理，但不影響主流程
+
+#### 代碼變更
+```typescript
+// 修復前
+async ngOnInit(): Promise<void> {
+  await this.accountService.loadAccounts();  // ❌ 阻塞主流程
+  this.organizationMemberService.clearState();
+  await this.loadMembers();
+}
+
+// 修復後
+async ngOnInit(): Promise<void> {
+  this.organizationMemberService.clearState();
+  await this.loadMembers();  // ✅ 優先加載主要功能
+  
+  if (this.accountService.accounts().length === 0) {
+    this.accountService.loadAccounts().catch(error => {  // ✅ 非阻塞加載
+      console.error('加載賬戶列表失敗:', error);
+    });
+  }
+}
+```
+
+### 經驗教訓
+
+#### 狀態管理原則
+1. **單例服務的狀態是全局的**：多個組件共享同一個服務實例時，狀態會互相影響
+2. **避免在子組件中修改父組件依賴的狀態**：子組件不應該影響父組件的顯示邏輯
+3. **使用獨立的 loading 狀態**：如果子組件需要自己的加載狀態，應該使用獨立的 Signal
+
+#### 組件初始化順序
+1. **優先加載主要功能**：先加載用戶最需要的內容
+2. **輔助功能非阻塞加載**：不影響主要功能的輔助數據可以異步加載
+3. **避免不必要的等待**：不要等待非關鍵數據的加載
+
+#### 代碼審查要點
+1. **檢查單例服務的使用**：確保多個組件使用同一個服務時不會互相干擾
+2. **檢查 loading 狀態的設置**：確保 loading 狀態的設置和清除是配對的
+3. **檢查組件初始化邏輯**：確保初始化邏輯不會阻塞頁面渲染
+
+### 相關問題
+
+#### 類似的潛在問題
+1. **TeamService.loading**：如果多個組件同時使用 `TeamService`，可能會有類似問題
+2. **OrganizationScheduleService.loading**：同樣的問題可能出現在排班管理
+3. **其他單例服務**：所有使用 `providedIn: 'root'` 的服務都可能存在類似問題
+
+#### 建議改進
+1. **使用獨立的 loading 狀態**：每個組件使用自己的 loading Signal
+2. **狀態隔離**：考慮使用 Context API 或狀態管理庫來隔離狀態
+3. **加載策略優化**：使用更智能的加載策略（緩存、預加載等）
+
+### 相關文檔
+
+- [工作總結-組織管理頁面無限加載問題修復-2025-01-15.md](./工作總結-組織管理頁面無限加載問題修復-2025-01-15.md) ⭐ 詳細記錄
+- [問題與挑戰記錄](./fyi-challenges.md#2025-01-15-組織管理頁面無限加載問題)
 
 ---
 
