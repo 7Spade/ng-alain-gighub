@@ -74,6 +74,20 @@ export type WeatherCacheInsert = Database['public']['Tables']['weather_cache']['
 export type WeatherCacheUpdate = Database['public']['Tables']['weather_cache']['Update'];
 
 /**
+ * Inspection 实体类型（camelCase）
+ */
+export type Inspection = Database['public']['Tables']['inspections']['Row'];
+export type InspectionInsert = Database['public']['Tables']['inspections']['Insert'];
+export type InspectionUpdate = Database['public']['Tables']['inspections']['Update'];
+
+/**
+ * InspectionPhoto 实体类型（camelCase）
+ */
+export type InspectionPhoto = Database['public']['Tables']['inspection_photos']['Row'];
+export type InspectionPhotoInsert = Database['public']['Tables']['inspection_photos']['Insert'];
+export type InspectionPhotoUpdate = Database['public']['Tables']['inspection_photos']['Update'];
+
+/**
  * 任务树节点类型（用于前端树状结构展示）
  */
 export interface TaskTreeNode extends Task {
