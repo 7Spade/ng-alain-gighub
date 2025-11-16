@@ -5,3 +5,5 @@
  */
 
 export * from './task.service';
+export * from './task-staging.service';
+export * from './task-state-machine';
