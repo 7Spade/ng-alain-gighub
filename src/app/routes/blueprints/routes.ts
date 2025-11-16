@@ -44,7 +44,7 @@ export const BLUEPRINT_ROUTES: Routes = [
   },
   {
     path: 'pull-requests/detail',
-    loadComponent: () => import('./pull-requests/detail/pull-request-detail').then(m => m.PullRequestDetail)
+    loadComponent: () => import('./pull-requests/detail/pull-request-detail').then(m => m.PullRequestDetailComponent)
   },
   {
     path: 'review',

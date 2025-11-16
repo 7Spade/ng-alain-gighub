@@ -56,7 +56,7 @@ export const TASK_ROUTES: Routes = [
   },
   {
     path: 'progress',
-    loadComponent: () => import('./progress/task-progress').then(m => m.TaskProgress)
+    loadComponent: () => import('./progress/task-progress').then(m => m.TaskProgressComponent)
   },
   {
     path: ':id',
