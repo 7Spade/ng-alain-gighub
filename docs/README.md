@@ -37,6 +37,9 @@
 
 ### 🆕 最新更新（2025-11-16）
 
+- **開發指南文檔**：🆕 新增企業級任務系統開發指南相關文檔
+  - [DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md](./DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md) - 開發指南合規性報告（100% 合規驗證）
+  - [DEVELOPMENT-GUIDE-QUICK-REFERENCE.md](./DEVELOPMENT-GUIDE-QUICK-REFERENCE.md) - 開發指南快速參考（日常開發速查）
 - **AI 助手角色文檔**：🆕 新增完整的 AI 助手角色定義
   - [50-AI助手角色配置.md](./50-AI助手角色配置.md) - 工程師級 AI 助手角色 prompt（含系統架構導圖遵循規則）
 
@@ -132,6 +135,13 @@
 | [50-AI助手角色配置.md](./50-AI助手角色配置.md) | 🆕 **AI 助手角色配置（含系統架構導圖遵循規則）** | ⭐⭐⭐⭐⭐ |
 | [51-開發最佳實踐指南.md](./51-開發最佳實踐指南.md) | **開發最佳實踐指南（代碼示例、開發模式）** | ⭐⭐⭐⭐⭐ |
 | [52-Agent開發指南與限制說明.md](./52-Agent開發指南與限制說明.md) | **AI Agent 開發指南與限制說明** | ⭐⭐⭐⭐⭐ |
+
+### 🆕 企業級開發指南（2025-11-16 新增）
+
+| 文檔 | 說明 | 優先級 |
+|------|------|--------|
+| [DEVELOPMENT-GUIDE-QUICK-REFERENCE.md](./DEVELOPMENT-GUIDE-QUICK-REFERENCE.md) | 🆕 **開發指南快速參考（5分鐘上手）** | ⭐⭐⭐⭐⭐ |
+| [DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md](./DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md) | 🆕 **開發指南合規性報告（100% 合規驗證）** | ⭐⭐⭐⭐⭐ |
 
 ### 工作總結與測試報告（2025）
 
