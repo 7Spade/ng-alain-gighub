@@ -38,8 +38,9 @@
 ### 🆕 最新更新（2025-11-16）
 
 - **開發指南文檔**：🆕 新增企業級任務系統開發指南相關文檔
+  - [DEVELOPMENT-GUIDE-QUICK-REFERENCE.md](./DEVELOPMENT-GUIDE-QUICK-REFERENCE.md) - 開發指南快速參考（5分鐘上手）
   - [DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md](./DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md) - 開發指南合規性報告（100% 合規驗證）
-  - [DEVELOPMENT-GUIDE-QUICK-REFERENCE.md](./DEVELOPMENT-GUIDE-QUICK-REFERENCE.md) - 開發指南快速參考（日常開發速查）
+  - [DEVELOPMENT-GUIDE-IMPLEMENTATION-SUMMARY.md](./DEVELOPMENT-GUIDE-IMPLEMENTATION-SUMMARY.md) - 開發指南實施總結（執行摘要與後續建議）
 - **AI 助手角色文檔**：🆕 新增完整的 AI 助手角色定義
   - [50-AI助手角色配置.md](./50-AI助手角色配置.md) - 工程師級 AI 助手角色 prompt（含系統架構導圖遵循規則）
 
@@ -142,6 +143,7 @@
 |------|------|--------|
 | [DEVELOPMENT-GUIDE-QUICK-REFERENCE.md](./DEVELOPMENT-GUIDE-QUICK-REFERENCE.md) | 🆕 **開發指南快速參考（5分鐘上手）** | ⭐⭐⭐⭐⭐ |
 | [DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md](./DEVELOPMENT-GUIDE-COMPLIANCE-REPORT.md) | 🆕 **開發指南合規性報告（100% 合規驗證）** | ⭐⭐⭐⭐⭐ |
+| [DEVELOPMENT-GUIDE-IMPLEMENTATION-SUMMARY.md](./DEVELOPMENT-GUIDE-IMPLEMENTATION-SUMMARY.md) | 🆕 **開發指南實施總結（執行摘要與後續建議）** | ⭐⭐⭐⭐⭐ |
 
 ### 工作總結與測試報告（2025）
 
