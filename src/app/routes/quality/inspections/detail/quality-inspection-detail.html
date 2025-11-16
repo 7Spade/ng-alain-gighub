@@ -1,1 +1,204 @@
-<p>quality-inspection-detail works!</p>
+<page-header [title]="'品質檢查詳情'">
+  <ng-template #extra>
+    <button nz-button nzType="default" (click)="goBack()" style="margin-right: 8px;">
+      <span nz-icon nzType="arrow-left"></span>
+      返回
+    </button>
+    @if (inspection() && inspection()!.status === 'pending') {
+      <button nz-button nzType="primary" (click)="approve()" style="margin-right: 8px;">
+        <span nz-icon nzType="check-circle"></span>
+        核准
+      </button>
+      <button nz-button nzType="default" nzDanger (click)="reject()" style="margin-right: 8px;">
+        <span nz-icon nzType="close-circle"></span>
+        退回
+      </button>
+    }
+    <button nz-button nzType="primary" (click)="exportReport()">
+      <span nz-icon nzType="download"></span>
+      匯出報表
+    </button>
+  </ng-template>
+</page-header>
+
+@if (loading()) {
+  <nz-spin nzSimple [nzSize]="'large'" style="display: block; padding: 50px; text-align: center;">
+    <ng-template #indicator>
+      <span nz-icon nzType="loading" style="font-size: 24px;"></span>
+    </ng-template>
+  </nz-spin>
+} @else if (error()) {
+  <nz-alert
+    nzType="error"
+    [nzMessage]="'載入失敗'"
+    [nzDescription]="error()"
+    nzShowIcon
+    style="margin: 16px;"
+  ></nz-alert>
+} @else if (inspection()) {
+  <div class="page-content">
+    <!-- 檢查基本資訊 -->
+    <nz-card nzTitle="基本資訊" class="info-card">
+      <nz-descriptions nzBordered [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }">
+        <nz-descriptions-item nzTitle="檢查編號">
+          <code>{{ inspection()!.id }}</code>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="檢查狀態">
+          <nz-tag [nzColor]="statusColor()">{{ statusText() }}</nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="檢查評分">
+          <nz-rate [ngModel]="inspection()!.score / 20" nzDisabled nzAllowHalf></nz-rate>
+          <span style="margin-left: 8px;">{{ inspection()!.score }} 分</span>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="任務名稱" [nzSpan]="3">
+          {{ inspection()!.task_name }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="檢查人員">
+          <span nz-icon nzType="user"></span>
+          {{ inspection()!.inspector }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="檢查時間">
+          {{ inspection()!.inspection_date }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="檢查地點">
+          <span nz-icon nzType="environment"></span>
+          {{ inspection()!.location }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="天氣狀況">
+          <span nz-icon nzType="cloud"></span>
+          {{ inspection()!.weather }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="溫度">
+          <span nz-icon nzType="fire"></span>
+          {{ inspection()!.temperature }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+    </nz-card>
+
+    <!-- 檢查統計 -->
+    <nz-card nzTitle="檢查統計" class="stats-card">
+      <nz-row [nzGutter]="[16, 16]">
+        <nz-col [nzXs]="24" [nzSm]="8" [nzMd]="8" [nzLg]="8">
+          <nz-statistic
+            [nzValue]="totalItems()"
+            nzTitle="總檢查項目"
+          >
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="file-text" style="color: #1890ff;"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzXs]="24" [nzSm]="8" [nzMd]="8" [nzLg]="8">
+          <nz-statistic
+            [nzValue]="passedItems()"
+            nzTitle="合格項目"
+            [nzValueStyle]="{ color: '#52c41a' }"
+          >
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="check-circle"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzXs]="24" [nzSm]="8" [nzMd]="8" [nzLg]="8">
+          <nz-statistic
+            [nzValue]="failedItems()"
+            nzTitle="不合格項目"
+            [nzValueStyle]="{ color: '#ff4d4f' }"
+          >
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="close-circle"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+      </nz-row>
+      <div class="pass-rate-section">
+        <div class="pass-rate-label">合格率</div>
+        <nz-progress
+          [nzPercent]="parseFloat(passRate())"
+          [nzStatus]="failedItems() > 0 ? 'exception' : 'success'"
+          [nzStrokeWidth]="20"
+        ></nz-progress>
+      </div>
+    </nz-card>
+
+    <!-- 檢查項目明細 -->
+    <nz-card nzTitle="檢查項目明細" class="items-card">
+      <nz-table
+        #itemsTable
+        [nzData]="inspectionItems()"
+        [nzPageSize]="20"
+        [nzShowPagination]="inspectionItems().length > 20"
+        [nzSize]="'middle'"
+      >
+        <thead>
+          <tr>
+            <th>類別</th>
+            <th>檢查項目</th>
+            <th>檢查標準</th>
+            <th>實測值</th>
+            <th>結果</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of itemsTable.data; track item.id) {
+            <tr>
+              <td>{{ item.category }}</td>
+              <td>{{ item.item_name }}</td>
+              <td>{{ item.standard }}</td>
+              <td>{{ item.measured_value || '-' }}</td>
+              <td>
+                <nz-tag [nzColor]="getResultColor(item.result)">
+                  {{ getResultText(item.result) }}
+                </nz-tag>
+              </td>
+              <td>{{ item.notes || '-' }}</td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+
+    <!-- 檢查照片 -->
+    <nz-card nzTitle="檢查照片" class="photos-card">
+      @if (photos().length > 0) {
+        <div class="photos-grid">
+          @for (photo of photos(); track photo.id) {
+            <div class="photo-item">
+              <img [src]="photo.url" [alt]="photo.description" />
+              <div class="photo-info">
+                <div class="photo-desc">{{ photo.description }}</div>
+                <div class="photo-time">{{ photo.timestamp }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <nz-empty nzNotFoundContent="暫無檢查照片"></nz-empty>
+      }
+    </nz-card>
+
+    <!-- 操作歷史 -->
+    <nz-card nzTitle="操作歷史" class="history-card">
+      <nz-timeline>
+        @for (item of history(); track item.id) {
+          <nz-timeline-item nzColor="blue">
+            <div class="history-content">
+              <div class="history-header">
+                <strong>{{ item.action }}</strong>
+                <span class="history-time">{{ item.timestamp }}</span>
+              </div>
+              <div class="history-operator">
+                <span nz-icon nzType="user"></span>
+                {{ item.operator }}
+              </div>
+              <div class="history-notes">{{ item.notes }}</div>
+            </div>
+          </nz-timeline-item>
+        }
+      </nz-timeline>
+    </nz-card>
+  </div>
+} @else {
+  <nz-empty nzNotFoundContent="檢查記錄不存在" style="margin: 50px;"></nz-empty>
+}
