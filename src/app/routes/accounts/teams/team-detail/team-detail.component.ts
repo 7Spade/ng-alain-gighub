@@ -2,6 +2,8 @@ import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS, TeamService, Team, TeamMember, TeamMemberRole } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { TeamMemberAddComponent } from './team-member-add.component';
 
 @Component({
   selector: 'app-team-detail',
@@ -107,12 +109,15 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class TeamDetailComponent implements OnInit {
   teamService = inject(TeamService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  message = inject(NzMessageService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private message = inject(NzMessageService);
+  private modal = inject(NzModalService);
 
   // 使用 computed 从 Service 获取团队信息
   team = computed(() => this.teamService.selectedTeam());
+  
+  teamId = computed(() => this.route.snapshot.paramMap.get('id') || '');
 
   // 导出枚举供模板使用
   TeamMemberRole = TeamMemberRole;
@@ -163,8 +168,28 @@ export class TeamDetailComponent implements OnInit {
   }
 
   addMember(): void {
-    // TODO: 实现添加成员功能（可以使用 Modal 或跳转到添加页面）
-    this.message.info('添加成员功能待实现');
+    const teamId = this.teamId();
+    if (!teamId) {
+      this.message.warning('无法获取团队ID');
+      return;
+    }
+
+    const modalRef = this.modal.create({
+      nzTitle: '添加团队成员',
+      nzContent: TeamMemberAddComponent,
+      nzData: {
+        teamId
+      },
+      nzWidth: 600,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result) {
+        // Reload team to refresh members
+        this.loadTeam(teamId);
+      }
+    });
   }
 
   async changeRole(member: TeamMember): Promise<void> {

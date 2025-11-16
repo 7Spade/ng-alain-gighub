@@ -1,8 +1,12 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, BlueprintService } from '@shared';
+import { SHARED_IMPORTS, BlueprintService, TaskService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { InspectionRepository } from '@core';
+import { firstValueFrom } from 'rxjs';
+import { InspectionDetailComponent } from './inspection-detail.component';
 
 @Component({
   selector: 'app-quality-results',
@@ -59,8 +63,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class QualityResultsComponent implements OnInit {
   readonly blueprintService = inject(BlueprintService);
+  readonly taskService = inject(TaskService);
+  private readonly inspectionRepo = inject(InspectionRepository);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
+  private readonly modal = inject(NzModalService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly selectedStatus = signal<string>('all');
@@ -111,18 +118,54 @@ export class QualityResultsComponent implements OnInit {
 
   async onBlueprintChange(): Promise<void> {
     const blueprintId = this.selectedBlueprintId();
-    if (blueprintId) {
-      this.loading.set(true);
-      // TODO: 加载验收结果数据
-      setTimeout(() => {
-        this.results.set([]);
-        this.loading.set(false);
-      }, 500);
+    if (!blueprintId) return;
+
+    this.loading.set(true);
+    try {
+      // 先加载任务列表
+      await this.taskService.loadTasksByBlueprint(blueprintId);
+      
+      // 然后加载所有任务的验收记录
+      const tasks = this.taskService.tasks();
+      const inspectionPromises = tasks.map(task => 
+        firstValueFrom(this.inspectionRepo.findByTaskId(task.id))
+      );
+      const inspectionArrays = await Promise.all(inspectionPromises);
+      const allInspections = inspectionArrays.flat();
+      
+      // 关联任务标题和映射到结果格式
+      const inspectionsWithTask = allInspections.map(inspection => {
+        const task = tasks.find(t => t.id === inspection.task_id);
+        return {
+          id: inspection.id,
+          name: `验收-${task?.title || '未知任务'}`,
+          type: inspection.inspection_type,
+          result: inspection.status === 'accepted' ? 'passed' : 
+                  inspection.status === 'rejected' ? 'failed' : 'pending',
+          inspection_date: inspection.inspected_at,
+          inspector: inspection.inspector_id,
+          notes: inspection.findings || '',
+          created_at: inspection.inspected_at
+        };
+      });
+      
+      this.results.set(inspectionsWithTask);
+    } catch (error) {
+      this.message.error('加载验收结果数据失败');
+    } finally {
+      this.loading.set(false);
     }
   }
 
   viewDetail(id: string): void {
-    // TODO: 导航到详情页面
-    this.message.info('详情功能待实现');
+    this.modal.create({
+      nzTitle: '验收记录详情',
+      nzContent: InspectionDetailComponent,
+      nzData: {
+        inspectionId: id
+      },
+      nzWidth: 900,
+      nzFooter: null
+    });
   }
 }

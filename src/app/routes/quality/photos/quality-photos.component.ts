@@ -1,7 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { SHARED_IMPORTS, BlueprintService } from '@shared';
+import { SHARED_IMPORTS, BlueprintService, TaskService, InspectionPhoto } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { InspectionRepository, InspectionPhotoRepository } from '@core';
+import { firstValueFrom } from 'rxjs';
+import { QualityPhotoUploadComponent } from './quality-photo-upload.component';
+import { QualityPhotoViewerComponent } from './quality-photo-viewer.component';
 
 @Component({
   selector: 'app-quality-photos',
@@ -49,7 +54,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                       <span nz-icon nzType="picture" nzTheme="outline" style="font-size: 48px; color: #ccc;"></span>
                     </div>
                   </ng-template>
-                  <nz-card-meta [nzTitle]="photo.caption || '无标题'" [nzDescription]="photo.type || '验收照片'"></nz-card-meta>
+                  <nz-card-meta [nzTitle]="photo.caption || '无标题'" [nzDescription]="photo.photo_type || '验收照片'"></nz-card-meta>
                   <div style="margin-top: 8px; font-size: 12px; color: #999;">
                     {{ photo.uploaded_at | date: 'yyyy-MM-dd HH:mm' }}
                   </div>
@@ -64,12 +69,16 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class QualityPhotosComponent implements OnInit {
   readonly blueprintService = inject(BlueprintService);
+  readonly taskService = inject(TaskService);
+  private readonly inspectionRepo = inject(InspectionRepository);
+  private readonly inspectionPhotoRepo = inject(InspectionPhotoRepository);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
+  private readonly modal = inject(NzModalService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
-  readonly photos = signal<any[]>([]);
+  readonly photos = signal<InspectionPhoto[]>([]);
 
   ngOnInit(): void {
     this.loadBlueprints();
@@ -85,23 +94,92 @@ export class QualityPhotosComponent implements OnInit {
 
   async onBlueprintChange(): Promise<void> {
     const blueprintId = this.selectedBlueprintId();
-    if (blueprintId) {
-      this.loading.set(true);
-      // TODO: 加载验收照片数据
-      setTimeout(() => {
-        this.photos.set([]);
-        this.loading.set(false);
-      }, 500);
+    if (!blueprintId) return;
+
+    this.loading.set(true);
+    try {
+      // 先加载任务列表
+      await this.taskService.loadTasksByBlueprint(blueprintId);
+      
+      // 然后加载所有任务的验收记录
+      const tasks = this.taskService.tasks();
+      const inspectionPromises = tasks.map(task => 
+        firstValueFrom(this.inspectionRepo.findByTaskId(task.id))
+      );
+      const inspectionArrays = await Promise.all(inspectionPromises);
+      const allInspections = inspectionArrays.flat();
+      
+      // 加载所有验收记录的照片
+      const photoPromises = allInspections.map(inspection => 
+        firstValueFrom(this.inspectionPhotoRepo.findByInspectionId(inspection.id))
+      );
+      const photoArrays = await Promise.all(photoPromises);
+      const allPhotos = photoArrays.flat();
+      
+      this.photos.set(allPhotos);
+    } catch (error) {
+      this.message.error('加载验收照片失败');
+    } finally {
+      this.loading.set(false);
     }
   }
 
-  uploadPhoto(): void {
-    // TODO: 实现照片上传功能
-    this.message.info('照片上传功能待实现');
+  async uploadPhoto(): Promise<void> {
+    const blueprintId = this.selectedBlueprintId();
+    if (!blueprintId) {
+      this.message.warning('请先选择蓝图');
+      return;
+    }
+
+    const tasks = this.taskService.tasks();
+    if (tasks.length === 0) {
+      this.message.warning('当前蓝图没有任务，请先创建任务');
+      return;
+    }
+
+    // 需要先有验收记录才能上传照片
+    const inspections = await firstValueFrom(
+      this.inspectionRepo.findByTaskId(tasks[0].id)
+    );
+    
+    if (inspections.length === 0) {
+      this.message.warning('请先创建验收记录，然后才能上传照片');
+      return;
+    }
+
+    const modalRef = this.modal.create({
+      nzTitle: '上传验收照片',
+      nzContent: QualityPhotoUploadComponent,
+      nzData: {
+        inspectionId: inspections[0].id // 使用第一个验收记录，实际应该让用户选择
+      },
+      nzWidth: 600,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result) {
+        // 刷新列表
+        this.onBlueprintChange();
+      }
+    });
   }
 
-  viewPhoto(photo: any): void {
-    // TODO: 实现照片查看功能（预览大图）
-    this.message.info('照片查看功能待实现');
+  viewPhoto(photo: InspectionPhoto): void {
+    this.modal.create({
+      nzTitle: '查看验收照片',
+      nzContent: QualityPhotoViewerComponent,
+      nzData: {
+        photo,
+        photoUrl: this.getPhotoUrl(photo.document_id)
+      },
+      nzWidth: 900,
+      nzFooter: null
+    });
+  }
+  
+  getPhotoUrl(documentId: string): string {
+    // TODO: 从文档服务获取图片URL
+    return `/api/documents/${documentId}/download`;
   }
 }

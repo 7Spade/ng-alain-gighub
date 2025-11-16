@@ -23,3 +23,6 @@ export * from './task-template.repository';
 export * from './daily-report.repository';
 export * from './report-photo.repository';
 export * from './weather-cache.repository';
+export * from './quality-check.repository';
+export * from './inspection.repository';
+export * from './inspection-photo.repository';
