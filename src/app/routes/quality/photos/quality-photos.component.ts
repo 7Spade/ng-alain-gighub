@@ -1,10 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { InspectionRepository, InspectionPhotoRepository } from '@core';
 import { SHARED_IMPORTS, BlueprintService, TaskService, InspectionPhoto } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { InspectionRepository, InspectionPhotoRepository } from '@core';
 import { firstValueFrom } from 'rxjs';
+
 import { QualityPhotoUploadComponent } from './quality-photo-upload.component';
 import { QualityPhotoViewerComponent } from './quality-photo-viewer.component';
 
@@ -100,22 +101,18 @@ export class QualityPhotosComponent implements OnInit {
     try {
       // 先加载任务列表
       await this.taskService.loadTasksByBlueprint(blueprintId);
-      
+
       // 然后加载所有任务的验收记录
       const tasks = this.taskService.tasks();
-      const inspectionPromises = tasks.map(task => 
-        firstValueFrom(this.inspectionRepo.findByTaskId(task.id))
-      );
+      const inspectionPromises = tasks.map(task => firstValueFrom(this.inspectionRepo.findByTaskId(task.id)));
       const inspectionArrays = await Promise.all(inspectionPromises);
       const allInspections = inspectionArrays.flat();
-      
+
       // 加载所有验收记录的照片
-      const photoPromises = allInspections.map(inspection => 
-        firstValueFrom(this.inspectionPhotoRepo.findByInspectionId(inspection.id))
-      );
+      const photoPromises = allInspections.map(inspection => firstValueFrom(this.inspectionPhotoRepo.findByInspectionId(inspection.id)));
       const photoArrays = await Promise.all(photoPromises);
       const allPhotos = photoArrays.flat();
-      
+
       this.photos.set(allPhotos);
     } catch (error) {
       this.message.error('加载验收照片失败');
@@ -138,10 +135,8 @@ export class QualityPhotosComponent implements OnInit {
     }
 
     // 需要先有验收记录才能上传照片
-    const inspections = await firstValueFrom(
-      this.inspectionRepo.findByTaskId(tasks[0].id)
-    );
-    
+    const inspections = await firstValueFrom(this.inspectionRepo.findByTaskId(tasks[0].id));
+
     if (inspections.length === 0) {
       this.message.warning('请先创建验收记录，然后才能上传照片');
       return;
@@ -157,7 +152,7 @@ export class QualityPhotosComponent implements OnInit {
       nzFooter: null
     });
 
-    modalRef.afterClose.subscribe((result) => {
+    modalRef.afterClose.subscribe(result => {
       if (result) {
         // 刷新列表
         this.onBlueprintChange();
@@ -177,7 +172,7 @@ export class QualityPhotosComponent implements OnInit {
       nzFooter: null
     });
   }
-  
+
   getPhotoUrl(documentId: string): string {
     // TODO: 从文档服务获取图片URL
     return `/api/documents/${documentId}/download`;

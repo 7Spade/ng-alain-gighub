@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { SHARED_IMPORTS, InspectionPhoto } from '@shared';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
 export interface QualityPhotoViewData {
   photo: InspectionPhoto;
@@ -13,15 +13,11 @@ export interface QualityPhotoViewData {
   imports: [SHARED_IMPORTS],
   template: `
     <div style="text-align: center;">
-      <img 
-        [src]="data.photoUrl" 
-        [alt]="data.photo.caption || '验收照片'"
-        style="max-width: 100%; max-height: 70vh; object-fit: contain;"
-      />
+      <img [src]="data.photoUrl" [alt]="data.photo.caption || '验收照片'" style="max-width: 100%; max-height: 70vh; object-fit: contain;" />
     </div>
-    
+
     <nz-divider></nz-divider>
-    
+
     <nz-descriptions nzBordered [nzColumn]="1" nzSize="small">
       @if (data.photo.caption) {
         <nz-descriptions-item nzTitle="说明">{{ data.photo.caption }}</nz-descriptions-item>
@@ -49,11 +45,11 @@ export interface QualityPhotoViewData {
         }
       </nz-descriptions-item>
       <nz-descriptions-item nzTitle="上传时间">
-        {{ data.photo.uploaded_at | date:'yyyy-MM-dd HH:mm:ss' }}
+        {{ data.photo.uploaded_at | date: 'yyyy-MM-dd HH:mm:ss' }}
       </nz-descriptions-item>
       <nz-descriptions-item nzTitle="上传者ID">{{ data.photo.uploaded_by }}</nz-descriptions-item>
     </nz-descriptions>
-    
+
     <div style="margin-top: 16px; text-align: right;">
       <button nz-button nzType="default" (click)="close()">关闭</button>
     </div>

@@ -1,13 +1,14 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { QualityCheckRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, BlueprintService, TaskService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { QualityCheckRepository } from '@core';
 import { firstValueFrom } from 'rxjs';
-import { QualityCheckFormComponent } from './quality-check-form.component';
+
 import { QualityCheckDetailComponent } from './quality-check-detail.component';
+import { QualityCheckFormComponent } from './quality-check-form.component';
 
 @Component({
   selector: 'app-quality-checks',
@@ -96,13 +97,13 @@ export class QualityChecksComponent implements OnInit {
       try {
         // 先加载任务列表
         await this.taskService.loadTasksByBlueprint(blueprintId);
-        
+
         // 然后加载所有任务的品质检查
         const tasks = this.taskService.tasks();
         const checkPromises = tasks.map(task => firstValueFrom(this.qualityCheckRepo.findByTaskId(task.id)));
         const checkArrays = await Promise.all(checkPromises);
         const allChecks = checkArrays.flat();
-        
+
         // 关联任务标题
         const checksWithTask = allChecks.map(check => {
           const task = tasks.find(t => t.id === check.task_id);
@@ -111,7 +112,7 @@ export class QualityChecksComponent implements OnInit {
             taskTitle: task?.title || '任务不存在'
           };
         });
-        
+
         this.checks.set(checksWithTask);
       } catch (error) {
         this.message.error('加载品质检查数据失败');
@@ -147,7 +148,7 @@ export class QualityChecksComponent implements OnInit {
       nzFooter: null
     });
 
-    modalRef.afterClose.subscribe((result) => {
+    modalRef.afterClose.subscribe(result => {
       if (result) {
         // 刷新列表
         this.onBlueprintChange();

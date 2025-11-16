@@ -1,6 +1,6 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { SHARED_IMPORTS, BranchService, BlueprintBranch } from '@shared';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
 export interface BranchDetailData {
   branchId: string;
@@ -59,15 +59,15 @@ export interface BranchDetailData {
           </nz-descriptions-item>
         }
         <nz-descriptions-item nzTitle="创建时间" [nzSpan]="1">
-          {{ branch()!.forked_at | date:'yyyy-MM-dd HH:mm:ss' }}
+          {{ branch()!.forked_at | date: 'yyyy-MM-dd HH:mm:ss' }}
         </nz-descriptions-item>
         @if (branch()!.last_sync_at) {
           <nz-descriptions-item nzTitle="最后同步时间" [nzSpan]="2">
-            {{ branch()!.last_sync_at | date:'yyyy-MM-dd HH:mm:ss' }}
+            {{ branch()!.last_sync_at | date: 'yyyy-MM-dd HH:mm:ss' }}
           </nz-descriptions-item>
         }
       </nz-descriptions>
-      
+
       <div style="margin-top: 16px; text-align: right;">
         <button nz-button nzType="default" (click)="close()">关闭</button>
       </div>
@@ -79,7 +79,7 @@ export interface BranchDetailData {
 export class BranchDetailComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private branchService = inject(BranchService);
-  
+
   readonly data: BranchDetailData = inject(NZ_MODAL_DATA);
   readonly loading = signal(false);
   readonly branch = signal<BlueprintBranch | null>(null);

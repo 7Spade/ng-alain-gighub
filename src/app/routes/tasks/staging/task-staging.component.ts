@@ -190,7 +190,7 @@ export class TaskStagingComponent implements OnInit {
       }
 
       this.message.success('任务已成功撤回');
-      
+
       // 刷新列表
       await this.onBlueprintChange();
     } catch (error: any) {

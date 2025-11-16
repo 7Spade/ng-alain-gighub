@@ -1,7 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { QualityCheckRepository, QualityCheck } from '@core';
 import { SHARED_IMPORTS } from '@shared';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
 
 export interface QualityCheckDetailData {
@@ -85,15 +85,15 @@ export interface QualityCheckDetailData {
         }
         <nz-descriptions-item nzTitle="检查员ID" [nzSpan]="1">{{ check()!.inspector_id }}</nz-descriptions-item>
         <nz-descriptions-item nzTitle="检查时间" [nzSpan]="1">
-          {{ check()!.checked_at | date:'yyyy-MM-dd HH:mm:ss' }}
+          {{ check()!.checked_at | date: 'yyyy-MM-dd HH:mm:ss' }}
         </nz-descriptions-item>
         @if (check()!.completed_at) {
           <nz-descriptions-item nzTitle="完成时间" [nzSpan]="2">
-            {{ check()!.completed_at | date:'yyyy-MM-dd HH:mm:ss' }}
+            {{ check()!.completed_at | date: 'yyyy-MM-dd HH:mm:ss' }}
           </nz-descriptions-item>
         }
       </nz-descriptions>
-      
+
       <div style="margin-top: 16px; text-align: right;">
         <button nz-button nzType="default" (click)="close()">关闭</button>
       </div>
@@ -105,11 +105,11 @@ export interface QualityCheckDetailData {
 export class QualityCheckDetailComponent implements OnInit {
   private modalRef = inject(NzModalRef);
   private qualityCheckRepo = inject(QualityCheckRepository);
-  
+
   readonly data: QualityCheckDetailData = inject(NZ_MODAL_DATA);
   readonly loading = signal(false);
   readonly check = signal<QualityCheck | null>(null);
-  
+
   readonly checkItemsArray = signal<string[]>([]);
 
   async ngOnInit(): Promise<void> {
@@ -121,7 +121,7 @@ export class QualityCheckDetailComponent implements OnInit {
     try {
       const result = await firstValueFrom(this.qualityCheckRepo.findById(this.data.checkId));
       this.check.set(result);
-      
+
       // Parse check_items
       if (result && result.check_items) {
         if (Array.isArray(result.check_items)) {

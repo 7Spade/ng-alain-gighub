@@ -5,10 +5,11 @@ import { STColumn } from '@delon/abc/st';
 import { AccountService, AccountType, BlueprintService, PullRequest, PullRequestService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { PullRequestFormComponent } from './pull-request-form.component';
+
 import { PullRequestDetailComponent } from './pull-request-detail.component';
-import { PullRequestReviewComponent } from './pull-request-review.component';
+import { PullRequestFormComponent } from './pull-request-form.component';
 import { PullRequestMergeComponent } from './pull-request-merge.component';
+import { PullRequestReviewComponent } from './pull-request-review.component';
 
 @Component({
   selector: 'app-pull-request-list',
@@ -190,7 +191,7 @@ export class PullRequestListComponent implements OnInit {
       nzFooter: null
     });
 
-    modalRef.afterClose.subscribe((result) => {
+    modalRef.afterClose.subscribe(result => {
       if (result) {
         this.loadPRs(blueprintId);
       }
@@ -232,7 +233,7 @@ export class PullRequestListComponent implements OnInit {
       nzFooter: null
     });
 
-    modalRef.afterClose.subscribe((result) => {
+    modalRef.afterClose.subscribe(result => {
       if (result) {
         const blueprintId = this.blueprintId();
         if (blueprintId) {
@@ -265,7 +266,7 @@ export class PullRequestListComponent implements OnInit {
       nzFooter: null
     });
 
-    modalRef.afterClose.subscribe((result) => {
+    modalRef.afterClose.subscribe(result => {
       if (result) {
         const blueprintId = this.blueprintId();
         if (blueprintId) {
