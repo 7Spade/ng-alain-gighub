@@ -15,6 +15,7 @@ export * from './auth';
 export * from './collaboration';
 export * from './blueprint';
 export * from './task';
+export * from './todo';
 export * from './permission';
 
 // Supabase adapter

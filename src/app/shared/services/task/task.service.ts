@@ -2,6 +2,13 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { TaskRepository, TaskInsert, TaskUpdate, TaskAssignmentRepository, TaskListRepository } from '@core';
 import { Task, TaskStatus, TaskPriority, TaskDetail, TaskTreeNode } from '@shared';
 import { firstValueFrom } from 'rxjs';
+import {
+  validateStateTransition,
+  getAllowedTransitions,
+  getNextStatus,
+  isFinalStatus,
+  isWithdrawableStatus
+} from './task-state-machine';
 
 /**
  * Task Service
@@ -158,6 +165,19 @@ export class TaskService {
     this.errorState.set(null);
 
     try {
+      // 如果更新包含狀態變更，先驗證
+      if (data.status) {
+        const currentTask = await firstValueFrom(this.taskRepository.findById(id));
+        if (!currentTask) {
+          throw new Error('任務不存在');
+        }
+
+        // 確保 status 是有效的 TaskStatus
+        const currentStatus = currentTask.status as TaskStatus;
+        const newStatus = data.status as TaskStatus;
+        await this.validateAndUpdateStatus(id, currentStatus, newStatus);
+      }
+
       const task = await firstValueFrom(this.taskRepository.update(id, data));
 
       // 更新本地状态
@@ -273,5 +293,131 @@ export class TaskService {
    */
   clearError(): void {
     this.errorState.set(null);
+  }
+
+  /**
+   * 驗證並更新任務狀態
+   *
+   * @param taskId 任務 ID
+   * @param fromStatus 當前狀態
+   * @param toStatus 目標狀態
+   */
+  private async validateAndUpdateStatus(taskId: string, fromStatus: TaskStatus, toStatus: TaskStatus): Promise<void> {
+    const validation = validateStateTransition(fromStatus, toStatus);
+
+    if (!validation.allowed) {
+      throw new Error(validation.reason || '不允許的狀態轉換');
+    }
+
+    // 如果有警告，可以記錄或提示用戶
+    if (validation.warning) {
+      console.warn(`任務 ${taskId} 狀態轉換警告: ${validation.warning}`);
+    }
+  }
+
+  /**
+   * 更新任務狀態（含驗證）
+   *
+   * @param taskId 任務 ID
+   * @param newStatus 新狀態
+   * @returns 更新後的任務
+   */
+  async updateTaskStatus(taskId: string, newStatus: TaskStatus): Promise<Task> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 獲取當前任務
+      const currentTask = await firstValueFrom(this.taskRepository.findById(taskId));
+      if (!currentTask) {
+        throw new Error('任務不存在');
+      }
+
+      // 確保 status 是有效的 TaskStatus
+      const currentStatus = currentTask.status as TaskStatus;
+
+      // 驗證狀態轉換
+      await this.validateAndUpdateStatus(taskId, currentStatus, newStatus);
+
+      // 執行更新
+      const task = await firstValueFrom(this.taskRepository.update(taskId, { status: newStatus }));
+
+      // 更新本地狀態
+      this.tasksState.update(tasks => tasks.map(t => (t.id === taskId ? task : t)));
+      if (this.selectedTaskState()?.id === taskId) {
+        this.selectedTaskState.set(task);
+      }
+
+      return task;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '更新任務狀態失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 獲取任務允許的下一步狀態
+   *
+   * @param taskId 任務 ID
+   * @returns 允許的狀態列表
+   */
+  async getAllowedNextStatuses(taskId: string): Promise<TaskStatus[]> {
+    const task = await firstValueFrom(this.taskRepository.findById(taskId));
+    if (!task) {
+      return [];
+    }
+
+    const status = task.status as TaskStatus;
+    return getAllowedTransitions(status);
+  }
+
+  /**
+   * 獲取任務的推薦下一步狀態
+   *
+   * @param taskId 任務 ID
+   * @returns 推薦狀態（如果有）
+   */
+  async getRecommendedNextStatus(taskId: string): Promise<TaskStatus | null> {
+    const task = await firstValueFrom(this.taskRepository.findById(taskId));
+    if (!task) {
+      return null;
+    }
+
+    const status = task.status as TaskStatus;
+    return getNextStatus(status);
+  }
+
+  /**
+   * 檢查任務是否處於終止狀態
+   *
+   * @param taskId 任務 ID
+   * @returns 是否為終止狀態
+   */
+  async isTaskFinalized(taskId: string): Promise<boolean> {
+    const task = await firstValueFrom(this.taskRepository.findById(taskId));
+    if (!task) {
+      return false;
+    }
+
+    const status = task.status as TaskStatus;
+    return isFinalStatus(status);
+  }
+
+  /**
+   * 檢查任務是否可撤回（處於 staging 狀態）
+   *
+   * @param taskId 任務 ID
+   * @returns 是否可撤回
+   */
+  async isTaskWithdrawable(taskId: string): Promise<boolean> {
+    const task = await firstValueFrom(this.taskRepository.findById(taskId));
+    if (!task) {
+      return false;
+    }
+
+    const status = task.status as TaskStatus;
+    return isWithdrawableStatus(status);
   }
 }
