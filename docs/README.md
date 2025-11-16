@@ -5,7 +5,7 @@
 **最後更新**：2025-11-16  
 **總文檔數**：53+ 個（不包括 README.md、CHANGELOG.md、PRD.md 和 fyi.md）  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
-**技術棧版本**：Angular 20.3.x + NG-ZORRO 20.2.x + NG-ALAIN 20.1.x + Supabase  
+**技術棧版本**：Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.1.x + Supabase  
 **認證系統**：✅ Supabase Auth + @delon/auth 已實現整合
 
 ---
@@ -438,9 +438,9 @@ API-介面映射圖 (25)
 
 ---
 
-**最後更新**：2025-11-15  
+**最後更新**：2025-11-16  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
-**技術棧版本**：Angular 20.3.x + NG-ZORRO 20.2.x + NG-ALAIN 20.1.x + Supabase  
+**技術棧版本**：Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.1.x + Supabase  
 **維護者**：開發團隊  
 **下次審查**：2025-02-15  
 **最近更新**：完成文檔歸檔整理，移除重複和臨時文檔

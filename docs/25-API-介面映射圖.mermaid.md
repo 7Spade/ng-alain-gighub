@@ -2,7 +2,7 @@
 
 > 📋 **目的**：展示前端與後端 API 的映射關係，包含 Supabase REST API、RPC Functions、Realtime 等介面
 
-**最後更新**：2025-11-15  
+**最後更新**：2025-11-16  
 **維護者**：開發團隊
 
 ---
@@ -10,7 +10,7 @@
 ```mermaid
 graph TB
     subgraph "前端應用 Frontend Application"
-        WebApp[Web 應用<br/>Angular 20.3.x + NG-ZORRO 20.2.x + NG-ALAIN 20.1.x]
+        WebApp[Web 應用<br/>Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.1.x]
         MobileApp[Mobile PWA]
     end
 
