@@ -1628,6 +1628,45 @@ export interface Database {
           }
         ];
       };
+      organization_members: {
+        Row: {
+          account_id: string;
+          id: string;
+          joined_at: string | null;
+          organization_id: string;
+          role: string | null;
+        };
+        Insert: {
+          account_id: string;
+          id?: string;
+          joined_at?: string | null;
+          organization_id: string;
+          role?: string | null;
+        };
+        Update: {
+          account_id?: string;
+          id?: string;
+          joined_at?: string | null;
+          organization_id?: string;
+          role?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'organization_members_account_id_fkey';
+            columns: ['account_id'];
+            isOneToOne: false;
+            referencedRelation: 'accounts';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'organization_members_organization_id_fkey';
+            columns: ['organization_id'];
+            isOneToOne: false;
+            referencedRelation: 'accounts';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
       organization_schedules: {
         Row: {
           account_id: string | null;

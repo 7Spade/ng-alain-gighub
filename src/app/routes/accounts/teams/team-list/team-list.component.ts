@@ -6,7 +6,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { TeamCreateComponent } from '../team-create/team-create.component';
-import { TeamDeleteComponent, TeamDeleteData } from '../team-delete/team-delete.component';
 
 @Component({
   selector: 'app-team-list',
@@ -75,7 +74,7 @@ export class TeamListComponent implements OnInit {
   accountService = inject(AccountService);
   router = inject(Router);
   message = inject(NzMessageService);
-  modal = inject(NzModalService);
+  private modal = inject(NzModalService);
 
   selectedOrganizationId = signal<string | null>(null);
 
@@ -87,21 +86,11 @@ export class TeamListComponent implements OnInit {
     { title: '创建时间', index: 'created_at', type: 'date', width: 180 },
     {
       title: '操作',
-      width: 200,
+      width: 100,
       buttons: [
         {
-          text: '查看',
+          text: '查看详情',
           click: (record: Team) => this.viewDetail(record.id)
-        },
-        {
-          text: '编辑',
-          click: (record: Team) => this.edit(record.id)
-        },
-        {
-          text: '删除',
-          type: 'del',
-          pop: false,
-          click: (record: Team) => this.delete(record)
         }
       ]
     }
@@ -176,31 +165,5 @@ export class TeamListComponent implements OnInit {
 
   viewDetail(id: string): void {
     this.router.navigate(['/accounts/teams', id]);
-  }
-
-  edit(id: string): void {
-    this.router.navigate(['/accounts/teams', id, 'edit']);
-  }
-
-  delete(team: Team): void {
-    const modalRef = this.modal.create({
-      nzTitle: '删除团队',
-      nzContent: TeamDeleteComponent,
-      nzData: {
-        teamId: team.id,
-        teamName: team.name
-      } as TeamDeleteData,
-      nzWidth: 500,
-      nzFooter: null
-    });
-
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        const orgId = this.selectedOrganizationId();
-        if (orgId) {
-          this.loadTeams(orgId);
-        }
-      }
-    });
   }
 }

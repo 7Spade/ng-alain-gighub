@@ -43,3 +43,16 @@ export enum TeamMemberRole {
   /** 团队成员 */
   MEMBER = 'member'
 }
+
+/**
+ * 组织成员角色枚举
+ * 对应数据库 organization_members.role 字段
+ */
+export enum OrganizationMemberRole {
+  /** 组织拥有者 */
+  OWNER = 'owner',
+  /** 组织管理员 */
+  ADMIN = 'admin',
+  /** 组织成员 */
+  MEMBER = 'member'
+}

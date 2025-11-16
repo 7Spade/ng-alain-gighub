@@ -1,24 +1,26 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
-import { TeamMember, TeamMemberRepository } from '@core';
-import { AccountService, SHARED_IMPORTS } from '@shared';
+import { Component, OnInit, inject, input } from '@angular/core';
+import { OrganizationMember } from '@core';
+import { AccountService, OrganizationMemberService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { firstValueFrom } from 'rxjs';
 
-import { TeamMemberAddComponent } from '../team-member/team-member-add.component';
-import { TeamMemberDeleteComponent, TeamMemberDeleteData } from '../team-member/team-member-delete.component';
-import { TeamRoleEditComponent } from './team-role-edit.component';
+import { OrganizationMemberAddComponent } from '../organization-member/organization-member-add.component';
+import {
+  OrganizationMemberDeleteComponent,
+  OrganizationMemberDeleteData
+} from '../organization-member/organization-member-delete.component';
+import { OrganizationRoleEditComponent } from '../organization-role/organization-role-edit.component';
 
 /**
- * 团队成员和角色管理组件
+ * 组织成员和角色管理组件
  * 职责：显示成员列表、添加成员、编辑角色、移除成员
  */
 @Component({
-  selector: 'app-team-role-manage',
+  selector: 'app-organization-role-manage',
   standalone: true,
   imports: [SHARED_IMPORTS],
   template: `
-    <nz-card nzTitle="团队成员" [nzExtra]="cardExtra" style="margin-bottom: 16px;">
+    <nz-card nzTitle="组织成员" [nzExtra]="cardExtra" style="margin-bottom: 16px;">
       <ng-template #cardExtra>
         <button nz-button nzType="primary" nzSize="small" (click)="addMember()">
           <span nz-icon nzType="plus"></span>
@@ -26,10 +28,18 @@ import { TeamRoleEditComponent } from './team-role-edit.component';
         </button>
       </ng-template>
 
-      @if (loading()) {
+      @if (organizationMemberService.loading()) {
         <nz-spin nzSimple [nzSize]="'large'" style="display: block; padding: 50px; text-align: center;"></nz-spin>
-      } @else if (members().length > 0) {
-        <nz-table [nzData]="members()" [nzShowPagination]="false" [nzSize]="'small'">
+      } @else if (organizationMemberService.error()) {
+        <nz-alert
+          nzType="error"
+          [nzMessage]="'加载失败'"
+          [nzDescription]="organizationMemberService.error()"
+          nzShowIcon
+          style="margin: 16px;"
+        ></nz-alert>
+      } @else if (organizationMemberService.members().length > 0) {
+        <nz-table [nzData]="organizationMemberService.members()" [nzShowPagination]="false" [nzSize]="'small'">
           <thead>
             <tr>
               <th>账户名称</th>
@@ -39,13 +49,16 @@ import { TeamRoleEditComponent } from './team-role-edit.component';
             </tr>
           </thead>
           <tbody>
-            @for (member of members(); track member.id) {
+            @for (member of organizationMemberService.members(); track member.id) {
               <tr>
                 <td>{{ getAccountName(member.account_id) }}</td>
                 <td>
                   @switch (member.role) {
-                    @case ('leader') {
-                      <nz-tag nzColor="red">负责人</nz-tag>
+                    @case ('owner') {
+                      <nz-tag nzColor="red">拥有者</nz-tag>
+                    }
+                    @case ('admin') {
+                      <nz-tag nzColor="orange">管理员</nz-tag>
                     }
                     @case ('member') {
                       <nz-tag nzColor="blue">成员</nz-tag>
@@ -67,39 +80,37 @@ import { TeamRoleEditComponent } from './team-role-edit.component';
     </nz-card>
   `
 })
-export class TeamRoleManageComponent implements OnInit {
-  private teamMemberRepository = inject(TeamMemberRepository);
+export class OrganizationRoleManageComponent implements OnInit {
   private accountService = inject(AccountService);
   private message = inject(NzMessageService);
   private modal = inject(NzModalService);
+  readonly organizationMemberService = inject(OrganizationMemberService);
 
-  readonly teamId = input.required<string>();
-  readonly members = signal<TeamMember[]>([]);
-  readonly loading = signal(false);
+  readonly organizationId = input.required<string>();
 
   async ngOnInit(): Promise<void> {
-    // 加载账户列表以便显示账户名称
-    try {
-      await this.accountService.loadAccounts();
-    } catch (error) {
-      console.error('加载账户列表失败:', error);
-    }
+    // 先清空状态，确保加载的是当前组织的成员
+    this.organizationMemberService.clearState();
     await this.loadMembers();
+    
+    // 如果账户列表为空，才加载账户列表以便显示账户名称
+    // 注意：不等待加载完成，避免阻塞页面渲染
+    if (this.accountService.accounts().length === 0) {
+      this.accountService.loadAccounts().catch(error => {
+        console.error('加载账户列表失败:', error);
+      });
+    }
   }
 
   /**
-   * 加载团队成员列表
+   * 加载组织成员列表
    */
   async loadMembers(): Promise<void> {
-    this.loading.set(true);
     try {
-      const members = await firstValueFrom(this.teamMemberRepository.findByTeamId(this.teamId()));
-      this.members.set(members);
+      await this.organizationMemberService.loadMembersByOrganizationId(this.organizationId());
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '加载成员列表失败';
       this.message.error(errorMessage);
-    } finally {
-      this.loading.set(false);
     }
   }
 
@@ -108,10 +119,10 @@ export class TeamRoleManageComponent implements OnInit {
    */
   addMember(): void {
     const modalRef = this.modal.create({
-      nzTitle: '添加团队成员',
-      nzContent: TeamMemberAddComponent,
+      nzTitle: '添加组织成员',
+      nzContent: OrganizationMemberAddComponent,
       nzData: {
-        teamId: this.teamId()
+        organizationId: this.organizationId()
       },
       nzWidth: 600,
       nzFooter: null
@@ -127,10 +138,10 @@ export class TeamRoleManageComponent implements OnInit {
   /**
    * 编辑角色
    */
-  editRole(member: TeamMember): void {
+  editRole(member: OrganizationMember): void {
     const modalRef = this.modal.create({
       nzTitle: '编辑成员角色',
-      nzContent: TeamRoleEditComponent,
+      nzContent: OrganizationRoleEditComponent,
       nzData: {
         member
       },
@@ -148,15 +159,15 @@ export class TeamRoleManageComponent implements OnInit {
   /**
    * 移除成员
    */
-  removeMember(member: TeamMember): void {
+  removeMember(member: OrganizationMember): void {
     const accountName = this.getAccountName(member.account_id);
     const modalRef = this.modal.create({
-      nzTitle: '移除团队成员',
-      nzContent: TeamMemberDeleteComponent,
+      nzTitle: '移除组织成员',
+      nzContent: OrganizationMemberDeleteComponent,
       nzData: {
         memberId: member.id,
         accountName
-      } as TeamMemberDeleteData,
+      } as OrganizationMemberDeleteData,
       nzWidth: 500,
       nzFooter: null
     });

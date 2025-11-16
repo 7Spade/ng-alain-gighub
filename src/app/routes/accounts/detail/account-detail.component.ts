@@ -1,13 +1,23 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isValidUUID } from '@core';
-import { SHARED_IMPORTS, AccountService, Account, AccountType, AccountStatus, TeamService, OrganizationScheduleService } from '@shared';
+import {
+  AccountService,
+  AccountStatus,
+  AccountType,
+  OrganizationMemberService,
+  OrganizationScheduleService,
+  SHARED_IMPORTS,
+  TeamService
+} from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+
+import { OrganizationRoleManageComponent } from '../organizations/organization-role-manage/organization-role-manage.component';
 
 @Component({
   selector: 'app-account-detail',
   standalone: true,
-  imports: [SHARED_IMPORTS],
+  imports: [SHARED_IMPORTS, OrganizationRoleManageComponent],
   template: `
     <page-header [title]="'账户详情'">
       <ng-template #extra>
@@ -85,8 +95,14 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           </nz-descriptions>
         </nz-card>
 
-        <!-- 组织账户：显示团队信息 -->
+        <!-- 组织账户：显示成员管理 -->
         @if (account()!.type === AccountType.ORGANIZATION) {
+          <!-- 组织成员和角色管理 -->
+          @if (account()?.id) {
+            <app-organization-role-manage [organizationId]="account()!.id"></app-organization-role-manage>
+          }
+
+          <!-- 组织账户：显示团队信息 -->
           <nz-card nzTitle="团队信息" style="margin-bottom: 16px;">
             @if (teamService.loading()) {
               <nz-spin nzSimple></nz-spin>
@@ -158,6 +174,7 @@ export class AccountDetailComponent implements OnInit {
   accountService = inject(AccountService);
   teamService = inject(TeamService);
   scheduleService = inject(OrganizationScheduleService);
+  organizationMemberService = inject(OrganizationMemberService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
@@ -187,8 +204,10 @@ export class AccountDetailComponent implements OnInit {
     try {
       const account = await this.accountService.loadAccountById(id);
       if (account) {
-        // 如果是组织账户，加载团队和排班信息
+        // 如果是组织账户，清空成员服务状态并加载相关信息
         if (account.type === AccountType.ORGANIZATION) {
+          // 清空组织成员服务状态，确保加载的是当前组织的成员
+          this.organizationMemberService.clearState();
           await this.loadTeams(account.id);
           await this.loadSchedules(account.id);
         }

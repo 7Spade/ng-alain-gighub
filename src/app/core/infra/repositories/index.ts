@@ -33,6 +33,7 @@ export * from './notification-rule.repository';
 export * from './notification-subscription.repository';
 export * from './notification.repository';
 export * from './organization-collaboration.repository';
+export * from './organization-member.repository';
 export * from './organization-schedule.repository';
 export * from './personal-todo.repository';
 // 只導出 Repository 類，不導出類型（避免與 @core/permissions 衝突）

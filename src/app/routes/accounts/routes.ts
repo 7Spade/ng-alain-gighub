@@ -6,10 +6,9 @@ import { CreateOrganizationComponent } from './create/create-organization.compon
 import { AccountDetailComponent } from './detail/account-detail.component';
 import { AccountFormComponent } from './form/account-form.component';
 import { AccountListComponent } from './list/account-list.component';
-import { OrganizationListComponent } from './organizations/organization-list.component';
+import { OrganizationListComponent } from './organizations/organization-list/organization-list.component';
 import { ScheduleListComponent } from './schedules/schedule-list.component';
 import { TeamCreateComponent } from './teams/team-create/team-create.component';
-import { TeamDeleteComponent } from './teams/team-delete/team-delete.component';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
 import { TeamEditComponent } from './teams/team-edit/team-edit.component';
 import { TeamListComponent } from './teams/team-list/team-list.component';

@@ -10,5 +10,6 @@
  */
 
 export * from './account.service';
-export * from './team.service';
+export * from './organization-member.service';
 export * from './organization-schedule.service';
+export * from './team.service';
