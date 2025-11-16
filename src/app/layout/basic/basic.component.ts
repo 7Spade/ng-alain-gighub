@@ -30,7 +30,7 @@ import { HeaderUserComponent } from './widgets/user.component';
   template: `
     <layout-default [options]="options" [asideUser]="asideUserTpl" [content]="contentTpl" [customError]="null">
       <layout-default-header-item direction="left">
-        <a layout-default-header-item-trigger href="//github.com/ng-alain/ng-alain" target="_blank">
+        <a layout-default-header-item-trigger href="//github.com/ng-alain/ng-alain-gighub" target="_blank">
           <i nz-icon nzType="github"></i>
         </a>
       </layout-default-header-item>

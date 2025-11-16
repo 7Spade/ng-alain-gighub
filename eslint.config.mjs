@@ -15,7 +15,7 @@ export default tseslint.config(
       'dist/',
       'coverage/',
       'junit/',
-      'ng-alain/',
+      'ng-alain-gighub/',
       'schematics/**/files/**/*',
       'src/dist/**/*',
       'src/templates/**/*',

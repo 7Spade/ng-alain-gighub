@@ -49,12 +49,12 @@ sed -i 's/showSettingDrawer = !environment.production;/showSettingDrawer = true;
 
 if [[ ${GH} == true ]]; then
   echo "Build angular [github gh-pages]"
-  node --max_old_space_size=5120 ./node_modules/@angular/cli/bin/ng build --base-href /ng-alain/
+  node --max_old_space_size=5120 ./node_modules/@angular/cli/bin/ng build --base-href /ng-alain-gighub/
 else
   echo "Build angular"
   node --max_old_space_size=5120 ./node_modules/@angular/cli/bin/ng build
 fi
 
-cp -f ${DIST_DIR}/ng-alain/browser/index.html ${DIST_DIR}/ng-alain/browser/404.html
+cp -f ${DIST_DIR}/ng-alain-gighub/browser/index.html ${DIST_DIR}/ng-alain-gighub/browser/404.html
 
 echo "Finished"

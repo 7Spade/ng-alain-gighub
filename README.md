@@ -9,12 +9,12 @@
 <div align="center">
   Out-of-box UI solution for enterprise applications, Let developers focus on business.
 
-  [![CI](https://github.com/ng-alain/ng-alain/actions/workflows/ci.yml/badge.svg)](https://github.com/ng-alain/ng-alain/actions/workflows/ci.yml)
-  [![Dependency Status](https://david-dm.org/ng-alain/ng-alain/status.svg?style=flat-square)](https://david-dm.org/ng-alain/ng-alain)
-  [![GitHub Release Date](https://img.shields.io/github/release-date/ng-alain/ng-alain.svg?style=flat-square)](https://github.com/ng-alain/ng-alain/releases)
+  [![CI](https://github.com/ng-alain/ng-alain-gighub/actions/workflows/ci.yml/badge.svg)](https://github.com/ng-alain/ng-alain-gighub/actions/workflows/ci.yml)
+  [![Dependency Status](https://david-dm.org/ng-alain/ng-alain-gighub/status.svg?style=flat-square)](https://david-dm.org/ng-alain/ng-alain-gighub)
+  [![GitHub Release Date](https://img.shields.io/github/release-date/ng-alain/ng-alain-gighub.svg?style=flat-square)](https://github.com/ng-alain/ng-alain-gighub/releases)
   [![NPM version](https://img.shields.io/npm/v/ng-alain.svg?style=flat-square)](https://www.npmjs.com/package/ng-alain)
   [![prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://prettier.io/)
-  [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/ng-alain/ng-alain/blob/master/LICENSE)
+  [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/ng-alain/ng-alain-gighub/blob/master/LICENSE)
   [![Gitter](https://img.shields.io/gitter/room/ng-alain/ng-alain.svg?style=flat-square)](https://gitter.im/ng-alain/ng-alain)
   [![ng-zorro-vscode](https://img.shields.io/badge/ng--zorro-VSCODE-brightgreen.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=cipchk.ng-zorro-vscode)
   [![ng-alain-vscode](https://img.shields.io/badge/ng--alain-VSCODE-brightgreen.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=cipchk.ng-alain-vscode)
@@ -62,9 +62,9 @@ English | [简体中文](README-zh_CN.md)
 
 ## Contributing
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ng-alain/ng-alain/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ng-alain/ng-alain-gighub/pulls)
 
-We welcome all contributions. Please read our [CONTRIBUTING.md](https://github.com/ng-alain/ng-alain/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/ng-alain/ng-alain/pulls) or as [GitHub issues](https://github.com/ng-alain/ng-alain/issues).
+We welcome all contributions. Please read our [CONTRIBUTING.md](https://github.com/ng-alain/ng-alain-gighub/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/ng-alain/ng-alain-gighub/pulls) or as [GitHub issues](https://github.com/ng-alain/ng-alain-gighub/issues).
 
 > If you're new to posting issues, we ask that you read [*How To Ask Questions The Smart Way*](http://www.catb.org/~esr/faqs/smart-questions.html) (**This guide does not provide actual support services for this project!**), [How to Ask a Question in Open Source Community](https://github.com/seajs/seajs/issues/545) and [How to Report Bugs Effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html) prior to posting. Well written bug reports help us help you!
 
@@ -87,4 +87,4 @@ Thank you to all our backers! 🙏
 
 ### License
 
-The MIT License (see the [LICENSE](https://github.com/ng-alain/ng-alain/blob/master/LICENSE) file for the full text)
+The MIT License (see the [LICENSE](https://github.com/ng-alain/ng-alain-gighub/blob/master/LICENSE) file for the full text)

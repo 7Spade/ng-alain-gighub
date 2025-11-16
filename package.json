@@ -1,16 +1,16 @@
 {
-  "name": "ng-alain",
+  "name": "ng-alain-gighub",
   "version": "20.1.0",
   "description": "ng-zorro-antd admin panel front-end framework",
   "author": "cipchk <cipchk@qq.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ng-alain/ng-alain.git"
+    "url": "git+https://github.com/ng-alain/ng-alain-gighub.git"
   },
   "bugs": {
-    "url": "https://github.com/ng-alain/ng-alain/issues"
+    "url": "https://github.com/ng-alain/ng-alain-gighub/issues"
   },
-  "homepage": "https://ng-alain.com",
+  "homepage": "https://github.com/ng-alain/ng-alain-gighub",
   "license": "MIT",
   "keywords": [
     "delon",
@@ -61,6 +61,7 @@
     "@supabase/supabase-js": "^2.81.1",
     "ng-zorro-antd": "^20.3.1",
     "ngx-tinymce": "^20.0.0",
+    "pdfjs-dist": "^5.4.394",
     "rxjs": "~7.8.0",
     "screenfull": "^6.0.2",
     "tslib": "^2.3.0",
