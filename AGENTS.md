@@ -18,6 +18,7 @@
 - [Git-like 分支模型](./.cursor/rules/git-model.mdc) - 分支模型與版本控制
 
 ### 代碼質量規範
+- [核心開發原則](./.cursor/rules/development-principles.mdc) ⭐ - **四個核心原則：常見做法、企業標準、符合邏輯、符合常理**
 - [代碼質量](./.cursor/rules/code-quality.mdc) - 代碼質量與最佳實踐
 - [代碼檢查](./.cursor/rules/linting.mdc) - ESLint 代碼檢查規範
 - [代碼格式化](./.cursor/rules/formatting.mdc) - Prettier 格式化規範
@@ -93,6 +94,13 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
   - **Git-like 分支模型**：系統採用 Git-like 分支模型，包含主分支、組織分支、PR 機制（參考 `docs/27-完整架構流程圖.mermaid.md`, `docs/28-架構審查報告.md`）
   - **51 張資料表架構**：系統共包含 51 張資料表，分為 11 個模組（參考 `docs/30-0-完整SQL表結構定義.md`）
   - **核心設計原則**：暫存區機制（48h 可撤回）、待辦中心（五種狀態）、問題同步（即時同步至主分支）、活動記錄（集中記錄）、文件管理（版本控制、縮圖、軟刪除）
+
+**核心開發原則** ⭐：
+  - **常見做法**：遵循業界標準做法，參考官方文檔和最佳實踐，保持代碼一致性
+  - **企業標準**：代碼結構清晰、職責分離明確、錯誤處理完善、狀態管理規範
+  - **符合邏輯**：數據流清晰、命名語義化、條件判斷合理、組件初始化順序正確
+  - **符合常理**：功能真正可用、用戶體驗優先、避免過度設計、及時驗證
+  - **詳細說明**：參考 [代碼質量規範](./.cursor/rules/code-quality.mdc#core-development-principles-)
 
 ---
 

@@ -50,6 +50,48 @@ alwaysApply: true
 - Architecture changes need to synchronize architecture document updates (`docs/27-完整架構流程圖.mermaid.md`, `docs/28-架構審查報告.md`)
 - Regularly check consistency between documentation and code
 
+## Core Development Principles ⭐
+
+**所有開發工作必須遵循以下四個核心原則，這是避免問題和確保代碼質量的基礎：**
+
+### 1. 常見做法 (Common Practices)
+- **遵循業界標準做法**：參考 Angular、TypeScript、ng-alain 官方文檔和最佳實踐
+- **參考現有代碼**：查看項目中已有的類似實現，保持一致性
+- **避免標新立異**：不要為了創新而創新，優先使用成熟穩定的方案
+- **UI/UX 符合常規**：列表頁只顯示和查看，詳情頁負責編輯和刪除（參考團隊管理功能）
+
+### 2. 企業標準 (Enterprise Standards)
+- **代碼結構清晰**：嚴格遵循分層架構（routes → shared → core）
+- **職責分離明確**：每個組件、服務、模組都有單一職責
+- **錯誤處理完善**：所有異步操作都有錯誤處理，用戶友好的錯誤提示
+- **狀態管理規範**：使用 Signals 管理狀態，避免全局狀態污染
+- **測試覆蓋完整**：關鍵業務邏輯必須有單元測試
+
+### 3. 符合邏輯 (Logical Consistency)
+- **數據流清晰**：數據流向明確，避免循環依賴
+- **命名語義化**：變量、函數、類名能清楚表達意圖
+- **條件判斷合理**：避免複雜的嵌套條件，使用早期返回
+- **組件初始化順序**：優先加載主要功能，輔助功能非阻塞加載
+- **狀態更新時機**：確保狀態更新的時機和順序正確
+
+### 4. 符合常理 (Common Sense)
+- **功能完整性**：聲稱完成的功能必須真正可用，不能只是"看起來完成"
+- **用戶體驗優先**：從用戶角度思考，確保功能符合使用習慣
+- **避免過度設計**：不要為了技術而技術，簡單有效的方案更好
+- **及時驗證**：實現後立即驗證，不要等到最後才發現問題
+- **文檔與代碼一致**：文檔描述必須與實際實現一致
+
+### 實施檢查清單
+
+在完成任何功能開發後，必須檢查：
+
+- [ ] **常見做法檢查**：是否符合 Angular/TypeScript/ng-alain 最佳實踐？
+- [ ] **企業標準檢查**：代碼結構、錯誤處理、狀態管理是否規範？
+- [ ] **邏輯一致性檢查**：數據流、命名、條件判斷是否合理？
+- [ ] **常理檢查**：功能是否真正可用？用戶體驗是否良好？
+
+**如果任何一項檢查不通過，必須修復後才能標記為完成。**
+
 ## Early Detection of Inconsistencies
 
 - Use Supabase MCP to regularly check database structure (see [MCP Tools](./mcp-tools.mdc))

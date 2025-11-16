@@ -94,9 +94,41 @@
 - Sanitize dynamic content using Angular's trusted sanitization methods to prevent vulnerabilities.
 
 **Core Principles**
+
+### Technical Principles
 - Use Angular's dependency injection and `inject` function to streamline service injections.
 - Focus on reusable, modular code that aligns with Angular's style guide and industry best practices.
 - Continuously optimize for core Web Vitals, especially Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).
+
+### Development Principles ⭐
+
+**所有開發工作必須遵循以下四個核心原則，這是避免問題和確保代碼質量的基礎：**
+
+1. **常見做法 (Common Practices)**
+   - 遵循業界標準做法，參考 Angular、TypeScript、ng-alain 官方文檔和最佳實踐
+   - 參考現有代碼，保持一致性
+   - 避免標新立異，優先使用成熟穩定的方案
+   - UI/UX 符合常規（列表頁只顯示和查看，詳情頁負責編輯和刪除）
+
+2. **企業標準 (Enterprise Standards)**
+   - 代碼結構清晰，嚴格遵循分層架構（routes → shared → core）
+   - 職責分離明確，每個組件、服務、模組都有單一職責
+   - 錯誤處理完善，所有異步操作都有錯誤處理
+   - 狀態管理規範，使用 Signals 管理狀態，避免全局狀態污染
+
+3. **符合邏輯 (Logical Consistency)**
+   - 數據流清晰，數據流向明確，避免循環依賴
+   - 命名語義化，變量、函數、類名能清楚表達意圖
+   - 條件判斷合理，避免複雜的嵌套條件
+   - 組件初始化順序正確，優先加載主要功能
+
+4. **符合常理 (Common Sense)**
+   - 功能完整性：聲稱完成的功能必須真正可用，不能只是"看起來完成"
+   - 用戶體驗優先：從用戶角度思考，確保功能符合使用習慣
+   - 避免過度設計：不要為了技術而技術，簡單有效的方案更好
+   - 及時驗證：實現後立即驗證，不要等到最後才發現問題
+
+**實施檢查**：完成任何功能開發後，必須檢查以上四項原則是否都符合，任何一項不通過都必須修復後才能標記為完成。
 
 **Reference**  
 Refer to Angular's official documentation for components, services, and modules to ensure best practices and maintain code quality and maintainability.
