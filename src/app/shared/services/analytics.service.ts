@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ActivityLogRepository, ActivityLog as ActivityLogDb } from '@core';
-import { ActivityLog, ActivityLogDetail, ActivityLogFilters } from '@shared';
+import { ActivityLog, ActivityLogDetail, ActivityLogFilters, ActivityLogResourceType } from '@shared';
 import type { ActivityLogInsert } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
@@ -33,18 +33,31 @@ export class AnalyticsService {
   readonly error = this.errorState.asReadonly();
 
   /**
-   * 將資料庫類型轉換為應用模型類型
+   * 將資料庫類型轉換為應用模型類型（camelCase）
+   * 注意：返回的對象使用 camelCase 屬性名稱
    */
-  private mapToActivityLog(dbLog: ActivityLogDb): ActivityLog {
+  private mapToActivityLog(dbLog: ActivityLogDb): {
+    id: string;
+    blueprintId: string;
+    branchId: string | null;
+    actorId: string;
+    action: string;
+    resourceType: string;
+    resourceId: string | null;
+    actionDetails: Record<string, unknown> | null;
+    ipAddress: string | null;
+    userAgent: string | null;
+    createdAt: string;
+  } {
     return {
       id: dbLog.id,
       blueprintId: dbLog.blueprint_id,
       branchId: dbLog.branch_id,
       actorId: dbLog.actor_id,
       action: dbLog.action,
-      resourceType: dbLog.resource_type as any,
+      resourceType: dbLog.resource_type,
       resourceId: dbLog.resource_id,
-      actionDetails: dbLog.action_details as any,
+      actionDetails: dbLog.action_details as Record<string, unknown> | null,
       ipAddress: dbLog.ip_address as string | null,
       userAgent: dbLog.user_agent,
       createdAt: dbLog.created_at ?? new Date().toISOString()
@@ -70,7 +83,17 @@ export class AnalyticsService {
 
       // 將資料轉換為 ActivityLogDetail 格式
       const activityLogDetail: ActivityLogDetail = {
-        ...activityLog,
+        id: activityLog.id,
+        blueprintId: activityLog.blueprintId,
+        branchId: activityLog.branchId,
+        actorId: activityLog.actorId,
+        action: activityLog.action,
+        resourceType: activityLog.resourceType as ActivityLogResourceType,
+        resourceId: activityLog.resourceId,
+        actionDetails: activityLog.actionDetails,
+        ipAddress: activityLog.ipAddress,
+        userAgent: activityLog.userAgent,
+        createdAt: activityLog.createdAt,
         // TODO: 載入關聯的 actor, blueprint, branch 資料
         actor: undefined,
         blueprint: undefined,
@@ -135,17 +158,18 @@ export class AnalyticsService {
     this.errorState.set(null);
 
     try {
+      // 使用 camelCase，BaseRepository 會自動轉換為 snake_case
       const dbInsertData = {
-        actor_id: data.actorId,
-        blueprint_id: data.blueprintId,
-        branch_id: data.branchId,
+        actorId: data.actorId,
+        blueprintId: data.blueprintId,
+        branchId: data.branchId,
         action: data.action,
-        resource_type: data.resourceType,
-        resource_id: data.resourceId,
-        action_details: data.actionDetails as any,
-        ip_address: data.ipAddress,
-        user_agent: data.userAgent
-      };
+        resourceType: data.resourceType,
+        resourceId: data.resourceId,
+        actionDetails: data.actionDetails,
+        ipAddress: data.ipAddress,
+        userAgent: data.userAgent
+      } as any; // 類型斷言，因為 BaseRepository 會處理轉換
 
       const dbLog = await firstValueFrom(this.activityLogRepository.create(dbInsertData));
       return this.mapToActivityLog(dbLog);

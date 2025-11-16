@@ -70,7 +70,17 @@ export class QualityCheckService {
 
       // 將資料轉換為 QualityCheckDetail 格式
       const qualityCheckDetail: QualityCheckDetail = {
-        ...qualityCheck,
+        id: qualityCheck.id,
+        taskId: qualityCheck.taskId,
+        stagingId: qualityCheck.stagingId,
+        inspectorId: qualityCheck.inspectorId,
+        checkType: qualityCheck.checkType,
+        status: qualityCheck.status,
+        checkItems: qualityCheck.checkItems,
+        findings: qualityCheck.findings,
+        recommendations: qualityCheck.recommendations,
+        checkedAt: qualityCheck.checkedAt,
+        completedAt: qualityCheck.completedAt,
         // TODO: 載入關聯的 task 和 inspector 資料
         task: undefined,
         inspector: undefined,
@@ -127,12 +137,13 @@ export class QualityCheckService {
     this.errorState.set(null);
 
     try {
+      // 使用 camelCase，BaseRepository 會自動轉換為 snake_case
       const dbUpdateData: Record<string, unknown> = {};
       if (data.status !== undefined) dbUpdateData['status'] = data.status;
-      if (data.checkItems !== undefined) dbUpdateData['check_items'] = data.checkItems;
+      if (data.checkItems !== undefined) dbUpdateData['checkItems'] = data.checkItems;
       if (data.findings !== undefined) dbUpdateData['findings'] = data.findings;
       if (data.recommendations !== undefined) dbUpdateData['recommendations'] = data.recommendations;
-      if (data.completedAt !== undefined) dbUpdateData['completed_at'] = data.completedAt;
+      if (data.completedAt !== undefined) dbUpdateData['completedAt'] = data.completedAt;
 
       const dbCheck = await firstValueFrom(this.qualityCheckRepository.update(id, dbUpdateData));
       return this.mapToQualityCheck(dbCheck);

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS, QualityCheckService, QualityCheckStatus } from '@shared';
+import { SHARED_IMPORTS, QualityCheckService, QualityCheckStatus, QualityCheckItem } from '@shared';
 import type { QualityCheckDetail } from '@shared';
 
 @Component({
@@ -81,7 +81,7 @@ export class QualityCheckDetailComponent implements OnInit {
 
   private updateForm(data: QualityCheckDetail): void {
     this.editForm.patchValue({
-      status: data.status,
+      status: (data.status as QualityCheckStatus) || null,
       findings: data.findings || '',
       recommendations: data.recommendations || ''
     });
@@ -114,7 +114,7 @@ export class QualityCheckDetailComponent implements OnInit {
           formValue.status === QualityCheckStatus.CONDITIONAL_PASS
             ? new Date().toISOString()
             : null
-      });
+      } as any); // 使用類型斷言，因為 Service 層會處理 snake_case 轉換
 
       // 重新載入最新資料
       await this.loadQualityCheck();
@@ -130,13 +130,17 @@ export class QualityCheckDetailComponent implements OnInit {
     this.router.navigate(['/quality/checks']);
   }
 
-  getStatusLabel(status: QualityCheckStatus): string {
-    const option = this.statusOptions.find(opt => opt.value === status);
+  getStatusLabel(status: string | null): string {
+    if (!status) return '未知';
+    const statusEnum = status as QualityCheckStatus;
+    const option = this.statusOptions.find(opt => opt.value === statusEnum);
     return option ? option.label : status;
   }
 
-  getStatusColor(status: QualityCheckStatus): string {
-    switch (status) {
+  getStatusColor(status: string | null): string {
+    if (!status) return 'default';
+    const statusEnum = status as QualityCheckStatus;
+    switch (statusEnum) {
       case QualityCheckStatus.PASSED:
         return 'success';
       case QualityCheckStatus.FAILED:
@@ -148,5 +152,23 @@ export class QualityCheckDetailComponent implements OnInit {
       default:
         return 'default';
     }
+  }
+
+  /**
+   * 檢查 checkItems 是否為有效數組
+   */
+  hasCheckItems(checkItems: unknown[] | null): boolean {
+    return checkItems !== null && Array.isArray(checkItems) && checkItems.length > 0;
+  }
+
+  /**
+   * 獲取 checkItems 數組（確保類型安全）
+   */
+  getCheckItems(checkItems: unknown[] | null): QualityCheckItem[] {
+    if (checkItems === null || !Array.isArray(checkItems)) {
+      return [];
+    }
+    // 類型斷言：假設數組中的項目符合 QualityCheckItem 結構
+    return checkItems as QualityCheckItem[];
   }
 }

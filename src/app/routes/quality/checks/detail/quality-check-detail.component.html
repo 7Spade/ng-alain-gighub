@@ -114,9 +114,9 @@
           </nz-descriptions>
 
           <!-- Check Items -->
-          @if (qualityCheck()!.checkItems && qualityCheck()!.checkItems.length > 0) {
+          @if (hasCheckItems(qualityCheck()!.checkItems)) {
             <h3 style="margin-top: 24px; margin-bottom: 16px;">檢查項目</h3>
-            <nz-table #checkItemsTable [nzData]="qualityCheck()!.checkItems" [nzShowPagination]="false">
+            <nz-table #checkItemsTable [nzData]="getCheckItems(qualityCheck()!.checkItems)" [nzShowPagination]="false">
               <thead>
                 <tr>
                   <th>項目名稱</th>

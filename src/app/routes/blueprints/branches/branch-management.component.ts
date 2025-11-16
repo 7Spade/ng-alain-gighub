@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BranchType } from '@core';
+import { BranchType, BranchContextService } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { AccountService, AccountType, BlueprintBranch, BlueprintService, BranchService, SHARED_IMPORTS } from '@shared';
@@ -164,6 +164,14 @@ class ForkBranchDialogComponent implements OnInit {
             }
           }
         </ng-template>
+
+        <ng-template #organization let-record>
+          @if (getOrganizationName(record.organization_id)) {
+            <span>{{ getOrganizationName(record.organization_id) }}</span>
+          } @else {
+            <span style="color: #999;">{{ record.organization_id }}</span>
+          }
+        </ng-template>
       </st>
     </nz-card>
   `
@@ -172,6 +180,7 @@ export class BranchManagementComponent implements OnInit {
   branchService = inject(BranchService);
   accountService = inject(AccountService);
   blueprintService = inject(BlueprintService);
+  branchContext = inject(BranchContextService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
@@ -195,27 +204,39 @@ export class BranchManagementComponent implements OnInit {
   AccountType = AccountType;
 
   columns: STColumn[] = [
-    { title: 'ID', index: 'id', width: 100 },
     { title: '分支名称', index: 'branch_name', width: 200 },
-    { title: '组织ID', index: 'organization_id', width: 150 },
+    { title: '组织', index: 'organization_id', width: 200, render: 'organization' },
     { title: '分支类型', index: 'branch_type', width: 120, render: 'type' },
     { title: '状态', index: 'status', width: 100, render: 'status' },
     { title: '创建时间', index: 'created_at', type: 'date', width: 180 },
     {
       title: '操作',
-      width: 200,
+      width: 250,
       buttons: [
         {
+          text: '切换',
+          type: 'link',
+          click: (record: BlueprintBranch) => this.switchToBranch(record.id)
+        },
+        {
           text: '查看',
+          type: 'link',
           click: (record: BlueprintBranch) => this.viewBranch(record.id)
         },
         {
           text: '同步',
+          type: 'link',
           click: (record: BlueprintBranch) => this.syncBranch(record.id)
         },
         {
           text: '关闭',
-          click: (record: BlueprintBranch) => this.closeBranch(record.id)
+          type: 'link',
+          click: (record: BlueprintBranch) => this.closeBranch(record.id),
+          pop: {
+            title: '确认关闭',
+            okText: '确定',
+            cancelText: '取消'
+          }
         }
       ]
     }
@@ -226,6 +247,10 @@ export class BranchManagementComponent implements OnInit {
     if (id) {
       this.loadBlueprint(id);
       this.loadBranches(id);
+      // 加載組織列表以便顯示組織名稱
+      this.accountService.loadAccounts().catch(() => {
+        // 錯誤處理已在service中完成
+      });
     }
   }
 
@@ -381,5 +406,44 @@ export class BranchManagementComponent implements OnInit {
     } catch (error) {
       this.message.error('关闭失败');
     }
+  }
+
+  /**
+   * 切換到指定分支
+   */
+  async switchToBranch(branchId: string): Promise<void> {
+    const blueprintId = this.blueprintId();
+    if (!blueprintId) {
+      this.message.error('蓝图ID不存在');
+      return;
+    }
+
+    try {
+      // 加載分支並設置為當前分支
+      const branch = await this.branchService.loadBranchById(branchId);
+      if (branch) {
+        // 使用BranchContextService設置當前分支
+        this.branchContext.setCurrentBranch(branch);
+
+        // 導航到藍圖主頁面
+        this.router.navigate(['/blueprints', blueprintId], {
+          queryParams: { branchId: branchId }
+        });
+        this.message.success(`已切換到分支：${branch.branch_name}`);
+      } else {
+        this.message.error('分支不存在');
+      }
+    } catch (error) {
+      this.message.error('切換分支失敗');
+      console.error('Switch branch error:', error);
+    }
+  }
+
+  /**
+   * 獲取組織名稱
+   */
+  getOrganizationName(organizationId: string): string | null {
+    const org = this.accountService.accounts().find(a => a.id === organizationId);
+    return org?.name || null;
   }
 }

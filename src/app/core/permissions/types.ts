@@ -49,18 +49,8 @@ export interface UserRole {
   roles?: Role;
 }
 
-/**
- * 分支权限
- * 对应 branch_permissions 表
- */
-export interface BranchPermission {
-  id: string;
-  branch_id: string;
-  account_id: string;
-  permission_level: 'owner' | 'admin' | 'write' | 'read';
-  granted_by: string;
-  granted_at?: string;
-}
+// BranchPermission 已移至 @shared/models/permission
+// 此處不再導出，避免重複導出錯誤
 
 /**
  * 权限检查结果

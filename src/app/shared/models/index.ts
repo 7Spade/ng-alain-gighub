@@ -17,12 +17,21 @@
  * @module shared/models
  */
 
-// 按模块导出
+// 按模块导出（按依赖顺序）
 export * from './account';
 export * from './collaboration';
+export * from './permission';
 export * from './blueprint';
 export * from './task';
+export * from './quality';
+export * from './issue';
+export * from './communication';
+export * from './data';
+export * from './bot';
+export * from './system';
 
-// Quality & Analytics models
-export * from './quality-check.model';
-export * from './activity-log.model';
+// 注意：quality-check.model.ts 和 activity-log.model.ts 已迁移到模块目录
+// 请使用 @shared/models/quality 和 @shared/models/data 导入
+// 以下导出仅用于向后兼容，建议迁移到新模块
+// export * from './quality-check.model';
+// export * from './activity-log.model';

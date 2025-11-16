@@ -3,11 +3,12 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { BranchType, BranchStatus } from '../types/blueprint.types';
+import { BranchStatus, BranchType } from '../types/blueprint.types';
 import { Database } from '../types/database.types';
 
 /**
- * 从数据库类型中提取原始类型（snake_case）
+ * BlueprintBranch 实体类型（camelCase）
+ * 从数据库类型中提取，后续会通过转换工具转换为 camelCase
  */
 type BlueprintBranchRow = Database['public']['Tables']['blueprint_branches']['Row'];
 type BlueprintBranchInsert = Database['public']['Tables']['blueprint_branches']['Insert'];
@@ -29,7 +30,7 @@ export type { BlueprintBranchInsert, BlueprintBranchUpdate };
  * ```typescript
  * const branchRepo = inject(BlueprintBranchRepository);
  * branchRepo.findByBlueprintId('blueprint-id').subscribe(branches => {
- *   console.log('Branches:', branches);
+ *   console.log('Blueprint branches:', branches);
  * });
  * ```
  */
@@ -40,7 +41,7 @@ export class BlueprintBranchRepository extends BaseRepository<BlueprintBranch, B
   protected tableName = 'blueprint_branches';
 
   /**
-   * 根据蓝图 ID 查询分支列表
+   * 根据蓝图 ID 查询分支
    *
    * @param blueprintId 蓝图 ID
    * @param options 查询选项
@@ -57,7 +58,7 @@ export class BlueprintBranchRepository extends BaseRepository<BlueprintBranch, B
   }
 
   /**
-   * 根据组织 ID 查询分支列表
+   * 根据组织 ID 查询分支
    *
    * @param organizationId 组织 ID
    * @param options 查询选项
@@ -74,24 +75,7 @@ export class BlueprintBranchRepository extends BaseRepository<BlueprintBranch, B
   }
 
   /**
-   * 根据分支类型查询分支列表
-   *
-   * @param branchType 分支类型
-   * @param options 查询选项
-   * @returns Observable<BlueprintBranch[]>
-   */
-  findByBranchType(branchType: BranchType, options?: QueryOptions): Observable<BlueprintBranch[]> {
-    return this.findAll({
-      ...options,
-      filters: {
-        ...options?.filters,
-        branchType // 会自动转换为 branch_type
-      }
-    });
-  }
-
-  /**
-   * 根据分支状态查询分支列表
+   * 根据状态查询分支
    *
    * @param status 分支状态
    * @param options 查询选项
@@ -108,7 +92,24 @@ export class BlueprintBranchRepository extends BaseRepository<BlueprintBranch, B
   }
 
   /**
-   * 查询活跃的分支
+   * 根据分支类型查询分支
+   *
+   * @param branchType 分支类型
+   * @param options 查询选项
+   * @returns Observable<BlueprintBranch[]>
+   */
+  findByBranchType(branchType: BranchType, options?: QueryOptions): Observable<BlueprintBranch[]> {
+    return this.findAll({
+      ...options,
+      filters: {
+        ...options?.filters,
+        branchType // 会自动转换为 branch_type
+      }
+    });
+  }
+
+  /**
+   * 查询活跃的分支（状态为 active）
    *
    * @param options 查询选项
    * @returns Observable<BlueprintBranch[]>
@@ -118,7 +119,7 @@ export class BlueprintBranchRepository extends BaseRepository<BlueprintBranch, B
   }
 
   /**
-   * 根据蓝图 ID 和组织 ID 查询分支（唯一分支）
+   * 根据蓝图 ID 和组织 ID 查询分支（唯一查询）
    *
    * @param blueprintId 蓝图 ID
    * @param organizationId 组织 ID
@@ -127,9 +128,40 @@ export class BlueprintBranchRepository extends BaseRepository<BlueprintBranch, B
   findByBlueprintAndOrganization(blueprintId: string, organizationId: string): Observable<BlueprintBranch | null> {
     return this.findAll({
       filters: {
-        blueprintId, // 会自动转换为 blueprint_id
-        organizationId // 会自动转换为 organization_id
+        blueprintId,
+        organizationId
       }
     }).pipe(map(branches => (branches.length > 0 ? branches[0] : null)));
+  }
+
+  /**
+   * 创建 Fork 分支
+   *
+   * @param blueprintId 蓝图 ID
+   * @param organizationId 组织 ID
+   * @param branchName 分支名称
+   * @param branchType 分支类型
+   * @param notes 备注
+   * @returns Observable<BlueprintBranch>
+   */
+  createFork(
+    blueprintId: string,
+    organizationId: string,
+    branchName: string,
+    branchType: BranchType = BranchType.CONTRACTOR,
+    notes?: string
+  ): Observable<BlueprintBranch> {
+    // BaseRepository 會自動進行 camelCase → snake_case 轉換
+    const insertData = {
+      blueprintId,
+      organizationId,
+      branchName,
+      branchType,
+      status: BranchStatus.ACTIVE,
+      forkedAt: new Date().toISOString(),
+      notes: notes || null
+    } as any as BlueprintBranchInsert;
+
+    return this.create(insertData);
   }
 }
