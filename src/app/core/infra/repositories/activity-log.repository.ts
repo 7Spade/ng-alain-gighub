@@ -6,6 +6,7 @@ import { Database } from '../types/database.types';
 
 /**
  * ActivityLog 實體類型（camelCase）
+ * 注意：BaseRepository 會自動進行 snake_case → camelCase 轉換
  */
 type ActivityLogRow = Database['public']['Tables']['activity_logs']['Row'];
 type ActivityLogInsert = Database['public']['Tables']['activity_logs']['Insert'];
