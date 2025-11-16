@@ -324,5 +324,33 @@ StartupService.load()
 
 ---
 
+## 模型結構規範（2025-01-15 更新）
+
+### 文件結構
+
+- **模組目錄**：按業務模組分類，每個模組包含 `index.ts` 和 `types.ts`
+- **類型文件**：統一使用 `types.ts` 命名（不使用 `.model.ts` 後綴）
+- **統一導出**：通過 `shared/models/index.ts` 統一導出所有模組類型
+
+### 導入方式
+
+```typescript
+// ✅ 正確：從 @shared 統一導入
+import { QualityCheck, ActivityLog } from '@shared';
+
+// ✅ 正確：從模組目錄導入
+import { QualityCheck } from '@shared/models/quality';
+import { ActivityLog } from '@shared/models/data';
+
+// ❌ 錯誤：不應使用遺留文件（已刪除）
+// import { QualityCheck } from '@shared/models/quality-check.model';
+```
+
+**詳細記錄**：
+- [模型結構分析報告](./模型结构分析报告.md)
+- [模型結構清理總結](./模型结构清理总结-2025-01-15.md)
+
+---
+
 **最後更新**：2025-01-15  
 **維護者**：開發團隊

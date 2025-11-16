@@ -23,6 +23,10 @@
 
 ## 📅 時間線總覽
 
+### 2025-01-15（晚）
+
+- ✅ **模型結構清理**（2025-01-15）- 刪除遺留文件 `activity-log.model.ts` 和 `quality-check.model.ts`，統一文件命名規範為 `types.ts`，確認與 `core/infra/types` 無衝突，創建詳細分析報告
+
 ### 2025-01-15（下午）
 
 - ✅ **Bot 賬戶區分機制實施**（2025-01-15）- 實現個人 Bot 與組織 Bot 的區分機制，使用 `auth_organization_id` 字段區分，更新 `create_bot_account` 函數和 RLS 策略，支持組織成員查看組織 Bot

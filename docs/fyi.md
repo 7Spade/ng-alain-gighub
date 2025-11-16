@@ -159,6 +159,15 @@
 - 若需要補充新事件，請在此以倒序方式紀錄，並同步更新對應 FYI/Archive 文件。
 - 新增/調整後請更新「最後更新」日期與維護者資訊。
 
+### 2025-01-15 更新
+
+- ✅ **模型結構清理**（2025-01-15 晚）
+  - 刪除遺留文件 `activity-log.model.ts` 和 `quality-check.model.ts`
+  - 統一文件命名規範為 `types.ts`
+  - 確認與 `core/infra/types` 無衝突
+  - 創建詳細分析報告和清理總結
+  - 更新相關 FYI 文檔（architecture, data, context, challenges, development, history）
+
 ### 2025-11-15 更新
 
 - ✅ 新增 `fyi-rls.md` - RLS 安全脈絡文檔
@@ -172,7 +181,7 @@
 
 ---
 
-**最後更新**：2025-11-15  
+**最後更新**：2025-01-15  
 **維護者**：開發團隊
 
 ---

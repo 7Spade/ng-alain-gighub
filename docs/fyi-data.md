@@ -9,6 +9,8 @@
 - [完整 SQL 表結構定義](./30-0-完整SQL表結構定義.md) - 完整資料表結構
 - [資料模型對照表](./34-資料模型對照表.md) - 資料庫與 TypeScript 模型對照
 - [實體關係圖](./12-實體關係圖.mermaid.md) - 資料庫 ER 圖
+- [模型結構分析報告](./模型结构分析报告.md) - 模型結構分析與清理記錄
+- [模型結構清理總結](./模型结构清理总结-2025-01-15.md) - 2025-01-15 清理總結
 
 ---
 
@@ -101,6 +103,15 @@
   - 範例：`userId`, `createdAt`, `isPrivate`
 - **類型別名**：PascalCase，通常以 `Type` 或具體名稱結尾
   - 範例：`BlueprintStatus`, `TeamMemberRole`
+
+#### 文件結構規範
+
+- **模組目錄**：按業務模組分類，每個模組包含 `index.ts` 和 `types.ts`
+  - 範例：`shared/models/account/`, `shared/models/blueprint/`
+- **類型文件**：統一使用 `types.ts` 命名（不使用 `.model.ts` 後綴）
+  - ✅ 正確：`shared/models/account/types.ts`
+  - ❌ 錯誤：`shared/models/account.model.ts`
+- **統一導出**：通過 `shared/models/index.ts` 統一導出所有模組類型
 
 ### 類型對照
 

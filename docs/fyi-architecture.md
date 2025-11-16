@@ -60,11 +60,13 @@ core/
 
 ### Shared 模組（共享層）
 
-#### 模組結構（規劃中）
+#### 模組結構
 ```
 shared/
 ├── models/            # 數據模型（按 11 個業務模組分類）
 │   ├── account/       # 🔐 帳戶與身份系統（4 張表）
+│   │   ├── index.ts
+│   │   └── types.ts   # ✅ 統一使用 types.ts 命名
 │   ├── collaboration/ # 🤝 組織協作系統（3 張表）
 │   ├── permission/    # 🔒 權限系統（5 張表）
 │   ├── blueprint/     # 🎯 藍圖/專案系統（5 張表）
@@ -74,7 +76,8 @@ shared/
 │   ├── communication/ # 💬 協作溝通系統（6 張表）
 │   ├── data/          # 📊 資料分析系統（6 張表）
 │   ├── bot/           # 🤖 機器人系統（3 張表）
-│   └── system/        # ⚙️ 系統管理（2 張表）
+│   ├── system/        # ⚙️ 系統管理（2 張表）
+│   └── index.ts       # ✅ 統一導出所有模組類型
 ├── services/          # 共享服務（Repository 模式）
 ├── components/        # 共享組件
 ├── utils/             # 工具函數
@@ -83,6 +86,11 @@ shared/
 ├── interfaces/        # 接口定義
 └── constants/         # 常量定義
 ```
+
+**文件命名規範**（2025-01-15 更新）：
+- ✅ 所有模組統一使用 `types.ts` 命名
+- ❌ 不再使用 `.model.ts` 後綴
+- ✅ 通過 `shared/models/index.ts` 統一導出
 
 ### Routes 模組（業務層）
 
@@ -516,6 +524,20 @@ canFillContractorFields(branchId)      // 協作組織
 canReviewPR(blueprintId)                // 只有擁有者
 canCreatePR(branchId)                   // 分支所屬組織
 ```
+
+---
+
+## 模型結構清理（2025-01-15）
+
+### 清理內容
+
+- ✅ 刪除遺留文件：`activity-log.model.ts` 和 `quality-check.model.ts`
+- ✅ 統一文件命名：所有模組使用 `types.ts` 命名規範
+- ✅ 確認無衝突：與 `core/infra/types` 職責清晰，無類型衝突
+
+**詳細記錄**：
+- [模型結構分析報告](./模型结构分析报告.md)
+- [模型結構清理總結](./模型结构清理总结-2025-01-15.md)
 
 ---
 
