@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-alain": {
+    "ng-alain-gighub": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -132,11 +132,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ng-alain:serve"
+            "devServerTarget": "ng-alain-gighub:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ng-alain:serve:production"
+              "devServerTarget": "ng-alain-gighub:serve:production"
             }
           }
         }

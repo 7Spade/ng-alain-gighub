@@ -28,14 +28,14 @@ jobs:
         with:
           login: ${{ secrets.SURGE_LOGIN }}
           token: ${{ secrets.SURGE_TOKEN }}
-          domain: https://ng-alain.surge.sh
-          project: ./dist/ng-alain/browser
+          domain: https://ng-alain-gighub.surge.sh
+          project: ./dist/ng-alain-gighub/browser
 
       - name: Replace base href for gh-pages
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: '<base href="/">'
-          replace: '<base href="/ng-alain/">'
+          replace: '<base href="/ng-alain-gighub/">'
           include: '*.html'
           regex: false
 
@@ -45,6 +45,6 @@ jobs:
           PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: ./dist/ng-alain/browser
+          PUBLISH_DIR: ./dist/ng-alain-gighub/browser
         with:
           emptyCommits: false
