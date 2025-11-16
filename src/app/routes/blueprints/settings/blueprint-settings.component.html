@@ -1,0 +1,173 @@
+<page-header [title]="'蓝图设置'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a routerLink="/blueprints">蓝图列表</a>
+      </nz-breadcrumb-item>
+      @if (blueprint()) {
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/blueprints', blueprintId()]">{{ blueprint()?.name }}</a>
+        </nz-breadcrumb-item>
+      }
+      <nz-breadcrumb-item>设置</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #extra>
+    <button nz-button nzType="default" (click)="goBack()" style="margin-right: 8px;">
+      <span nz-icon nzType="arrow-left"></span>
+      返回
+    </button>
+  </ng-template>
+</page-header>
+
+<div style="padding: 16px;">
+  @if (loading()) {
+    <!-- Loading State -->
+    <nz-spin nzSimple [nzSize]="'large'" style="display: block; padding: 50px; text-align: center;">
+      <ng-template #indicator>
+        <span nz-icon nzType="loading" style="font-size: 24px;"></span>
+      </ng-template>
+    </nz-spin>
+  } @else if (blueprint()) {
+    <!-- Settings Form -->
+    <nz-card [nzTitle]="'基本设置'">
+      <form nz-form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Blueprint Name -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="4" nzRequired nzFor="name">蓝图名称</nz-form-label>
+          <nz-form-control [nzSpan]="20" [nzErrorTip]="'请输入蓝图名称（1-255个字符）'">
+            <input 
+              nz-input 
+              id="name"
+              formControlName="name" 
+              placeholder="请输入蓝图名称"
+              [maxlength]="255"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Blueprint Description -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="4" nzFor="description">描述</nz-form-label>
+          <nz-form-control [nzSpan]="20" [nzErrorTip]="'描述不能超过1000个字符'">
+            <textarea
+              nz-input
+              id="description"
+              formControlName="description"
+              [nzAutosize]="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入蓝图描述"
+              [maxlength]="1000"
+            ></textarea>
+            <div style="margin-top: 4px; color: rgba(0, 0, 0, 0.45); font-size: 12px;">
+              {{ (form.get('description')?.value || '')?.length || 0 }} / 1000
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Read-only Info -->
+        <nz-divider nzText="其他信息" nzOrientation="left"></nz-divider>
+        
+        <nz-form-item>
+          <nz-form-label [nzSpan]="4">项目代码</nz-form-label>
+          <nz-form-control [nzSpan]="20">
+            <input 
+              nz-input 
+              [value]="blueprint()?.project_code || '未设置'" 
+              [disabled]="true"
+            />
+            <nz-form-text>项目代码创建后不可修改</nz-form-text>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSpan]="4">当前状态</nz-form-label>
+          <nz-form-control [nzSpan]="20">
+            <nz-tag [nzColor]="getStatusColor(blueprint()?.status)">
+              {{ getStatusLabel(blueprint()?.status) }}
+            </nz-tag>
+            <nz-form-text>状态请在蓝图详情页修改</nz-form-text>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSpan]="4">创建时间</nz-form-label>
+          <nz-form-control [nzSpan]="20">
+            <input 
+              nz-input 
+              [value]="blueprint()?.created_at | date: 'yyyy-MM-dd HH:mm:ss'" 
+              [disabled]="true"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSpan]="4">最后更新</nz-form-label>
+          <nz-form-control [nzSpan]="20">
+            <input 
+              nz-input 
+              [value]="blueprint()?.updated_at | date: 'yyyy-MM-dd HH:mm:ss'" 
+              [disabled]="true"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Action Buttons -->
+        <nz-form-item>
+          <nz-form-control [nzOffset]="4" [nzSpan]="20">
+            <button 
+              nz-button 
+              nzType="primary" 
+              [disabled]="!form.valid || !form.dirty" 
+              [nzLoading]="submitting()"
+              type="submit"
+            >
+              <span nz-icon nzType="save"></span>
+              保存修改
+            </button>
+            <button 
+              nz-button 
+              nzType="default" 
+              (click)="resetForm()" 
+              [disabled]="!form.dirty"
+              style="margin-left: 8px;"
+              type="button"
+            >
+              <span nz-icon nzType="reload"></span>
+              重置
+            </button>
+            <button 
+              nz-button 
+              nzType="default" 
+              (click)="goBack()" 
+              style="margin-left: 8px;"
+              type="button"
+            >
+              取消
+            </button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+
+    <!-- Additional Settings Card (Future Extensions) -->
+    <nz-card [nzTitle]="'高级设置'" style="margin-top: 16px;">
+      <nz-alert
+        nzType="info"
+        nzMessage="更多设置选项开发中"
+        nzDescription="未来版本将支持权限管理、可见性设置等高级选项"
+        [nzShowIcon]="true"
+      ></nz-alert>
+    </nz-card>
+  } @else {
+    <!-- Error State -->
+    <nz-result
+      nzStatus="404"
+      nzTitle="蓝图不存在"
+      nzSubTitle="无法找到指定的蓝图，请检查链接是否正确"
+    >
+      <div nz-result-extra>
+        <button nz-button nzType="primary" (click)="goBack()">返回</button>
+      </div>
+    </nz-result>
+  }
+</div>
