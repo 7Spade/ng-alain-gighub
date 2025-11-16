@@ -15,3 +15,7 @@ export * from './auth';
 export * from './collaboration';
 export * from './blueprint';
 export * from './task';
+
+// Quality & Analytics services
+export * from './quality-check.service';
+export * from './analytics.service';

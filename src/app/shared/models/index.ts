@@ -22,3 +22,7 @@ export * from './account';
 export * from './collaboration';
 export * from './blueprint';
 export * from './task';
+
+// Quality & Analytics models
+export * from './quality-check.model';
+export * from './activity-log.model';

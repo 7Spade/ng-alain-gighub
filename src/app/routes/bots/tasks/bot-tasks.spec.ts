@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BotTasks } from './bot-tasks';
 
 describe('BotTasks', () => {
@@ -18,5 +17,12 @@ describe('BotTasks', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have createSampleBotTask method', () => {
+    expect(component.createSampleBotTask).toBeDefined();
+    spyOn(console, 'log');
+    component.createSampleBotTask();
+    expect(console.log).toHaveBeenCalledWith('建立範例機器人任務 (未實作)');
   });
 });

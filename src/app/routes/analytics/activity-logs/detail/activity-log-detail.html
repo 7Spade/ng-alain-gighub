@@ -1,1 +1,117 @@
-<p>activity-log-detail works!</p>
+<nz-card>
+  <nz-spin [nzSpinning]="loading()">
+    <!-- Error Alert -->
+    @if (error()) {
+      <nz-alert nzType="error" [nzMessage]="error()" nzCloseable (nzOnClose)="error.set(null)" style="margin-bottom: 16px;"></nz-alert>
+    }
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <nz-skeleton [nzActive]="true"></nz-skeleton>
+    }
+
+    <!-- Activity Log Detail -->
+    @if (!loading() && activityLog()) {
+      <div>
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div>
+            <h2 style="margin: 0;">活動記錄詳情</h2>
+            <nz-tag nzColor="blue" style="margin-top: 8px;">
+              {{ getResourceTypeLabel(activityLog()!.resourceType) }}
+            </nz-tag>
+          </div>
+          <div>
+            <button nz-button nzType="default" (click)="goBack()">
+              返回
+            </button>
+          </div>
+        </div>
+
+        <!-- Basic Information -->
+        <nz-descriptions nzBordered [nzColumn]="2">
+          <nz-descriptions-item nzTitle="記錄 ID" [nzSpan]="2">
+            {{ activityLog()!.id }}
+          </nz-descriptions-item>
+
+          <nz-descriptions-item nzTitle="操作">
+            <nz-tag nzColor="processing">{{ activityLog()!.action }}</nz-tag>
+          </nz-descriptions-item>
+
+          <nz-descriptions-item nzTitle="資源類型">
+            {{ getResourceTypeLabel(activityLog()!.resourceType) }}
+          </nz-descriptions-item>
+
+          @if (activityLog()!.resourceId) {
+            <nz-descriptions-item nzTitle="資源 ID" [nzSpan]="2">
+              {{ activityLog()!.resourceId }}
+            </nz-descriptions-item>
+          }
+
+          @if (activityLog()!.actor) {
+            <nz-descriptions-item nzTitle="操作者" [nzSpan]="2">
+              {{ activityLog()!.actor!.name }} ({{ activityLog()!.actor!.email }})
+            </nz-descriptions-item>
+          } @else {
+            <nz-descriptions-item nzTitle="操作者 ID" [nzSpan]="2">
+              {{ activityLog()!.actorId }}
+            </nz-descriptions-item>
+          }
+
+          @if (activityLog()!.blueprint) {
+            <nz-descriptions-item nzTitle="藍圖">
+              {{ activityLog()!.blueprint!.name }}
+            </nz-descriptions-item>
+          } @else {
+            <nz-descriptions-item nzTitle="藍圖 ID">
+              {{ activityLog()!.blueprintId }}
+            </nz-descriptions-item>
+          }
+
+          @if (activityLog()!.branch) {
+            <nz-descriptions-item nzTitle="分支">
+              {{ activityLog()!.branch!.name }}
+            </nz-descriptions-item>
+          } @else if (activityLog()!.branchId) {
+            <nz-descriptions-item nzTitle="分支 ID">
+              {{ activityLog()!.branchId }}
+            </nz-descriptions-item>
+          } @else {
+            <nz-descriptions-item nzTitle="分支">
+              主分支
+            </nz-descriptions-item>
+          }
+
+          <nz-descriptions-item nzTitle="發生時間">
+            {{ activityLog()!.createdAt | date:'yyyy-MM-dd HH:mm:ss' }}
+          </nz-descriptions-item>
+
+          @if (activityLog()!.ipAddress) {
+            <nz-descriptions-item nzTitle="IP 位址">
+              {{ activityLog()!.ipAddress }}
+            </nz-descriptions-item>
+          }
+
+          @if (activityLog()!.userAgent) {
+            <nz-descriptions-item nzTitle="使用者代理" [nzSpan]="2">
+              <div style="word-break: break-all; max-width: 600px;">
+                {{ activityLog()!.userAgent }}
+              </div>
+            </nz-descriptions-item>
+          }
+
+          @if (activityLog()!.actionDetails) {
+            <nz-descriptions-item nzTitle="操作詳情" [nzSpan]="2">
+              <pre style="margin: 0; padding: 12px; background: #f5f5f5; border-radius: 4px; max-height: 400px; overflow: auto;">{{ formatActionDetails(activityLog()!.actionDetails) }}</pre>
+            </nz-descriptions-item>
+          }
+        </nz-descriptions>
+      </div>
+    }
+
+    <!-- No Data -->
+    @if (!loading() && !activityLog() && !error()) {
+      <nz-empty nzNotFoundContent="找不到活動記錄"></nz-empty>
+    }
+  </nz-spin>
+</nz-card>

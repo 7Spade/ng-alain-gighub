@@ -1,1 +1,25 @@
-<p>bot-tasks works!</p>
+<nz-card>
+  <div style="padding: 48px 24px;">
+    <nz-empty
+      nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+      [nzNotFoundContent]="contentTpl"
+      [nzNotFoundFooter]="footerTpl"
+    >
+      <ng-template #contentTpl>
+        <h3>機器人任務</h3>
+        <p style="color: rgba(0, 0, 0, 0.45); margin-bottom: 0;">
+          這裡將顯示機器人自動化任務的管理介面
+        </p>
+      </ng-template>
+      <ng-template #footerTpl>
+        <button nz-button nzType="primary" nzSize="large" (click)="createSampleBotTask()">
+          <span nz-icon nzType="plus"></span>
+          建立範例機器人任務
+        </button>
+        <p style="margin-top: 16px; color: rgba(0, 0, 0, 0.45); font-size: 12px;">
+          功能開發中，敬請期待
+        </p>
+      </ng-template>
+    </nz-empty>
+  </div>
+</nz-card>
