@@ -29,6 +29,17 @@ import { DatePipe as DelonDatePipe, I18nPipe } from '@delon/theme';
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
+// Shared Components
+import { AccountSelectorComponent } from './components/account-selector';
+import { FormErrorComponent } from './components/form-error';
+import { LoadingIndicatorComponent } from './components/loading-indicator';
+import { EmptyStateComponent } from './components/empty-state';
+import { PhotoGalleryComponent } from './components/photo-gallery';
+import { TodoWidgetComponent } from './components/todo-widget';
+import { CommentThreadComponent } from './components/comment-thread';
+import { ChartWrapperComponent } from './components/chart-wrapper';
+import { QcCameraComponent } from './components/qc-camera';
+
 export const SHARED_IMPORTS = [
   // ========== Angular 表單模組 ==========
   FormsModule, // 模板式表單 — https://angular.dev/guide/forms#template-driven-forms
@@ -67,5 +78,17 @@ export const SHARED_IMPORTS = [
 
   // ========== ng-zorro-antd 組件集合 ==========
   // https://ng.ant.design/components/overview/zh
-  ...SHARED_ZORRO_MODULES
+  ...SHARED_ZORRO_MODULES,
+
+  // ========== Shared 自訂元件 ==========
+  // 企業級共用元件
+  AccountSelectorComponent, // 帳戶選擇器
+  FormErrorComponent, // 表單錯誤顯示
+  LoadingIndicatorComponent, // 載入指示器
+  EmptyStateComponent, // 空狀態顯示
+  PhotoGalleryComponent, // 照片畫廊 (Lightbox + EXIF)
+  TodoWidgetComponent, // 待辦小工具
+  CommentThreadComponent, // 討論串 (巢狀留言 + @提及)
+  ChartWrapperComponent, // 圖表封裝元件
+  QcCameraComponent // 品管相機 (拍照 + 標註)
 ];
