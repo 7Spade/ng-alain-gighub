@@ -1,9 +1,7 @@
-import { Injectable, inject, signal, computed, effect } from '@angular/core';
-import { PersonalTodoRepository, TodoStatusTrackingRepository } from '@core';
-import { PersonalTodo, TodoStatusTracking } from '@core';
-import { SupabaseService } from '@core';
-import { firstValueFrom } from 'rxjs';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { PersonalTodo, PersonalTodoRepository, SupabaseService, TodoStatusTracking, TodoStatusTrackingRepository } from '@core';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * 待辦狀態枚舉
@@ -291,9 +289,7 @@ export class PersonalTodoService {
           related_id: data.relatedId || null,
           status: TodoStatus.PENDING,
           priority: data.priority || TodoPriority.MEDIUM,
-          due_date: data.dueDate || null,
-          tags: data.tags || [],
-          metadata: data.metadata || {}
+          due_date: data.dueDate || null
         })
       );
 
@@ -320,12 +316,7 @@ export class PersonalTodoService {
    * @param reason 變更原因
    * @returns 更新後的待辦
    */
-  async updateTodoStatus(
-    todoId: string,
-    newStatus: TodoStatus,
-    changedBy: string,
-    reason?: string
-  ): Promise<PersonalTodo> {
+  async updateTodoStatus(todoId: string, newStatus: TodoStatus, changedBy: string, reason?: string): Promise<PersonalTodo> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
@@ -353,7 +344,7 @@ export class PersonalTodoService {
           to_status: newStatus,
           changed_by: changedBy,
           changed_at: new Date().toISOString(),
-          reason: reason || null
+          change_note: reason || null
         })
       );
 
