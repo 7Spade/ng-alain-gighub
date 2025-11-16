@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { QualityCheckDetail } from './quality-check-detail';
 import { QualityCheckService } from '@shared';
+import { of } from 'rxjs';
 
-describe('QualityCheckDetail', () => {
-  let component: QualityCheckDetail;
-  let fixture: ComponentFixture<QualityCheckDetail>;
+import { QualityCheckDetailComponent } from './quality-check-detail';
+
+describe('QualityCheckDetailComponent', () => {
+  let component: QualityCheckDetailComponent;
+  let fixture: ComponentFixture<QualityCheckDetailComponent>;
 
   beforeEach(async () => {
     const mockActivatedRoute = {
@@ -25,14 +26,14 @@ describe('QualityCheckDetail', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [QualityCheckDetail],
+      imports: [QualityCheckDetailComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: QualityCheckService, useValue: mockQualityCheckService }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(QualityCheckDetail);
+    fixture = TestBed.createComponent(QualityCheckDetailComponent);
     component = fixture.componentInstance;
   });
 

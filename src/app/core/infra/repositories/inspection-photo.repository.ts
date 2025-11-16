@@ -22,11 +22,7 @@ export type { InspectionPhotoInsert, InspectionPhotoUpdate };
 @Injectable({
   providedIn: 'root'
 })
-export class InspectionPhotoRepository extends BaseRepository<
-  InspectionPhoto,
-  InspectionPhotoInsert,
-  InspectionPhotoUpdate
-> {
+export class InspectionPhotoRepository extends BaseRepository<InspectionPhoto, InspectionPhotoInsert, InspectionPhotoUpdate> {
   protected tableName = 'inspection_photos';
 
   /**

@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { SupabaseService } from '@core/supabase/supabase.service';
+import { SupabaseService } from '@core';
 import { QualityCheck, QualityCheckInsert, QualityCheckUpdate, QualityCheckDetail } from '@shared';
 
 /**
@@ -118,11 +118,7 @@ export class QualityCheckService {
         completed_at: data.completedAt
       };
 
-      const { data: result, error } = await this.supabase.client
-        .from('quality_checks')
-        .insert(insertData)
-        .select()
-        .single();
+      const { data: result, error } = await this.supabase.client.from('quality_checks').insert(insertData).select().single();
 
       if (error) {
         throw error;
@@ -162,18 +158,13 @@ export class QualityCheckService {
 
     try {
       const updateData: Record<string, unknown> = {};
-      if (data.status !== undefined) updateData.status = data.status;
-      if (data.checkItems !== undefined) updateData.check_items = data.checkItems;
-      if (data.findings !== undefined) updateData.findings = data.findings;
-      if (data.recommendations !== undefined) updateData.recommendations = data.recommendations;
-      if (data.completedAt !== undefined) updateData.completed_at = data.completedAt;
+      if (data.status !== undefined) updateData['status'] = data.status;
+      if (data.checkItems !== undefined) updateData['check_items'] = data.checkItems;
+      if (data.findings !== undefined) updateData['findings'] = data.findings;
+      if (data.recommendations !== undefined) updateData['recommendations'] = data.recommendations;
+      if (data.completedAt !== undefined) updateData['completed_at'] = data.completedAt;
 
-      const { data: result, error } = await this.supabase.client
-        .from('quality_checks')
-        .update(updateData)
-        .eq('id', id)
-        .select()
-        .single();
+      const { data: result, error } = await this.supabase.client.from('quality_checks').update(updateData).eq('id', id).select().single();
 
       if (error) {
         throw error;

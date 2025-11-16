@@ -1,7 +1,8 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SHARED_IMPORTS, QualityCheckService, QualityCheckDetail, QualityCheckStatus } from '@shared';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SHARED_IMPORTS, QualityCheckService, QualityCheckStatus } from '@shared';
+import type { QualityCheckDetail } from '@shared';
 
 @Component({
   selector: 'app-quality-check-detail',
@@ -11,7 +12,7 @@ import { SHARED_IMPORTS, QualityCheckService, QualityCheckDetail, QualityCheckSt
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class QualityCheckDetail implements OnInit {
+export class QualityCheckDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);

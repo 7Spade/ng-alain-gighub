@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { SupabaseService } from '@core/supabase/supabase.service';
+import { SupabaseService } from '@core';
 import { ActivityLog, ActivityLogDetail, ActivityLogInsert, ActivityLogFilters } from '@shared';
 
 /**
@@ -142,7 +142,7 @@ export class AnalyticsService {
       }
 
       // 將 snake_case 轉換為 camelCase
-      const activityLogs: ActivityLog[] = (data || []).map(item => ({
+      const activityLogs: ActivityLog[] = (data || []).map((item: any) => ({
         id: item.id,
         blueprintId: item.blueprint_id,
         branchId: item.branch_id,

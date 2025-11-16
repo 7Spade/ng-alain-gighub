@@ -9,7 +9,7 @@ import { SHARED_IMPORTS } from '@shared';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BotTasks {
+export class BotTasksComponent {
   /**
    * 建立範例機器人任務
    * 此功能目前未實作，僅作為 UI 骨架展示

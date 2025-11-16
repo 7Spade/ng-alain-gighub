@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { SHARED_IMPORTS, PullRequestService, PullRequest } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
 export interface PRMergeData {
   pr: PullRequest;
@@ -56,17 +56,8 @@ export interface PRMergeData {
     }
 
     <div style="margin-top: 24px; text-align: right;">
-      <button nz-button nzType="default" (click)="cancel()" [disabled]="submitting()" style="margin-right: 8px;">
-        取消
-      </button>
-      <button 
-        nz-button 
-        nzType="primary" 
-        nzDanger
-        (click)="merge()" 
-        [nzLoading]="submitting()" 
-        [disabled]="!canMerge() || submitting()"
-      >
+      <button nz-button nzType="default" (click)="cancel()" [disabled]="submitting()" style="margin-right: 8px;"> 取消 </button>
+      <button nz-button nzType="primary" nzDanger (click)="merge()" [nzLoading]="submitting()" [disabled]="!canMerge() || submitting()">
         确认合并
       </button>
     </div>
@@ -76,7 +67,7 @@ export class PullRequestMergeComponent {
   private modalRef = inject(NzModalRef);
   private message = inject(NzMessageService);
   private prService = inject(PullRequestService);
-  
+
   readonly data: PRMergeData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
   readonly confirmed = signal(false);
@@ -93,10 +84,7 @@ export class PullRequestMergeComponent {
 
     this.submitting.set(true);
     try {
-      await this.prService.mergePullRequest(
-        this.data.pr.id,
-        this.data.mergedBy
-      );
+      await this.prService.mergePullRequest(this.data.pr.id, this.data.mergedBy);
 
       this.message.success('Pull Request 合并成功');
       this.modalRef.close(true);

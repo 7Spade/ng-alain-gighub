@@ -1,11 +1,12 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { InspectionRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, BlueprintService, TaskService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { InspectionRepository } from '@core';
 import { firstValueFrom } from 'rxjs';
+
 import { InspectionDetailComponent } from './inspection-detail.component';
 
 @Component({
@@ -124,15 +125,13 @@ export class QualityResultsComponent implements OnInit {
     try {
       // 先加载任务列表
       await this.taskService.loadTasksByBlueprint(blueprintId);
-      
+
       // 然后加载所有任务的验收记录
       const tasks = this.taskService.tasks();
-      const inspectionPromises = tasks.map(task => 
-        firstValueFrom(this.inspectionRepo.findByTaskId(task.id))
-      );
+      const inspectionPromises = tasks.map(task => firstValueFrom(this.inspectionRepo.findByTaskId(task.id)));
       const inspectionArrays = await Promise.all(inspectionPromises);
       const allInspections = inspectionArrays.flat();
-      
+
       // 关联任务标题和映射到结果格式
       const inspectionsWithTask = allInspections.map(inspection => {
         const task = tasks.find(t => t.id === inspection.task_id);
@@ -140,15 +139,14 @@ export class QualityResultsComponent implements OnInit {
           id: inspection.id,
           name: `验收-${task?.title || '未知任务'}`,
           type: inspection.inspection_type,
-          result: inspection.status === 'accepted' ? 'passed' : 
-                  inspection.status === 'rejected' ? 'failed' : 'pending',
+          result: inspection.status === 'accepted' ? 'passed' : inspection.status === 'rejected' ? 'failed' : 'pending',
           inspection_date: inspection.inspected_at,
           inspector: inspection.inspector_id,
           notes: inspection.findings || '',
           created_at: inspection.inspected_at
         };
       });
-      
+
       this.results.set(inspectionsWithTask);
     } catch (error) {
       this.message.error('加载验收结果数据失败');

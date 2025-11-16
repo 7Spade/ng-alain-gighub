@@ -1,8 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { SHARED_IMPORTS, TeamService, TeamMemberRole, AccountService } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
 export interface TeamMemberAddData {
   teamId: string;
@@ -17,12 +17,7 @@ export interface TeamMemberAddData {
       <nz-form-item>
         <nz-form-label [nzSpan]="6" nzRequired>选择成员</nz-form-label>
         <nz-form-control [nzSpan]="18" nzErrorTip="请选择成员">
-          <nz-select 
-            formControlName="accountId" 
-            nzPlaceHolder="请选择用户账户" 
-            nzShowSearch
-            [nzLoading]="accountService.loading()"
-          >
+          <nz-select formControlName="accountId" nzPlaceHolder="请选择用户账户" nzShowSearch [nzLoading]="accountService.loading()">
             @for (user of accountService.userAccounts(); track user.id) {
               <nz-option [nzValue]="user.id" [nzLabel]="user.name || user.id"></nz-option>
             }
@@ -67,7 +62,7 @@ export class TeamMemberAddComponent implements OnInit {
   private message = inject(NzMessageService);
   private teamService = inject(TeamService);
   readonly accountService = inject(AccountService);
-  
+
   readonly data: TeamMemberAddData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
   readonly TeamMemberRole = TeamMemberRole;
@@ -107,11 +102,7 @@ export class TeamMemberAddComponent implements OnInit {
     try {
       const formValue = this.form.value;
 
-      await this.teamService.addTeamMember(
-        this.data.teamId,
-        formValue.accountId,
-        formValue.role
-      );
+      await this.teamService.addTeamMember(this.data.teamId, formValue.accountId, formValue.role);
 
       this.message.success('成员添加成功');
       this.modalRef.close(true);

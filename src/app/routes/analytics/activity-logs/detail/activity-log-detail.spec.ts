@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { ActivityLogDetail } from './activity-log-detail';
 import { AnalyticsService } from '@shared';
+import { of } from 'rxjs';
 
-describe('ActivityLogDetail', () => {
-  let component: ActivityLogDetail;
-  let fixture: ComponentFixture<ActivityLogDetail>;
+import { ActivityLogDetailComponent } from './activity-log-detail';
+
+describe('ActivityLogDetailComponent', () => {
+  let component: ActivityLogDetailComponent;
+  let fixture: ComponentFixture<ActivityLogDetailComponent>;
 
   beforeEach(async () => {
     const mockActivatedRoute = {
@@ -24,14 +25,14 @@ describe('ActivityLogDetail', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ActivityLogDetail],
+      imports: [ActivityLogDetailComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: AnalyticsService, useValue: mockAnalyticsService }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ActivityLogDetail);
+    fixture = TestBed.createComponent(ActivityLogDetailComponent);
     component = fixture.componentInstance;
   });
 
