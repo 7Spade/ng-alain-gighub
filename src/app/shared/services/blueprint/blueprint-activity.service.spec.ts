@@ -32,7 +32,7 @@ describe('BlueprintActivityService', () => {
 
   beforeEach(() => {
     const activityRepoSpy = jasmine.createSpyObj('ActivityLogRepository', ['create']);
-    const authStateSpy = jasmine.createSpyObj('AuthStateService', ['currentUser']);
+    const authStateSpy = jasmine.createSpyObj('AuthStateService', ['user']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -47,7 +47,7 @@ describe('BlueprintActivityService', () => {
     authState = TestBed.inject(AuthStateService) as jasmine.SpyObj<AuthStateService>;
 
     // Default: user is logged in
-    authState.currentUser.and.returnValue(mockUser as any);
+    authState.user.and.returnValue(mockUser as any);
     activityRepo.create.and.returnValue(of({} as any));
   });
 
@@ -83,7 +83,7 @@ describe('BlueprintActivityService', () => {
         action: 'created'
       });
 
-      expect(authState.currentUser).toHaveBeenCalled();
+      expect(authState.user).toHaveBeenCalled();
       expect(activityRepo.create).toHaveBeenCalledWith(jasmine.objectContaining({
         actor_id: 'user-123'
       }));
@@ -348,7 +348,7 @@ describe('BlueprintActivityService', () => {
     });
 
     it('should handle null user gracefully', async () => {
-      authState.currentUser.and.returnValue(null as any);
+      authState.user.and.returnValue(null as any);
 
       await service.logActivity({
         blueprintId: 'blueprint-123',
