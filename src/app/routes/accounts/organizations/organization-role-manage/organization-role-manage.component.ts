@@ -92,7 +92,7 @@ export class OrganizationRoleManageComponent implements OnInit {
     // 先清空状态，确保加载的是当前组织的成员
     this.organizationMemberService.clearState();
     await this.loadMembers();
-    
+
     // 如果账户列表为空，才加载账户列表以便显示账户名称
     // 注意：不等待加载完成，避免阻塞页面渲染
     if (this.accountService.accounts().length === 0) {

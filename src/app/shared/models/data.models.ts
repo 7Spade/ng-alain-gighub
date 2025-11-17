@@ -159,6 +159,7 @@ export interface ActivityLogFilters {
   actorId?: string;
   resourceType?: ActivityLogResourceType;
   resourceId?: string;
+  action?: string;
   startDate?: string;
   endDate?: string;
 }

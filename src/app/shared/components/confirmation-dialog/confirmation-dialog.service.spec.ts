@@ -1,25 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { ConfirmationDialogService } from './confirmation-dialog.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
+
+import { ConfirmationDialogService } from './confirmation-dialog.service';
 
 describe('ConfirmationDialogService', () => {
   let service: ConfirmationDialogService;
   let modalService: jasmine.SpyObj<NzModalService>;
 
   beforeEach(() => {
-    const modalServiceSpy = jasmine.createSpyObj('NzModalService', [
-      'confirm', 
-      'warning', 
-      'success', 
-      'error', 
-      'info'
-    ]);
+    const modalServiceSpy = jasmine.createSpyObj('NzModalService', ['confirm', 'warning', 'success', 'error', 'info']);
 
     TestBed.configureTestingModule({
-      providers: [
-        ConfirmationDialogService,
-        { provide: NzModalService, useValue: modalServiceSpy }
-      ]
+      providers: [ConfirmationDialogService, { provide: NzModalService, useValue: modalServiceSpy }]
     });
 
     service = TestBed.inject(ConfirmationDialogService);

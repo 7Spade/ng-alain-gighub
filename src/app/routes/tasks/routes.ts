@@ -11,6 +11,10 @@ export const TASK_ROUTES: Routes = [
     loadComponent: () => import('./list/task-list.component').then(m => m.TaskListComponent)
   },
   {
+    path: 'tree',
+    loadComponent: () => import('./task-tree/task-tree.component').then(m => m.TaskTreeComponent)
+  },
+  {
     path: 'board',
     loadComponent: () => import('./board/task-board.component').then(m => m.TaskBoardComponent)
   },

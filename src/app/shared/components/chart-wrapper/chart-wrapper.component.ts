@@ -3,25 +3,25 @@ import { SHARED_IMPORTS } from '@shared';
 
 export interface ChartData {
   labels: string[];
-  datasets: {
+  datasets: Array<{
     label: string;
     data: number[];
     backgroundColor?: string | string[];
     borderColor?: string | string[];
     borderWidth?: number;
-  }[];
+  }>;
 }
 
 export type ChartType = 'line' | 'bar' | 'pie' | 'doughnut' | 'radar' | 'polarArea';
 
 /**
  * 圖表封裝元件
- * 
+ *
  * 用途：統一的圖表顯示介面，支援多種圖表類型
- * 
+ *
  * @example
  * ```html
- * <app-chart-wrapper 
+ * <app-chart-wrapper
  *   [type]="'bar'"
  *   [data]="chartData()"
  *   [title]="'月度統計'"
@@ -47,7 +47,7 @@ export type ChartType = 'line' | 'bar' | 'pie' | 'doughnut' | 'radar' | 'polarAr
             <p class="chart-type-label">{{ getChartTypeLabel() }} 圖表</p>
             <p class="chart-info">圖表類型: {{ type() }}</p>
             <p class="chart-info">資料點數: {{ getDataPointsCount() }}</p>
-            
+
             <!-- Simple data preview -->
             <div class="data-preview">
               <h4>資料預覽：</h4>
@@ -64,7 +64,8 @@ export type ChartType = 'line' | 'bar' | 'pie' | 'doughnut' | 'radar' | 'polarAr
               nzMessage="圖表渲染說明"
               nzDescription="此元件為圖表封裝介面，實際圖表渲染需整合 ECharts 或 ngx-charts 等圖表庫。"
               [nzCloseable]="true"
-              class="chart-alert" />
+              class="chart-alert"
+            />
           </div>
         </div>
       } @else {
@@ -78,86 +79,88 @@ export type ChartType = 'line' | 'bar' | 'pie' | 'doughnut' | 'radar' | 'polarAr
       }
     </nz-card>
   `,
-  styles: [`
-    .chart-card {
-      height: 100%;
+  styles: [
+    `
+      .chart-card {
+        height: 100%;
 
-      :host ::ng-deep .ant-card-body {
+        :host ::ng-deep .ant-card-body {
+          padding: 24px;
+        }
+      }
+
+      .chart-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+      }
+
+      .chart-container {
+        position: relative;
+        width: 100%;
+      }
+
+      .chart-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: #fafafa;
+        border: 2px dashed #d9d9d9;
+        border-radius: 4px;
         padding: 24px;
-      }
-    }
 
-    .chart-loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 300px;
-    }
+        .chart-icon {
+          font-size: 64px;
+          color: #d9d9d9;
+          margin-bottom: 16px;
+        }
 
-    .chart-container {
-      position: relative;
-      width: 100%;
-    }
-
-    .chart-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      background: #fafafa;
-      border: 2px dashed #d9d9d9;
-      border-radius: 4px;
-      padding: 24px;
-
-      .chart-icon {
-        font-size: 64px;
-        color: #d9d9d9;
-        margin-bottom: 16px;
-      }
-
-      .chart-type-label {
-        font-size: 18px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.85);
-        margin-bottom: 8px;
-      }
-
-      .chart-info {
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
-        margin-bottom: 4px;
-      }
-
-      .data-preview {
-        margin-top: 16px;
-        text-align: center;
-
-        h4 {
-          font-size: 14px;
+        .chart-type-label {
+          font-size: 18px;
+          font-weight: 500;
+          color: rgba(0, 0, 0, 0.85);
           margin-bottom: 8px;
         }
 
-        nz-tag {
-          margin: 4px;
+        .chart-info {
+          font-size: 14px;
+          color: rgba(0, 0, 0, 0.45);
+          margin-bottom: 4px;
+        }
+
+        .data-preview {
+          margin-top: 16px;
+          text-align: center;
+
+          h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+          }
+
+          nz-tag {
+            margin: 4px;
+          }
+        }
+
+        .chart-alert {
+          margin-top: 16px;
+          max-width: 500px;
         }
       }
 
-      .chart-alert {
+      .chart-description {
         margin-top: 16px;
-        max-width: 500px;
+        padding-top: 16px;
+        border-top: 1px solid #f0f0f0;
+        color: rgba(0, 0, 0, 0.65);
+        font-size: 14px;
+        line-height: 1.6;
       }
-    }
-
-    .chart-description {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #f0f0f0;
-      color: rgba(0, 0, 0, 0.65);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-  `]
+    `
+  ]
 })
 export class ChartWrapperComponent {
   /** 圖表類型 */
@@ -199,7 +202,7 @@ export class ChartWrapperComponent {
   getDataPointsCount(): number {
     const chartData = this.data();
     if (!chartData) return 0;
-    
+
     return chartData.datasets.reduce((sum, dataset) => {
       return sum + dataset.data.length;
     }, 0);
@@ -210,7 +213,7 @@ export class ChartWrapperComponent {
     effect(() => {
       const chartData = this.data();
       const chartType = this.type();
-      
+
       if (chartData && chartType) {
         // Here you would integrate with actual charting library
         // e.g., ECharts, Chart.js, or ngx-charts

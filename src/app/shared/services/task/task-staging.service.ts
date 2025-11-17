@@ -41,9 +41,7 @@ export class TaskStagingService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly withdrawableItems = computed(() =>
-    this.stagingItems().filter(item => item.can_withdraw && this.isWithinWithdrawPeriod(item))
-  );
+  readonly withdrawableItems = computed(() => this.stagingItems().filter(item => item.can_withdraw && this.isWithinWithdrawPeriod(item)));
 
   readonly expiredItems = computed(() => this.stagingItems().filter(item => this.isExpired(item)));
 
@@ -61,7 +59,7 @@ export class TaskStagingService {
     taskId: string,
     submittedBy: string,
     stagingData: Record<string, any>,
-    photos?: Record<string, any>[],
+    photos?: Array<Record<string, any>>,
     notes?: string
   ): Promise<TaskStaging> {
     this.loadingState.set(true);
