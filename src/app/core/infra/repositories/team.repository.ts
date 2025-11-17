@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Database } from '../types/database.types';
 import { BaseRepository, QueryOptions } from './base.repository';
+import { Database } from '../types/database.types';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）

@@ -3,13 +3,13 @@ import { SHARED_IMPORTS } from '@shared';
 
 /**
  * 空狀態元件
- * 
+ *
  * 用途：統一的空資料狀態顯示
- * 
+ *
  * @example
  * ```html
- * <app-empty-state 
- *   [description]="'暫無資料'" 
+ * <app-empty-state
+ *   [description]="'暫無資料'"
  *   [icon]="'inbox'"
  *   [actionText]="'新增項目'"
  *   (action)="handleCreate()" />
@@ -21,10 +21,7 @@ import { SHARED_IMPORTS } from '@shared';
   imports: [SHARED_IMPORTS],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nz-empty 
-      [nzNotFoundContent]="contentTemplate"
-      [nzNotFoundImage]="image() || 'simple'"
-      class="empty-state">
+    <nz-empty [nzNotFoundContent]="contentTemplate" [nzNotFoundImage]="image() || 'simple'" class="empty-state">
       <ng-template #contentTemplate>
         <div class="empty-content">
           @if (icon()) {
@@ -40,28 +37,30 @@ import { SHARED_IMPORTS } from '@shared';
       </ng-template>
     </nz-empty>
   `,
-  styles: [`
-    .empty-state {
-      padding: 48px 24px;
-    }
-
-    .empty-content {
-      text-align: center;
-
-      .empty-icon {
-        font-size: 64px;
-        color: #d9d9d9;
-        margin-bottom: 16px;
-        display: block;
+  styles: [
+    `
+      .empty-state {
+        padding: 48px 24px;
       }
 
-      .empty-description {
-        color: rgba(0, 0, 0, 0.45);
-        font-size: 14px;
-        margin-bottom: 16px;
+      .empty-content {
+        text-align: center;
+
+        .empty-icon {
+          font-size: 64px;
+          color: #d9d9d9;
+          margin-bottom: 16px;
+          display: block;
+        }
+
+        .empty-description {
+          color: rgba(0, 0, 0, 0.45);
+          font-size: 14px;
+          margin-bottom: 16px;
+        }
       }
-    }
-  `]
+    `
+  ]
 })
 export class EmptyStateComponent {
   /** 空狀態描述文字 */

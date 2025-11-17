@@ -4,9 +4,9 @@ import { SHARED_IMPORTS } from '@shared';
 
 /**
  * 表單錯誤顯示元件
- * 
+ *
  * 用途：統一顯示表單驗證錯誤訊息
- * 
+ *
  * @example
  * ```html
  * <app-form-error [errors]="control.errors" />
@@ -26,16 +26,18 @@ import { SHARED_IMPORTS } from '@shared';
       </div>
     }
   `,
-  styles: [`
-    .form-error {
-      margin-top: 4px;
-      
-      small {
-        display: block;
-        line-height: 1.5;
+  styles: [
+    `
+      .form-error {
+        margin-top: 4px;
+
+        small {
+          display: block;
+          line-height: 1.5;
+        }
       }
-    }
-  `]
+    `
+  ]
 })
 export class FormErrorComponent {
   /** 驗證錯誤物件 */

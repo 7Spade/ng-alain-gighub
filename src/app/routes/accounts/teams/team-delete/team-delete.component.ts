@@ -27,9 +27,7 @@ export interface TeamDeleteData {
       ></nz-alert>
 
       <div style="text-align: right; margin-top: 24px;">
-        <button nz-button nzType="default" (click)="cancel()" [disabled]="submitting()" style="margin-right: 8px;">
-          取消
-        </button>
+        <button nz-button nzType="default" (click)="cancel()" [disabled]="submitting()" style="margin-right: 8px;"> 取消 </button>
         <button nz-button nzType="primary" nzDanger (click)="confirm()" [nzLoading]="submitting()" [disabled]="submitting()">
           确认删除
         </button>
@@ -67,4 +65,3 @@ export class TeamDeleteComponent implements OnInit {
     this.modalRef.close(false);
   }
 }
-

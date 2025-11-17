@@ -2,13 +2,8 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { TaskRepository, TaskInsert, TaskUpdate, TaskAssignmentRepository, TaskListRepository } from '@core';
 import { Task, TaskStatus, TaskPriority, TaskDetail, TaskTreeNode } from '@shared';
 import { firstValueFrom } from 'rxjs';
-import {
-  validateStateTransition,
-  getAllowedTransitions,
-  getNextStatus,
-  isFinalStatus,
-  isWithdrawableStatus
-} from './task-state-machine';
+
+import { validateStateTransition, getAllowedTransitions, getNextStatus, isFinalStatus, isWithdrawableStatus } from './task-state-machine';
 
 /**
  * Task Service
