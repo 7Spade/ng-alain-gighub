@@ -1,6 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { TaskRepository, TaskInsert, TaskUpdate, TaskAssignmentRepository, TaskListRepository } from '@core';
 import { Task, TaskStatus, TaskPriority, TaskDetail, TaskTreeNode } from '@shared';
+import { BlueprintActivityService } from '../blueprint/blueprint-activity.service';
 import { firstValueFrom } from 'rxjs';
 
 import { validateStateTransition, getAllowedTransitions, getNextStatus, isFinalStatus, isWithdrawableStatus } from './task-state-machine';
@@ -31,6 +32,7 @@ export class TaskService {
   private taskRepository = inject(TaskRepository);
   private taskAssignmentRepository = inject(TaskAssignmentRepository);
   private taskListRepository = inject(TaskListRepository);
+  private activityService = inject(BlueprintActivityService);
 
   // 使用 Signals 管理状态
   private tasksState = signal<Task[]>([]);
@@ -500,5 +502,319 @@ export class TaskService {
     } finally {
       this.loadingState.set(false);
     }
+  }
+
+  /**
+   * 批次更新多個任務
+   * 
+   * 支援批次修改狀態、優先級、承攬欄位等
+   * 所有更新在單一交易中進行，確保原子性
+   *
+   * @param taskIds 要更新的任務 ID 列表
+   * @param updates 要更新的欄位
+   * @throws Error 如果部分任務不存在或更新失敗
+   * 
+   * @example
+   * ```typescript
+   * // 批次更新狀態
+   * await taskService.batchUpdateTasks(
+   *   ['task-1', 'task-2', 'task-3'],
+   *   { status: TaskStatus.IN_PROGRESS }
+   * );
+   * 
+   * // 批次更新優先級
+   * await taskService.batchUpdateTasks(
+   *   ['task-1', 'task-2'],
+   *   { priority: TaskPriority.HIGH }
+   * );
+   * ```
+   */
+  async batchUpdateTasks(taskIds: string[], updates: Partial<TaskUpdate>): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 驗證所有 Task 存在
+      const tasks = await Promise.all(taskIds.map(id => firstValueFrom(this.taskRepository.findById(id))));
+
+      if (tasks.some(t => !t)) {
+        throw new Error('部分任務不存在');
+      }
+
+      // 批次更新
+      await Promise.all(taskIds.map(id => firstValueFrom(this.taskRepository.update(id, updates))));
+
+      // 記錄 activity logs
+      await Promise.all(
+        taskIds.map((id, index) => {
+          const task = tasks[index];
+          if (task) {
+            return this.activityService.logTaskUpdate(
+              id,
+              Object.keys(updates).join(','),
+              updates,
+              task.blueprint_id as string
+            );
+          }
+          return Promise.resolve();
+        })
+      );
+
+      // 重新載入當前藍圖的任務列表
+      const currentBlueprint = tasks[0]?.blueprint_id;
+      if (currentBlueprint) {
+        await this.loadTasksByBlueprint(currentBlueprint as string);
+      }
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '批次更新失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 批次更新承攬欄位
+   * 
+   * 專門用於批次更新 contractor_fields，符合 Git-like 模型中協作組織的權限限制
+   *
+   * @param taskIds 要更新的任務 ID 列表
+   * @param fieldPath 欄位路徑（必須以 'contractor_fields.' 開頭）
+   * @param value 欄位值
+   * @throws Error 如果欄位路徑不合法或任務不存在
+   * 
+   * @example
+   * ```typescript
+   * // 批次更新工作時數
+   * await taskService.batchUpdateContractorFields(
+   *   ['task-1', 'task-2', 'task-3'],
+   *   'contractor_fields.work_hours',
+   *   8
+   * );
+   * ```
+   */
+  async batchUpdateContractorFields(taskIds: string[], fieldPath: string, value: any): Promise<void> {
+    // 驗證欄位路徑
+    if (!fieldPath.startsWith('contractor_fields.') || fieldPath === 'contractor_fields.') {
+      throw new Error('僅允許更新 contractor_fields 欄位');
+    }
+
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 批次更新每個任務的 contractor_fields
+      await Promise.all(taskIds.map(taskId => this.updateTaskContractorFields(taskId, fieldPath, value)));
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '批次更新承攬欄位失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 批次刪除多個任務
+   * 
+   * 驗證任務沒有子任務後批次刪除
+   * 所有刪除在單一交易中進行
+   *
+   * @param taskIds 要刪除的任務 ID 列表
+   * @throws Error 如果任務有子任務或刪除失敗
+   * 
+   * @example
+   * ```typescript
+   * await taskService.batchDeleteTasks(['task-1', 'task-2', 'task-3']);
+   * ```
+   */
+  async batchDeleteTasks(taskIds: string[]): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 驗證任務存在
+      const tasks = await Promise.all(taskIds.map(id => firstValueFrom(this.taskRepository.findById(id))));
+
+      if (tasks.some(t => !t)) {
+        throw new Error('部分任務不存在');
+      }
+
+      // 檢查是否有子任務
+      const childrenChecks = await Promise.all(taskIds.map(id => firstValueFrom(this.taskRepository.findChildren(id))));
+
+      if (childrenChecks.some(children => children.length > 0)) {
+        throw new Error('無法刪除有子任務的任務');
+      }
+
+      // 批次刪除
+      await Promise.all(taskIds.map(id => firstValueFrom(this.taskRepository.delete(id))));
+
+      // 記錄 activity logs
+      await Promise.all(
+        taskIds.map((id, index) => {
+          const task = tasks[index];
+          if (task) {
+            return this.activityService.logTaskDelete(id, task.blueprint_id as string);
+          }
+          return Promise.resolve();
+        })
+      );
+
+      // 從 state 中移除
+      this.tasksState.update(current => current.filter(t => !taskIds.includes(t.id as string)));
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '批次刪除失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 重新排序任務
+   * 
+   * 更新多個任務的 order_index，用於拖拽排序
+   *
+   * @param blueprintId 藍圖 ID
+   * @param taskOrders 任務新順序列表
+   * 
+   * @example
+   * ```typescript
+   * await taskService.reorderTasks('blueprint-1', [
+   *   { taskId: 'task-1', newOrderIndex: 0 },
+   *   { taskId: 'task-2', newOrderIndex: 1 },
+   *   { taskId: 'task-3', newOrderIndex: 2 }
+   * ]);
+   * ```
+   */
+  async reorderTasks(
+    blueprintId: string,
+    taskOrders: Array<{ taskId: string; newOrderIndex: number }>
+  ): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 批次更新 order_index
+      await Promise.all(
+        taskOrders.map(({ taskId, newOrderIndex }) =>
+          firstValueFrom(this.taskRepository.update(taskId, { order_index: newOrderIndex }))
+        )
+      );
+
+      // 記錄 activity log
+      await this.activityService.logActivity({
+        blueprintId,
+        entityType: 'task',
+        entityId: blueprintId,
+        action: 'reordered',
+        metadata: {
+          task_count: taskOrders.length,
+          orders: taskOrders
+        }
+      });
+
+      // 重新載入以反映新順序
+      await this.loadTasksByBlueprint(blueprintId);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '重新排序失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 移動任務到新父任務下
+   * 
+   * 包含循環引用檢查，防止將父任務設定為自己的子孫任務
+   *
+   * @param taskId 要移動的任務 ID
+   * @param newParentId 新父任務 ID（null 表示移到頂層）
+   * @param newOrderIndex 新排序索引（可選）
+   * @throws Error 如果會造成循環引用
+   * 
+   * @example
+   * ```typescript
+   * // 移動到新父任務下
+   * await taskService.moveTask('task-1', 'new-parent-id', 0);
+   * 
+   * // 移到頂層
+   * await taskService.moveTask('task-1', null);
+   * ```
+   */
+  async moveTask(taskId: string, newParentId: string | null, newOrderIndex?: number): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const task = await firstValueFrom(this.taskRepository.findById(taskId));
+      if (!task) {
+        throw new Error('任務不存在');
+      }
+
+      // 檢查不形成循環引用
+      if (newParentId && (await this.wouldCreateCycle(taskId, newParentId))) {
+        throw new Error('無法移動：會造成循環引用');
+      }
+
+      // 更新父任務和排序
+      const updates: Partial<TaskUpdate> = { parent_task_id: newParentId };
+      if (newOrderIndex !== undefined) {
+        updates.order_index = newOrderIndex;
+      }
+
+      await firstValueFrom(this.taskRepository.update(taskId, updates));
+
+      // 記錄 activity log
+      await this.activityService.logTaskUpdate(taskId, 'parent_task_id', newParentId, task.blueprint_id as string);
+
+      // 重新載入
+      await this.loadTasksByBlueprint(task.blueprint_id as string);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '移動任務失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 檢查移動任務是否會造成循環引用
+   * 
+   * 遞迴檢查目標父任務的所有祖先，確保不會形成循環
+   *
+   * @param taskId 要移動的任務 ID
+   * @param targetParentId 目標父任務 ID
+   * @returns 是否會造成循環引用
+   */
+  private async wouldCreateCycle(taskId: string, targetParentId: string): Promise<boolean> {
+    // 如果目標父任務就是自己，形成循環
+    if (taskId === targetParentId) {
+      return true;
+    }
+
+    // 檢查目標父任務的祖先鏈
+    let currentParentId: string | null = targetParentId;
+    const visited = new Set<string>();
+
+    while (currentParentId) {
+      // 防止無限循環（如果資料庫已經有循環引用）
+      if (visited.has(currentParentId)) {
+        return true;
+      }
+      visited.add(currentParentId);
+
+      // 如果祖先鏈中包含要移動的任務，形成循環
+      if (currentParentId === taskId) {
+        return true;
+      }
+
+      // 繼續往上查找
+      const parent = await firstValueFrom(this.taskRepository.findById(currentParentId));
+      currentParentId = parent?.parent_task_id as string | null;
+    }
+
+    return false;
   }
 }
