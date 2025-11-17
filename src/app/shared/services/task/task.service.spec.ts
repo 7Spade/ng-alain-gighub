@@ -14,10 +14,23 @@ describe('TaskService', () => {
   const mockTask: Task = {
     id: 'task-1',
     blueprint_id: 'blueprint-1',
-    name: 'Test Task',
+    branch_id: null,
+    title: 'Test Task',
     description: 'Test Description',
     status: TaskStatus.PENDING,
-    priority: 'medium' as any,
+    priority: 'medium',
+    task_type: 'task',
+    parent_task_id: null,
+    sequence_order: 0,
+    tree_level: 0,
+    tree_path: null,
+    planned_start_date: null,
+    planned_end_date: null,
+    actual_start_date: null,
+    actual_end_date: null,
+    estimated_hours: null,
+    actual_hours: null,
+    progress_percentage: null,
     contractor_fields: {
       work_hours: 5,
       progress_percentage: 50,
@@ -26,6 +39,7 @@ describe('TaskService', () => {
         end_date: '2025-01-31'
       }
     },
+    created_by: 'user-1',
     created_at: '2025-01-01T00:00:00Z',
     updated_at: '2025-01-01T00:00:00Z'
   } as Task;
@@ -89,7 +103,8 @@ describe('TaskService', () => {
   describe('updateTaskContractorFields', () => {
     it('should update contractor_fields successfully with simple field', async () => {
       taskRepository.findById.and.returnValue(of(mockTask));
-      taskRepository.update.and.returnValue(of({ ...mockTask, contractor_fields: { ...mockTask.contractor_fields, work_hours: 8 } } as Task));
+      const updatedContractorFields = { ...(mockTask.contractor_fields as any), work_hours: 8 };
+      taskRepository.update.and.returnValue(of({ ...mockTask, contractor_fields: updatedContractorFields } as Task));
 
       await service.updateTaskContractorFields('task-1', 'contractor_fields.work_hours', 8);
 

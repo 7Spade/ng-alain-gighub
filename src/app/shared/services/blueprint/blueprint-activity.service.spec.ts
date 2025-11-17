@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivityLogRepository } from '@core';
-import { AuthStateService } from '../auth/auth-state.service';
+import { AuthStateService } from '../auth/auth.state';
 import { of, throwError } from 'rxjs';
 
 import { BlueprintActivityService } from './blueprint-activity.service';
