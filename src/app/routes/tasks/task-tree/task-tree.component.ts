@@ -1,8 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 import { SHARED_IMPORTS, Task, TaskTreeNode, TaskStatus } from '@shared';
 import { TaskTreeFacade } from './task-tree.facade';
+import { TaskTreeDragService } from './task-tree-drag.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 interface NzTreeNodeOptions {
@@ -27,12 +29,17 @@ interface NzTreeNodeOptions {
  * - Phase 1.1: Basic tree display with NzTree
  * - Phase 1.2: Expand/collapse functionality
  * - Phase 1.3: Task icons, names, and assignee display
+ * - Phase 2.1: Drag-drop for hierarchy adjustment (CDK DragDrop integration)
+ * - Phase 2.2: Optimistic updates with rollback
  *
  * Features:
  * - Signal-based reactive tree structure
  * - OnPush change detection for performance
  * - Facade pattern for business logic separation
  * - Automatic audit logging via TaskTreeFacade
+ * - Drag-drop with circular dependency prevention
+ *
+ * Implements Phase 2 from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
  *
  * @example
  * Route: /tasks/tree
@@ -40,7 +47,8 @@ interface NzTreeNodeOptions {
 @Component({
   selector: 'app-task-tree',
   standalone: true,
-  imports: [SHARED_IMPORTS],
+  imports: [SHARED_IMPORTS, CdkDrag, CdkDropList],
+  providers: [TaskTreeDragService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './task-tree.component.html',
   styleUrls: ['./task-tree.component.less']
@@ -49,6 +57,7 @@ export class TaskTreeComponent implements OnInit {
   readonly facade = inject(TaskTreeFacade);
   readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
+  private readonly dragService = inject(TaskTreeDragService);
 
   // Blueprint selection
   readonly selectedBlueprintId = signal<string | null>(null);
@@ -61,6 +70,10 @@ export class TaskTreeComponent implements OnInit {
 
   // Expanded nodes tracking (for collapse/expand state)
   readonly expandedNodeIds = signal<Set<string>>(new Set());
+
+  // Drag state
+  readonly isDragging = signal<boolean>(false);
+  readonly draggedNodeId = signal<string | null>(null);
 
   // NzTree data nodes
   readonly treeData = computed(() => {
@@ -124,6 +137,53 @@ export class TaskTreeComponent implements OnInit {
         this.router.navigate(['/tasks', id]);
       }
     }
+  }
+
+  /**
+   * Handle drag-drop event
+   * Phase 2.1.4: CDK DragDrop integration
+   */
+  async onDrop(event: CdkDragDrop<TaskTreeNode[]>): Promise<void> {
+    console.log('[TaskTreeComponent] Drop event:', event);
+    
+    try {
+      await this.dragService.handleDrop(event, this.taskTree());
+    } catch (error) {
+      // Error already handled by dragService with message
+      console.error('[TaskTreeComponent] Drop failed:', error);
+    } finally {
+      this.isDragging.set(false);
+      this.draggedNodeId.set(null);
+    }
+  }
+
+  /**
+   * Handle drag start
+   */
+  onDragStarted(node: TaskTreeNode): void {
+    this.isDragging.set(true);
+    this.draggedNodeId.set(node.id);
+    console.log('[TaskTreeComponent] Drag started:', node.title);
+  }
+
+  /**
+   * Handle drag end
+   */
+  onDragEnded(): void {
+    this.isDragging.set(false);
+    this.draggedNodeId.set(null);
+  }
+
+  /**
+   * Check if node can be dropped on target
+   * Provides visual feedback during drag
+   */
+  canDropOn(nodeId: string): boolean {
+    const draggedId = this.draggedNodeId();
+    if (!draggedId || draggedId === nodeId) {
+      return false;
+    }
+    return this.dragService.canDropOn(draggedId, nodeId, this.taskTree());
   }
 
   /**

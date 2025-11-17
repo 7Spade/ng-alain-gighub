@@ -59,78 +59,95 @@
     </ng-template>
   }
 
-  <!-- Task Tree -->
+  <!-- Task Tree with Drag-Drop -->
   @if (!loading() && !error() && treeData().length > 0) {
-    <div class="task-tree-container">
-      <nz-tree
-        [nzData]="treeData()"
-        nzShowLine
-        nzShowIcon
-        (nzExpandChange)="onExpandChange($event)"
-        (nzClick)="onTreeNodeClick($event)"
-      >
-        <ng-template #nzTreeTemplate let-node>
-          <div class="task-node">
-            <!-- Task Icon -->
-            <span 
-              nz-icon 
-              [nzType]="getStatusIcon(node.origin.status || 'pending')" 
-              class="task-icon"
-            ></span>
+    <div class="task-tree-container" [class.is-dragging]="isDragging()">
+      <!-- Phase 2.1.4: CDK DropList container -->
+      <div cdkDropList [cdkDropListData]="taskTree()" (cdkDropListDropped)="onDrop($event)">
+        <nz-tree
+          [nzData]="treeData()"
+          nzShowLine
+          nzShowIcon
+          (nzExpandChange)="onExpandChange($event)"
+          (nzClick)="onTreeNodeClick($event)"
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <!-- Phase 2.1.4: CDK Drag wrapper -->
+            <div 
+              cdkDrag
+              [cdkDragData]="node.origin"
+              (cdkDragStarted)="onDragStarted(node.origin)"
+              (cdkDragEnded)="onDragEnded()"
+              class="task-node"
+              [class.invalid-drop-target]="isDragging() && !canDropOn(node.origin.id)"
+              [class.valid-drop-target]="isDragging() && canDropOn(node.origin.id)"
+            >
+              <!-- Phase 2.1.4: Drag handle -->
+              <span cdkDragHandle class="drag-handle">
+                <span nz-icon nzType="drag" nzTheme="outline"></span>
+              </span>
 
-            <!-- Task Name -->
-            <span class="task-name">{{ node.origin.title }}</span>
+              <!-- Task Icon -->
+              <span 
+                nz-icon 
+                [nzType]="getStatusIcon(node.origin.status || 'pending')" 
+                class="task-icon"
+              ></span>
 
-            <!-- Task Status Tag -->
-            <nz-tag [nzColor]="getStatusColor(node.origin.status || 'pending')" class="task-status">
-              {{ getStatusLabel(node.origin.status || 'pending') }}
-            </nz-tag>
+              <!-- Task Name -->
+              <span class="task-name">{{ node.origin.title }}</span>
 
-            <!-- Task Priority -->
-            @if (node.origin.priority) {
-              <nz-tag 
-                [nzColor]="node.origin.priority === 'high' ? 'red' : node.origin.priority === 'medium' ? 'orange' : 'default'"
-                class="task-priority"
-              >
-                @switch (node.origin.priority) {
-                  @case ('high') { 高優先 }
-                  @case ('medium') { 中優先 }
-                  @case ('low') { 低優先 }
-                }
+              <!-- Task Status Tag -->
+              <nz-tag [nzColor]="getStatusColor(node.origin.status || 'pending')" class="task-status">
+                {{ getStatusLabel(node.origin.status || 'pending') }}
               </nz-tag>
-            }
 
-            <!-- Assignee Info -->
-            @if (node.origin.assigned_to) {
-              <span class="task-assignee">
-                <span nz-icon nzType="user"></span>
-                <span class="assignee-name">{{ node.origin.assigned_to }}</span>
-              </span>
-            }
+              <!-- Task Priority -->
+              @if (node.origin.priority) {
+                <nz-tag 
+                  [nzColor]="node.origin.priority === 'high' ? 'red' : node.origin.priority === 'medium' ? 'orange' : 'default'"
+                  class="task-priority"
+                >
+                  @switch (node.origin.priority) {
+                    @case ('high') { 高優先 }
+                    @case ('medium') { 中優先 }
+                    @case ('low') { 低優先 }
+                  }
+                </nz-tag>
+              }
 
-            <!-- Task Type -->
-            @if (node.origin.task_type) {
-              <span class="task-type">
-                @switch (node.origin.task_type) {
-                  @case ('construction') { <span nz-icon nzType="build"></span> 施工 }
-                  @case ('design') { <span nz-icon nzType="sketch"></span> 設計 }
-                  @case ('inspection') { <span nz-icon nzType="safety"></span> 檢查 }
-                  @case ('documentation') { <span nz-icon nzType="file-text"></span> 文檔 }
-                  @case ('other') { <span nz-icon nzType="ellipsis"></span> 其他 }
-                }
-              </span>
-            }
+              <!-- Assignee Info -->
+              @if (node.origin.assigned_to) {
+                <span class="task-assignee">
+                  <span nz-icon nzType="user"></span>
+                  <span class="assignee-name">{{ node.origin.assigned_to }}</span>
+                </span>
+              }
 
-            <!-- Due Date -->
-            @if (node.origin.due_date) {
-              <span class="task-due-date">
-                <span nz-icon nzType="calendar"></span>
-                {{ node.origin.due_date | date:'yyyy-MM-dd' }}
-              </span>
-            }
-          </div>
-        </ng-template>
-      </nz-tree>
+              <!-- Task Type -->
+              @if (node.origin.task_type) {
+                <span class="task-type">
+                  @switch (node.origin.task_type) {
+                    @case ('construction') { <span nz-icon nzType="build"></span> 施工 }
+                    @case ('design') { <span nz-icon nzType="sketch"></span> 設計 }
+                    @case ('inspection') { <span nz-icon nzType="safety"></span> 檢查 }
+                    @case ('documentation') { <span nz-icon nzType="file-text"></span> 文檔 }
+                    @case ('other') { <span nz-icon nzType="ellipsis"></span> 其他 }
+                  }
+                </span>
+              }
+
+              <!-- Due Date -->
+              @if (node.origin.due_date) {
+                <span class="task-due-date">
+                  <span nz-icon nzType="calendar"></span>
+                  {{ node.origin.due_date | date:'yyyy-MM-dd' }}
+                </span>
+              }
+            </div>
+          </ng-template>
+        </nz-tree>
+      </div>
     </div>
   }
 </nz-card>

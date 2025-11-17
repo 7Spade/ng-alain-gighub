@@ -213,6 +213,130 @@ export class TaskTreeFacade {
   }
 
   /**
+   * Update task hierarchy (parent and sequence order)
+   * 
+   * Implements Phase 2 (Task 2.1.3) from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
+   * 
+   * @param taskId Task ID
+   * @param newParentId New parent task ID (null for root)
+   * @param newSequenceOrder New sequence order
+   * @returns Promise<void>
+   */
+  async updateTaskHierarchy(
+    taskId: string,
+    newParentId: string | null,
+    newSequenceOrder: number
+  ): Promise<void> {
+    const oldTask = this.tasks().find(t => t.id === taskId);
+    if (!oldTask) {
+      throw new Error(`Task not found: ${taskId}`);
+    }
+
+    const blueprintId = this.currentBlueprintId();
+    if (!blueprintId) {
+      throw new Error('No blueprint ID set');
+    }
+
+    // Validate: prevent circular dependency
+    if (newParentId && this.wouldCreateCircularDependency(taskId, newParentId)) {
+      throw new Error('Circular dependency detected');
+    }
+
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // Update in database
+      const update: TaskUpdate = {
+        parent_task_id: newParentId,
+        sequence_order: newSequenceOrder
+      };
+      await firstValueFrom(this.taskRepository.update(taskId, update));
+
+      // Recalculate sibling orders if needed
+      await this.recalculateSiblingOrders(newParentId);
+
+      // Reload to get fresh data
+      await this.reloadTasks();
+
+      // Log activity
+      const newTask = this.tasks().find(t => t.id === taskId);
+      if (newTask && this.activityService) {
+        try {
+          await this.activityService.logActivity(
+            blueprintId,
+            'task',
+            taskId,
+            'hierarchy_changed',
+            [
+              { field: 'parent_task_id', oldValue: oldTask.parent_task_id, newValue: newParentId },
+              { field: 'sequence_order', oldValue: oldTask.sequence_order, newValue: newSequenceOrder }
+            ],
+            {
+              taskId,
+              taskTitle: newTask.title || 'Unnamed Task',
+              oldParentId: oldTask.parent_task_id,
+              newParentId
+            }
+          );
+        } catch (error) {
+          console.error('[TaskTreeFacade] Failed to log hierarchy change:', error);
+        }
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update task hierarchy';
+      this.errorState.set(errorMessage);
+      console.error('[TaskTreeFacade] Update hierarchy error:', error);
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * Optimistically update task hierarchy with automatic rollback on failure
+   * 
+   * Implements Phase 2 (Task 2.2.1) from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
+   * 
+   * @param taskId Task ID
+   * @param newParentId New parent task ID (null for root)
+   * @param newSequenceOrder New sequence order
+   * @returns Promise<void>
+   */
+  async updateTaskHierarchyOptimistic(
+    taskId: string,
+    newParentId: string | null,
+    newSequenceOrder: number
+  ): Promise<void> {
+    // Save current state for rollback
+    const previousTasks = [...this.tasks()];
+
+    // Optimistic update: immediately update local state
+    const updatedTasks = this.tasks().map(task => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          parent_task_id: newParentId,
+          sequence_order: newSequenceOrder
+        };
+      }
+      return task;
+    });
+
+    this.tasksState.set(updatedTasks);
+
+    try {
+      // Actual server update
+      await this.updateTaskHierarchy(taskId, newParentId, newSequenceOrder);
+    } catch (error) {
+      // Rollback on failure
+      this.tasksState.set(previousTasks);
+      console.warn('[TaskTreeFacade] Hierarchy update failed, rolled back to previous state');
+      throw error;
+    }
+  }
+
+  /**
    * Select a task (for detail view or editing)
    *
    * @param taskId Task ID or null to deselect
@@ -226,6 +350,83 @@ export class TaskTreeFacade {
    */
   clearError(): void {
     this.errorState.set(null);
+  }
+
+  /**
+   * Check if moving taskId under newParentId would create circular dependency
+   * 
+   * Implements circular dependency detection for Phase 2 (Task 2.1.3)
+   * 
+   * @param taskId Task being moved
+   * @param newParentId Proposed new parent
+   * @returns true if circular dependency would be created
+   * @private
+   */
+  private wouldCreateCircularDependency(taskId: string, newParentId: string): boolean {
+    // Walk up the parent chain of newParentId
+    let currentId: string | null = newParentId;
+    const visited = new Set<string>();
+
+    while (currentId) {
+      if (currentId === taskId) {
+        return true; // Circular dependency found
+      }
+
+      if (visited.has(currentId)) {
+        break; // Already visited, avoid infinite loop
+      }
+      visited.add(currentId);
+
+      const task = this.tasks().find(t => t.id === currentId);
+      currentId = task?.parent_task_id || null;
+    }
+
+    return false;
+  }
+
+  /**
+   * Recalculate sequence orders for siblings to ensure they are continuous
+   * 
+   * Implements Phase 2 (Task 2.2.2) from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
+   * 
+   * @param parentId Parent task ID (null for root level)
+   * @returns Promise<void>
+   * @private
+   */
+  private async recalculateSiblingOrders(parentId: string | null): Promise<void> {
+    const siblings = this.tasks()
+      .filter(t => t.parent_task_id === parentId)
+      .sort((a, b) => (a.sequence_order ?? 0) - (b.sequence_order ?? 0));
+
+    if (siblings.length === 0) {
+      return; // No siblings to recalculate
+    }
+
+    // Check if recalculation is needed
+    const needsRecalculation = siblings.some((task, index) => task.sequence_order !== index);
+
+    if (!needsRecalculation) {
+      return; // Sequence orders are already correct
+    }
+
+    // Batch update
+    const updates = siblings.map((task, index) => ({
+      id: task.id,
+      sequence_order: index
+    }));
+
+    try {
+      await Promise.all(
+        updates.map(update =>
+          firstValueFrom(this.taskRepository.update(update.id, { sequence_order: update.sequence_order }))
+        )
+      );
+
+      console.log(`[TaskTreeFacade] Recalculated ${updates.length} sibling orders for parent ${parentId || 'root'}`);
+    } catch (error) {
+      console.error('[TaskTreeFacade] Failed to recalculate sibling orders:', error);
+      // Non-critical error, don't throw
+    }
   }
 
   /**
