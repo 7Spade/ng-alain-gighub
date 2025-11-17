@@ -105,6 +105,15 @@
                 class="task-status"
               />
 
+              <!-- Task Assignee Selector (Phase 3.2) -->
+              <app-task-assignee-selector
+                [taskId]="node.origin.id"
+                [currentAssigneeId]="node.origin.assigned_to"
+                [blueprintId]="selectedBlueprintId()"
+                (assigneeChanged)="onAssignmentChange($event)"
+                class="task-assignee"
+              />
+
               <!-- Task Priority -->
               @if (node.origin.priority) {
                 <nz-tag 
@@ -117,14 +126,6 @@
                     @case ('low') { 低優先 }
                   }
                 </nz-tag>
-              }
-
-              <!-- Assignee Info -->
-              @if (node.origin.assigned_to) {
-                <span class="task-assignee">
-                  <span nz-icon nzType="user"></span>
-                  <span class="assignee-name">{{ node.origin.assigned_to }}</span>
-                </span>
               }
 
               <!-- Task Type -->

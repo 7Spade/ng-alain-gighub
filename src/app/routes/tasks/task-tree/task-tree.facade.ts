@@ -1,8 +1,9 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { TaskRepository, type Task, type TaskUpdate } from '@core';
+import { TaskRepository, type Task, type TaskUpdate, SupabaseService } from '@core';
 import { BlueprintActivityService, type TaskTreeNode } from '@shared';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 /**
  * Task Tree Facade
@@ -12,12 +13,14 @@ import { BlueprintActivityService, type TaskTreeNode } from '@shared';
  * - Provides task tree transformation (flat → hierarchical)
  * - Orchestrates TaskRepository + BlueprintActivityService
  * - Handles all business logic for task operations
+ * - Realtime subscriptions for collaborative updates
  *
  * Design principles:
  * - Signal-based state management (Angular 20)
  * - Non-invasive error handling
  * - Automatic audit logging via ActivityService
  * - Computed tree structure for performance
+ * - Realtime collaboration via Supabase
  *
  * @example
  * ```typescript
@@ -38,9 +41,13 @@ import { BlueprintActivityService, type TaskTreeNode } from '@shared';
 @Injectable({
   providedIn: 'root'
 })
-export class TaskTreeFacade {
+export class TaskTreeFacade implements OnDestroy {
   private readonly taskRepository = inject(TaskRepository);
   private readonly activityService = inject(BlueprintActivityService);
+  private readonly supabase = inject(SupabaseService);
+
+  // Realtime channel
+  private realtimeChannel: RealtimeChannel | null = null;
 
   // Signal state
   private readonly tasksState = signal<Task[]>([]);
@@ -101,6 +108,9 @@ export class TaskTreeFacade {
     try {
       const tasks = await firstValueFrom(this.taskRepository.findByBlueprintId(blueprintId));
       this.tasksState.set(tasks);
+      
+      // Subscribe to realtime updates
+      this.subscribeToTaskChanges(blueprintId);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load tasks';
       this.errorState.set(errorMessage);
@@ -350,6 +360,103 @@ export class TaskTreeFacade {
    */
   clearError(): void {
     this.errorState.set(null);
+  }
+
+  /**
+   * Cleanup on destroy
+   * Implements Phase 3.3.1: Realtime cleanup
+   */
+  ngOnDestroy(): void {
+    this.unsubscribeFromTaskChanges();
+  }
+
+  /**
+   * Subscribe to Realtime task changes
+   * Implements Phase 3.3.1 from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
+   * 
+   * @param blueprintId Blueprint ID to subscribe to
+   * @private
+   */
+  private subscribeToTaskChanges(blueprintId: string): void {
+    // Unsubscribe from previous channel if exists
+    this.unsubscribeFromTaskChanges();
+
+    console.log('[TaskTreeFacade] Subscribing to Realtime updates for blueprint:', blueprintId);
+
+    // Create new channel for this blueprint
+    this.realtimeChannel = this.supabase.client
+      .channel(`tasks:blueprint_id=eq.${blueprintId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'tasks',
+          filter: `blueprint_id=eq.${blueprintId}`
+        },
+        (payload) => {
+          console.log('[TaskTreeFacade] Realtime task change:', payload);
+          this.handleRealtimeUpdate(payload);
+        }
+      )
+      .subscribe((status) => {
+        console.log('[TaskTreeFacade] Realtime subscription status:', status);
+      });
+  }
+
+  /**
+   * Unsubscribe from Realtime task changes
+   * @private
+   */
+  private unsubscribeFromTaskChanges(): void {
+    if (this.realtimeChannel) {
+      console.log('[TaskTreeFacade] Unsubscribing from Realtime updates');
+      this.supabase.client.removeChannel(this.realtimeChannel);
+      this.realtimeChannel = null;
+    }
+  }
+
+  /**
+   * Handle Realtime update
+   * Updates local state without full reload for better performance
+   * 
+   * @param payload Realtime payload
+   * @private
+   */
+  private handleRealtimeUpdate(payload: any): void {
+    const eventType = payload.eventType;
+    
+    if (eventType === 'INSERT') {
+      // New task added
+      const newTask = payload.new as Task;
+      const currentTasks = this.tasks();
+      
+      // Check if task already exists (avoid duplicates)
+      if (!currentTasks.find(t => t.id === newTask.id)) {
+        this.tasksState.set([...currentTasks, newTask]);
+        console.log('[TaskTreeFacade] Task added via Realtime:', newTask.id);
+      }
+    } else if (eventType === 'UPDATE') {
+      // Task updated
+      const updatedTask = payload.new as Task;
+      const currentTasks = this.tasks();
+      
+      const updated = currentTasks.map(t =>
+        t.id === updatedTask.id ? { ...t, ...updatedTask } : t
+      );
+      
+      this.tasksState.set(updated);
+      console.log('[TaskTreeFacade] Task updated via Realtime:', updatedTask.id);
+    } else if (eventType === 'DELETE') {
+      // Task deleted
+      const deletedTask = payload.old as Task;
+      const currentTasks = this.tasks();
+      
+      const filtered = currentTasks.filter(t => t.id !== deletedTask.id);
+      
+      this.tasksState.set(filtered);
+      console.log('[TaskTreeFacade] Task deleted via Realtime:', deletedTask.id);
+    }
   }
 
   /**
