@@ -16,6 +16,9 @@
     "*.json": "jsonc",
     ".prettierrc": "jsonc"
   },
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": true,
+  "files.eol": "\n",
   "files.maxMemoryForLargeFilesMB": 8192,
   "files.watcherExclude": {
     "**/.git/*/**": true,
@@ -31,6 +34,14 @@
   "typescript.tsserver.maxTsServerMemory": 8192,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "workbench.editor.enablePreview": false,
+  "terminal.integrated.encoding": "utf8",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "args": ["-NoExit", "-Command", "chcp 65001"]
+    }
+  },
   "[javascript]": {
     "editor.formatOnSave": false
   },
