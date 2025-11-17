@@ -1,8 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { ActivityLogRepository, type ActivityLog, type ActivityLogInsert } from '@core';
+import { ActivityLogRepository, type ActivityLog, type ActivityLogInsert, type Json } from '@core';
 import { firstValueFrom } from 'rxjs';
-
 import { AuthStateService } from '../auth';
+import { type ActivityLogFilters } from '../../models/data.models';
 
 /**
  * Activity Change Detail
@@ -12,19 +12,6 @@ export interface ActivityChange {
   field: string;
   oldValue: unknown;
   newValue: unknown;
-}
-
-/**
- * Activity Log Filters
- * 用於查詢活動記錄的過濾條件
- */
-export interface ActivityLogFilters {
-  resourceType?: string;
-  resourceId?: string;
-  actorId?: string;
-  startDate?: string;
-  endDate?: string;
-  action?: string;
 }
 
 /**
@@ -139,10 +126,10 @@ export class BlueprintActivityService {
       resource_id: resourceId,
       action,
       actor_id: currentUser.id,
-      action_details: {
+      action_details: JSON.parse(JSON.stringify({
         changes: sanitizedChanges,
         ...actionDetails
-      }
+      })) as unknown as Json
     };
 
     try {
@@ -346,7 +333,7 @@ export class BlueprintActivityService {
    * @returns Promise<ActivityLog[]>
    */
   async getResourceActivityLogs(blueprintId: string, resourceType: string, resourceId: string): Promise<ActivityLog[]> {
-    return this.getActivityLogs(blueprintId, { resourceType, resourceId });
+    return this.getActivityLogs(blueprintId, { resourceType: resourceType as unknown, resourceId } as ActivityLogFilters);
   }
 
   /**

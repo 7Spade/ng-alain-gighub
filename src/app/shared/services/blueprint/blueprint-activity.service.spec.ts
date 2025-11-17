@@ -2,8 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { ActivityLogRepository, type ActivityLog } from '@core';
 import { of, throwError } from 'rxjs';
 
-import { BlueprintActivityService, type ActivityChange, type ActivityLogFilters } from './blueprint-activity.service';
-import { type Account } from '../../models';
+import { BlueprintActivityService, type ActivityChange } from './blueprint-activity.service';
+import { type ActivityLogFilters } from '../../models/data.models';
+import { type Account } from '../../models/account.models';
 import { AuthStateService } from '../auth';
 
 describe('BlueprintActivityService', () => {

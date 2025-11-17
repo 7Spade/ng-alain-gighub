@@ -2,8 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { TaskRepository, type Task, type TaskUpdate } from '@core';
-import { BlueprintActivityService } from '@shared';
-import { type TaskTreeNode } from '@shared/models/task.models';
+import { BlueprintActivityService, type TaskTreeNode } from '@shared';
 
 /**
  * Task Tree Facade
@@ -163,20 +162,24 @@ export class TaskTreeFacade {
 
       // Log activity
       const newTask = this.tasks().find(t => t.id === taskId);
-      if (newTask) {
-        await this.activityService.logTaskChange(
-          {
-            id: newTask.id,
-            blueprintId: blueprintId,
-            name: newTask.name || 'Unnamed Task',
-            status: newTask.status
-          },
-          'updated',
-          {
-            id: oldTask.id,
-            status: oldTask.status
-          }
-        );
+      if (newTask && this.activityService) {
+        // Note: logTaskChange expects specific task structure which may not match current Task type
+        // TODO: Update logTaskChange signature or create adapter
+        try {
+          await this.activityService.logActivity(
+            blueprintId,
+            'task',
+            taskId,
+            'status_changed',
+            [{ field: 'status', oldValue: oldTask.status, newValue: status }],
+            {
+              taskId,
+              taskTitle: newTask.title || 'Unnamed Task'
+            }
+          );
+        } catch (error) {
+          console.error('[TaskTreeFacade] Failed to log activity:', error);
+        }
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to update task status';
@@ -190,64 +193,23 @@ export class TaskTreeFacade {
 
   /**
    * Update task assignment with automatic audit logging
+   * 
+   * TODO: Implement using task_assignments table instead of direct field
+   * The tasks table doesn't have an assigned_to field - assignments are managed
+   * through the task_assignments join table
    *
    * @param taskId Task ID
    * @param assignedTo User/Team/Org ID to assign
    * @returns Promise<void>
    */
   async updateTaskAssignment(taskId: string, assignedTo: string | null): Promise<void> {
-    const oldTask = this.tasks().find(t => t.id === taskId);
-    if (!oldTask) {
-      throw new Error(`Task not found: ${taskId}`);
-    }
-
-    if (oldTask.assigned_to === assignedTo) {
-      return; // No change needed
-    }
-
-    const blueprintId = this.currentBlueprintId();
-    if (!blueprintId) {
-      throw new Error('No blueprint ID set');
-    }
-
-    this.loadingState.set(true);
-    this.errorState.set(null);
-
-    try {
-      // Update in database
-      const update: TaskUpdate = {
-        assigned_to: assignedTo
-      };
-      await firstValueFrom(this.taskRepository.update(taskId, update));
-
-      // Reload to get fresh data
-      await this.reloadTasks();
-
-      // Log activity
-      const newTask = this.tasks().find(t => t.id === taskId);
-      if (newTask) {
-        await this.activityService.logTaskChange(
-          {
-            id: newTask.id,
-            blueprintId: blueprintId,
-            name: newTask.name || 'Unnamed Task',
-            assigned_to: newTask.assigned_to
-          },
-          'updated',
-          {
-            id: oldTask.id,
-            assigned_to: oldTask.assigned_to
-          }
-        );
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update task assignment';
-      this.errorState.set(errorMessage);
-      console.error('[TaskTreeFacade] Update assignment error:', error);
-      throw error;
-    } finally {
-      this.loadingState.set(false);
-    }
+    throw new Error('updateTaskAssignment not yet implemented - requires task_assignments table integration');
+    
+    // TODO: Implementation should:
+    // 1. Query task_assignments table
+    // 2. Create/update assignment record
+    // 3. Log activity via BlueprintActivityService
+    // 4. Reload tasks to refresh state
   }
 
   /**
