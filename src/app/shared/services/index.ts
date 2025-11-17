@@ -7,6 +7,7 @@
  * - collaboration: 協作服務
  * - blueprint: 藍圖服務
  * - task: 任務服務
+ * - task-template: 任務範本服務
  * - pull-request: Pull Request 服務
  * - todo: 待辦事項服務
  * - permission: 權限服務
@@ -20,6 +21,7 @@ export * from './auth';
 export * from './collaboration';
 export * from './blueprint';
 export * from './task';
+export * from './task-template';
 export * from './pull-request';
 export * from './todo';
 export * from './permission';
