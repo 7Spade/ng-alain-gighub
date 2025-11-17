@@ -119,11 +119,10 @@ source-map-explorer-report.*
 # Documentation (exclude only oversized or generated files)
 # ============================================================================
 # Exclude archived documentation
-docs/Archive/
+docs/ArchivedDocuments/
 
 # Exclude large generated codebase files (796KB, 23K+ lines)
 docs/fyi-codebase.md
-docs/Archive/fyi-codebase.md
 
 # Exclude large component index directories (200KB+)
 docs/DELON-Index/
