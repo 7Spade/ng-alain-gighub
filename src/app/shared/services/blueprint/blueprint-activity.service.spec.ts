@@ -20,19 +20,19 @@ describe('BlueprintActivityService', () => {
 
   const mockActivityLog: ActivityLog = {
     id: 'log-123',
-    blueprintId: 'blueprint-123',
-    resourceType: 'task',
-    resourceId: 'task-456',
+    blueprint_id: 'blueprint-123',
+    resource_type: 'task',
+    resource_id: 'task-456',
     action: 'created',
-    actorId: 'user-123',
-    actionDetails: {
+    actor_id: 'user-123',
+    action_details: {
       changes: [],
       context: 'Test context'
     },
-    createdAt: '2024-01-01T00:00:00Z',
-    ipAddress: null,
-    userAgent: null,
-    branchId: null
+    created_at: '2024-01-01T00:00:00Z',
+    ip_address: null,
+    user_agent: null,
+    branch_id: null
   };
 
   beforeEach(() => {
@@ -68,12 +68,12 @@ describe('BlueprintActivityService', () => {
 
       expect(activityLogRepository.create).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          blueprintId: 'blueprint-123',
-          resourceType: 'task',
-          resourceId: 'task-456',
+          blueprint_id: 'blueprint-123',
+          resource_type: 'task',
+          resource_id: 'task-456',
           action: 'updated',
-          actorId: 'user-123',
-          actionDetails: jasmine.objectContaining({
+          actor_id: 'user-123',
+          action_details: jasmine.objectContaining({
             changes: jasmine.arrayContaining([
               jasmine.objectContaining({
                 field: 'status',
@@ -99,7 +99,7 @@ describe('BlueprintActivityService', () => {
 
       expect(activityLogRepository.create).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          actionDetails: jasmine.objectContaining({
+          action_details: jasmine.objectContaining({
             changes: jasmine.arrayContaining([
               { field: 'password', oldValue: '***REDACTED***', newValue: '***REDACTED***' },
               { field: 'normalField', oldValue: 'old', newValue: 'new' }
@@ -132,7 +132,7 @@ describe('BlueprintActivityService', () => {
     it('should log task creation', async () => {
       const task = {
         id: 'task-456',
-        blueprintId: 'blueprint-123',
+        blueprint_id: 'blueprint-123',
         name: 'New Task'
       };
 
@@ -142,10 +142,10 @@ describe('BlueprintActivityService', () => {
 
       expect(activityLogRepository.create).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          resourceType: 'task',
-          resourceId: 'task-456',
+          resource_type: 'task',
+          resource_id: 'task-456',
           action: 'created',
-          actionDetails: jasmine.objectContaining({
+          action_details: jasmine.objectContaining({
             context: 'Task created: New Task'
           })
         })
@@ -155,14 +155,14 @@ describe('BlueprintActivityService', () => {
     it('should compute changes when old task is provided', async () => {
       const oldTask = {
         id: 'task-456',
-        blueprintId: 'blueprint-123',
+        blueprint_id: 'blueprint-123',
         name: 'Old Name',
         status: 'pending'
       };
 
       const newTask = {
         id: 'task-456',
-        blueprintId: 'blueprint-123',
+        blueprint_id: 'blueprint-123',
         name: 'New Name',
         status: 'in_progress'
       };
@@ -173,7 +173,7 @@ describe('BlueprintActivityService', () => {
 
       expect(activityLogRepository.create).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          actionDetails: jasmine.objectContaining({
+          action_details: jasmine.objectContaining({
             changes: jasmine.arrayContaining([jasmine.objectContaining({ field: 'name' }), jasmine.objectContaining({ field: 'status' })])
           })
         })
@@ -196,11 +196,11 @@ describe('BlueprintActivityService', () => {
 
       expect(activityLogRepository.create).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          blueprintId: 'blueprint-123',
-          resourceType: 'pull_request',
-          resourceId: 'pr-789',
+          blueprint_id: 'blueprint-123',
+          resource_type: 'pull_request',
+          resource_id: 'pr-789',
           action: 'merged',
-          actionDetails: jasmine.objectContaining({
+          action_details: jasmine.objectContaining({
             context: 'PR merged: Feature PR',
             mergedBy: 'user-456'
           })
@@ -217,11 +217,11 @@ describe('BlueprintActivityService', () => {
 
       expect(activityLogRepository.create).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          blueprintId: 'blueprint-123',
-          resourceType: 'task',
-          resourceId: 'task-456',
+          blueprint_id: 'blueprint-123',
+          resource_type: 'task',
+          resource_id: 'task-456',
           action: 'contractor_fields_updated',
-          actionDetails: jasmine.objectContaining({
+          action_details: jasmine.objectContaining({
             changes: [{ field: 'contractor_fields.work_hours', oldValue: 8, newValue: 10 }],
             context: 'Contractor fields updated via PR merge'
           })
@@ -245,12 +245,12 @@ describe('BlueprintActivityService', () => {
 
     it('should filter by resource type', async () => {
       const mockLogs: ActivityLog[] = [
-        { ...mockActivityLog, resourceType: 'task' },
-        { ...mockActivityLog, id: 'log-456', resourceType: 'issue' }
+        { ...mockActivityLog, resource_type: 'task' },
+        { ...mockActivityLog, id: 'log-456', resource_type: 'issue' }
       ];
       activityLogRepository.findByBlueprintId.and.returnValue(of(mockLogs));
 
-      const filters: ActivityLogFilters = { resourceType: 'task' };
+      const filters: ActivityLogFilters = { resource_type: 'task' };
       const result = await service.getActivityLogs('blueprint-123', filters);
 
       expect(result.length).toBe(1);
@@ -259,12 +259,12 @@ describe('BlueprintActivityService', () => {
 
     it('should filter by resource id', async () => {
       const mockLogs: ActivityLog[] = [
-        { ...mockActivityLog, resourceId: 'task-456' },
-        { ...mockActivityLog, id: 'log-456', resourceId: 'task-789' }
+        { ...mockActivityLog, resource_id: 'task-456' },
+        { ...mockActivityLog, id: 'log-456', resource_id: 'task-789' }
       ];
       activityLogRepository.findByBlueprintId.and.returnValue(of(mockLogs));
 
-      const filters: ActivityLogFilters = { resourceId: 'task-456' };
+      const filters: ActivityLogFilters = { resource_id: 'task-456' };
       const result = await service.getActivityLogs('blueprint-123', filters);
 
       expect(result.length).toBe(1);
@@ -273,12 +273,12 @@ describe('BlueprintActivityService', () => {
 
     it('should filter by actor id', async () => {
       const mockLogs: ActivityLog[] = [
-        { ...mockActivityLog, actorId: 'user-123' },
-        { ...mockActivityLog, id: 'log-456', actorId: 'user-456' }
+        { ...mockActivityLog, actor_id: 'user-123' },
+        { ...mockActivityLog, id: 'log-456', actor_id: 'user-456' }
       ];
       activityLogRepository.findByBlueprintId.and.returnValue(of(mockLogs));
 
-      const filters: ActivityLogFilters = { actorId: 'user-123' };
+      const filters: ActivityLogFilters = { actor_id: 'user-123' };
       const result = await service.getActivityLogs('blueprint-123', filters);
 
       expect(result.length).toBe(1);
@@ -287,8 +287,8 @@ describe('BlueprintActivityService', () => {
 
     it('should filter by date range', async () => {
       const mockLogs: ActivityLog[] = [
-        { ...mockActivityLog, createdAt: '2024-01-15T00:00:00Z' },
-        { ...mockActivityLog, id: 'log-456', createdAt: '2024-02-15T00:00:00Z' }
+        { ...mockActivityLog, created_at: '2024-01-15T00:00:00Z' },
+        { ...mockActivityLog, id: 'log-456', created_at: '2024-02-15T00:00:00Z' }
       ];
       activityLogRepository.findByBlueprintId.and.returnValue(of(mockLogs));
 
@@ -319,8 +319,8 @@ describe('BlueprintActivityService', () => {
       await service.getResourceActivityLogs('blueprint-123', 'task', 'task-456');
 
       expect(service.getActivityLogs).toHaveBeenCalledWith('blueprint-123', {
-        resourceType: 'task',
-        resourceId: 'task-456'
+        resource_type: 'task',
+        resource_id: 'task-456'
       });
     });
   });

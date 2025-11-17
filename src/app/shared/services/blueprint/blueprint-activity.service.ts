@@ -134,12 +134,12 @@ export class BlueprintActivityService {
     const sanitizedChanges = this.sanitizeChanges(changes);
 
     const logEntry: ActivityLogInsert = {
-      blueprintId,
-      resourceType,
-      resourceId,
+      blueprint_id: blueprintId,
+      resource_type: resourceType,
+      resource_id: resourceId,
       action,
-      actorId: currentUser.id,
-      actionDetails: {
+      actor_id: currentUser.id,
+      action_details: {
         changes: sanitizedChanges,
         ...actionDetails
       }
@@ -300,15 +300,15 @@ export class BlueprintActivityService {
       let filteredLogs = logs;
 
       if (filters?.resourceType) {
-        filteredLogs = filteredLogs.filter(log => log.resourceType === filters.resourceType);
+        filteredLogs = filteredLogs.filter(log => log.resource_type === filters.resourceType);
       }
 
       if (filters?.resourceId) {
-        filteredLogs = filteredLogs.filter(log => log.resourceId === filters.resourceId);
+        filteredLogs = filteredLogs.filter(log => log.resource_id === filters.resourceId);
       }
 
       if (filters?.actorId) {
-        filteredLogs = filteredLogs.filter(log => log.actorId === filters.actorId);
+        filteredLogs = filteredLogs.filter(log => log.actor_id === filters.actorId);
       }
 
       if (filters?.action) {
@@ -317,12 +317,12 @@ export class BlueprintActivityService {
 
       if (filters?.startDate) {
         const startDate = new Date(filters.startDate);
-        filteredLogs = filteredLogs.filter(log => new Date(log.createdAt!) >= startDate);
+        filteredLogs = filteredLogs.filter(log => new Date(log.created_at!) >= startDate);
       }
 
       if (filters?.endDate) {
         const endDate = new Date(filters.endDate);
-        filteredLogs = filteredLogs.filter(log => new Date(log.createdAt!) <= endDate);
+        filteredLogs = filteredLogs.filter(log => new Date(log.created_at!) <= endDate);
       }
 
       this.logsState.set(filteredLogs);
