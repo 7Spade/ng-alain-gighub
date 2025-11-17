@@ -18,17 +18,17 @@
  */
 
 // 按模块导出（按依赖顺序）
-export * from './account.types';
-export * from './blueprint.types';
-export * from './bot.types';
-export * from './collaboration.types';
-export * from './communication.types';
-export * from './data.types';
-export * from './issue.types';
-export * from './permission.types';
-export * from './quality.types';
-export * from './system.types';
-export * from './task.types';
+export * from './account.models';
+export * from './blueprint.models';
+export * from './bot.models';
+export * from './collaboration.models';
+export * from './communication.models';
+export * from './data.models';
+export * from './issue.models';
+export * from './permission.models';
+export * from './quality.models';
+export * from './system.models';
+export * from './task.models';
 
 // 注意：quality-check.model.ts 和 activity-log.model.ts 已迁移到模块目录并删除
 // 请使用 @shared/models/quality 和 @shared/models/data 导入
