@@ -34,6 +34,14 @@ This directory contains module-specific and context-specific instructions for Gi
   - Writing style guide
   - Markdown best practices
 
+### Methodology Instructions
+- **[methodology.instructions.md](./methodology.instructions.md)** - Development methodology guidance
+  - Sequential Thinking workflow
+  - Software Planning Tool usage
+  - Context7 and Supabase MCP integration
+  - Model switching strategy
+  - Complete development workflow examples
+
 ## 🎯 How It Works
 
 GitHub Copilot automatically applies relevant instructions based on the file you're editing:

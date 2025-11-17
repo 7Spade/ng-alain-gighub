@@ -103,4 +103,3 @@ export class OrganizationRoleEditComponent implements OnInit {
     this.modalRef.close(false);
   }
 }
-

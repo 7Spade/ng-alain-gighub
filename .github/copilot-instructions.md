@@ -104,3 +104,196 @@ This system implements a Git-like branching model for collaborative project mana
 #### Never Use
 
 - `any` type (use `unknown` or specific types)
+
+## 🧠 Development Methodology (MANDATORY)
+
+**For detailed methodology, see**: [`docs/DISCUSSION-Sequential-Thinking-Planning-Tool-方法論.md`](../docs/DISCUSSION-Sequential-Thinking-Planning-Tool-方法論.md)
+
+This project uses **Sequential Thinking** and **Software Planning Tool** as core methodologies for all development work. These tools ensure systematic analysis, proper task breakdown, and effective prioritization.
+
+### When to Use Sequential Thinking
+
+**ALWAYS use Sequential Thinking for:**
+- Complex tasks (complexity > 5/10)
+- Architectural decisions and design choices
+- Multi-module changes and refactoring
+- Root cause analysis and debugging complex issues
+- Feature planning and implementation strategy
+- Risk assessment and mitigation planning
+
+**How to use:**
+1. Break down the problem into 8-12 thought steps
+2. Analyze each aspect systematically
+3. Consider alternatives and trade-offs
+4. Document key decisions and rationale
+5. Generate hypotheses and verify them
+6. Iterate until a satisfactory solution is reached
+
+### When to Use Software Planning Tool
+
+**ALWAYS use Software Planning Tool for:**
+- All feature development work
+- Task tracking and progress monitoring
+- Complexity assessment (0-10 scale)
+- Dependency management
+- Implementation planning with subtasks
+
+**How to use:**
+1. Start planning session with the goal
+2. Add todos with titles, descriptions, and complexity scores
+3. Update todo status as work progresses
+4. Save the plan when complete
+5. Reference the plan throughout implementation
+
+### Tool Integration Strategy
+
+Use these tools in combination for best results:
+
+#### 6-Phase Iterative Workflow
+
+```
+1. Analysis (Sequential Thinking)
+   ↓
+2. Planning (Software Planning Tool)
+   ↓
+3. Research (Context7)
+   ↓
+4. Verification (Supabase MCP)
+   ↓
+5. Implementation (Code)
+   ↓
+6. Review (Architecture alignment check)
+```
+
+#### Context7 Usage
+
+**Use Context7 before implementation to:**
+- Query Angular 20 documentation and best practices
+- Look up NG-ZORRO component APIs
+- Research Supabase patterns and RLS policies
+- Verify TypeScript patterns and Signal usage
+
+**Example queries:**
+```bash
+# Angular 20 Signals
+"angular 20 signal computed effect"
+"angular 20 signal inputs outputs"
+
+# NG-ZORRO Components
+"ng-zorro-antd 20 upload component"
+"ng-zorro-antd 20 table component"
+
+# Supabase
+"supabase storage RLS policies"
+"supabase realtime subscriptions"
+```
+
+#### Supabase MCP Usage
+
+**Use Supabase MCP for:**
+- Schema validation (`list_tables`, `execute_sql`)
+- RLS policy verification
+- Migration management (`list_migrations`, `apply_migration`)
+- Complex query testing
+- Database structure inspection
+
+**Example operations:**
+```typescript
+// Check table structure
+supabase.execute_sql(`
+  SELECT column_name, data_type, is_nullable
+  FROM information_schema.columns
+  WHERE table_name = 'tasks'
+`)
+
+// Verify RLS policies
+supabase.execute_sql(`
+  SELECT * FROM pg_policies 
+  WHERE tablename = 'tasks'
+`)
+```
+
+### Model Switching Strategy
+
+For tasks with varying complexity levels:
+
+**Use OpenAI GPT-5.1-Codex when:**
+- Complexity score is 8-10/10
+- Architectural refactoring across multiple modules
+- Complex algorithm implementation
+- Critical security-sensitive code
+- Performance optimization challenges
+
+**Use OpenAI GPT-5-Codex when:**
+- Complexity score is 5-7/10
+- Standard feature implementation
+- Component development
+- Service layer implementation
+- Test writing
+
+**Use default model when:**
+- Complexity score is 1-4/10
+- Documentation updates
+- Simple bug fixes
+- UI styling adjustments
+
+### Practical Example: Photo Upload Feature
+
+**Step 1: Sequential Thinking Analysis**
+```
+Thought 1: Understand requirements
+Thought 2: Analyze Storage structure
+Thought 3: Design RLS policies
+Thought 4: Plan UI components
+Thought 5: Consider data flow
+Thought 6: Align with Git-like model
+Thought 7: Define testing strategy
+Thought 8: Assess risks and rollback plan
+```
+
+**Step 2: Software Planning Tool**
+```
+Todo 1: Storage Bucket design (complexity: 6)
+Todo 2: RLS policy configuration (complexity: 7)
+Todo 3: PhotoUploadComponent (complexity: 6)
+Todo 4: Integration with forms (complexity: 5)
+Todo 5: Unit tests (complexity: 4)
+Todo 6: E2E tests (complexity: 3)
+```
+
+**Step 3: Context7 Research**
+```bash
+context7 query "supabase storage upload multiple files"
+context7 query "ng-zorro-antd upload component custom request"
+context7 query "angular 20 signal form control"
+```
+
+**Step 4: Supabase MCP Verification**
+```typescript
+// Check report_photos table structure
+supabase.execute_sql("SELECT * FROM information_schema.columns WHERE table_name = 'report_photos'")
+
+// Test RLS policy
+supabase.execute_sql("SET LOCAL ROLE authenticated; SELECT * FROM storage.objects WHERE bucket_id = 'report-photos'")
+```
+
+**Step 5: Implementation**
+- Write code based on research and verification
+- Follow Angular 20 and NG-ZORRO best practices
+- Use Signals for state management
+
+**Step 6: Architecture Review**
+```
+✅ Git-like branching model support
+✅ RLS policies complete
+✅ Signal-based reactive
+✅ OnPush change detection
+✅ TypeScript strict mode
+✅ Unit test coverage 80%+
+```
+
+## 📚 Additional Resources
+
+- **Methodology Details**: [`docs/DISCUSSION-Sequential-Thinking-Planning-Tool-方法論.md`](../docs/DISCUSSION-Sequential-Thinking-Planning-Tool-方法論.md)
+- **Quick Start Guide**: [`.github/instructions/methodology.instructions.md`](.github/instructions/methodology.instructions.md)
+- **Development Guidelines**: [`docs/00-開發作業指引.md`](../docs/00-開發作業指引.md)

@@ -14,13 +14,13 @@ export interface ConfirmationConfig {
 
 /**
  * 確認對話框服務
- * 
+ *
  * 用途：統一的確認對話框服務
- * 
+ *
  * @example
  * ```typescript
  * constructor(private confirmService: ConfirmationDialogService) {}
- * 
+ *
  * handleDelete() {
  *   this.confirmService.confirm({
  *     title: '確認刪除',

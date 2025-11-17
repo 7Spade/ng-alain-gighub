@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { EmptyStateComponent } from './empty-state.component';
 
 describe('EmptyStateComponent', () => {
@@ -20,7 +21,7 @@ describe('EmptyStateComponent', () => {
 
   it('should display default description', () => {
     fixture.detectChanges();
-    
+
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('暫無資料');
   });
@@ -28,7 +29,7 @@ describe('EmptyStateComponent', () => {
   it('should display custom description', () => {
     fixture.componentRef.setInput('description', '找不到相關資料');
     fixture.detectChanges();
-    
+
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('找不到相關資料');
   });
@@ -38,10 +39,10 @@ describe('EmptyStateComponent', () => {
     fixture.componentRef.setInput('actionText', '新增');
     fixture.componentRef.setInput('action', actionSpy);
     fixture.detectChanges();
-    
+
     const button = fixture.nativeElement.querySelector('button');
     button.click();
-    
+
     expect(actionSpy).toHaveBeenCalled();
   });
 });

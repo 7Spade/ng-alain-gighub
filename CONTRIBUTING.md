@@ -7,6 +7,7 @@ today! As a contributor, here are the guidelines we would like you to follow:
  - [Feature Requests](#feature)
  - [Submission Guidelines](#submit)
  - [Coding Rules](#rules)
+ - [Development Methodology](#methodology)
  - [Commit Message Guidelines](#commit)
 
 ## <a name="issue"></a> Found a Bug?
@@ -123,6 +124,48 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 * All features or bug fixes **must be tested** by one or more specs (unit-tests).
 * All public API methods **must be documented**.
+
+## <a name="methodology"></a> Development Methodology
+
+This project uses **Sequential Thinking** and **Software Planning Tool** as core methodologies for systematic development. These tools ensure proper analysis, planning, and implementation of all features.
+
+### Why Use This Methodology?
+
+- **Traceability**: Every decision is documented with reasoning
+- **Verifiability**: Technical choices are backed by documentation
+- **Repeatability**: Standardized workflow across the team
+- **Risk Control**: Early identification of potential issues
+
+### Quick Overview
+
+**6-Phase Development Workflow:**
+```
+1. Analysis (Sequential Thinking) → Systematic problem breakdown
+2. Planning (Software Planning Tool) → Task breakdown and tracking
+3. Research (Context7) → Official documentation lookup
+4. Verification (Supabase MCP) → Database validation
+5. Implementation (Code) → Actual development
+6. Review (Architecture Check) → Alignment verification
+```
+
+### When to Use Each Tool
+
+- **Sequential Thinking**: Complex tasks (complexity > 5/10), architectural decisions, multi-module changes
+- **Software Planning Tool**: All feature development, task tracking, complexity assessment
+- **Context7**: Before any implementation, for Angular/NG-ZORRO/Supabase documentation
+- **Supabase MCP**: Database operations, RLS verification, migration validation
+
+### Detailed Documentation
+
+For complete methodology details and examples, see:
+- **Full Methodology**: [`docs/DISCUSSION-Sequential-Thinking-Planning-Tool-方法論.md`](docs/DISCUSSION-Sequential-Thinking-Planning-Tool-方法論.md)
+- **Instructions**: [`.github/instructions/methodology.instructions.md`](.github/instructions/methodology.instructions.md)
+- **Quick Start**: [`docs/QUICK-START-Sequential-Thinking-Planning.md`](docs/QUICK-START-Sequential-Thinking-Planning.md)
+- **Development Guide**: [`docs/00-開發作業指引.md`](docs/00-開發作業指引.md)
+
+### Model Switching
+
+For high-complexity tasks (8-10/10), consider switching to **OpenAI GPT-5.1-Codex** for optimal results. For standard complexity (5-7/10), **OpenAI GPT-5-Codex** is recommended.
 
 ## <a name="commit"></a> Commit Message Guidelines
 

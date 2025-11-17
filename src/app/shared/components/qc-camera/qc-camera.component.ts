@@ -5,21 +5,21 @@ export interface CapturedPhoto {
   id: string;
   dataUrl: string;
   timestamp: string;
-  annotations?: {
+  annotations?: Array<{
     text: string;
     x: number;
     y: number;
-  }[];
+  }>;
 }
 
 /**
  * 品管相機元件
- * 
+ *
  * 用途：整合相機功能，支援拍照和照片標註
- * 
+ *
  * @example
  * ```html
- * <app-qc-camera 
+ * <app-qc-camera
  *   (photoCapture)="handlePhotoCapture($event)"
  *   (photosComplete)="handleComplete($event)" />
  * ```
@@ -38,42 +38,25 @@ export interface CapturedPhoto {
             <span nz-icon nzType="camera" nzTheme="outline" class="camera-icon"></span>
             <p>相機視圖</p>
             <p class="camera-hint">實際應用需整合 WebRTC MediaDevices API</p>
-            
+
             <div class="camera-controls">
-              <button 
-                nz-button 
-                nzType="primary" 
-                nzSize="large"
-                nzShape="circle"
-                (click)="capturePhoto()">
+              <button nz-button nzType="primary" nzSize="large" nzShape="circle" (click)="capturePhoto()">
                 <span nz-icon nzType="camera" nzTheme="outline"></span>
               </button>
-              <button 
-                nz-button 
-                nzType="default"
-                (click)="stopCapture()">
-                取消
-              </button>
+              <button nz-button nzType="default" (click)="stopCapture()"> 取消 </button>
             </div>
           </div>
         } @else {
           <!-- Start button -->
           <div class="camera-start">
-            <button 
-              nz-button 
-              nzType="primary" 
-              nzSize="large"
-              (click)="startCapture()">
+            <button nz-button nzType="primary" nzSize="large" (click)="startCapture()">
               <span nz-icon nzType="camera" nzTheme="outline"></span>
               開始拍照
             </button>
-            
+
             <nz-divider nzText="或"></nz-divider>
 
-            <button 
-              nz-button 
-              nzType="default"
-              (click)="uploadFromFile()">
+            <button nz-button nzType="default" (click)="uploadFromFile()">
               <span nz-icon nzType="upload" nzTheme="outline"></span>
               從檔案上傳
             </button>
@@ -84,51 +67,32 @@ export interface CapturedPhoto {
         @if (capturedPhotos().length > 0) {
           <div class="captured-photos">
             <nz-divider nzText="已拍攝照片"></nz-divider>
-            
+
             <div class="photos-grid">
               @for (photo of capturedPhotos(); track photo.id) {
                 <div class="photo-item">
                   <img [src]="photo.dataUrl" [alt]="'照片 ' + photo.id" />
                   <div class="photo-overlay">
-                    <button 
-                      nz-button 
-                      nzType="primary" 
-                      nzSize="small"
-                      nzShape="circle"
-                      (click)="annotatePhoto(photo)">
+                    <button nz-button nzType="primary" nzSize="small" nzShape="circle" (click)="annotatePhoto(photo)">
                       <span nz-icon nzType="edit" nzTheme="outline"></span>
                     </button>
-                    <button 
-                      nz-button 
-                      nzDanger 
-                      nzSize="small"
-                      nzShape="circle"
-                      (click)="deletePhoto(photo)">
+                    <button nz-button nzDanger nzSize="small" nzShape="circle" (click)="deletePhoto(photo)">
                       <span nz-icon nzType="delete" nzTheme="outline"></span>
                     </button>
                   </div>
                   <div class="photo-info">
-                    {{ photo.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}
+                    {{ photo.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}
                   </div>
                 </div>
               }
             </div>
 
             <div class="photos-actions">
-              <button 
-                nz-button 
-                nzType="primary"
-                [disabled]="capturedPhotos().length === 0"
-                (click)="completePhotos()">
+              <button nz-button nzType="primary" [disabled]="capturedPhotos().length === 0" (click)="completePhotos()">
                 <span nz-icon nzType="check" nzTheme="outline"></span>
                 完成拍攝 ({{ capturedPhotos().length }})
               </button>
-              <button 
-                nz-button 
-                nzType="default"
-                (click)="clearPhotos()">
-                清除全部
-              </button>
+              <button nz-button nzType="default" (click)="clearPhotos()"> 清除全部 </button>
             </div>
           </div>
         }
@@ -140,35 +104,21 @@ export interface CapturedPhoto {
         nzTitle="照片標註"
         [nzFooter]="annotationFooter"
         [nzWidth]="'80%'"
-        (nzOnCancel)="closeAnnotation()">
-        
+        (nzOnCancel)="closeAnnotation()"
+      >
         @if (currentAnnotatingPhoto()) {
           <div class="annotation-container">
             <div class="annotation-canvas">
-              <img 
-                [src]="currentAnnotatingPhoto()!.dataUrl" 
-                alt="標註照片"
-                class="annotation-image" />
+              <img [src]="currentAnnotatingPhoto()!.dataUrl" alt="標註照片" class="annotation-image" />
               <!-- Canvas overlay for annotations would go here -->
-              <div class="annotation-hint">
-                點擊照片可添加標註文字
-              </div>
+              <div class="annotation-hint"> 點擊照片可添加標註文字 </div>
             </div>
 
             <div class="annotation-controls">
               <nz-input-group [nzPrefix]="prefixTemplate">
-                <input 
-                  nz-input 
-                  placeholder="輸入標註文字"
-                  [(ngModel)]="annotationText" />
+                <input nz-input placeholder="輸入標註文字" [(ngModel)]="annotationText" />
               </nz-input-group>
-              <button 
-                nz-button 
-                nzType="primary"
-                [disabled]="!annotationText.trim()"
-                (click)="addAnnotation()">
-                添加標註
-              </button>
+              <button nz-button nzType="primary" [disabled]="!annotationText.trim()" (click)="addAnnotation()"> 添加標註 </button>
 
               <ng-template #prefixTemplate>
                 <span nz-icon nzType="edit" nzTheme="outline"></span>
@@ -200,155 +150,157 @@ export interface CapturedPhoto {
       </nz-modal>
     </nz-card>
   `,
-  styles: [`
-    .qc-camera-card {
-      :host ::ng-deep .ant-card-body {
-        padding: 24px;
+  styles: [
+    `
+      .qc-camera-card {
+        :host ::ng-deep .ant-card-body {
+          padding: 24px;
+        }
       }
-    }
 
-    .camera-container {
-      min-height: 400px;
-    }
+      .camera-container {
+        min-height: 400px;
+      }
 
-    .camera-view {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 400px;
-      background: #000;
-      border-radius: 4px;
-      color: #fff;
+      .camera-view {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 400px;
+        background: #000;
+        border-radius: 4px;
+        color: #fff;
 
-      .camera-icon {
-        font-size: 64px;
+        .camera-icon {
+          font-size: 64px;
+          margin-bottom: 16px;
+        }
+
+        .camera-hint {
+          color: #bfbfbf;
+          font-size: 12px;
+          margin-top: 8px;
+        }
+
+        .camera-controls {
+          display: flex;
+          gap: 16px;
+          margin-top: 24px;
+        }
+      }
+
+      .camera-start {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+      }
+
+      .captured-photos {
+        margin-top: 24px;
+      }
+
+      .photos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
         margin-bottom: 16px;
       }
 
-      .camera-hint {
-        color: #bfbfbf;
-        font-size: 12px;
-        margin-top: 8px;
+      .photo-item {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid #d9d9d9;
+
+        img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          display: block;
+        }
+
+        .photo-overlay {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          display: flex;
+          gap: 8px;
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+
+        &:hover .photo-overlay {
+          opacity: 1;
+        }
+
+        .photo-info {
+          padding: 8px;
+          background: #fafafa;
+          font-size: 12px;
+          color: rgba(0, 0, 0, 0.65);
+          text-align: center;
+        }
       }
 
-      .camera-controls {
+      .photos-actions {
         display: flex;
+        justify-content: center;
         gap: 16px;
-        margin-top: 24px;
-      }
-    }
-
-    .camera-start {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 300px;
-    }
-
-    .captured-photos {
-      margin-top: 24px;
-    }
-
-    .photos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    .photo-item {
-      position: relative;
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid #d9d9d9;
-
-      img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        display: block;
+        margin-top: 16px;
       }
 
-      .photo-overlay {
-        position: absolute;
-        top: 8px;
-        right: 8px;
+      .annotation-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .annotation-canvas {
+        position: relative;
+        background: #f0f0f0;
+        border-radius: 4px;
+        overflow: hidden;
+
+        .annotation-image {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        .annotation-hint {
+          position: absolute;
+          bottom: 16px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.7);
+          color: #fff;
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 12px;
+        }
+      }
+
+      .annotation-controls {
         display: flex;
         gap: 8px;
-        opacity: 0;
-        transition: opacity 0.2s;
+
+        nz-input-group {
+          flex: 1;
+        }
       }
 
-      &:hover .photo-overlay {
-        opacity: 1;
+      .annotations-list {
+        h4 {
+          margin-bottom: 12px;
+          font-size: 14px;
+          font-weight: 500;
+        }
       }
-
-      .photo-info {
-        padding: 8px;
-        background: #fafafa;
-        font-size: 12px;
-        color: rgba(0, 0, 0, 0.65);
-        text-align: center;
-      }
-    }
-
-    .photos-actions {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .annotation-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .annotation-canvas {
-      position: relative;
-      background: #f0f0f0;
-      border-radius: 4px;
-      overflow: hidden;
-
-      .annotation-image {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
-
-      .annotation-hint {
-        position: absolute;
-        bottom: 16px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.7);
-        color: #fff;
-        padding: 8px 16px;
-        border-radius: 4px;
-        font-size: 12px;
-      }
-    }
-
-    .annotation-controls {
-      display: flex;
-      gap: 8px;
-
-      nz-input-group {
-        flex: 1;
-      }
-    }
-
-    .annotations-list {
-      h4 {
-        margin-bottom: 12px;
-        font-size: 14px;
-        font-weight: 500;
-      }
-    }
-  `]
+    `
+  ]
 })
 export class QcCameraComponent {
   /** 是否正在拍照 */
@@ -394,7 +346,8 @@ export class QcCameraComponent {
     // Simulate photo capture
     const photo: CapturedPhoto = {
       id: Date.now().toString(),
-      dataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5ZOB566h5ri45r2HP+eBvjwvdGV4dD48L3N2Zz4=',
+      dataUrl:
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5ZOB566h5ri45r2HP+eBvjwvdGV4dD48L3N2Zz4=',
       timestamp: new Date().toISOString(),
       annotations: []
     };
@@ -461,7 +414,7 @@ export class QcCameraComponent {
   addAnnotation(): void {
     const photo = this.currentAnnotatingPhoto();
     const text = this.annotationText.trim();
-    
+
     if (photo && text) {
       const annotation = {
         text,
@@ -471,7 +424,7 @@ export class QcCameraComponent {
 
       photo.annotations = photo.annotations || [];
       photo.annotations.push(annotation);
-      
+
       this.annotationText = '';
     }
   }
@@ -490,9 +443,7 @@ export class QcCameraComponent {
    * 刪除照片
    */
   deletePhoto(photo: CapturedPhoto): void {
-    this.capturedPhotos.update(photos => 
-      photos.filter(p => p.id !== photo.id)
-    );
+    this.capturedPhotos.update(photos => photos.filter(p => p.id !== photo.id));
   }
 
   /**

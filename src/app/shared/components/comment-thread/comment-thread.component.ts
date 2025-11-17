@@ -16,12 +16,12 @@ export interface CommentData {
 
 /**
  * 討論串元件
- * 
+ *
  * 用途：巢狀留言討論，支援 @提及和即時更新
- * 
+ *
  * @example
  * ```html
- * <app-comment-thread 
+ * <app-comment-thread
  *   [comments]="comments()"
  *   [currentUserId]="userId()"
  *   (commentSubmit)="handleSubmit($event)"
@@ -39,59 +39,39 @@ export interface CommentData {
       <!-- Add comment -->
       <div class="comment-editor">
         <nz-comment>
-          <nz-avatar 
-            nz-comment-avatar
-            [nzSrc]="currentUserAvatar() || undefined"
-            [nzText]="currentUserName().charAt(0)" />
+          <nz-avatar nz-comment-avatar [nzSrc]="currentUserAvatar() || undefined" [nzText]="currentUserName().charAt(0)" />
           <nz-comment-content>
             <textarea
               nz-input
               [(ngModel)]="newCommentText"
               [placeholder]="'輸入留言... 使用 @ 提及其他人'"
               [nzAutosize]="{ minRows: 3, maxRows: 6 }"
-              (keydown.enter)="handleKeyDown($event)">
+              (keydown.enter)="handleKeyDown($event)"
+            >
             </textarea>
             <div class="comment-actions">
-              <button 
-                nz-button 
-                nzType="primary" 
-                nzSize="small"
-                [disabled]="!newCommentText.trim()"
-                (click)="submitComment()">
+              <button nz-button nzType="primary" nzSize="small" [disabled]="!newCommentText.trim()" (click)="submitComment()">
                 <span nz-icon nzType="send"></span>
                 發送
               </button>
-              <button 
-                nz-button 
-                nzType="default" 
-                nzSize="small"
-                (click)="cancelComment()">
-                取消
-              </button>
+              <button nz-button nzType="default" nzSize="small" (click)="cancelComment()"> 取消 </button>
             </div>
           </nz-comment-content>
         </nz-comment>
       </div>
 
       <!-- Comment list -->
-      <nz-list 
-        [nzDataSource]="topLevelComments()" 
-        [nzRenderItem]="commentTemplate"
-        class="comment-list">
-        
+      <nz-list [nzDataSource]="topLevelComments()" [nzRenderItem]="commentTemplate" class="comment-list">
         <ng-template #commentTemplate let-comment>
           <nz-comment>
-            <nz-avatar 
-              nz-comment-avatar
-              [nzSrc]="comment.authorAvatar || undefined"
-              [nzText]="comment.authorName.charAt(0)" />
-            
+            <nz-avatar nz-comment-avatar [nzSrc]="comment.authorAvatar || undefined" [nzText]="comment.authorName.charAt(0)" />
+
             <nz-comment-content>
               <p class="comment-author">
                 {{ comment.authorName }}
-                <span class="comment-time">{{ comment.createdAt | date:'yyyy-MM-dd HH:mm' }}</span>
+                <span class="comment-time">{{ comment.createdAt | date: 'yyyy-MM-dd HH:mm' }}</span>
               </p>
-              
+
               <div class="comment-text" [innerHTML]="formatCommentContent(comment.content)"></div>
 
               @if (comment.updatedAt && comment.updatedAt !== comment.createdAt) {
@@ -99,33 +79,20 @@ export interface CommentData {
               }
 
               <div class="comment-actions-inline">
-                <button 
-                  nz-button 
-                  nzType="link" 
-                  nzSize="small"
-                  (click)="replyToComment(comment)">
+                <button nz-button nzType="link" nzSize="small" (click)="replyToComment(comment)">
                   <span nz-icon nzType="message"></span>
                   回覆
                 </button>
-                
+
                 @if (canEditComment(comment)) {
-                  <button 
-                    nz-button 
-                    nzType="link" 
-                    nzSize="small"
-                    (click)="editComment(comment)">
+                  <button nz-button nzType="link" nzSize="small" (click)="editComment(comment)">
                     <span nz-icon nzType="edit"></span>
                     編輯
                   </button>
                 }
 
                 @if (canDeleteComment(comment)) {
-                  <button 
-                    nz-button 
-                    nzType="link" 
-                    nzSize="small"
-                    nzDanger
-                    (click)="deleteComment(comment)">
+                  <button nz-button nzType="link" nzSize="small" nzDanger (click)="deleteComment(comment)">
                     <span nz-icon nzType="delete"></span>
                     刪除
                   </button>
@@ -145,7 +112,8 @@ export interface CommentData {
                       (commentSubmit)="commentSubmit.emit($event)"
                       (commentEdit)="commentEdit.emit($event)"
                       (commentDelete)="commentDelete.emit($event)"
-                      (commentReply)="commentReply.emit($event)" />
+                      (commentReply)="commentReply.emit($event)"
+                    />
                   }
                 </div>
               }
@@ -159,70 +127,72 @@ export interface CommentData {
       }
     </div>
   `,
-  styles: [`
-    .comment-thread {
-      width: 100%;
-    }
-
-    .comment-editor {
-      margin-bottom: 24px;
-    }
-
-    .comment-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .comment-list {
-      :host ::ng-deep .ant-list-item {
-        border-bottom: 1px solid #f0f0f0;
-        padding: 16px 0;
+  styles: [
+    `
+      .comment-thread {
+        width: 100%;
       }
-    }
 
-    .comment-author {
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
+      .comment-editor {
+        margin-bottom: 24px;
+      }
 
-    .comment-time {
-      margin-left: 8px;
-      font-size: 12px;
-      color: rgba(0, 0, 0, 0.45);
-      font-weight: normal;
-    }
+      .comment-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
 
-    .comment-text {
-      line-height: 1.6;
-      color: rgba(0, 0, 0, 0.85);
-      margin-bottom: 8px;
+      .comment-list {
+        :host ::ng-deep .ant-list-item {
+          border-bottom: 1px solid #f0f0f0;
+          padding: 16px 0;
+        }
+      }
 
-      :host ::ng-deep .mention {
-        color: #1890ff;
+      .comment-author {
         font-weight: 500;
+        margin-bottom: 8px;
       }
-    }
 
-    .comment-edited {
-      font-size: 12px;
-      color: rgba(0, 0, 0, 0.45);
-      font-style: italic;
-    }
+      .comment-time {
+        margin-left: 8px;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.45);
+        font-weight: normal;
+      }
 
-    .comment-actions-inline {
-      display: flex;
-      gap: 4px;
-      margin-top: 8px;
-    }
+      .comment-text {
+        line-height: 1.6;
+        color: rgba(0, 0, 0, 0.85);
+        margin-bottom: 8px;
 
-    .comment-replies {
-      margin-left: 48px;
-      margin-top: 16px;
-      padding-left: 16px;
-      border-left: 2px solid #f0f0f0;
-    }
-  `]
+        :host ::ng-deep .mention {
+          color: #1890ff;
+          font-weight: 500;
+        }
+      }
+
+      .comment-edited {
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.45);
+        font-style: italic;
+      }
+
+      .comment-actions-inline {
+        display: flex;
+        gap: 4px;
+        margin-top: 8px;
+      }
+
+      .comment-replies {
+        margin-left: 48px;
+        margin-top: 16px;
+        padding-left: 16px;
+        border-left: 2px solid #f0f0f0;
+      }
+    `
+  ]
 })
 export class CommentThreadComponent {
   /** 留言列表 */

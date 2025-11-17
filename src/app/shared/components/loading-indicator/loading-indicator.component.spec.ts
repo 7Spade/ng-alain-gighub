@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { LoadingIndicatorComponent } from './loading-indicator.component';
 
 describe('LoadingIndicatorComponent', () => {
@@ -21,7 +22,7 @@ describe('LoadingIndicatorComponent', () => {
   it('should not display when loading is false', () => {
     fixture.componentRef.setInput('loading', false);
     fixture.detectChanges();
-    
+
     const container = fixture.nativeElement.querySelector('.loading-container');
     expect(container).toBeNull();
   });
@@ -29,7 +30,7 @@ describe('LoadingIndicatorComponent', () => {
   it('should display when loading is true', () => {
     fixture.componentRef.setInput('loading', true);
     fixture.detectChanges();
-    
+
     const container = fixture.nativeElement.querySelector('.loading-container');
     expect(container).toBeTruthy();
   });
@@ -38,7 +39,7 @@ describe('LoadingIndicatorComponent', () => {
     fixture.componentRef.setInput('loading', true);
     fixture.componentRef.setInput('text', '處理中...');
     fixture.detectChanges();
-    
+
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('處理中...');
   });
@@ -47,7 +48,7 @@ describe('LoadingIndicatorComponent', () => {
     fixture.componentRef.setInput('loading', true);
     fixture.componentRef.setInput('fullscreen', true);
     fixture.detectChanges();
-    
+
     const container = fixture.nativeElement.querySelector('.loading-container');
     expect(container.classList.contains('fullscreen')).toBe(true);
   });

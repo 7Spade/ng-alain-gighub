@@ -1,10 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { of } from 'rxjs';
-
-import { TaskListComponent } from './task-list.component';
 import {
   TaskService,
   BlueprintService,
@@ -18,6 +14,10 @@ import {
   TaskStaging,
   Account
 } from '@shared';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { of } from 'rxjs';
+
+import { TaskListComponent } from './task-list.component';
 
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
@@ -200,7 +200,7 @@ describe('TaskListComponent', () => {
 
       expect(mockTaskStagingService.loadStagingByTaskId).toHaveBeenCalledWith('task-2');
       expect(mockTaskStagingService.canWithdraw).toHaveBeenCalledWith('staging-1');
-      
+
       const info = component.stagingInfo();
       expect(info['task-2']).toBeDefined();
       expect(info['task-2'].canWithdraw).toBe(true);
@@ -210,7 +210,7 @@ describe('TaskListComponent', () => {
     it('should calculate remaining hours correctly', async () => {
       const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
       const staging = { ...mockTaskStaging, expires_at: futureDate.toISOString() };
-      
+
       mockTaskService.stagingTasks = signal([mockStagingTask]);
       mockTaskStagingService.loadStagingByTaskId.and.returnValue(Promise.resolve());
       mockTaskStagingService.stagingItems = signal([staging]);
@@ -227,23 +227,19 @@ describe('TaskListComponent', () => {
   describe('Allowed Statuses', () => {
     it('should load allowed next statuses for all tasks', async () => {
       mockTaskService.tasks = signal([mockTask]);
-      mockTaskService.getAllowedNextStatuses.and.returnValue(
-        Promise.resolve([TaskStatus.ASSIGNED, TaskStatus.IN_PROGRESS])
-      );
+      mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([TaskStatus.ASSIGNED, TaskStatus.IN_PROGRESS]));
 
       await component.loadAllowedStatuses();
 
       expect(mockTaskService.getAllowedNextStatuses).toHaveBeenCalledWith('task-1');
-      
+
       const allowed = component.allowedStatuses();
       expect(allowed['task-1']).toEqual([TaskStatus.ASSIGNED, TaskStatus.IN_PROGRESS]);
     });
 
     it('should handle errors gracefully when loading allowed statuses', async () => {
       mockTaskService.tasks = signal([mockTask]);
-      mockTaskService.getAllowedNextStatuses.and.returnValue(
-        Promise.reject(new Error('Failed'))
-      );
+      mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.reject(new Error('Failed')));
 
       await component.loadAllowedStatuses();
 
@@ -267,9 +263,7 @@ describe('TaskListComponent', () => {
     });
 
     it('should show error message if status change fails', async () => {
-      mockTaskService.updateTaskStatus.and.returnValue(
-        Promise.reject(new Error('Invalid transition'))
-      );
+      mockTaskService.updateTaskStatus.and.returnValue(Promise.reject(new Error('Invalid transition')));
 
       await component.changeTaskStatus('task-1', TaskStatus.COMPLETED);
 
@@ -281,7 +275,7 @@ describe('TaskListComponent', () => {
       mockTaskService.stagingTasks = signal([]);
       mockTaskService.tasks = signal([mockTask]);
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([]));
-      
+
       spyOn(component, 'loadStagingInfo').and.returnValue(Promise.resolve());
       spyOn(component, 'loadAllowedStatuses').and.returnValue(Promise.resolve());
 
@@ -309,9 +303,9 @@ describe('TaskListComponent', () => {
       mockTaskService.stagingTasks = signal([]);
       mockTaskService.tasks = signal([mockTask]);
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([]));
-      
+
       component.selectedBlueprintId.set('blueprint-1');
-      
+
       await component.withdrawStaging('task-2');
 
       expect(mockTaskStagingService.withdrawStaging).toHaveBeenCalledWith('staging-1', 'user-1');
@@ -335,9 +329,7 @@ describe('TaskListComponent', () => {
     });
 
     it('should show error message if withdrawal fails', async () => {
-      mockTaskStagingService.withdrawStaging.and.returnValue(
-        Promise.reject(new Error('Withdrawal failed'))
-      );
+      mockTaskStagingService.withdrawStaging.and.returnValue(Promise.reject(new Error('Withdrawal failed')));
 
       await component.withdrawStaging('task-2');
 
@@ -358,27 +350,27 @@ describe('TaskListComponent', () => {
 
     it('should filter tasks by status', () => {
       component.filterStatus.set(TaskStatus.PENDING);
-      
+
       const filtered = component.filteredTasks();
-      
+
       expect(filtered.length).toBe(1);
       expect(filtered[0].status).toBe('pending');
     });
 
     it('should filter tasks by priority', () => {
       component.filterPriority.set(TaskPriority.HIGH);
-      
+
       const filtered = component.filteredTasks();
-      
+
       expect(filtered.length).toBe(1);
       expect(filtered[0].priority).toBe('high');
     });
 
     it('should filter tasks by type', () => {
       component.filterType.set(TaskType.MILESTONE);
-      
+
       const filtered = component.filteredTasks();
-      
+
       expect(filtered.length).toBe(1);
       expect(filtered[0].task_type).toBe('milestone');
     });
@@ -387,16 +379,16 @@ describe('TaskListComponent', () => {
       component.filterStatus.set(TaskStatus.STAGING);
       component.filterPriority.set(TaskPriority.URGENT);
       component.filterType.set(TaskType.PHASE);
-      
+
       const filtered = component.filteredTasks();
-      
+
       expect(filtered.length).toBe(1);
       expect(filtered[0].id).toBe('3');
     });
 
     it('should return all tasks when no filters are set', () => {
       const filtered = component.filteredTasks();
-      
+
       expect(filtered.length).toBe(4);
     });
   });
@@ -417,19 +409,19 @@ describe('TaskListComponent', () => {
   describe('Navigation', () => {
     it('should navigate to task detail on viewDetail', () => {
       component.viewDetail('task-1');
-      
+
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/tasks', 'task-1']);
     });
 
     it('should navigate to task edit on edit', () => {
       component.edit('task-1');
-      
+
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/tasks', 'task-1', 'edit']);
     });
 
     it('should navigate to task create on createTask', () => {
       component.createTask();
-      
+
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/tasks/create']);
     });
   });

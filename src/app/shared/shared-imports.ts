@@ -26,19 +26,18 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 // 注意：@delon/theme 的 DatePipe 在模板中使用 `_date` pipe，Angular Common 的 DatePipe 使用 `date` pipe
 import { DatePipe as DelonDatePipe, I18nPipe } from '@delon/theme';
 
-import { SHARED_DELON_MODULES } from './shared-delon.module';
-import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
-
 // Shared Components
 import { AccountSelectorComponent } from './components/account-selector';
+import { ChartWrapperComponent } from './components/chart-wrapper';
+import { CommentThreadComponent } from './components/comment-thread';
+import { EmptyStateComponent } from './components/empty-state';
 import { FormErrorComponent } from './components/form-error';
 import { LoadingIndicatorComponent } from './components/loading-indicator';
-import { EmptyStateComponent } from './components/empty-state';
 import { PhotoGalleryComponent } from './components/photo-gallery';
-import { TodoWidgetComponent } from './components/todo-widget';
-import { CommentThreadComponent } from './components/comment-thread';
-import { ChartWrapperComponent } from './components/chart-wrapper';
 import { QcCameraComponent } from './components/qc-camera';
+import { TodoWidgetComponent } from './components/todo-widget';
+import { SHARED_DELON_MODULES } from './shared-delon.module';
+import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
 export const SHARED_IMPORTS = [
   // ========== Angular 表單模組 ==========

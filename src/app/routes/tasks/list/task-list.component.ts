@@ -153,9 +153,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                   <nz-tag nzColor="orange">暂存中</nz-tag>
                   @if (stagingInfo()[record.id]) {
-                    <small style="color: #ff7a45;">
-                      剩余 {{ stagingInfo()[record.id].remainingHours }}h
-                    </small>
+                    <small style="color: #ff7a45;"> 剩余 {{ stagingInfo()[record.id].remainingHours }}h </small>
                   }
                 </div>
               }
@@ -193,13 +191,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 
           <ng-template #statusActions let-record>
             @if (record.status !== 'completed' && record.status !== 'cancelled') {
-              <button
-                nz-button
-                nzType="link"
-                nz-dropdown
-                [nzDropdownMenu]="statusMenu"
-                nzSize="small"
-              >
+              <button nz-button nzType="link" nz-dropdown [nzDropdownMenu]="statusMenu" nzSize="small">
                 变更状态
                 <span nz-icon nzType="down"></span>
               </button>
@@ -220,15 +212,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 
           <ng-template #stagingActions let-record>
             @if (record.status === 'staging' && stagingInfo()[record.id]?.canWithdraw) {
-              <button
-                nz-button
-                nzType="link"
-                nzDanger
-                nzSize="small"
-                (click)="withdrawStaging(record.id)"
-              >
-                撤回
-              </button>
+              <button nz-button nzType="link" nzDanger nzSize="small" (click)="withdrawStaging(record.id)"> 撤回 </button>
             }
           </ng-template>
         </st>
@@ -409,7 +393,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     try {
       await this.taskService.updateTaskStatus(taskId, newStatus);
       this.message.success('状态更新成功');
-      
+
       // Reload staging info if transitioning to/from staging
       await this.loadStagingInfo();
       await this.loadAllowedStatuses();
@@ -437,7 +421,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     try {
       await this.taskStagingService.withdrawStaging(info.stagingId, currentUser.id);
       this.message.success('撤回成功');
-      
+
       // Reload data
       await this.onBlueprintChange();
     } catch (error) {
