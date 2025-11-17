@@ -5,6 +5,7 @@ import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 import { SHARED_IMPORTS, Task, TaskTreeNode, TaskStatus } from '@shared';
 import { TaskTreeFacade } from './task-tree.facade';
 import { TaskTreeDragService } from './task-tree-drag.service';
+import { TaskStatusSwitcherComponent } from './task-status-switcher/task-status-switcher.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 interface NzTreeNodeOptions {
@@ -47,7 +48,7 @@ interface NzTreeNodeOptions {
 @Component({
   selector: 'app-task-tree',
   standalone: true,
-  imports: [SHARED_IMPORTS, CdkDrag, CdkDropList],
+  imports: [SHARED_IMPORTS, CdkDrag, CdkDropList, TaskStatusSwitcherComponent],
   providers: [TaskTreeDragService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './task-tree.component.html',
@@ -172,6 +173,20 @@ export class TaskTreeComponent implements OnInit {
   onDragEnded(): void {
     this.isDragging.set(false);
     this.draggedNodeId.set(null);
+  }
+
+  /**
+   * Handle task status change
+   * Phase 3.1.3: Status switcher integration
+   */
+  async onStatusChange(event: { taskId: string; newStatus: string }): Promise<void> {
+    try {
+      await this.facade.updateTaskStatus(event.taskId, event.newStatus);
+      this.message.success('任務狀態已更新');
+    } catch (error) {
+      this.message.error('更新失敗：' + (error as Error).message);
+      console.error('[TaskTreeComponent] Status change failed:', error);
+    }
   }
 
   /**
