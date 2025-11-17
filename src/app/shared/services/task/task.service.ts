@@ -415,4 +415,90 @@ export class TaskService {
     const status = task.status as TaskStatus;
     return isWithdrawableStatus(status);
   }
+
+  /**
+   * 更新任務的承攬欄位
+   * 僅允許更新 contractor_fields 內的欄位
+   * 
+   * 此方法用於 Git-like 分支模型中，協作組織僅能更新承攬相關欄位
+   *
+   * @param taskId 任務 ID
+   * @param field 欄位路徑（必須以 'contractor_fields.' 開頭）
+   * @param value 欄位值
+   * @throws Error 如果欄位路徑不合法或任務不存在
+   * 
+   * @example
+   * ```typescript
+   * // 更新工作時數
+   * await taskService.updateTaskContractorFields(
+   *   'task-123',
+   *   'contractor_fields.work_hours',
+   *   8
+   * );
+   * 
+   * // 更新施工進度
+   * await taskService.updateTaskContractorFields(
+   *   'task-123',
+   *   'contractor_fields.progress_percentage',
+   *   75
+   * );
+   * ```
+   */
+  async updateTaskContractorFields(taskId: string, field: string, value: any): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 驗證欄位路徑
+      if (!field.startsWith('contractor_fields.')) {
+        throw new Error('僅允許更新 contractor_fields 欄位');
+      }
+
+      // 取得當前任務
+      const task = await firstValueFrom(this.taskRepository.findById(taskId));
+      if (!task) {
+        throw new Error('任務不存在');
+      }
+
+      // 更新指定欄位
+      const fieldPath = field.replace('contractor_fields.', '');
+      const taskData = task as any;
+      const currentContractorFields = taskData.contractorFields || {};
+
+      // 使用 lodash-style path 設置，支援巢狀路徑
+      const updatedFields = { ...currentContractorFields };
+      const pathParts = fieldPath.split('.');
+      let current = updatedFields;
+
+      // 建立巢狀物件路徑
+      for (let i = 0; i < pathParts.length - 1; i++) {
+        const part = pathParts[i];
+        if (!current[part]) {
+          current[part] = {};
+        }
+        current = current[part];
+      }
+
+      // 設置最終值
+      current[pathParts[pathParts.length - 1]] = value;
+
+      // 寫回資料庫
+      await firstValueFrom(
+        this.taskRepository.update(taskId, {
+          contractor_fields: updatedFields
+        } as any)
+      );
+
+      // 更新本地狀態
+      if (this.selectedTaskState()?.id === taskId) {
+        const updatedTask = await firstValueFrom(this.taskRepository.findById(taskId));
+        this.selectedTaskState.set(updatedTask);
+      }
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '更新承攬欄位失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
 }

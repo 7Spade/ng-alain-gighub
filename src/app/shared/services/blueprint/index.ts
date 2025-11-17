@@ -6,6 +6,7 @@
  * - BranchService: 分支管理和 Fork 机制
  * - PullRequestService: PR 创建、审核、合并
  * - BranchDataIsolationService: 分支数据隔离机制
+ * - BlueprintActivityService: 活动日志和审计追蹤
  *
  * @module shared/services/blueprint
  */
@@ -14,3 +15,4 @@ export * from './blueprint.service';
 export * from './branch.service';
 export * from './pull-request.service';
 export * from './branch-data-isolation.service';
+export * from './blueprint-activity.service';

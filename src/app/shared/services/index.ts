@@ -3,8 +3,13 @@
  *
  * 按业务模块分类的服务：
  * - account: 账户服务
- * - repository: Repository 模式服务（规划中）
- * - storage: Storage 服务（规划中）
+ * - auth: 認證服務
+ * - collaboration: 協作服務
+ * - blueprint: 藍圖服務
+ * - task: 任務服務
+ * - pull-request: Pull Request 服務
+ * - todo: 待辦事項服務
+ * - permission: 權限服務
  *
  * @module shared/services
  */
@@ -15,6 +20,7 @@ export * from './auth';
 export * from './collaboration';
 export * from './blueprint';
 export * from './task';
+export * from './pull-request';
 export * from './todo';
 export * from './permission';
 
