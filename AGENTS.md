@@ -3,7 +3,7 @@
 > - GitHub Copilot 指引位於 `.github/copilot-instructions.md` 和 `.github/instructions/` 目錄
 > - 模組特定規範請參考各模組目錄下的 `AGENTS.md` 文件
 > - 詳細規範請參考對應的規則文件
-> - **⭐ [Agent 開發指南與限制說明](./docs/52-Agent開發指南與限制說明.md)** - 了解 AI Agent 開發的限制和最佳實踐
+> - **⭐ [Agent 開發指南與限制說明](./docs/43-Agent開發指南與限制說明.md)** - 了解 AI Agent 開發的限制和最佳實踐
 
 ## 📋 Cursor 規則文件
 
@@ -12,6 +12,7 @@
 - [Angular 20 最佳實踐](./.cursor/rules/angular.mdc) - Angular 20 現代語法與 Signals
 - [Angular 20 現代化特性](./.cursor/rules/modern-angular.mdc) - Signal Inputs/Outputs、Signal Queries 等新特性
 - [共享模組優先使用](./.cursor/rules/shared-imports.mdc) - SHARED_IMPORTS 使用規範
+- [路徑別名使用](./.cursor/rules/path-aliases.mdc) - 路徑別名使用規範（@core、@shared）
 
 ### 架構與設計規範
 - [分層架構](./.cursor/rules/architecture.mdc) - 分層架構與依賴關係
@@ -66,6 +67,16 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
   - 完整開發工作流程
   - 常見任務和問題排查
 
+### 開發相關 Agents
+- [typescript-agent.md](./.github/agents/typescript-agent.md) - TypeScript 開發代理
+- [angular-agent.md](./.github/agents/angular-agent.md) - Angular 開發代理
+- [architecture-agent.md](./.github/agents/architecture-agent.md) - 架構審查代理
+- [code-quality-agent.md](./.github/agents/code-quality-agent.md) - 代碼質量代理
+- [testing-agent.md](./.github/agents/testing-agent.md) - 測試代理
+- [template-agent.md](./.github/agents/template-agent.md) - 模板代理
+
+詳細說明請參考 [.github/agents/README.md](./.github/agents/README.md)
+
 ### 模組特定指引
 位於 `.github/instructions/` 目錄，會根據編輯的文件自動應用：
 
@@ -92,8 +103,13 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
 
 **架構理解**：
   - **Git-like 分支模型**：系統採用 Git-like 分支模型，包含主分支、組織分支、PR 機制（參考 `docs/27-完整架構流程圖.mermaid.md`, `docs/28-架構審查報告.md`）
-  - **51 張資料表架構**：系統共包含 51 張資料表，分為 11 個模組（參考 `docs/30-0-完整SQL表結構定義.md`）
+  - **51 張資料表架構**：系統共包含 51 張資料表，分為 11 個模組（參考 `docs/22-完整SQL表結構定義.md`）
   - **核心設計原則**：暫存區機制（48h 可撤回）、待辦中心（五種狀態）、問題同步（即時同步至主分支）、活動記錄（集中記錄）、文件管理（版本控制、縮圖、軟刪除）
+
+**相關文檔索引**：
+  - 完整文檔索引請參考 [docs/README.md](./docs/README.md)
+  - 規則文件說明請參考 [.cursor/rules/README.md](./.cursor/rules/README.md)
+  - GitHub Agents 說明請參考 [.github/agents/README.md](./.github/agents/README.md)
 
 **核心開發原則** ⭐：
   - **常見做法**：遵循業界標準做法，參考官方文檔和最佳實踐，保持代碼一致性
@@ -114,8 +130,8 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
 
 ### 資料庫架構文檔
 - [資料表清單總覽](./docs/30-資料表清單總覽.md) - 資料表清單（51 張表） ⭐⭐⭐⭐⭐
-- [30-0-完整SQL表結構定義.md](./docs/30-0-完整SQL表結構定義.md) - **完整 SQL 表結構定義（51 張表）** ⭐⭐⭐⭐⭐
-- [資料模型對照表](./docs/34-資料模型對照表.md) - 資料模型對照
+- [完整SQL表結構定義](./docs/22-完整SQL表結構定義.md) - **完整 SQL 表結構定義（51 張表）** ⭐⭐⭐⭐⭐
+- [資料模型對照表](./docs/27-資料模型對照表.md) - 資料模型對照
 
 ### 開發指南
 - [SHARED_IMPORTS 使用指南](./docs/45-SHARED_IMPORTS-使用指南.md) - ⭐ 必讀
@@ -125,8 +141,8 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
 
 ### 架構文檔
 - [系統架構思維導圖](./docs/10-系統架構思維導圖.mermaid.md) - 系統架構總覽
-- [27-完整架構流程圖.mermaid.md](./docs/27-完整架構流程圖.mermaid.md) - **完整架構流程圖（Git-like 分支模型）** ⭐⭐⭐⭐⭐
-- [28-架構審查報告.md](./docs/28-架構審查報告.md) - **架構審查報告（生產就緒版）** ⭐⭐⭐⭐⭐
+- [完整架構流程圖](./docs/27-完整架構流程圖.mermaid.md) - **完整架構流程圖（Git-like 分支模型）** ⭐⭐⭐⭐⭐
+- [架構審查報告](./docs/28-架構審查報告.md) - **架構審查報告（生產就緒版）** ⭐⭐⭐⭐⭐
 - [帳戶層流程圖](./docs/13-帳戶層流程圖.mermaid.md) - 帳戶層架構（已更新 Git-like 分支模型）
 - [重構後結構樹](./docs/04-重構後結構樹.md) - 專案結構樹
 - [元件模組視圖](./docs/19-元件模組視圖.mermaid.md) - 前端架構
@@ -134,10 +150,10 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
 - [Supabase 架構流程圖](./docs/11-Supabase架構流程圖.mermaid.md) - Supabase 架構
 
 ### 快速參考
-- [快速參考卡片](./docs/49-快速參考卡片.md) - 常用命令和代碼片段
-- [常見錯誤預防指南](./docs/50-常見錯誤預防指南.md) - 錯誤預防
 - [詞彙表](./docs/42-詞彙表.md) - 專案術語說明
 - [狀態枚舉值定義](./docs/43-狀態枚舉值定義.md) - 狀態定義
+- [開發最佳實踐指南](./docs/51-開發最佳實踐指南.md) - 代碼示例和開發模式 ⭐
+- [AI 助手角色配置](./docs/50-AI助手角色配置.md) - AI 助手角色定義 ⭐
 
 ### 開發脈絡文檔（FYI）
 - [開發脈絡索引](./docs/fyi.md) - 完整開發脈絡文檔索引
@@ -153,3 +169,12 @@ GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
 **最後更新**：2025-01-15  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
 **維護者**：開發團隊
+
+---
+
+## 📖 規則文件說明
+
+詳細的規則文件說明請參考 [.cursor/rules/README.md](./.cursor/rules/README.md)，包含：
+- 規則文件結構說明
+- 規則類型分類（Always、Auto Attached、Agent Requested、Manual）
+- 使用方式和最佳實踐
