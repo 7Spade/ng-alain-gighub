@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ActivityLogRepository } from '@core';
-import { AuthStateService } from '../auth/auth-state.service';
+import { AuthStateService } from '../auth/auth.state';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -39,7 +39,7 @@ export class BlueprintActivityService {
     action: string;
     metadata?: Record<string, any>;
   }): Promise<void> {
-    const user = this.authState.currentUser();
+    const user = this.authState.user();
 
     await firstValueFrom(
       this.activityRepo.create({

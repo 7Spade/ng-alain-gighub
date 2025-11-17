@@ -698,7 +698,7 @@ export class TaskService {
       // 批次更新 order_index
       await Promise.all(
         taskOrders.map(({ taskId, newOrderIndex }) =>
-          firstValueFrom(this.taskRepository.update(taskId, { order_index: newOrderIndex }))
+          firstValueFrom(this.taskRepository.update(taskId, { order_index: newOrderIndex } as any))
         )
       );
 
@@ -759,7 +759,7 @@ export class TaskService {
       }
 
       // 更新父任務和排序
-      const updates: Partial<TaskUpdate> = { parent_task_id: newParentId };
+      const updates: any = { parent_task_id: newParentId };
       if (newOrderIndex !== undefined) {
         updates.order_index = newOrderIndex;
       }

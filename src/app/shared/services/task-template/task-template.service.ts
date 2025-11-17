@@ -10,11 +10,11 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { TaskTemplateRepository, TaskTemplate, TaskTemplateInsert, TaskTemplateUpdate } from '@core/infra/repositories/task-template.repository';
-import { BlueprintRepository } from '@core/infra/repositories/blueprint.repository';
-import { TaskRepository, TaskInsert } from '@core/infra/repositories/task.repository';
+import { TaskTemplateRepository, TaskTemplate, TaskTemplateInsert, TaskTemplateUpdate } from '../../../core/infra/repositories/task-template.repository';
+import { BlueprintRepository } from '../../../core/infra/repositories/blueprint.repository';
+import { TaskRepository, Task, TaskInsert } from '../../../core/infra/repositories/task.repository';
 import { BlueprintActivityService } from '../blueprint/blueprint-activity.service';
-import { TaskType } from '@core/infra/types/task.types';
+import { TaskType } from '../../../core/infra/types/task.types';
 
 /**
  * Template task structure in JSONB
@@ -86,16 +86,16 @@ export class TaskTemplateService {
     this.error.set(null);
 
     try {
-      const created = await firstValueFrom(this.repository.create(template));
+      const created = await firstValueFrom(this.repository.create(template)) as TaskTemplate;
       this.templates.update(list => [...list, created]);
 
       // Log activity if blueprint context exists
-      if (created.blueprint_id) {
+      if (created.organization_id) {
         await this.activityService.logActivity({
-          blueprint_id: created.blueprint_id,
-          event_type: 'template_created',
-          entity_type: 'task_template',
-          entity_id: created.id,
+          blueprintId: created.organization_id,
+          action: 'template_created',
+          entityType: 'task_template',
+          entityId: created.id,
           metadata: { template_name: created.name }
         });
       }
@@ -121,7 +121,7 @@ export class TaskTemplateService {
     this.error.set(null);
 
     try {
-      const updated = await firstValueFrom(this.repository.update(id, updates));
+      const updated = await firstValueFrom(this.repository.update(id, updates)) as TaskTemplate;
 
       // Update local state
       this.templates.update(list =>
@@ -133,12 +133,12 @@ export class TaskTemplateService {
       }
 
       // Log activity
-      if (updated.blueprint_id) {
+      if (updated.organization_id) {
         await this.activityService.logActivity({
-          blueprint_id: updated.blueprint_id,
-          event_type: 'template_updated',
-          entity_type: 'task_template',
-          entity_id: updated.id,
+          blueprintId: updated.organization_id,
+          action: 'template_updated',
+          entityType: 'task_template',
+          entityId: updated.id,
           metadata: { template_name: updated.name }
         });
       }
@@ -174,12 +174,12 @@ export class TaskTemplateService {
       }
 
       // Log activity
-      if (template?.blueprint_id) {
+      if (template?.organization_id) {
         await this.activityService.logActivity({
-          blueprint_id: template.blueprint_id,
-          event_type: 'template_deleted',
-          entity_type: 'task_template',
-          entity_id: id,
+          blueprintId: template.organization_id,
+          action: 'template_deleted',
+          entityType: 'task_template',
+          entityId: id,
           metadata: { template_name: template.name }
         });
       }
@@ -197,7 +197,7 @@ export class TaskTemplateService {
    * @param id Template ID
    * @returns Template
    */
-  async getTemplate(id: string): Promise<TaskTemplate> {
+  async getTemplate(id: string): Promise<TaskTemplate | null> {
     this.loading.set(true);
     this.error.set(null);
 
@@ -223,7 +223,7 @@ export class TaskTemplateService {
     this.error.set(null);
 
     try {
-      const templates = await firstValueFrom(this.repository.findAll());
+      const templates = await firstValueFrom(this.repository.findAll()) as TaskTemplate[];
       this.templates.set(templates);
       return templates;
     } catch (err: any) {
@@ -247,7 +247,7 @@ export class TaskTemplateService {
     try {
       const templates = await firstValueFrom(
         this.repository.findByOrganizationId(organizationId)
-      );
+      ) as TaskTemplate[];
       return templates;
     } catch (err: any) {
       this.error.set(err.message || 'Failed to get organization templates');
@@ -267,7 +267,7 @@ export class TaskTemplateService {
     this.error.set(null);
 
     try {
-      const templates = await firstValueFrom(this.repository.findPublic());
+      const templates = await firstValueFrom(this.repository.findPublic()) as TaskTemplate[];
       return templates;
     } catch (err: any) {
       this.error.set(err.message || 'Failed to get public templates');
@@ -281,7 +281,7 @@ export class TaskTemplateService {
    * Create tasks from template with full hierarchy support
    *
    * This method instantiates a template by creating all tasks defined in the template's
-   * task_structure, maintaining parent-child relationships and order.
+   * template_data, maintaining parent-child relationships and order.
    *
    * @param templateId Template ID to instantiate
    * @param blueprintId Blueprint to create tasks in
@@ -298,20 +298,20 @@ export class TaskTemplateService {
 
     try {
       // 1. Fetch template
-      const template = await firstValueFrom(this.repository.findById(templateId));
+      const template = await firstValueFrom(this.repository.findById(templateId)) as TaskTemplate;
 
-      if (!template.task_structure) {
+      if (!template.template_data) {
         throw new Error('Template has no task structure');
       }
 
-      const structure = template.task_structure as unknown as TaskStructure;
+      const structure = template.template_data as unknown as TaskStructure;
 
       if (!structure.tasks || structure.tasks.length === 0) {
         throw new Error('Template has no tasks defined');
       }
 
       // 2. Validate blueprint exists
-      const blueprint = await firstValueFrom(this.blueprintRepository.findById(blueprintId));
+      const blueprint = await firstValueFrom(this.blueprintRepository.findById(blueprintId)) as any;
 
       if (!blueprint) {
         throw new Error(`Blueprint ${blueprintId} not found`);
@@ -333,9 +333,9 @@ export class TaskTemplateService {
           : parentTaskId ?? null;
 
         // Create task
-        const taskData: TaskInsert = {
+        const taskData: any = {
           blueprint_id: blueprintId,
-          name: templateTask.name,
+          title: templateTask.name,
           description: templateTask.description,
           task_type: templateTask.task_type,
           parent_task_id: realParentId,
@@ -345,7 +345,7 @@ export class TaskTemplateService {
           status: 'pending' // Default status
         };
 
-        const createdTask = await firstValueFrom(this.taskRepository.create(taskData));
+        const createdTask = await firstValueFrom(this.taskRepository.create(taskData)) as Task;
 
         // Store mapping
         idMap.set(templateTask.template_id, createdTask.id);
@@ -354,10 +354,10 @@ export class TaskTemplateService {
 
       // 6. Log activity
       await this.activityService.logActivity({
-        blueprint_id: blueprintId,
-        event_type: 'template_instantiated',
-        entity_type: 'task_template',
-        entity_id: templateId,
+        blueprintId: blueprintId,
+        action: 'template_instantiated',
+        entityType: 'task_template',
+        entityId: templateId,
         metadata: {
           template_name: template.name,
           task_count: createdTasks.length,
