@@ -1,0 +1,56 @@
+<page-header />
+<nz-card>
+  <nz-result
+    nzStatus="success"
+    [nzTitle]="'提交成功'"
+    nzSubTitle="提交結果頁用於反饋一系列操作任務的處理結果，如果僅是簡單操作，使用 Message 全局提示反饋即可。本文字區域可以展示簡單的補充說明，如果有類似展示x“單據”的需求，下面這個灰色區域可以呈現比較複雜的內容。"
+  >
+    <div nz-result-extra>
+      <div nz-row [nzGutter]="16" class="mb-md">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="12" [nzLg]="12" [nzXl]="6">
+          <span class="text-grey-darker">項目 ID：</span>
+          23421
+        </div>
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="12" [nzLg]="12" [nzXl]="6">
+          <span class="text-grey-darker">負責人：</span>
+          曲麗麗
+        </div>
+        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12">
+          <span class="text-grey-darker">生效時間：</span>
+          2016-12-12 ~ 2017-12-12
+        </div>
+      </div>
+      <nz-steps [nzCurrent]="1" nzProgressDot class="mb-lg">
+        <nz-step [nzTitle]="'創建項目'" [nzDescription]="createDesc">
+          <ng-template #createDesc>
+            <div style="font-size: 14px; position: relative; left: 38px">
+              <div style="margin-top: 8px; margin-bottom: 4px">
+                曲麗麗
+                <i nz-icon nzType="dingding" class="ml-sm"></i>
+              </div>
+              <div style="margin-top: 8px; margin-bottom: 4px">2016-12-12 12:32</div>
+            </div>
+          </ng-template>
+        </nz-step>
+        <nz-step [nzTitle]="'部門初審'" [nzDescription]="checkedDesc">
+          <ng-template #checkedDesc>
+            <div style="font-size: 14px; position: relative; left: 38px">
+              <div style="margin-top: 8px; margin-bottom: 4px">
+                周毛毛
+                <i nz-icon nzType="dingding" class="ml-sm" style="color: #00a0e9"></i>
+              </div>
+              <div style="margin-top: 8px; margin-bottom: 4px">
+                <a (click)="msg.success('click')">催一下</a>
+              </div>
+            </div>
+          </ng-template>
+        </nz-step>
+        <nz-step [nzTitle]="'財務複核'" />
+        <nz-step [nzTitle]="'完成'" />
+      </nz-steps>
+      <button nz-button [nzType]="'primary'">返回列表</button>
+      <button nz-button>查看項目</button>
+      <button nz-button>打 印</button>
+    </div>
+  </nz-result>
+</nz-card>

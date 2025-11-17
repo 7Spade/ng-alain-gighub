@@ -1,0 +1,75 @@
+@if (loading()) {
+<nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else if (blueprint(); as bp) {
+<!-- 篩選和搜尋 -->
+<nz-card [nzBordered]="false" class="mb-lg">
+  <div class="flex gap-md align-center flex-wrap">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton" style="width: 300px">
+      <input
+        type="text"
+        nz-input
+        [ngModel]="searchText()"
+        (ngModelChange)="setSearch($event)"
+        (keyup.enter)="onSearch()"
+        placeholder="搜尋活動記錄..."
+        [ngModelOptions]="{ standalone: true }"
+      />
+      <ng-template #suffixIconButton>
+        <button nz-button nzType="primary" nzSearch (click)="onSearch()">
+          <i nz-icon nzType="search"></i>
+        </button>
+      </ng-template>
+    </nz-input-group>
+
+    <nz-select
+      [ngModel]="typeFilter()"
+      (ngModelChange)="setType($event)"
+      style="width: 150px"
+      [ngModelOptions]="{ standalone: true }"
+    >
+      <nz-option [nzLabel]="'全部類型'" [nzValue]="'all'"></nz-option>
+      <nz-option [nzLabel]="'藍圖'" [nzValue]="'blueprint'"></nz-option>
+      <nz-option [nzLabel]="'任務'" [nzValue]="'task'"></nz-option>
+      <nz-option [nzLabel]="'里程碑'" [nzValue]="'milestone'"></nz-option>
+      <nz-option [nzLabel]="'文件'" [nzValue]="'document'"></nz-option>
+      <nz-option [nzLabel]="'成員'" [nzValue]="'member'"></nz-option>
+      <nz-option [nzLabel]="'進度'" [nzValue]="'progress'"></nz-option>
+      <nz-option [nzLabel]="'評論'" [nzValue]="'comment'"></nz-option>
+      <nz-option [nzLabel]="'報告'" [nzValue]="'report'"></nz-option>
+      <nz-option [nzLabel]="'議題'" [nzValue]="'issue'"></nz-option>
+      <nz-option [nzLabel]="'討論'" [nzValue]="'discussion'"></nz-option>
+      <nz-option [nzLabel]="'品質'" [nzValue]="'quality'"></nz-option>
+    </nz-select>
+  </div>
+</nz-card>
+
+<!-- 活動記錄時間軸 -->
+<nz-card [nzBordered]="false" nzTitle="活動記錄">
+  @if (filteredActivities().length === 0) {
+  <nz-empty nzNotFoundContent="尚無活動記錄"></nz-empty>
+  } @else {
+  <nz-timeline>
+    @for (activity of filteredActivities(); track activity.id) {
+    <nz-timeline-item [nzColor]="getActivityTypeColor(activity.type)">
+      <div class="flex align-center gap-sm mb-xs">
+        <nz-avatar [nzSrc]="activity.userAvatar ?? undefined" [nzText]="activity.userName.charAt(0)" nzSize="small"></nz-avatar>
+        <div class="flex-1">
+          <div class="flex align-center gap-sm">
+            <span class="font-medium">{{ activity.userName }}</span>
+            <span>{{ activity.action }}</span>
+            <nz-tag [nzColor]="getActivityTypeColor(activity.type)" nzSize="small">
+              {{ getActivityTypeText(activity.type) }}
+            </nz-tag>
+          </div>
+          <div class="text-muted text-sm mt-xs">{{ activity.description }}</div>
+          <div class="text-muted text-xs mt-xs">{{ activity.createdAt | date: 'yyyy-MM-dd HH:mm' }}</div>
+        </div>
+      </div>
+    </nz-timeline-item>
+    }
+  </nz-timeline>
+  }
+</nz-card>
+} @else {
+<nz-empty nzNotFoundContent="藍圖不存在"></nz-empty>
+}

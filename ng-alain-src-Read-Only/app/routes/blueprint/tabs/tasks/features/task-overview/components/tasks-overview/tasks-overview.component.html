@@ -1,0 +1,531 @@
+@if (tasksLoading()) {
+<nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else if (blueprint(); as bp) {
+
+<ng-template #taskProgressCapsule let-taskId>
+    <span class="task-progress-capsule" [class.is-loading]="taskProgressLoading()">
+        @if (taskProgressLoading()) {
+        <nz-spin nzSize="small"></nz-spin>
+        } @else {
+        <nz-progress nzType="circle" [nzWidth]="28" [nzStrokeWidth]="6" [nzPercent]="getTaskProgressPercent(taskId)"
+            [nzShowInfo]="false"></nz-progress>
+        <span class="task-progress-text">{{ getTaskProgressPercent(taskId) | number: '1.0-0' }}%</span>
+        }
+    </span>
+</ng-template>
+
+<ng-template #taskImageCell let-taskId>
+    @if (taskImageUrls(taskId).length) {
+    <cell class="task-image-thumbnails" [value]="taskImageUrls(taskId)"
+        [options]="{ type: 'img', img: { size: 32, big: true } }" [loading]="isTaskImageBusy(taskId)"></cell>
+    }
+</ng-template>
+
+<ng-template #taskImageUpload let-taskId>
+    <nz-upload class="task-image-upload" nzType="select" nzListType="text" [nzShowUploadList]="false"
+        [nzMultiple]="true" [nzCustomRequest]="onTaskUploadRequest" (nzChange)="onTaskUploadChange(taskId, $event)"
+        [nzDisabled]="isTaskImageBusy(taskId)" [nzData]="{ taskId: taskId }">
+        <button nz-button nzShape="circle" nzSize="small" nzType="text" [disabled]="isTaskImageBusy(taskId)" nz-tooltip
+            nzTooltipTitle="上傳圖片">
+            <i nz-icon nzType="upload"></i>
+        </button>
+    </nz-upload>
+</ng-template>
+
+<!-- 統計卡片 -->
+<nz-card [nzBordered]="false" class="mb-md">
+    <div nz-row [nzGutter]="16">
+        <div nz-col nzXs="24" nzSm="12" nzMd="6">
+            <div class="stat-card">
+                <div class="stat-value text-primary">{{ allTasks().length }}</div>
+                <div class="stat-label">總任務數</div>
+            </div>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="6">
+            <div class="stat-card">
+                <div class="stat-value" style="color: #faad14;">{{ todoCount() }}</div>
+                <div class="stat-label">待辦</div>
+            </div>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="6">
+            <div class="stat-card">
+                <div class="stat-value" style="color: #1890ff;">{{ inProgressCount() }}</div>
+                <div class="stat-label">進行中</div>
+            </div>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="6">
+            <div class="stat-card">
+                <div class="stat-value" style="color: #52c41a;">{{ completedCount() }}</div>
+                <div class="stat-label">已完成</div>
+            </div>
+        </div>
+    </div>
+</nz-card>
+
+<!-- 工具欄 -->
+<nz-card [nzBordered]="false" class="mb-md">
+    <div class="toolbar">
+        <!-- 搜尋 -->
+        <nz-input-group nzSearch class="search-input">
+            <input type="text" nz-input [value]="searchText()" (input)="searchText.set($any($event.target).value)"
+                placeholder="搜尋任務編碼、標題、描述..." />
+        </nz-input-group>
+
+        <!-- 篩選器 -->
+        <nz-select [ngModel]="statusFilter()" (ngModelChange)="onStatusFilterChange($event)" class="filter-select"
+            nzPlaceHolder="狀態">
+            <nz-option nzLabel="全部" nzValue="all"></nz-option>
+            <nz-option nzLabel="待辦" nzValue="todo"></nz-option>
+            <nz-option nzLabel="進行中" nzValue="in-progress"></nz-option>
+            <nz-option nzLabel="已完成" nzValue="completed"></nz-option>
+            <nz-option nzLabel="已取消" nzValue="cancelled"></nz-option>
+        </nz-select>
+
+        <nz-select [ngModel]="priorityFilter()" (ngModelChange)="onPriorityFilterChange($event)" class="filter-select"
+            nzPlaceHolder="優先級">
+            <nz-option nzLabel="全部" nzValue="all"></nz-option>
+            <nz-option nzLabel="低" nzValue="low"></nz-option>
+            <nz-option nzLabel="中" nzValue="medium"></nz-option>
+            <nz-option nzLabel="高" nzValue="high"></nz-option>
+            <nz-option nzLabel="緊急" nzValue="urgent"></nz-option>
+        </nz-select>
+
+        <!-- 視圖切換 -->
+        <nz-radio-group [ngModel]="viewMode()" (ngModelChange)="switchViewMode($event)" class="ml-md">
+            <label nz-radio-button nzValue="tree">
+                <i nz-icon nzType="apartment"></i> 樹狀
+            </label>
+            <label nz-radio-button nzValue="list">
+                <i nz-icon nzType="unordered-list"></i> 列表
+            </label>
+        </nz-radio-group>
+
+        <!-- 顯示控制群組 -->
+        <div class="display-toggle-group ml-md">
+            @for (toggle of displayToggleOptions; track toggle.label) {
+            <label class="toolbar-toggle">
+                <nz-switch [ngModel]="toggle.signal()" (ngModelChange)="toggle.signal.set($event)"></nz-switch>
+                <span>{{ toggle.label }}</span>
+            </label>
+            }
+        </div>
+
+        <div class="hierarchy-action-group ml-md">
+            <button nz-button type="button" (click)="expandAllHierarchy()">展開</button>
+            <button nz-button type="button" class="ml-md" (click)="collapseAllHierarchy()">摺疊</button>
+        </div>
+
+        <!-- 操作按鈕 -->
+        <button nz-button nzType="primary" (click)="openAddTaskModal()" class="ml-auto">
+            <i nz-icon nzType="plus"></i>
+            新增根任務
+        </button>
+    </div>
+</nz-card>
+
+<!-- 任務視圖 -->
+<nz-card [nzBordered]="false">
+    @if (filteredTasks().length === 0) {
+    <nz-empty nzNotFoundContent="尚無任務">
+        <button nz-button nzType="primary" (click)="openAddTaskModal()">
+            創建第一個任務
+        </button>
+    </nz-empty>
+    } @else {
+    @if (viewMode() === 'tree') {
+    <!-- 樹狀視圖 -->
+    <nz-tree-view [nzTreeControl]="treeControl" [nzDataSource]="dataSource" [nzBlockNode]="true">
+        <nz-tree-node *nzTreeNodeDef="let node" nzTreeNodePadding nzTreeNodeIndentLine>
+            @if (showLeafIcon()) {
+            <nz-tree-node-toggle nzTreeNodeNoopToggle>
+                <nz-icon nzType="file" nzTheme="outline"></nz-icon>
+            </nz-tree-node-toggle>
+            }
+            <nz-tree-node-option>
+                <span class="tree-node-content">
+                    <span class="tree-node-info">
+                        @if (showMainCode()) {
+                        <span class="task-code">{{ getFamilyCode(node) }}</span>
+                        }
+                        @if (showLevelColumn()) {
+                        <span class="task-level">L{{ node.level }}</span>
+                        }
+                        @if (showSequence()) {
+                        <span class="task-sequence">{{ getSequenceCode(node) }}</span>
+                        }
+                        @if (taskById(node.id)?.name) {
+                        <span class="task-name-pill">{{ taskById(node.id)!.name }}</span>
+                        }
+                        <ng-container
+                            *ngTemplateOutlet="taskProgressCapsule; context: { $implicit: node.id }"></ng-container>
+                        <span class="task-image-wrapper">
+                            <ng-container
+                                *ngTemplateOutlet="taskImageCell; context: { $implicit: node.id }"></ng-container>
+                            <ng-container
+                                *ngTemplateOutlet="taskImageUpload; context: { $implicit: node.id }"></ng-container>
+                        </span>
+                    </span>
+                    @if (showActions()) {
+                    <span class="tree-node-actions">
+                        <button nz-button nzType="text" nzSize="small"
+                            (click)="openAddTaskModal(taskById(node.id) || undefined)" nz-tooltip
+                            [nzTooltipTitle]="showTooltip() ? '新增子任務' : null">
+                            <i nz-icon nzType="plus"></i>
+                        </button>
+                        <button nz-button nzType="text" nzSize="small"
+                            (click)="taskById(node.id) && openEditTaskModal(taskById(node.id)!)" nz-tooltip
+                            [nzTooltipTitle]="showTooltip() ? '編輯' : null">
+                            <i nz-icon nzType="edit"></i>
+                        </button>
+                        <button nz-button nzType="text" nzSize="small" nzDanger
+                            (click)="taskById(node.id) && deleteTask(taskById(node.id)!)" nz-tooltip
+                            [nzTooltipTitle]="showTooltip() ? '刪除' : null">
+                            <i nz-icon nzType="delete"></i>
+                        </button>
+                    </span>
+                    }
+                </span>
+            </nz-tree-node-option>
+        </nz-tree-node>
+
+        <nz-tree-node *nzTreeNodeDef="let node; when: hasChild" nzTreeNodePadding nzTreeNodeIndentLine>
+            <nz-tree-node-toggle>
+                <nz-icon [nzType]="treeControl.isExpanded(node) ? 'minus-square' : 'plus-square'"
+                    nzTheme="outline"></nz-icon>
+            </nz-tree-node-toggle>
+            <nz-tree-node-option>
+                <span class="tree-node-content">
+                    <span class="tree-node-info">
+                        @if (showMainCode()) {
+                        <span class="task-code">{{ getFamilyCode(node) }}</span>
+                        }
+                        @if (showLevelColumn()) {
+                        <span class="task-level">L{{ node.level }}</span>
+                        }
+                        @if (showSequence()) {
+                        <span class="task-sequence">{{ getSequenceCode(node) }}</span>
+                        }
+                        @if (taskById(node.id)?.name) {
+                        <span class="task-name-pill">{{ taskById(node.id)!.name }}</span>
+                        }
+                        <ng-container
+                            *ngTemplateOutlet="taskProgressCapsule; context: { $implicit: node.id }"></ng-container>
+                        <span class="task-image-wrapper">
+                            <ng-container
+                                *ngTemplateOutlet="taskImageCell; context: { $implicit: node.id }"></ng-container>
+                            <ng-container
+                                *ngTemplateOutlet="taskImageUpload; context: { $implicit: node.id }"></ng-container>
+                        </span>
+                    </span>
+                    @if (showActions()) {
+                    <span class="tree-node-actions">
+                        <button nz-button nzType="text" nzSize="small"
+                            (click)="openAddTaskModal(taskById(node.id) || undefined)" nz-tooltip
+                            [nzTooltipTitle]="showTooltip() ? '新增子任務' : null">
+                            <i nz-icon nzType="plus"></i>
+                        </button>
+                        <button nz-button nzType="text" nzSize="small"
+                            (click)="taskById(node.id) && openEditTaskModal(taskById(node.id)!)" nz-tooltip
+                            [nzTooltipTitle]="showTooltip() ? '編輯' : null">
+                            <i nz-icon nzType="edit"></i>
+                        </button>
+                        <button nz-button nzType="text" nzSize="small" nzDanger
+                            (click)="taskById(node.id) && deleteTask(taskById(node.id)!)" nz-tooltip
+                            [nzTooltipTitle]="showTooltip() ? '刪除' : null">
+                            <i nz-icon nzType="delete"></i>
+                        </button>
+                    </span>
+                    }
+                </span>
+            </nz-tree-node-option>
+        </nz-tree-node>
+    </nz-tree-view>
+    } @else {
+    <!-- 列表視圖 -->
+    <nz-table #hierarchyTable [nzData]="hierarchyRows()" [nzShowPagination]="false" nzTableLayout="fixed"
+        class="task-hierarchy-table">
+        <thead>
+            <tr>
+                <th nzWidth="50px">
+                    <label nz-checkbox [ngModel]="isHierarchyAllChecked()"
+                        [nzIndeterminate]="isHierarchyIndeterminate()" (ngModelChange)="onHierarchyAllChecked($event)">
+                    </label>
+                </th>
+                <th>任務名稱</th>
+                @if (showMainCode()) {
+                <th>主碼</th>
+                }
+                @if (showLevelColumn()) {
+                <th>層級</th>
+                }
+                @if (showSequence()) {
+                <th>序號</th>
+                }
+                <th>進度</th>
+                <th>圖片</th>
+                <th>狀態</th>
+                <th>優先級</th>
+                <th>負責人</th>
+                <th>創建時間</th>
+                @if (showActions()) {
+                <th>操作</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (row of hierarchyTable.data; track row.node.id) {
+            @let taskDetail = taskById(row.node.id);
+            @let currentTask = taskDetail ?? row.node;
+            <tr>
+                <td>
+                    <label nz-checkbox [ngModel]="isHierarchyChecked(row.node.id)" [nzDisabled]="row.node.disabled"
+                        (ngModelChange)="onHierarchyItemChecked(row.node.id, $event)">
+                    </label>
+                </td>
+                <td>
+                    <div class="task-name-cell">
+                        <div class="hierarchy-name-block" [style.padding-left.px]="row.depth * 24">
+                            @if (row.node.children?.length) {
+                            <button nz-button nzType="link" nzSize="small"
+                                (click)="onHierarchyItemExpand(row.node.id, !isHierarchyExpanded(row.node.id))"
+                                class="hierarchy-toggle-btn">
+                                <span nz-icon [nzType]="isHierarchyExpanded(row.node.id) ? 'down' : 'right'"
+                                    nzTheme="outline"></span>
+                            </button>
+                            } @else {
+                            <span class="hierarchy-toggle-spacer"></span>
+                            }
+                            <span class="task-name">{{ currentTask.name }}</span>
+                            @if (currentTask.description) {
+                            <div class="task-description">{{ currentTask.description }}</div>
+                            }
+                        </div>
+                    </div>
+                </td>
+                @if (showMainCode()) {
+                <td>
+                    <span class="task-code">{{ getFamilyCode(currentTask) }}</span>
+                </td>
+                }
+                @if (showLevelColumn()) {
+                <td>
+                    <span class="task-level">L{{ getDisplayLevel(currentTask.level) }}</span>
+                </td>
+                }
+                @if (showSequence()) {
+                <td>
+                    <span class="task-sequence">{{ getSequenceCode(currentTask) }}</span>
+                </td>
+                }
+                <td>
+                    <ng-container
+                        *ngTemplateOutlet="taskProgressCapsule; context: { $implicit: row.node.id }"></ng-container>
+                </td>
+                <td>
+                    <div class="task-image-wrapper">
+                        <ng-container
+                            *ngTemplateOutlet="taskImageCell; context: { $implicit: row.node.id }"></ng-container>
+                        <ng-container
+                            *ngTemplateOutlet="taskImageUpload; context: { $implicit: row.node.id }"></ng-container>
+                    </div>
+                </td>
+                <td>
+                    <nz-tag [nzColor]="getStatusTag(currentTask.status || 'todo').color">
+                        {{ getStatusTag(currentTask.status || 'todo').text }}
+                    </nz-tag>
+                </td>
+                <td>
+                    <nz-tag [nzColor]="getPriorityTag(currentTask.priority || 'medium').color">
+                        {{ getPriorityTag(currentTask.priority || 'medium').text }}
+                    </nz-tag>
+                </td>
+                <td>
+                    @if (currentTask.assignedTo) {
+                    <nz-avatar nzSize="small" [nzText]="currentTask.assignedTo.substring(0, 2)"></nz-avatar>
+                    } @else {
+                    <span class="text-muted">未指派</span>
+                    }
+                </td>
+                <td>{{ currentTask.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+                @if (showActions()) {
+                <td>
+                    <button nz-button nzType="link" nzSize="small" (click)="openEditTaskModal(taskDetail || row.node)">
+                        編輯
+                    </button>
+                    <button nz-button nzType="link" nzSize="small" nzDanger
+                        (click)="deleteTask(taskDetail || row.node)">
+                        刪除
+                    </button>
+                </td>
+                }
+            </tr>
+            }
+        </tbody>
+    </nz-table>
+    }
+    }
+</nz-card>
+
+}
+
+<!-- 任務表單模態框 -->
+<nz-modal [nzVisible]="showTaskModal()" (nzVisibleChange)="showTaskModal.set($event)"
+    [nzTitle]="editingTask() ? '編輯任務' : '新增任務'" [nzWidth]="720" (nzOnCancel)="closeTaskModal()"
+    (nzOnOk)="submitTaskForm()" [nzOkLoading]="tasksLoading()">
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="taskForm" nzLayout="vertical">
+            <nz-form-item>
+                <nz-form-label nzRequired>任務名稱</nz-form-label>
+                <nz-form-control nzErrorTip="請輸入任務名稱（最多 200 字）">
+                    <input nz-input formControlName="name" placeholder="請輸入任務名稱" maxlength="200" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label>任務描述</nz-form-label>
+                <nz-form-control>
+                    <textarea nz-input formControlName="description" placeholder="詳細說明（支援 Markdown）"
+                        [nzAutosize]="{ minRows: 3, maxRows: 8 }"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+
+            @if (quantityFormLoading()) {
+            <nz-alert nzType="info" nzMessage="正在載入數量資料..." nzShowIcon [style.margin-bottom.px]="12"></nz-alert>
+            }
+
+            <nz-form-item>
+                <nz-form-label nzRequired>進度單位</nz-form-label>
+                <nz-form-control nzErrorTip="請輸入進度單位">
+                    <input nz-input formControlName="quantityUnit" placeholder="例如：孔、次、項" maxlength="32" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="8">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>計畫數量</nz-form-label>
+                        <nz-form-control nzErrorTip="計畫數量需大於 0">
+                            <nz-input-number formControlName="plannedQuantity" [nzMin]="1" [nzStep]="1"
+                                [nzPrecision]="0" style="width: 100%"></nz-input-number>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="8">
+                    <nz-form-item>
+                        <nz-form-label>已完成數量</nz-form-label>
+                        <nz-form-control nzErrorTip="不可小於 0">
+                            <nz-input-number formControlName="installedQuantity" [nzMin]="0" [nzStep]="1"
+                                [nzPrecision]="0" style="width: 100%"></nz-input-number>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="8">
+                    <nz-form-item>
+                        <nz-form-label>已使用數量</nz-form-label>
+                        <nz-form-control nzErrorTip="不可小於 0">
+                            <nz-input-number formControlName="usedQuantity" [nzMin]="0" [nzStep]="1" [nzPrecision]="0"
+                                style="width: 100%"></nz-input-number>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label>狀態</nz-form-label>
+                        <nz-form-control>
+                            <nz-select formControlName="status" nzPlaceHolder="選擇狀態">
+                                <nz-option nzLabel="待辦" nzValue="todo"></nz-option>
+                                <nz-option nzLabel="進行中" nzValue="in-progress"></nz-option>
+                                <nz-option nzLabel="已完成" nzValue="completed"></nz-option>
+                                <nz-option nzLabel="已取消" nzValue="cancelled"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label>優先級</nz-form-label>
+                        <nz-form-control>
+                            <nz-select formControlName="priority" nzPlaceHolder="選擇優先級">
+                                <nz-option nzLabel="低" nzValue="low"></nz-option>
+                                <nz-option nzLabel="中" nzValue="medium"></nz-option>
+                                <nz-option nzLabel="高" nzValue="high"></nz-option>
+                                <nz-option nzLabel="緊急" nzValue="urgent"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label>分類</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="category" placeholder="如：一、二、三..." />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label>子分類</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="subcategory" placeholder="子分類" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label>工作類型</nz-form-label>
+                        <nz-form-control>
+                            <nz-select formControlName="workType" nzPlaceHolder="選擇工作類型" nzAllowClear>
+                                <nz-option nzLabel="安裝" nzValue="installation"></nz-option>
+                                <nz-option nzLabel="配線" nzValue="wiring"></nz-option>
+                                <nz-option nzLabel="測試" nzValue="testing"></nz-option>
+                                <nz-option nzLabel="檢驗" nzValue="inspection"></nz-option>
+                                <nz-option nzLabel="送電/啟用" nzValue="commissioning"></nz-option>
+                                <nz-option nzLabel="文件製作" nzValue="documentation"></nz-option>
+                                <nz-option nzLabel="運輸" nzValue="transportation"></nz-option>
+                                <nz-option nzLabel="基礎工程" nzValue="foundation"></nz-option>
+                                <nz-option nzLabel="拆除" nzValue="demolition"></nz-option>
+                                <nz-option nzLabel="採購" nzValue="procurement"></nz-option>
+                                <nz-option nzLabel="製作" nzValue="fabrication"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label>專業</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="discipline" placeholder="如：土建、機電、裝修..." />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <nz-form-item>
+                <nz-form-label>標籤</nz-form-label>
+                <nz-form-control>
+                    <nz-select nzMode="tags" formControlName="tags" nzPlaceHolder="輸入標籤後按 Enter"></nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label>備註</nz-form-label>
+                <nz-form-control>
+                    <textarea nz-input formControlName="notes" placeholder="內部備註"
+                        [nzAutosize]="{ minRows: 2, maxRows: 4 }"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+</nz-modal>
