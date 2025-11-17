@@ -416,6 +416,62 @@ WITH CHECK (
 );
 ```
 
+### 3.8 狀態枚舉約定（與 ERD / 狀態圖對齊）
+
+為確保資料一致性，以下為系統中所有狀態枚舉的標準定義，與 `docs/06-實體關係圖.mermaid.md` 和 `docs/14-狀態圖.mermaid.md` 完全對齊：
+
+#### 核心實體狀態
+
+- **`blueprints.status`**: `planning|active|on_hold|completed|archived`
+  - `planning`: 規劃中
+  - `active`: 進行中
+  - `on_hold`: 暫停（注意使用 `on_hold` 而非 `paused`）
+  - `completed`: 已完成
+  - `archived`: 已歸檔
+
+- **`tasks.status`**: `pending|assigned|in_progress|staging|in_qa|in_inspection|completed|cancelled`
+  - `pending`: 待處理
+  - `assigned`: 已指派
+  - `in_progress`: 進行中
+  - `staging`: 暫存中（48 小時可撤回）
+  - `in_qa`: 品管中
+  - `in_inspection`: 驗收中
+  - `completed`: 已完成
+  - `cancelled`: 已取消
+
+- **`quality_checks.status`**: `pending|in_progress|passed|failed|conditional_pass`
+  - `pending`: 待檢查
+  - `in_progress`: 檢查中
+  - `passed`: 通過
+  - `failed`: 不通過
+  - `conditional_pass`: 條件通過
+
+- **`inspections.status`**: `pending|in_progress|accepted|rejected|conditional_accept`
+  - `pending`: 待驗收
+  - `in_progress`: 驗收中
+  - `accepted`: 已接受（責任轉移）
+  - `rejected`: 已拒絕
+  - `conditional_accept`: 條件接受
+
+- **`issues.status`**: `open|in_progress|resolved|closed|wont_fix`
+  - `open`: 開啟（注意使用 `open` 而非 `new`）
+  - `in_progress`: 處理中
+  - `resolved`: 已解決
+  - `closed`: 已關閉
+  - `wont_fix`: 不修復
+
+- **`todos.status`**: `pending|staging|qc|inspection|issue`
+  - `pending`: 待執行
+  - `staging`: 暫存
+  - `qc`: 品管
+  - `inspection`: 驗收
+  - `issue`: 問題
+
+**參考文檔**：
+- [實體關係圖](./06-實體關係圖.mermaid.md) - 資料表結構定義
+- [狀態圖](./14-狀態圖.mermaid.md) - 狀態流轉視覺化
+- [狀態枚舉值定義](./36-狀態枚舉值定義.md) - 詳細狀態定義與說明
+
 ---
 
 ## 4. 安全最佳實踐
