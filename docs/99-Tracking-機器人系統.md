@@ -52,13 +52,16 @@ Bot 詳情頁面（BotDetailComponent）[⏳待開始]
 Bot 任務管理頁面（BotTaskManagementComponent）[⏳待開始]
 Bot 執行日誌頁面（BotExecutionLogComponent）[⏳待開始]
 
-### 測試與文檔
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
 E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
-用戶指南更新[⏳待開始]
+
+### 文檔
+
+API 文檔更新（機器人系統 API 文檔）[⏳待開始]
+用戶指南更新（機器人系統用戶指南）[⏳待開始]
 
 ---
 

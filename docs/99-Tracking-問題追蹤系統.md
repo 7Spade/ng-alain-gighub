@@ -44,19 +44,28 @@ RLS 權限驗證[⏳待開始]
 ### 頁面組件開發
 
 問題列表頁面（IssueListComponent）[⏳待開始]
-問題創建頁面（IssueCreateComponent）[⏳待開始]
+問題創建表單頁面（IssueFormComponent）[⏳待開始]
 問題詳情頁面（IssueDetailComponent）[⏳待開始]
-問題指派頁面（IssueAssignmentComponent）[⏳待開始]
-問題同步記錄頁面（IssueSyncLogComponent）[⏳待開始]
-照片管理組件（PhotoManagementComponent）[⏳待開始]
+問題詳情靜態頁面（IssueDetailStaticComponent）[⏳待開始]
+問題處理中心頁面（IssueHandleCenterComponent）[⏳待開始]
+問題處理頁面（IssueHandleComponent）[⏳待開始]
+問題指派頁面（IssueAssignmentsComponent）[⏳待開始]
+問題照片頁面（IssuePhotosComponent）[⏳待開始]
+問題照片牆頁面（IssuePhotosWallComponent）[⏳待開始]
+問題關閉頁面（IssueCloseComponent）[⏳待開始]
+問題關閉摘要頁面（IssueCloseSummaryComponent）[⏳待開始]
+同步日誌頁面（SyncLogsComponent）[🚧進行中]
 
-### 測試與文檔
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
-E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
-用戶指南更新[⏳待開始]
+E2E 測試（問題追蹤流程 E2E 測試）[⏳待開始]
+
+### 文檔
+
+API 文檔更新（問題追蹤系統 API 文檔）[⏳待開始]
+用戶指南更新（問題追蹤用戶指南）[⏳待開始]
 
 ---
 

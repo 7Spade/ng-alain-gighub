@@ -46,19 +46,26 @@ RLS 權限驗證[⏳待開始]
 
 ### 頁面組件開發
 
-留言組件（CommentComponent）[⏳待開始]
-通知列表頁面（NotificationListComponent）[⏳待開始]
-通知設定頁面（NotificationSettingsComponent）[⏳待開始]
+討論列表頁面（DiscussionListComponent）[⏳待開始]
+評論列表頁面（CommentListComponent）[⏳待開始]
+評論創建頁面（CommentCreateComponent）[⏳待開始]
+通知中心頁面（NotificationCenterComponent）[⏳待開始]
+通知詳情頁面（NotificationDetailComponent）[🚧進行中]
+通知規則頁面（NotificationRulesComponent）[🚧進行中]
+實時通知頁面（RealtimeNotifyComponent）[⏳待開始]
 待辦中心頁面（TodoCenterComponent）[⏳待開始]
-待辦詳情頁面（TodoDetailComponent）[⏳待開始]
+團隊通知頁面（TeamNotifyComponent）[⏳待開始]
 
-### 測試與文檔
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
-E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
-用戶指南更新[⏳待開始]
+E2E 測試（待辦中心 E2E 測試）[⏳待開始]
+
+### 文檔
+
+API 文檔更新（協作溝通系統 API 文檔）[⏳待開始]
+用戶指南更新（協作溝通用戶指南）[⏳待開始]
 
 ---
 

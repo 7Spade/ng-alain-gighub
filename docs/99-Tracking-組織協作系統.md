@@ -45,12 +45,15 @@ collaboration_members 表 RLS 策略[✅已完成]
 協作關係表單頁面（CollaborationFormComponent）[✅已完成]
 邀請列表頁面（InvitationListComponent）[✅已完成]
 
-### 測試與文檔
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
 E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
+
+### 文檔
+
+API 文檔更新（組織協作系統 API 文檔）[⏳待開始]
 用戶指南更新[⏳待開始]
 
 ---

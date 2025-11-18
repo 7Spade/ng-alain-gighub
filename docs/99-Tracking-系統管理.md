@@ -41,16 +41,28 @@ RLS 權限驗證[⏳待開始]
 
 ### 頁面組件開發
 
-系統設定頁面（SystemSettingsComponent）[⏳待開始]
-功能開關管理頁面（FeatureFlagManagementComponent）[⏳待開始]
-A/B 測試管理頁面（ABTestManagementComponent）[⏳待開始]
+系統設置主頁面（SystemSettingsComponent）[⏳待開始]
+個人設置頁面（PersonalSettingsComponent）[🚧進行中]
+專案設置頁面（ProjectSettingsComponent）[🚧進行中]
+全局設置頁面（GlobalSettingsComponent）[🚧進行中]
+功能開關管理頁面（FeatureFlagComponent）[⏳待開始]
+角色管理頁面（RoleManagementComponent）[⏳待開始]
+權限分配頁面（PermissionAssignmentComponent）[⏳待開始]
+權限矩陣頁面（PermissionMatrixComponent）[⏳待開始]
+分支權限頁面（BranchPermissionComponent）[⏳待開始]
+天氣 API 設置頁面（WeatherApiComponent）[⏳待開始]
+系統活動記錄頁面（SystemActivityLogComponent）[⏳待開始]
+備份頁面（BackupComponent）[🚧進行中]
 
-### 測試與文檔
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
 E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
+
+### 文檔
+
+API 文檔更新（系統管理 API 文檔）[⏳待開始]
 用戶指南更新[⏳待開始]
 
 ---

@@ -68,13 +68,16 @@ Pull Request 審查頁面（PullRequestReviewComponent）[⏳待開始]
 藍圖設置頁面（BlueprintSettingsComponent）[⏳待開始]
 藍圖設置殼頁面（BlueprintSettingsShellComponent）[⏳待開始]
 
-### 測試與文檔
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
-E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
-用戶指南更新[⏳待開始]
+E2E 測試（藍圖管理 E2E 測試、PR 審核流程 E2E 測試）[⏳待開始]
+
+### 文檔
+
+API 文檔更新（藍圖系統 API 文檔）[⏳待開始]
+用戶指南更新（藍圖管理用戶指南）[⏳待開始]
 
 ---
 

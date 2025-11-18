@@ -52,24 +52,47 @@ RLS 權限驗證[⏳待開始]
 TaskListComponent Phase 4 增強功能[✅已完成]
 TaskListComponent Phase 5.1 單元測試[✅已完成]
 任務樹視圖頁面（TaskTreeComponent）[🚧進行中]
+任務看板頁面（TaskBoardComponent）[⏳待開始]
+任務日曆頁面（TaskCalendarComponent）[⏳待開始]
 任務詳情頁面（TaskDetailComponent）[⏳待開始]
-任務創建頁面（TaskCreateComponent）[⏳待開始]
-任務編輯頁面（TaskEditComponent）[⏳待開始]
-任務指派頁面（TaskAssignmentComponent）[⏳待開始]
-暫存區管理頁面（TaskStagingComponent）[⏳待開始]
-施工日誌列表頁面（DailyReportListComponent）[⏳待開始]
-施工日誌創建頁面（DailyReportCreateComponent）[⏳待開始]
+任務詳情殼頁面（TaskDetailShellComponent）[⏳待開始]
+任務表單頁面（TaskFormComponent）[⏳待開始]
+任務表單中心頁面（TaskFormHubComponent）[⏳待開始]
+任務指派頁面（TaskAssignmentsComponent）[⏳待開始]
+待辦列表頁面（TaskTodoComponent）[⏳待開始]
+暫存區頁面（TaskStagingComponent）[⏳待開始]
+施工日誌列表頁面（DailyReportsComponent）[⏳待開始]
+施工日誌表單頁面（DailyReportFormComponent）[⏳待開始]
 施工日誌詳情頁面（DailyReportDetailComponent）[⏳待開始]
-任務依賴管理頁面（TaskDependencyComponent）[⏳待開始]
-任務模板管理頁面（TaskTemplateComponent）[⏳待開始]
+任務照片頁面（TaskPhotosComponent）[⏳待開始]
+照片上傳組件（PhotoUploadComponent）[⏳待開始]
+照片查看器組件（PhotoViewerComponent）[⏳待開始]
+任務天氣頁面（TaskWeatherComponent）[⏳待開始]
+任務進度頁面（TaskProgressComponent）[🚧進行中]
 
-### 測試與文檔
+### 任務樹相關組件
+
+任務樹拖拽服務（TaskTreeDragService）[🚧進行中]
+安裝與配置 CDK DragDrop[⏳待開始]
+建立 DragDrop 服務抽象層[⏳待開始]
+擴展 TaskTreeFacade 支援層級更新[⏳待開始]
+任務狀態切換器（TaskStatusSwitcherComponent）[🚧進行中]
+任務指派人選擇器（TaskAssigneeSelectorComponent）[🚧進行中]
+連接狀態組件（ConnectionStatusComponent）[🚧進行中]
+衝突解決服務（ConflictResolutionService）[🚧進行中]
+任務樹實時集成（TaskTreeRealtimeIntegration）[⏳待開始]
+任務樹 Facade（TaskTreeFacade）[🚧進行中]
+
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
-E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
-用戶指南更新[⏳待開始]
+E2E 測試（任務執行流程 E2E 測試）[⏳待開始]
+
+### 文檔
+
+API 文檔更新（任務系統 API 文檔）[⏳待開始]
+用戶指南更新（任務執行用戶指南）[⏳待開始]
 
 ---
 

@@ -37,7 +37,8 @@
 數據模型層（shared/models/data/）[⏳待開始]
 創建 data.types.ts（文檔、報告類型）[✅已完成]
 Repository 層（6 個 Repository）[⏳待開始]
-服務層（DocumentService, ProgressTrackingService, AnalyticsCacheService）[⏳待開始]
+服務層（DocumentService, ProgressTrackingService, AnalyticsCacheService, AnalyticsService）[✅已完成]
+數據分析快取機制（AnalyticsCacheService TTL 自動過期）[✅已完成]
 創建 ProgressTrackingService（匹配 ProgressTrackingRepository）[✅已完成]
 實現 ProgressTrackingService 趨勢分析功能[✅已完成]
 實現 ProgressTrackingService 日期範圍查詢[✅已完成]
@@ -53,19 +54,39 @@ RLS 權限驗證[⏳待開始]
 
 ### 頁面組件開發
 
-文件管理頁面（DocumentManagementComponent）[⏳待開始]
-文件上傳組件（FileUploadComponent）[✅已完成]
-進度追蹤儀表板（ProgressTrackingDashboardComponent）[⏳待開始]
+統計頁面（StatisticsComponent）[⏳待開始]
+進度追蹤頁面（ProgressTrackingComponent）[⏳待開始]
+進度更新頁面（ProgressUpdateComponent）[⏳待開始]
+主分支報表頁面（MainReportComponent）[⏳待開始]
+分支報表頁面（BranchReportComponent）[⏳待開始]
+跨分支報表頁面（CrossBranchComponent）[⏳待開始]
+數據報表頁面（DataReportComponent）[⏳待開始]
+報表導出頁面（ReportExportComponent）[⏳待開始]
 活動記錄頁面（ActivityLogComponent）[⏳待開始]
-分析報表頁面（AnalyticsReportComponent）[⏳待開始]
+活動記錄詳情頁面（ActivityLogDetailComponent）[🚧進行中]
+圖表中心頁面（ChartCenterComponent）[⏳待開始]
 
-### 測試與文檔
+### 文件管理頁面組件（屬於資料分析系統）
+
+文件列表頁面（DocumentListComponent）[⏳待開始]
+文件上傳頁面（DocumentUploadComponent）[⏳待開始]
+文件瀏覽器頁面（DocumentBrowserComponent）[⏳待開始]
+文件預覽頁面（DocumentPreviewComponent）[⏳待開始]
+圖紙查看器頁面（DrawingViewerComponent）[⏳待開始]
+文件元數據頁面（DocumentMetadataComponent）[⏳待開始]
+文件版本頁面（DocumentVersionComponent）[⏳待開始]
+文件權限頁面（DocumentPermissionComponent）[⏳待開始]
+
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
 E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
-用戶指南更新[⏳待開始]
+
+### 文檔
+
+API 文檔更新（資料分析系統 API 文檔）[⏳待開始]
+用戶指南更新（資料分析用戶指南）[⏳待開始]
 
 ---
 

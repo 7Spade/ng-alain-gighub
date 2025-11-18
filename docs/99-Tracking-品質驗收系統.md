@@ -32,10 +32,10 @@
 
 ### 數據層與服務層
 
-數據模型層（shared/models/quality/）[⏳待開始]
+數據模型層（shared/models/quality/）[✅已完成]
 創建 quality.types.ts（QC 狀態、照片類型）[✅已完成]
-Repository 層（4 個 Repository）[⏳待開始]
-服務層（QualityCheckService, InspectionService）[⏳待開始]
+Repository 層（4 個 Repository）[✅已完成]
+服務層（QualityCheckService, InspectionService）[✅已完成]
 品質檢查流程實現[⏳待開始]
 驗收流程實現（責任切割）[⏳待開始]
 RLS 權限驗證[⏳待開始]
@@ -43,21 +43,28 @@ RLS 權限驗證[⏳待開始]
 
 ### 頁面組件開發
 
-品質檢查列表頁面（QualityCheckListComponent）[⏳待開始]
-品質檢查創建頁面（QualityCheckCreateComponent）[⏳待開始]
-品質檢查詳情頁面（QualityCheckDetailComponent）[⏳待開始]
-驗收列表頁面（InspectionListComponent）[⏳待開始]
-驗收創建頁面（InspectionCreateComponent）[⏳待開始]
-驗收詳情頁面（InspectionDetailComponent）[⏳待開始]
-照片管理組件（PhotoManagementComponent）[⏳待開始]
+品管檢查列表頁面（QualityChecksComponent）[🚧進行中]
+品管檢查詳情頁面（QualityCheckDetailComponent）[🚧進行中]
+品管檢查表單頁面（QualityCheckFormComponent）[⏳待開始]
+品管提交頁面（QualitySubmitComponent）[⏳待開始]
+驗收列表頁面（QualityInspectionsComponent）[⏳待開始]
+驗收詳情頁面（QualityInspectionDetailComponent）[🚧進行中]
+品管照片頁面（QualityPhotosComponent）[⏳待開始]
+品管照片上傳組件（QualityPhotoUploadComponent）[⏳待開始]
+品管照片查看器組件（QualityPhotoViewerComponent）[⏳待開始]
+品質結果頁面（QualityResultsComponent）[⏳待開始]
+驗收詳情組件（InspectionDetailComponent）[⏳待開始]
 
-### 測試與文檔
+### 測試
 
 單元測試[⏳待開始]
 集成測試[⏳待開始]
-E2E 測試[⏳待開始]
-API 文檔更新[⏳待開始]
-用戶指南更新[⏳待開始]
+E2E 測試（品質驗收流程 E2E 測試）[⏳待開始]
+
+### 文檔
+
+API 文檔更新（品質驗收系統 API 文檔）[⏳待開始]
+用戶指南更新（品質驗收用戶指南）[⏳待開始]
 
 ---
 
