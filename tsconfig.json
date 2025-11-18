@@ -26,8 +26,32 @@
     ],
     "baseUrl": "./",
     "paths": {
+      "@routes/*": [
+        "src/app/routes/*"
+      ],
+      "@routes": [
+        "src/app/routes/index"
+      ],
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@app": [
+        "src/app/index"
+      ],
+      "@layout/*": [
+        "src/app/layout/*"
+      ],
+      "@layout": [
+        "src/app/layout/index"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ],
       "@shared": [
         "src/app/shared/index"
+      ],
+      "@core/*": [
+        "src/app/core/*"
       ],
       "@core": [
         "src/app/core/index"
