@@ -7,3 +7,4 @@ export * from './supabase';
 export * from './permissions';
 export * from './infra';
 export * from './services/branch-context.service';
+export * from './facades/blueprint.facade';
