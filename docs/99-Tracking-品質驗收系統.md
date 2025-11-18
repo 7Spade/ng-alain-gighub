@@ -27,6 +27,56 @@
 - **近期里程碑**：里程碑 8（2025-04-15）
 - **主要阻塞**：🧊 需任務系統資料串接、🧊 RLS 策略實現、🧊 Supabase Storage 整合
 
+### 里程碑對照表
+
+| 里程碑 | 目標日期 | 關鍵任務 | 完成狀態 | 備註 |
+|--------|---------|---------|---------|------|
+| **里程碑 8** | 2025-04-15 | 品質驗收系統完成 | 🚧 60% | 基礎架構完成，業務邏輯待實作 |
+| - | - | 數據層與服務層完成 | ✅ 100% | Repository、Service 層已完成 |
+| - | - | 頁面組件骨架完成 | ✅ 100% | 所有頁面骨架已建立 |
+| - | - | 頁面組件功能完成 | 🚧 75% | 15/20 組件功能完成 |
+| - | - | QualityFacade 實施 | ⏳ 0% | 待開始 |
+| - | - | 業務邏輯實現 | ⏳ 0% | 品質檢查流程、驗收流程待實現 |
+| - | - | RLS 權限驗證（4 張表） | 🧊 0% | 阻塞：需先定義策略 |
+| - | - | Supabase Storage 整合 | 🧊 0% | 阻塞：照片上傳功能 |
+| - | - | 任務系統資料串接 | 🧊 0% | 阻塞：依賴任務系統 |
+| - | - | 單元測試（目標 80%） | ⏳ 13% | 僅部分組件有測試 |
+| - | - | 集成測試 | ⏳ 0% | 待開始 |
+| - | - | E2E 測試 | ⏳ 0% | 待開始 |
+
+### 測試覆蓋率目標
+
+| 層級 | 目標覆蓋率 | 當前覆蓋率 | 狀態 | 備註 |
+|------|-----------|-----------|------|------|
+| **Service 層** | ≥80% | 0% | ⏳ 待開始 | QualityCheckService、InspectionService 待測試 |
+| **Repository 層** | ≥80% | 0% | ⏳ 待開始 | 4 個 Repository 待測試 |
+| **Component 層** | ≥70% | ~10% | ⏳ 待補齊 | 僅部分組件有測試 |
+| **Facade 層** | ≥80% | 0% | ⏳ 待開始 | QualityFacade 待實施 |
+| **整體目標** | ≥75% | ~13% | ⏳ 待補齊 | 需大幅提升測試覆蓋率 |
+
+### 技術債務清單
+
+| 項目 | 優先級 | 影響範圍 | 預計工作量 | 狀態 |
+|------|--------|---------|-----------|------|
+| QualityFacade 實施 | 🔴 高 | 統一接口、錯誤處理 | 2-3 天 | ⏳ 待開始 |
+| 業務邏輯實現 | 🔴 高 | 核心功能 | 5-7 天 | ⏳ 待開始 |
+| RLS 權限驗證（4 張表） | 🔴 高 | 安全性 | 2-3 天 | 🧊 阻塞 |
+| Supabase Storage 整合 | 🔴 高 | 照片上傳功能 | 2-3 天 | 🧊 阻塞 |
+| 任務系統資料串接 | 🔴 高 | 功能完整性 | 2-3 天 | 🧊 阻塞 |
+| 單元測試覆蓋率不足 | 🔴 高 | 代碼質量 | 5-7 天 | ⏳ 待開始 |
+| 集成測試缺失 | 🟡 中 | 功能驗證 | 3-4 天 | ⏳ 待開始 |
+| E2E 測試缺失 | 🟡 中 | 端到端驗證 | 2-3 天 | ⏳ 待開始 |
+
+### 已知問題清單
+
+| 問題 | 嚴重程度 | 影響範圍 | 狀態 | 解決方案 |
+|------|---------|---------|------|---------|
+| 需任務系統資料串接 | 🔴 高 | 功能完整性 | 🧊 阻塞 | 等待任務系統完成，定義資料串接接口 |
+| RLS 權限驗證未實施 | 🔴 高 | 安全性 | 🧊 阻塞 | 定義 RLS 策略（參考 `docs/09-安全與-RLS-權限矩陣.md`） |
+| Supabase Storage 整合未實現 | 🔴 高 | 照片上傳功能 | 🧊 阻塞 | 實現照片上傳到 Storage，創建 Document 記錄 |
+| 業務邏輯未實現 | 🔴 高 | 核心功能 | ⏳ 待解決 | 實現品質檢查流程、驗收流程 |
+| 測試覆蓋率不足 | 🔴 高 | 代碼質量 | ⏳ 待解決 | 補齊單元測試和集成測試 |
+
 ---
 
 ## 📋 任務清單
@@ -97,6 +147,20 @@ InspectionService[✅已完成]
 - update 方法[✅已完成]
 - delete 方法[✅已完成]
 - Computed signals（按狀態分類）[✅已完成]
+
+#### Facade 层（Core）
+
+QualityFacade 實施（core/facades/quality.facade.ts）[⏳待開始]
+QualityFacade Signals 狀態管理[⏳待開始]
+QualityFacade 品質檢查管理（createQualityCheck, updateQualityCheck, deleteQualityCheck）[⏳待開始]
+QualityFacade 驗收管理（createInspection, updateInspection, deleteInspection）[⏳待開始]
+QualityFacade 照片管理（addQcPhoto, removeQcPhoto, addInspectionPhoto, removeInspectionPhoto）[⏳待開始]
+QualityFacade 查詢方法（loadQualityChecksByTask, loadInspectionsByTask）[⏳待開始]
+QualityFacade Computed signals（pendingQualityChecks, passedQualityChecks, failedQualityChecks, pendingInspections）[⏳待開始]
+QualityFacade 統計功能（qualityStats, inspectionStats, passRate）[⏳待開始]
+QualityFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
+QualityFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
+更新 core/index.ts 導出 QualityFacade[⏳待開始]
 
 #### 業務邏輯層
 
@@ -330,6 +394,28 @@ API 文檔更新（品質驗收系統 API 文檔）[⏳待開始]
    - 更新 API 文檔
    - 更新用戶指南
 
+### 相關代碼位置
+
+- **核心服務**：`src/app/shared/services/quality/`
+  - `quality-check.service.ts` - 品質檢查服務
+  - `inspection.service.ts` - 驗收服務
+- **Facade 層**：`src/app/core/facades/`
+  - `quality.facade.ts` - 品質驗收 Facade（⏳待實施）
+- **Repository 層**：`src/app/core/infra/repositories/`
+  - `quality-check.repository.ts` - 品質檢查 Repository
+  - `qc-photo.repository.ts` - 品管照片 Repository
+  - `inspection.repository.ts` - 驗收 Repository
+  - `inspection-photo.repository.ts` - 驗收照片 Repository
+- **數據模型**：`src/app/shared/models/quality.models.ts`
+- **頁面組件**：`src/app/routes/quality/`
+  - `checks/quality-checks.component.ts` - 品管檢查列表
+  - `checks/quality-check-detail.component.ts` - 品管檢查詳情
+  - `checks/quality-check-form.component.ts` - 品管檢查表單
+  - `inspections/quality-inspections.component.ts` - 驗收列表
+  - `inspections/quality-inspection-detail.component.ts` - 驗收詳情
+  - `photos/quality-photos.component.ts` - 品管照片
+  - `results/quality-results.component.ts` - 品質結果
+
 ### 相關文檔
 
 - [資料表清單總覽](./23-資料表清單總覽.md)
@@ -337,4 +423,22 @@ API 文檔更新（品質驗收系統 API 文檔）[⏳待開始]
 - [架構審查報告](./28-架構審查報告.md)
 - [安全與 RLS 權限矩陣](./09-安全與-RLS-權限矩陣.md)
 - [系統架構思維導圖](./01-系統架構思維導圖.mermaid.md)
+
+---
+
+## 📊 統計資訊
+
+**總任務數**：約 90 個任務  
+**已完成**：約 54 個任務（60%）  
+**進行中**：約 6 個任務（7%）  
+**待開始**：約 30 個任務（33%）
+
+**完成度分析**：
+- 數據層：✅ 100%（20/20 任務）
+- 服務層：✅ 100%（9/9 任務）
+- 頁面組件：🚧 75%（15/20 任務）
+- 業務邏輯：⏳ 0%（0/8 任務）
+- 權限與安全：🧊 0%（0/5 任務）
+- 測試：⏳ 13%（2/15 任務）
+- 文檔：⏳ 0%（0/2 任務）
 

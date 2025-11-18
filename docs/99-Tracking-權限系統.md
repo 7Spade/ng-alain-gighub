@@ -29,6 +29,45 @@
 - **近期里程碑**：持續維護、完善測試覆蓋
 - **主要阻塞**：無
 
+### 里程碑對照表
+
+| 里程碑 | 目標日期 | 關鍵任務 | 完成狀態 | 備註 |
+|--------|---------|---------|---------|------|
+| **持續維護** | - | 權限系統完善 | ✅ 85% | 核心功能完成，測試和文檔待完善 |
+| - | - | 核心功能完成 | ✅ 100% | RBAC、RLS、路由守衛已完成 |
+| - | - | 組件和管道完成 | ✅ 100% | 權限組件和管道已完成 |
+| - | - | 單元測試（目標 80%） | ⏳ 0% | 待開始 |
+| - | - | 集成測試 | ⏳ 0% | 待開始 |
+| - | - | E2E 測試 | ⏳ 0% | 待開始 |
+| - | - | 文檔完善 | ⏳ 20% | 部分完成 |
+
+### 測試覆蓋率目標
+
+| 層級 | 目標覆蓋率 | 當前覆蓋率 | 狀態 | 備註 |
+|------|-----------|-----------|------|------|
+| **Service 層** | ≥80% | 0% | ⏳ 待開始 | PermissionService 待測試 |
+| **Repository 層** | ≥80% | 0% | ⏳ 待開始 | 5 個 Repository 待測試 |
+| **Guard 層** | ≥80% | 0% | ⏳ 待開始 | 路由守衛待測試 |
+| **Component 層** | ≥70% | 0% | ⏳ 待開始 | 權限組件待測試 |
+| **整體目標** | ≥75% | 0% | ⏳ 待開始 | 需建立測試框架 |
+
+### 技術債務清單
+
+| 項目 | 優先級 | 影響範圍 | 預計工作量 | 狀態 |
+|------|--------|---------|-----------|------|
+| 單元測試覆蓋率不足 | 🔴 高 | 代碼質量 | 5-7 天 | ⏳ 待開始 |
+| 集成測試缺失 | 🟡 中 | 功能驗證 | 3-4 天 | ⏳ 待開始 |
+| E2E 測試缺失 | 🟡 中 | 端到端驗證 | 2-3 天 | ⏳ 待開始 |
+| 文檔完善 | 🟡 中 | 開發體驗 | 2-3 天 | ⏳ 待開始 |
+| 性能優化 | 🟢 低 | 性能 | 2-3 天 | ⏳ 待開始 |
+
+### 已知問題清單
+
+| 問題 | 嚴重程度 | 影響範圍 | 狀態 | 解決方案 |
+|------|---------|---------|------|---------|
+| 測試覆蓋率為 0 | 🔴 高 | 代碼質量 | ⏳ 待解決 | 建立測試框架並補齊測試 |
+| 文檔不完整 | 🟡 中 | 開發體驗 | ⏳ 待解決 | 完善文檔 |
+
 ### 技術架構
 
 - **權限模型**：RBAC（Role-Based Access Control）
@@ -58,6 +97,21 @@ RoleService 檢查用戶角色[✅已完成]
 分支權限服務（BranchPermissionService）[✅已完成]
 分支權限級別管理（OWNER/ADMIN/WRITE/READ）[✅已完成]
 分支權限檢查（canPerformAction）[✅已完成]
+
+#### Facade 层（Core）
+
+PermissionFacade 實施（core/facades/permission.facade.ts）[⏳待開始]
+PermissionFacade Signals 狀態管理[⏳待開始]
+PermissionFacade 權限檢查管理（can, canAny, canAll, canAccessBlueprint）[⏳待開始]
+PermissionFacade 角色管理（getRoles, getUserRoles, hasRole）[⏳待開始]
+PermissionFacade 分支權限管理（canPerformAction, grantBranchPermission, revokeBranchPermission）[⏳待開始]
+PermissionFacade 權限緩存管理（clearPermissionCache, refreshPermissions）[⏳待開始]
+PermissionFacade 查詢方法（loadUserPermissions, loadRolePermissions, loadBranchPermissions）[⏳待開始]
+PermissionFacade Computed signals（userPermissions, rolePermissions, branchPermissions）[⏳待開始]
+PermissionFacade 統計功能（permissionStats, roleStats）[⏳待開始]
+PermissionFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
+PermissionFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
+更新 core/index.ts 導出 PermissionFacade[⏳待開始]
 
 ### Repository 層
 
@@ -263,4 +317,24 @@ RLS 策略開發指南（已存在，需與權限系統整合）[✅已完成]
 - **管道**：`src/app/shared/pipes/role.pipe.ts`
 - **分支權限服務**：`src/app/shared/services/permission/branch-permission.service.ts`
 - **Repository**：`src/app/core/infra/repositories/`
+
+---
+
+## 📊 統計資訊
+
+**總任務數**：約 65 個任務  
+**已完成**：約 55 個任務（85%）  
+**進行中**：約 1 個任務（2%）  
+**待開始**：約 9 個任務（13%）
+
+**完成度分析**：
+- 核心功能：✅ 100%（15/15 任務）
+- Repository 層：✅ 100%（9/9 任務）
+- 路由守衛：✅ 100%（7/7 任務）
+- 組件與管道：🚧 90%（9/10 任務）
+- 類型定義：✅ 100%（6/6 任務）
+- RLS 策略：✅ 100%（6/6 任務）
+- 測試：⏳ 0%（0/11 任務）
+- 文檔：⏳ 20%（1/5 任務）
+- 性能優化：⏳ 0%（0/4 任務）
 

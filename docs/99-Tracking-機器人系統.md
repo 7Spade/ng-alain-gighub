@@ -64,6 +64,21 @@ Bot 任務排程系統[⏳待開始]
 Bot 執行引擎[⏳待開始]
 Bot 執行日誌記錄[⏳待開始]
 
+#### Facade 层（Core）
+
+BotFacade 實施（core/facades/bot.facade.ts）[⏳待開始]
+BotFacade Signals 狀態管理[⏳待開始]
+BotFacade Bot 管理（createBot, updateBot, deleteBot, loadBots）[⏳待開始]
+BotFacade Bot 任務管理（createBotTask, updateBotTask, executeBotTask）[⏳待開始]
+BotFacade Bot 執行控制（startBot, stopBot, restartBot）[⏳待開始]
+BotFacade 執行日誌管理（loadExecutionLogs, getExecutionLogById）[⏳待開始]
+BotFacade 查詢方法（loadBotById, loadTasksByBot, loadTasksByStatus）[⏳待開始]
+BotFacade Computed signals（activeBots, pendingTasks, runningTasks, failedTasks）[⏳待開始]
+BotFacade 統計功能（botStats, taskStats, executionStats）[⏳待開始]
+BotFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
+BotFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
+更新 core/index.ts 導出 BotFacade[⏳待開始]
+
 #### 業務功能實現
 
 定期報表 Bot[⏳待開始]

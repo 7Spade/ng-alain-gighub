@@ -24,6 +24,52 @@
 - **近期里程碑**：里程碑 12（2025-07-15）
 - **主要阻塞**：部分設置頁面為骨架，功能開關管理待實現
 
+### 里程碑對照表
+
+| 里程碑 | 目標日期 | 關鍵任務 | 完成狀態 | 備註 |
+|--------|---------|---------|---------|------|
+| **里程碑 12** | 2025-07-15 | 系統管理模組完成 | 🚧 30% | 基礎架構完成，功能待完善 |
+| - | - | 數據層與服務層完成 | ✅ 100% | Repository、Service 層已完成 |
+| - | - | 頁面組件開發完成 | 🚧 45% | 5/11 頁面骨架完成 |
+| - | - | SystemFacade 實施 | ⏳ 0% | 待開始 |
+| - | - | 功能開關管理實現 | ⏳ 0% | 待開始 |
+| - | - | 灰度發布機制 | ⏳ 0% | 待開始 |
+| - | - | A/B 測試支援 | ⏳ 0% | 待開始 |
+| - | - | RLS 權限驗證（2 張表） | ⏳ 0% | 待開始 |
+| - | - | 單元測試（目標 80%） | ⏳ 0% | 待開始 |
+
+### 測試覆蓋率目標
+
+| 層級 | 目標覆蓋率 | 當前覆蓋率 | 狀態 | 備註 |
+|------|-----------|-----------|------|------|
+| **Service 層** | ≥80% | 0% | ⏳ 待開始 | SettingService、FeatureFlagService 待測試 |
+| **Repository 層** | ≥80% | 0% | ⏳ 待開始 | 2 個 Repository 待測試 |
+| **Component 層** | ≥70% | 0% | ⏳ 待開始 | 11 個組件待測試 |
+| **Facade 層** | ≥80% | 0% | ⏳ 待開始 | SystemFacade 待實施 |
+| **整體目標** | ≥75% | 0% | ⏳ 待開始 | 需建立測試框架 |
+
+### 技術債務清單
+
+| 項目 | 優先級 | 影響範圍 | 預計工作量 | 狀態 |
+|------|--------|---------|-----------|------|
+| SystemFacade 實施 | 🔴 高 | 統一接口、錯誤處理 | 2-3 天 | ⏳ 待開始 |
+| 功能開關管理實現 | 🔴 高 | 核心功能 | 3-4 天 | ⏳ 待開始 |
+| 灰度發布機制 | 🟡 中 | 功能發布 | 3-5 天 | ⏳ 待開始 |
+| A/B 測試支援 | 🟡 中 | 功能測試 | 4-5 天 | ⏳ 待開始 |
+| RLS 權限驗證（2 張表） | 🔴 高 | 安全性 | 1-2 天 | ⏳ 待開始 |
+| 頁面組件功能完善 | 🟡 中 | 用戶體驗 | 5-7 天 | ⏳ 待開始 |
+| 單元測試覆蓋率不足 | 🔴 高 | 代碼質量 | 4-5 天 | ⏳ 待開始 |
+| 集成測試缺失 | 🟡 中 | 功能驗證 | 2-3 天 | ⏳ 待開始 |
+
+### 已知問題清單
+
+| 問題 | 嚴重程度 | 影響範圍 | 狀態 | 解決方案 |
+|------|---------|---------|------|---------|
+| 頁面組件僅為骨架 | 🟡 中 | 用戶體驗 | ⏳ 待解決 | 完善頁面組件功能實現 |
+| 功能開關管理未實現 | 🔴 高 | 核心功能 | ⏳ 待解決 | 實現功能開關管理功能 |
+| RLS 權限驗證未實施 | 🔴 高 | 安全性 | ⏳ 待解決 | 實施 2 張表的 RLS 策略 |
+| 測試覆蓋率為 0 | 🔴 高 | 代碼質量 | ⏳ 待解決 | 建立測試框架並補齊測試 |
+
 ---
 
 ## 📋 任務清單
@@ -37,7 +83,27 @@ Repository 層（2 個 Repository）[✅已完成]
 系統設定管理[⏳待開始]
 功能開關管理（灰度發布）[⏳待開始]
 A/B 測試支援[⏳待開始]
+
+#### Facade 层（Core）
+
+SystemFacade 實施（core/facades/system.facade.ts）[⏳待開始]
+SystemFacade Signals 狀態管理[⏳待開始]
+SystemFacade 系統設定管理（getSetting, setSetting, updateSetting）[⏳待開始]
+SystemFacade 功能開關管理（getFeatureFlag, setFeatureFlag, enableFeature, disableFeature）[⏳待開始]
+SystemFacade 灰度發布管理（enableFeatureForUsers, enableFeatureForOrganizations）[⏳待開始]
+SystemFacade A/B 測試管理（createABTest, updateABTest, getABTestResults）[⏳待開始]
+SystemFacade 查詢方法（loadSettings, loadFeatureFlags, loadSettingsByCategory）[⏳待開始]
+SystemFacade Computed signals（enabledFeatures, activeABTests, systemSettings）[⏳待開始]
+SystemFacade 統計功能（featureUsageStats, abTestStats）[⏳待開始]
+SystemFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
+SystemFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
+更新 core/index.ts 導出 SystemFacade[⏳待開始]
+
+#### 權限與安全
+
 RLS 權限驗證[⏳待開始]
+RLS 權限驗證（settings 表）[⏳待開始]
+RLS 權限驗證（feature_flags 表）[⏳待開始]
 
 ### 頁面組件開發
 
@@ -175,9 +241,46 @@ API 文檔更新（系統管理 API 文檔）[⏳待開始]
 - 建立設定/flag 模型 + RLS
 - 配合性能優化
 
+### 相關代碼位置
+
+- **核心服務**：`src/app/shared/services/system/`
+  - `setting.service.ts` - 系統設定服務
+  - `feature-flag.service.ts` - 功能開關服務
+- **Facade 層**：`src/app/core/facades/`
+  - `system.facade.ts` - 系統管理 Facade（⏳待實施）
+- **Repository 層**：`src/app/core/infra/repositories/`
+  - `setting.repository.ts` - 系統設定 Repository
+  - `feature-flag.repository.ts` - 功能開關 Repository
+- **數據模型**：`src/app/shared/models/system/`
+  - `system.models.ts` - 系統相關模型
+- **頁面組件**：`src/app/routes/system/`
+  - `settings/system-settings.component.ts` - 系統設置主頁面
+  - `settings/personal-settings.component.ts` - 個人設置
+  - `settings/project-settings.component.ts` - 專案設置
+  - `settings/global-settings.component.ts` - 全局設置
+  - `feature-flags/feature-flag.component.ts` - 功能開關管理
+  - `backup/backup.component.ts` - 備份頁面
+
 ### 相關文檔
 
 - [資料表清單總覽](./23-資料表清單總覽.md)
 - [專案路線圖](./00-專案路線圖.md)
 - [架構審查報告](./28-架構審查報告.md)
+
+---
+
+## 📊 統計資訊
+
+**總任務數**：約 30 個任務  
+**已完成**：約 9 個任務（30%）  
+**進行中**：約 5 個任務（17%）  
+**待開始**：約 16 個任務（53%）
+
+**完成度分析**：
+- 數據層：✅ 100%（4/4 任務）
+- 服務層：✅ 50%（2/4 任務）
+- 頁面組件：🚧 45%（5/11 任務）
+- 核心功能：⏳ 0%（0/4 任務）
+- 測試：⏳ 0%（0/3 任務）
+- 文檔：⏳ 0%（0/2 任務）
 

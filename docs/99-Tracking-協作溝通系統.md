@@ -28,6 +28,51 @@
 - **近期里程碑**：里程碑 8（2025-04-15）
 - **主要阻塞**：頁面組件待實現，通知規則引擎待完善
 
+### 里程碑對照表
+
+| 里程碑 | 目標日期 | 關鍵任務 | 完成狀態 | 備註 |
+|--------|---------|---------|---------|------|
+| **里程碑 8** | 2025-04-15 | 協作溝通系統完成 | 🚧 60% | 核心服務完成，頁面組件待實現 |
+| - | - | 數據層與服務層完成 | ✅ 100% | Repository、Service 層已完成 |
+| - | - | 核心功能實現 | ✅ 100% | 留言、通知、待辦功能完成 |
+| - | - | 頁面組件開發完成 | 🚧 22% | 2/9 頁面進行中 |
+| - | - | CommunicationFacade 實施 | ⏳ 0% | 待開始 |
+| - | - | RLS 權限驗證（6 張表） | ⏳ 0% | 待開始 |
+| - | - | 單元測試（目標 80%） | ⏳ 0% | 待開始 |
+| - | - | 集成測試 | ⏳ 0% | 待開始 |
+| - | - | E2E 測試 | ⏳ 0% | 待開始 |
+
+### 測試覆蓋率目標
+
+| 層級 | 目標覆蓋率 | 當前覆蓋率 | 狀態 | 備註 |
+|------|-----------|-----------|------|------|
+| **Service 層** | ≥80% | 0% | ⏳ 待開始 | CommentService、NotificationService、PersonalTodoService 待測試 |
+| **Repository 層** | ≥80% | 0% | ⏳ 待開始 | 6 個 Repository 待測試 |
+| **Component 層** | ≥70% | 0% | ⏳ 待開始 | 9 個組件待測試 |
+| **Facade 層** | ≥80% | 0% | ⏳ 待開始 | CommunicationFacade 待實施 |
+| **整體目標** | ≥75% | 0% | ⏳ 待開始 | 需建立測試框架 |
+
+### 技術債務清單
+
+| 項目 | 優先級 | 影響範圍 | 預計工作量 | 狀態 |
+|------|--------|---------|-----------|------|
+| CommunicationFacade 實施 | 🔴 高 | 統一接口、錯誤處理 | 2-3 天 | ⏳ 待開始 |
+| 頁面組件開發（7 個） | 🔴 高 | 用戶體驗 | 7-10 天 | ⏳ 待開始 |
+| RLS 權限驗證（6 張表） | 🔴 高 | 安全性 | 3-4 天 | ⏳ 待開始 |
+| 通知規則引擎完善 | 🟡 中 | 功能完整性 | 2-3 天 | ⏳ 待開始 |
+| 單元測試覆蓋率不足 | 🔴 高 | 代碼質量 | 5-7 天 | ⏳ 待開始 |
+| 集成測試缺失 | 🟡 中 | 功能驗證 | 3-4 天 | ⏳ 待開始 |
+| E2E 測試缺失 | 🟡 中 | 端到端驗證 | 2-3 天 | ⏳ 待開始 |
+
+### 已知問題清單
+
+| 問題 | 嚴重程度 | 影響範圍 | 狀態 | 解決方案 |
+|------|---------|---------|------|---------|
+| 頁面組件待實現（7 個） | 🔴 高 | 用戶體驗 | ⏳ 待解決 | 實現待辦中心、通知中心等頁面 |
+| RLS 權限驗證未實施 | 🔴 高 | 安全性 | ⏳ 待解決 | 實施 6 張表的 RLS 策略 |
+| 通知規則引擎待完善 | 🟡 中 | 功能完整性 | ⏳ 待解決 | 完善通知規則引擎邏輯 |
+| 測試覆蓋率為 0 | 🔴 高 | 代碼質量 | ⏳ 待解決 | 建立測試框架並補齊測試 |
+
 ---
 
 ## 📋 任務清單
@@ -43,7 +88,32 @@ Repository 層（6 個 Repository）[✅已完成]
 通知規則管理（NotificationService）[✅已完成]
 待辦中心實現（五種狀態分類）[✅已完成]
 待辦狀態追蹤（PersonalTodoService）[✅已完成]
+
+#### Facade 层（Core）
+
+CommunicationFacade 實施（core/facades/communication.facade.ts）[⏳待開始]
+CommunicationFacade Signals 狀態管理[⏳待開始]
+CommunicationFacade 評論管理（createComment, updateComment, deleteComment）[⏳待開始]
+CommunicationFacade 通知管理（createNotification, markAsRead, markAllAsRead）[⏳待開始]
+CommunicationFacade 待辦管理（createTodo, updateTodo, deleteTodo, updateTodoStatus）[⏳待開始]
+CommunicationFacade 通知規則管理（createNotificationRule, updateNotificationRule, deleteNotificationRule）[⏳待開始]
+CommunicationFacade 查詢方法（loadComments, loadNotifications, loadTodos）[⏳待開始]
+CommunicationFacade Computed signals（unreadNotifications, pendingTodos, todosByStatus）[⏳待開始]
+CommunicationFacade 統計功能（notificationStats, todoStats, commentStats）[⏳待開始]
+CommunicationFacade 實時更新整合（RealtimeFacade）[⏳待開始]
+CommunicationFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
+CommunicationFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
+更新 core/index.ts 導出 CommunicationFacade[⏳待開始]
+
+#### 權限與安全
+
 RLS 權限驗證[⏳待開始]
+RLS 權限驗證（comments 表）[⏳待開始]
+RLS 權限驗證（notifications 表）[⏳待開始]
+RLS 權限驗證（notification_rules 表）[⏳待開始]
+RLS 權限驗證（notification_subscriptions 表）[⏳待開始]
+RLS 權限驗證（personal_todos 表）[⏳待開始]
+RLS 權限驗證（todo_status_tracking 表）[⏳待開始]
 
 ### 頁面組件開發
 
@@ -214,9 +284,50 @@ API 文檔更新（協作溝通系統 API 文檔）[⏳待開始]
 - 建立 RLS 策略（6 張表）
 - 補齊單元測試和集成測試
 
+### 相關代碼位置
+
+- **核心服務**：`src/app/shared/services/communication/`
+  - `comment.service.ts` - 留言服務
+  - `notification.service.ts` - 通知服務
+  - `personal-todo.service.ts` - 待辦中心服務
+- **Facade 層**：`src/app/core/facades/`
+  - `communication.facade.ts` - 協作溝通 Facade（⏳待實施）
+- **Repository 層**：`src/app/core/infra/repositories/`
+  - `comment.repository.ts` - 留言 Repository
+  - `notification.repository.ts` - 通知 Repository
+  - `notification-rule.repository.ts` - 通知規則 Repository
+  - `notification-subscription.repository.ts` - 通知訂閱 Repository
+  - `personal-todo.repository.ts` - 待辦中心 Repository
+  - `todo-status-tracking.repository.ts` - 待辦狀態追蹤 Repository
+- **數據模型**：`src/app/shared/models/communication/`
+  - `communication.models.ts` - 協作溝通相關模型
+- **頁面組件**：`src/app/routes/communication/`
+  - `notifications/notification-center.component.ts` - 通知中心
+  - `notifications/notification-detail.component.ts` - 通知詳情
+  - `notifications/notification-rules.component.ts` - 通知規則
+  - `todos/todo-center.component.ts` - 待辦中心
+  - `comments/comment-list.component.ts` - 評論列表
+
 ### 相關文檔
 
 - [資料表清單總覽](./23-資料表清單總覽.md)
 - [專案路線圖](./00-專案路線圖.md)
 - [架構審查報告](./28-架構審查報告.md)
+
+---
+
+## 📊 統計資訊
+
+**總任務數**：約 30 個任務  
+**已完成**：約 18 個任務（60%）  
+**進行中**：約 2 個任務（7%）  
+**待開始**：約 10 個任務（33%）
+
+**完成度分析**：
+- 數據層：✅ 100%（7/7 任務）
+- 服務層：✅ 100%（5/5 任務）
+- 核心功能：✅ 100%（5/5 任務）
+- 頁面組件：🚧 22%（2/9 任務）
+- 測試：⏳ 0%（0/3 任務）
+- 文檔：⏳ 0%（0/2 任務）
 
