@@ -372,35 +372,34 @@ export class NotificationService {
    * This is an adapter method for facade compatibility
    */
   async getNotificationsByUser(userId: string): Promise<Notification[]> {
-    await this.loadNotificationsByUserId(userId);
+    await this.loadByUser(userId);
     return this.notifications();
   }
 
   /**
    * Create notification (Adapter)
-   * @deprecated Use addNotification() instead
+   * @deprecated Use create() instead
    * This is an adapter method for facade compatibility
    */
   async createNotification(data: NotificationInsert): Promise<Notification> {
-    return await this.addNotification(data);
+    return await this.create(data);
   }
 
   /**
    * Delete notification (Adapter)
-   * @deprecated Use removeNotification() instead
+   * @deprecated Use delete() instead
    * This is an adapter method for facade compatibility
    */
   async deleteNotification(id: string): Promise<void> {
-    return await this.removeNotification(id);
+    await this.delete(id);
   }
 
   /**
    * Clear all notifications (Adapter)
-   * @deprecated Use clear() instead
+   * @deprecated Use markAllAsRead() instead
    * This is an adapter method for facade compatibility
    */
-  async clearAllNotifications(userId: string): Promise<void> {
-    // Clear local state - actual database cleanup could be added here
-    this.clear();
+  async clearAllNotifications(): Promise<void> {
+    await this.markAllAsRead();
   }
 }

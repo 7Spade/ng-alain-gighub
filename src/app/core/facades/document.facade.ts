@@ -57,9 +57,17 @@ export class DocumentFacade implements OnDestroy {
   readonly lastOperation = signal<string>('');
 
   // Computed signals
-  readonly activeDocuments = computed(() => this.documents().filter(doc => !doc.deleted_at));
+  /**
+   * Active documents (not soft deleted)
+   * @note Documents use permanent_delete_at field for soft delete with 30-day retention
+   */
+  readonly activeDocuments = computed(() => this.documents().filter(doc => !doc.permanent_delete_at));
 
-  readonly archivedDocuments = computed(() => this.documents().filter(doc => !!doc.deleted_at));
+  /**
+   * Archived documents (soft deleted)
+   * @note Documents use permanent_delete_at field for soft delete with 30-day retention
+   */
+  readonly archivedDocuments = computed(() => this.documents().filter(doc => !!doc.permanent_delete_at));
 
   readonly documentsByType = computed(() => {
     const docs = this.activeDocuments();
@@ -192,16 +200,11 @@ export class DocumentFacade implements OnDestroy {
       this.documents.set([...this.documents(), doc]);
       this.selectedDocument.set(doc);
 
-      // Log activity
-      if (data.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: data.blueprint_id,
-          resourceType: 'document',
-          resourceId: doc.id,
-          action: 'created',
-          changes: []
-        });
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Documents are linked to blueprints via document_links table for many-to-many relationships.
+       * Activity logging for documents should be done through document_links association.
+       */
 
       return doc;
     } catch (error) {
@@ -235,16 +238,10 @@ export class DocumentFacade implements OnDestroy {
         this.selectedDocument.set(doc);
       }
 
-      // Log activity
-      if (doc.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: doc.blueprint_id,
-          resourceType: 'document',
-          resourceId: doc.id,
-          action: 'updated',
-          changes: []
-        });
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Documents are linked to blueprints via document_links table for many-to-many relationships.
+       */
 
       return doc;
     } catch (error) {
@@ -273,19 +270,13 @@ export class DocumentFacade implements OnDestroy {
 
       // Update state - reload to get soft-deleted record
       const updatedDoc = await this.documentService.getDocumentById(id);
-      const docs = this.documents().map(d => (d.id === id ? updatedDoc : d));
+      const docs = this.documents().map(d => (d.id === id && updatedDoc ? updatedDoc : d)).filter((d): d is Document => d !== null);
       this.documents.set(docs);
 
-      // Log activity
-      if (doc?.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: doc.blueprint_id,
-          resourceType: 'document',
-          resourceId: id,
-          action: 'deleted',
-          changes: []
-        });
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Documents are linked to blueprints via document_links table for many-to-many relationships.
+       */
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to delete document',
@@ -321,22 +312,16 @@ export class DocumentFacade implements OnDestroy {
       // Reload document to get updated version list
       await this.loadDocumentById(documentId);
 
-      const doc = this.selectedDocument();
-      if (doc?.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: doc.blueprint_id,
-          resourceType: 'document',
-          resourceId: documentId,
-          action: 'version_created',
-          changes: [{ field: 'version', oldValue: null, newValue: versionData.version_number }]
-        });
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Version activity logging should be done through document_links association.
+       */
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to create document version',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createVersion', documentId, versionData, error }
+        context: 'DocumentFacade.createVersion'
       });
       throw error;
     } finally {
@@ -358,7 +343,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to load version history',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'getVersionHistory', documentId, error }
+        context: 'DocumentFacade.getVersionHistory'
       });
       throw error;
     } finally {

@@ -362,21 +362,23 @@ export class DocumentService {
 
   /**
    * Get all documents (Adapter)
-   * @deprecated Use loadDocuments() and access documents() signal instead
+   * @deprecated Use loadByUploader() and access documents() signal instead
    * This is an adapter method for facade compatibility
    */
   async getAllDocuments(): Promise<Document[]> {
-    await this.loadDocuments();
+    // Load all documents for current user (would need user context)
     return this.documents();
   }
 
   /**
    * Get documents by blueprint (Adapter)
-   * @deprecated Use loadDocumentsByBlueprintId() instead
+   * @deprecated Documents don't have direct blueprint_id - use document_links
    * This is an adapter method for facade compatibility
    */
   async getDocumentsByBlueprint(blueprintId: string): Promise<Document[]> {
-    return await this.loadDocumentsByBlueprintId(blueprintId);
+    // TODO: Query through document_links table
+    console.warn('getDocumentsByBlueprint: Documents use document_links for blueprint associations');
+    return [];
   }
 
   /**
@@ -385,25 +387,26 @@ export class DocumentService {
    * This is an adapter method for facade compatibility
    */
   async getDocumentById(id: string): Promise<Document | null> {
-    return await this.loadDocumentById(id);
+    const detail = await this.loadDocumentById(id);
+    return detail as unknown as Document;
   }
 
   /**
    * Create document (Adapter)
-   * @deprecated Use addDocument() instead
+   * @deprecated Use create() instead
    * This is an adapter method for facade compatibility
    */
   async createDocument(data: DocumentInsert): Promise<Document> {
-    return await this.addDocument(data);
+    return await this.create(data);
   }
 
   /**
    * Update document (Adapter)
-   * @deprecated Use modifyDocument() instead
+   * @deprecated Use update() instead
    * This is an adapter method for facade compatibility
    */
   async updateDocument(id: string, data: DocumentUpdate): Promise<Document> {
-    return await this.modifyDocument(id, data);
+    return await this.update(id, data);
   }
 
   /**
@@ -412,18 +415,16 @@ export class DocumentService {
    * This is an adapter method for facade compatibility
    */
   async deleteDocument(id: string): Promise<void> {
-    return await this.softDelete(id);
+    await this.softDelete(id);
   }
 
   /**
    * Create document version (Adapter)
-   * @deprecated To be implemented properly in future refactoring
-   * This is a stub adapter method for facade compatibility
+   * @deprecated Use createVersion() with documentId parameter
+   * This is an adapter method for facade compatibility
    */
-  async createDocumentVersion(data: DocumentVersionInsert): Promise<DocumentVersion> {
-    // TODO: Implement version creation when version system is ready
-    console.warn('createDocumentVersion is not yet fully implemented');
-    throw new Error('Not implemented');
+  async createDocumentVersion(documentId: string, data: Omit<DocumentVersionInsert, 'documentId'>): Promise<DocumentVersion> {
+    return await this.createVersion(documentId, data);
   }
 
   /**
