@@ -123,7 +123,7 @@
 
 ## 最後備註
 建議：
-1. 把短版放在 `.github/role-config.md`（此檔）以利團隊快速複製使用。  
+1. 把短版放在 `.github/agents/role-config.md`（此檔）以利團隊快速複製使用。  
 2. 把長版或教學範例放在 `docs/50-AI助手角色配置.md` 供詳細閱讀。  
 3. 在 `README.md` / `CONTRIBUTING.md` 加註「AI 使用指引」並連結此檔，提高採用率。  
 4. 可在 CODEOWNERS 中指定維護人以確保內容持續更新。

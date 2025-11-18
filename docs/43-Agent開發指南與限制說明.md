@@ -78,7 +78,7 @@
 
 #### 問題描述
 專案文檔分佈在多個位置：
-- `.github/copilot-instructions.md` - GitHub Copilot 主要指引
+- `.github/agents/copilot-instructions.md` - GitHub Copilot 主要指引
 - `.github/instructions/*.md` - 模組特定指引
 - `.cursor/rules/*.mdc` - Cursor IDE 規則
 - `docs/*.md` - 完整文檔集
@@ -116,7 +116,7 @@
 
 優先級順序：
 1. ⭐⭐⭐⭐⭐ `AGENTS.md` - 規則總覽
-2. ⭐⭐⭐⭐⭐ `.github/copilot-instructions.md` - 完整指引
+2. ⭐⭐⭐⭐⭐ `.github/agents/copilot-instructions.md` - 完整指引
 3. ⭐⭐⭐⭐⭐ `docs/00-開發作業指引.md` - 開發規範
 4. ⭐⭐⭐⭐⭐ `docs/45-SHARED_IMPORTS-使用指南.md` - 組件開發
 5. ⭐⭐⭐⭐ `docs/27-完整架構流程圖.mermaid.md` - 架構理解
@@ -170,9 +170,10 @@ bash(command: 'grep -n "pattern" /path/to/file')
 專案結構層次：
 ├── AGENTS.md (入口)
 ├── .github/
-│   ├── copilot-instructions.md (完整指引)
-│   ├── instructions/ (模組特定)
-│   └── agents/ (Agent 配置)
+│   ├── agents/
+│   │   ├── copilot-instructions.md (完整指引)
+│   │   └── role-config.md (角色配置)
+│   └── instructions/ (模組特定)
 ├── .cursor/
 │   ├── rules/ (Cursor 規則)
 │   └── templates/ (代碼模板)
@@ -233,7 +234,7 @@ graph TD
 
 ### 核心文檔
 - [AGENTS.md](../AGENTS.md) - Agent 指引總覽
-- [GitHub Copilot Instructions](../.github/copilot-instructions.md) - 完整指引
+- [GitHub Copilot Instructions](../.github/agents/copilot-instructions.md) - 完整指引
 - [開發作業指引](./00-開發作業指引.md) - 開發規範
 
 ### 架構文檔

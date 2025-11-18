@@ -126,7 +126,7 @@
 - ✅ **fyi-history.md** - 更新技術棧版本和日期
 
 #### GitHub 配置
-- ✅ **.github/copilot-instructions.md** - 更新技術棧版本
+- ✅ **.github/agents/copilot-instructions.md** - 更新技術棧版本
 
 #### 本文檔
 - ✅ **CHANGELOG.md** - 新增本次更新記錄
