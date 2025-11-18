@@ -1,0 +1,69 @@
+<!-- Task Dependency Component Template -->
+<!-- 任務依賴關係視圖模板 -->
+<div class="task-dependency-container">
+  @if (loading()) {
+    <nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+  } @else if (task(); as taskData) {
+    <nz-card [nzBordered]="false">
+      <div class="dependency-header">
+        <h3>依賴關係視圖</h3>
+        <p>顯示任務的前置/後續依賴關係</p>
+      </div>
+      <div class="dependency-content">
+        @if (predecessors().length > 0) {
+          <div class="dependency-section">
+            <h4>前置任務</h4>
+            <nz-list [nzDataSource]="predecessors()" [nzRenderItem]="predecessorItem">
+              <ng-template #predecessorItem let-item>
+                <nz-list-item>
+                  <nz-list-item-meta [nzTitle]="item.taskName" [nzDescription]="item.type">
+                    <ng-template #nzAvatar>
+                      <i nz-icon nzType="arrow-left" nzTheme="outline"></i>
+                    </ng-template>
+                  </nz-list-item-meta>
+                </nz-list-item>
+              </ng-template>
+            </nz-list>
+          </div>
+        }
+        @if (successors().length > 0) {
+          <div class="dependency-section">
+            <h4>後續任務</h4>
+            <nz-list [nzDataSource]="successors()" [nzRenderItem]="successorItem">
+              <ng-template #successorItem let-item>
+                <nz-list-item>
+                  <nz-list-item-meta [nzTitle]="item.taskName" [nzDescription]="item.type">
+                    <ng-template #nzAvatar>
+                      <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+                    </ng-template>
+                  </nz-list-item-meta>
+                </nz-list-item>
+              </ng-template>
+            </nz-list>
+          </div>
+        }
+        @if (relatedTasks().length > 0) {
+          <div class="dependency-section">
+            <h4>關聯任務</h4>
+            <nz-list [nzDataSource]="relatedTasks()" [nzRenderItem]="relatedItem">
+              <ng-template #relatedItem let-item>
+                <nz-list-item>
+                  <nz-list-item-meta [nzTitle]="item.taskName" [nzDescription]="item.type">
+                    <ng-template #nzAvatar>
+                      <i nz-icon nzType="link" nzTheme="outline"></i>
+                    </ng-template>
+                  </nz-list-item-meta>
+                </nz-list-item>
+              </ng-template>
+            </nz-list>
+          </div>
+        }
+        @if (predecessors().length === 0 && successors().length === 0 && relatedTasks().length === 0) {
+          <nz-empty nzNotFoundContent="尚無依賴關係"></nz-empty>
+        }
+      </div>
+    </nz-card>
+  } @else {
+    <nz-empty nzNotFoundContent="任務不存在"></nz-empty>
+  }
+</div>

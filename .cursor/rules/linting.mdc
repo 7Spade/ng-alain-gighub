@@ -1,0 +1,58 @@
+---
+description: ESLint code checking standards
+globs: ["**/*.ts", "**/*.html"]
+alwaysApply: true
+---
+
+# ESLint Code Checking Standards
+
+> **Related Rules**: See [Code Formatting](./formatting.mdc), [Type Safety](./typescript.mdc), [Code Quality](./code-quality.mdc), [Git Workflow](./git-workflow.mdc)
+
+## Basic Principles
+
+- All TypeScript and HTML files must pass ESLint checks
+- Must run `yarn lint` or `npm run lint` before commit
+- Use `--cache` option to improve check speed
+- Use `--fix` option to automatically fix fixable issues
+
+## Execution Methods
+
+```bash
+# Check all files
+yarn lint
+
+# Check TypeScript only
+yarn lint:ts
+
+# Auto fix issues
+npx eslint --cache --fix
+```
+
+## Configuration Requirements
+
+- Use `@typescript-eslint/parser` to parse TypeScript
+- Use `@typescript-eslint/eslint-plugin` to provide TypeScript rules
+- Use `eslint-plugin-import` to check import order
+- Use `eslint-plugin-unused-imports` to detect unused imports
+- Use `eslint-plugin-jsdoc` to check JSDoc comments
+- Use `eslint-plugin-prefer-arrow` to prefer arrow functions
+- Use `eslint-config-prettier` to avoid conflicts with Prettier (see [Code Formatting](./formatting.mdc))
+
+## Key Rules
+
+- Prohibit using `any` type (unless necessary and explicitly marked) (see [Type Safety](./typescript.mdc))
+- Enforce arrow functions (when applicable)
+- Check unused imports and variables
+- Enforce JSDoc comments (for public APIs)
+- Check import order and grouping
+
+## Git Hooks Integration
+
+- Automatically check before commit through `lint-staged` (see [Git Workflow](./git-workflow.mdc))
+- Only check modified files to improve speed
+- Block commit when checks fail
+
+## Reference Documentation
+
+- [ESLint Official Documentation](https://eslint.org/)
+- [TypeScript ESLint](https://typescript-eslint.io/)

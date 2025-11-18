@@ -1,0 +1,288 @@
+// 統計卡片樣式
+.stat-card {
+  text-align: center;
+  padding: 16px;
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    margin-top: 8px;
+    opacity: 0.65;
+  }
+}
+
+// 工具欄樣式
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .search-input {
+    width: 300px;
+  }
+
+  .filter-select {
+    width: 120px;
+  }
+
+  .ml-auto {
+    margin-left: auto;
+  }
+
+  .ml-md {
+    margin-left: 12px;
+  }
+
+  .display-toggle-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .toolbar-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+}
+
+// 任務樹容器
+.task-tree-container {
+  .task-tree-node {
+    border-bottom: 1px solid rgba(24, 144, 255, 0.2);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// 樹節點樣式
+.tree-node-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  width: 100%;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+
+    .tree-node-actions {
+      opacity: 1;
+    }
+  }
+
+  .tree-node-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+
+    .task-level {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+      border-radius: 4px;
+      background-color: rgba(24, 144, 255, 0.12);
+      color: rgba(0, 0, 0, 0.65);
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 32px;
+    }
+
+    .task-code {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-radius: 4px;
+      background-color: rgba(24, 144, 255, 0.12);
+      color: rgba(0, 0, 0, 0.75);
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 48px;
+    }
+
+    .task-sequence {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-radius: 4px;
+      background-color: rgba(24, 144, 255, 0.12);
+      color: rgba(0, 0, 0, 0.75);
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 48px;
+    }
+
+    .task-name-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-radius: 4px;
+      background-color: rgba(250, 173, 20, 0.18);
+      color: #ad6800;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+  }
+
+  .tree-node-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+}
+
+.task-progress-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background-color: rgba(24, 144, 255, 0.12);
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+
+  .ant-progress {
+    margin: 0;
+  }
+
+  .ant-progress-circle {
+    width: 28px !important;
+    height: 28px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.task-progress-capsule.is-loading {
+  background-color: transparent;
+  padding: 0;
+}
+
+.task-progress-text {
+  min-width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.task-name-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+// 列表視圖樣式
+.task-code,
+.task-level,
+.task-sequence {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  border-radius: 4px;
+  background-color: rgba(24, 144, 255, 0.12);
+  color: rgba(0, 0, 0, 0.75);
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 48px;
+}
+
+.task-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.task-description {
+  font-size: 12px;
+  opacity: 0.65;
+  margin-top: 4px;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-image-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  .ant-upload {
+    margin: 0;
+  }
+
+  button[nz-button] {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.task-image-thumbnails {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .toolbar {
+    .search-input {
+      width: 100%;
+    }
+
+    .filter-select {
+      width: calc(50% - 6px);
+    }
+  }
+
+  .task-name-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .task-progress-capsule {
+    align-self: flex-start;
+  }
+}
+
+

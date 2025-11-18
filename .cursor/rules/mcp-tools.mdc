@@ -1,0 +1,45 @@
+---
+description: MCP tools usage standards
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# MCP Tools Usage Standards
+
+> **Related Rules**: See [Type Safety](./typescript.mdc), [Security Standards](./security.mdc), [API Design](./api-design.mdc)
+
+## Context7
+
+- Technical documentation retrieval tool, query official documentation and best practices before implementation
+- Usage: `@C7` or `@Context7`
+- Used for querying Angular, TypeScript, ng-alain and other technical documentation
+
+## Sequential Thinking
+
+- Complex problem analysis and decision making, used for architecture design and root cause analysis
+- Usage: `@S7` or `@Sequential Thinking`
+- Used for structured thinking on complex problems
+
+## Software Planning Tool
+
+- Must be used for Level 3+ complex tasks, used for task planning and tracking
+- Usage: `@SPT` or `@Software Planning Tool`
+- Used for task decomposition and tracking of large features
+
+## Memory
+
+- Record architecture decisions, technical debt, configurations, and test results
+- Regularly clean up redundant memories
+
+## Supabase MCP
+
+- All database operations must go through `@SUPABASE` MCP tool
+- Use Supabase MCP to regularly check database structure
+- Use Supabase MCP tools to generate TypeScript type definitions (see [Type Safety](./typescript.mdc))
+- Database operations need RLS checks enabled (see [Security Standards](./security.mdc))
+- Use Repository pattern to encapsulate data access (see [API Design Standards](./api-design.mdc))
+
+## Reference Documentation
+
+- [Supabase Official Documentation](https://supabase.com/docs)
+- [MCP Protocol Documentation](https://modelcontextprotocol.io/)

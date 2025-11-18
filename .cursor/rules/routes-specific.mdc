@@ -1,0 +1,39 @@
+---
+description: Routes module specific standards
+globs: ["src/app/routes/**/*.ts", "src/app/routes/**/*.html"]
+alwaysApply: true
+---
+
+# Routes Module Specific Standards
+
+> **Related Rules**: See [Architecture Standards](./architecture.mdc), [API Design](./api-design.mdc), [Git-like Branching Model](./git-model.mdc)
+
+## Route Configuration
+
+- Each feature module should have its own routing
+- Use lazy loading for feature routes
+- Follow consistent route naming
+
+## API Design Standards
+
+- Use Repository pattern for data access
+- All database operations via Supabase client
+- Implement proper error handling
+
+## Business Logic Organization
+
+- Keep business logic in services
+- Components should be thin, delegating to services
+- Use Signals for reactive state
+
+## Git-like Branching Model Integration
+
+- Understand branching model when working in routes/blueprint/
+- Implement branch permissions correctly
+- Handle PR workflows properly
+
+## Reference Documentation
+
+- [Module-Specific Rules](./.cursor/rules/routes-specific.mdc)
+- [API Design Patterns](./.cursor/rules/api-design.mdc)
+- [Development Guidelines](../../docs/00-開發作業指引.md)

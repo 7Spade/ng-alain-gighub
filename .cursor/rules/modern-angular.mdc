@@ -1,0 +1,82 @@
+---
+description: Angular 20 modern features and migration guide
+globs: ["**/*.ts", "**/*.html"]
+alwaysApply: false
+---
+
+# Angular 20 Modern Features
+
+> **Related Rules**: See [Angular 20 Best Practices](./angular.mdc), [Type Safety](./typescript.mdc)
+
+## Signal Inputs and Outputs
+
+- Use `input()` instead of `@Input()` decorator
+- Use `output()` instead of `@Output()` decorator
+- Use `input.required()` to mark required inputs
+- Signal Inputs automatically provide type safety without extra type annotations (see [Type Safety](./typescript.mdc))
+
+## Signal Queries
+
+- Use `viewChild()` instead of `@ViewChild()` decorator
+- Use `contentChild()` instead of `@ContentChild()` decorator
+- Use `viewChildren()` instead of `@ViewChildren()` decorator
+- Use `contentChildren()` instead of `@ContentChildren()` decorator
+- Signal Queries return Signals, parentheses must be used when calling in templates
+
+## Standalone Migration
+
+- Use `ng generate @angular/core:standalone` for automatic migration
+- Use `bootstrapApplication()` instead of `bootstrapModule()`
+- Remove unnecessary NgModules
+- Ensure all components, directives, and pipes are standalone
+
+## Template Best Practices
+
+- When calling Signals in templates, parentheses must be used: `{{ mySignal() }}`
+- Use `@empty` block to handle empty list cases in `@for` loops
+- Use `track` functions to optimize `@for` loop performance
+- Avoid complex expressions in templates, prefer `computed()` Signals
+
+## Deferrable Views (@defer)
+
+- Use `@defer { ... }` to defer loading of non-critical components, default `on idle` trigger can reduce initial bundle size (see [Deferrable Views](https://angular.dev/guide/templates/defer))
+- Choose trigger conditions based on context: `on viewport` (load when scrolled to), `on hover` (load on interaction), `hydrate on viewport` (SSR Hydration), etc.
+- *Must* use with `@placeholder`, `@loading`, `@error` to provide visual feedback, and utilize `minimum`, `after` parameters to avoid flashing
+- Apply `@defer` to large lazy components (like `article-comments`, `large-cmp`), and preserve semantic placeholder content
+
+## View Transitions API
+
+- Enable View Transitions at Router level: `provideRouter(routes, withViewTransitions())` or `RouterModule.forRoot(routes, { enableViewTransitions: true })`
+- Through `onViewTransitionCreated`, check `Router` navigation results, call `transition.skipTransition()` for navigations with only fragment/query changes to avoid unnecessary animations
+- Customize `::view-transition-old()`/`::view-transition-new()` with global CSS to create entrance/exit animations, and ensure `prefers-reduced-motion` friendliness
+
+## Resource API and Data Streams
+
+- Use `resource({ params, loader })` to manage async data, `params` reads Signals, automatically reruns `loader`
+- When RxJS is needed, use `rxResource({ stream })`, or use `resource({ stream })` for progressive output (supports `ReadableStream` chunks)
+- `resourceRef.value()` returns a Signal, can be directly bound through `computed()`/template `userResource.value()?.name`
+- Trigger reload through `resourceRef.reload()`, error states must be displayed in UI
+
+## Signal Forms and Typed Forms
+
+- Reactive Forms enable Typed Forms by default: `new FormControl('', { nonNullable: true })`, `FormRecord<FormControl<string | null>>`
+- Use `updateOn: 'blur'` or `updateOn: 'submit'` to defer expensive validation requests
+- Map form values to Signals (`const firstName = signalControl(this.form.controls.firstName)`) for template usage `firstName()`, maintaining `strictNullChecks`
+- For dynamic fields, use `FormArray`/`FormRecord`, synchronize UI helper text and validation messages after adding controls
+
+## Diagnostics and Error Handling
+
+- Enable `strictTemplates` for better type checking (see [Type Safety](./typescript.mdc))
+- Angular automatically detects unused standalone imports
+- Use Angular's extended diagnostics (e.g., NG8113) to detect issues
+
+## Reference Documentation
+
+- [Angular Signal Inputs](https://angular.dev/api/core/input)
+- [Angular Signal Queries](https://angular.dev/api/core/viewChild)
+- [Angular Standalone Migration](https://angular.dev/reference/migrations/standalone)
+- [Angular 20 Best Practices](./angular.mdc)
+- [Angular Deferrable Views](https://angular.dev/guide/templates/defer)
+- [Angular View Transitions](https://angular.dev/guide/animations/route-animations)
+- [Angular Signals Resource API](https://angular.dev/guide/signals/resource)
+- [Typed Forms Guide](https://angular.dev/guide/forms/typed-forms)

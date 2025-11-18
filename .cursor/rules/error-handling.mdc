@@ -1,0 +1,37 @@
+---
+description: Error handling and state management standards
+globs: ["src/app/**/*.ts"]
+alwaysApply: false
+---
+
+# Error Handling Standards
+
+> **Related Rules**: See [Core Module Standards](./core-specific.mdc), [API Design](./api-design.mdc), [Security Standards](./security.mdc)
+
+## Error Handling Principles
+
+- Use `ErrorStateService` to manage error states uniformly
+- HTTP errors automatically handled through `defaultInterceptor` (see [Core Module Standards](./core-specific.mdc))
+- Business errors need explicit classification (HTTP, Network, Validation, Business, Permission)
+- Provide retry mechanism and error history recording
+
+## Error Classification
+
+- **HTTP Errors**: Network request failures, server errors
+- **Network Errors**: Connection timeout, network interruption
+- **Validation Errors**: Form validation failures, input format errors
+- **Business Errors**: Business logic validation failures
+- **Permission Errors**: Unauthorized resource access (see [Security Standards](./security.mdc))
+
+## Error Handling Flow
+
+1. **Catch Errors**: Catch errors in service layer or components
+2. **Classify Errors**: Classify based on error type
+3. **Unified Handling**: Handle uniformly through `ErrorStateService`
+4. **User Feedback**: Provide friendly error messages
+5. **Error Logging**: Log error history for debugging
+
+## Reference Documentation
+
+- [Error Handling Guide](../../docs/37-錯誤處理指南.md)
+- [Core Module Standards](./core-specific.mdc)

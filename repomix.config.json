@@ -1,0 +1,51 @@
+// npx -y repomix --config repomix.config.json --output docs/fyi-codebase.md --style markdown --verbose
+{
+  "input": {},
+  "include": [
+    "src/**/*.ts"
+  ],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/src/assets/**",
+    "src/app/routes/data-v/**",
+    "src/app/routes/delon/**",
+    "src/app/routes/exception/**",
+    "src/app/routes/extras/**",
+    "src/app/routes/pro/**",
+    "src/app/routes/style/**",
+    "src/app/routes/widgets/**",
+    "**/*.spec.ts",
+    "**/*.md",
+    "**/*.html",
+    "**/*.less",
+    "src/style-icons-auto.ts",
+    "src/style-icons.ts",
+    "src/typings.d.ts",
+    "src/environments/**",
+    "src/index.html",
+    "angular.json",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "ignore": {},
+  "output": {
+    "compress": false,
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "fileSummary": true,
+    "directoryStructure": true,
+    "files": true,
+    "showLineNumbers": true,
+    "git": {
+      "sortByChanges": true,
+      "sortByChangesMaxCommits": 100,
+      "includeLogsCount": 50
+    }
+  },
+  "security": {
+    "enableSecurityCheck": true
+  },
+  "tokenCount": {}
+}

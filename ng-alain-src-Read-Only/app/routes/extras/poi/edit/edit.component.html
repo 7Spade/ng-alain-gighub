@@ -1,0 +1,86 @@
+<div class="modal-header">
+  <div class="modal-title">{{ i.id > 0 ? '編輯' : '添加' }}-門店（基於HTML模板表單寫法）</div>
+</div>
+<form #f="ngForm" (ngSubmit)="save()" nz-form>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">所屬分銷商</nz-form-label>
+    <nz-form-control nzSpan="8">
+      {{ i.user_id }}
+      <a (click)="msgSrv.info('find')">查找用戶</a>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">門店名稱</nz-form-label>
+    <nz-form-control nzSpan="8" nzExtra="如：國美、麥當勞，不應包含地區、地址、分店名等信息，錯誤示例：北京國美">
+      <input nz-input [(ngModel)]="i.name" name="name" maxlength="30" required />
+    </nz-form-control>
+    <nz-form-label nzSpan="4">分店名稱</nz-form-label>
+    <nz-form-control nzSpan="8" nzExtra="不應包含地區信息，不應與門店名有重複，錯誤示例：北京王府井店">
+      <input nz-input [(ngModel)]="i.branch_name" name="branch_name" maxlength="20" required />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">所在地</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.geo" name="geo" maxlength="50" required />
+    </nz-form-control>
+    <nz-form-label nzSpan="4">街道地址</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.address" name="address" maxlength="50" required />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">緯度</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.lat" name="lat" required />
+    </nz-form-control>
+    <nz-form-label nzSpan="4">經度</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.lng" name="lng" required />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">電話</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.tel" name="tel" maxlength="30" required />
+    </nz-form-control>
+    <nz-form-label nzSpan="4">門店類型</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <nz-select [(ngModel)]="i.categories" name="categories" required [nzAllowClear]="false">
+        @for (i of cat; track $index) {
+          <nz-option [nzLabel]="i" [nzValue]="i" />
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">推薦品</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.recommend" name="recommend" maxlength="200" placeholder="200字以內" />
+    </nz-form-control>
+    <nz-form-label nzSpan="4">特色服務</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.special" name="special" maxlength="50" placeholder="50字以內" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">商戶簡介</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.introduction" name="introduction" maxlength="300" placeholder="300字以內" />
+    </nz-form-control>
+    <nz-form-label nzSpan="4">營業時間</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <input nz-input [(ngModel)]="i.open_time" name="open_time" maxlength="30" placeholder="30字以內" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="mb-sm">
+    <nz-form-label nzSpan="4">人均價格</nz-form-label>
+    <nz-form-control nzSpan="8">
+      <nz-input-number [(ngModel)]="i.avg_price" name="avg_price" [nzMin]="0" [nzStep]="10" />
+    </nz-form-control>
+  </nz-form-item>
+  <div class="modal-footer">
+    <button nz-button type="button" (click)="close()">關閉</button>
+    <button nz-button [disabled]="!f.form.valid || !f.form.dirty" [nzLoading]="http.loading" [nzType]="'primary'"> 保存 </button>
+  </div>
+</form>

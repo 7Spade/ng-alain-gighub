@@ -1,0 +1,43 @@
+---
+description: Build and deployment standards
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# Build and Deployment Standards
+
+> **Related Rules**: See [Performance](./performance.mdc), [Security Standards](./security.mdc), [Dependency Management](./dependency-management.mdc)
+
+## Build Commands
+
+```bash
+# Development build
+yarn build
+
+# Production build
+yarn build --configuration production
+
+# Analyze bundle size
+yarn analyze
+yarn analyze:view
+```
+
+## Performance Analysis
+
+- Regularly analyze bundle size
+- Monitor build time
+- Optimize import statements
+- Use lazy loading for routes
+
+## Pre-Deployment Checks
+
+- Run all tests: `yarn test-coverage`
+- Run linting: `yarn lint`
+- Run type checking: `yarn type-check`
+- Build successfully: `yarn build`
+- Security audit: `yarn audit`
+
+## Reference Documentation
+
+- [Angular Build Documentation](https://angular.dev/tools/cli/build)
+- [Performance Standards](./performance.mdc)

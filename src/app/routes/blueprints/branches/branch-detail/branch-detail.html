@@ -1,0 +1,159 @@
+<page-header [title]="'分支詳情'">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a routerLink="/blueprints">藍圖列表</a>
+      </nz-breadcrumb-item>
+      @if (blueprint()) {
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/blueprints', blueprint()!.id]">{{ blueprint()!.name }}</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/blueprints', blueprint()!.id, 'branches']">分支管理</a>
+        </nz-breadcrumb-item>
+      }
+      <nz-breadcrumb-item>分支詳情</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+  <ng-template #extra>
+    <button nz-button nzType="default" (click)="goBack()" style="margin-right: 8px;">
+      <span nz-icon nzType="arrow-left"></span>
+      返回
+    </button>
+    @if (branch() && branch()!.status === 'active') {
+      <button
+        nz-button
+        nzType="primary"
+        [nzLoading]="switching()"
+        (click)="switchToBranch()"
+      >
+        <span nz-icon nzType="swap"></span>
+        切換到此分支
+      </button>
+    }
+  </ng-template>
+</page-header>
+
+@if (loading()) {
+  <div style="text-align: center; padding: 40px;">
+    <nz-spin nzSize="large"></nz-spin>
+  </div>
+} @else if (branch()) {
+  <nz-card nzTitle="基本信息" style="margin-top: 16px;">
+    <nz-descriptions nzBordered [nzColumn]="2">
+      <nz-descriptions-item nzTitle="分支ID" [nzSpan]="2">
+        <code>{{ branch()!.id }}</code>
+      </nz-descriptions-item>
+
+      <nz-descriptions-item nzTitle="分支名稱" [nzSpan]="2">
+        <strong>{{ branch()!.branch_name }}</strong>
+      </nz-descriptions-item>
+
+      <nz-descriptions-item nzTitle="藍圖">
+        @if (blueprint()) {
+          <a [routerLink]="['/blueprints', blueprint()!.id]">{{ blueprint()!.name }}</a>
+        } @else {
+          <code>{{ branch()!.blueprint_id }}</code>
+        }
+      </nz-descriptions-item>
+
+      <nz-descriptions-item nzTitle="組織">
+        @if (organization()) {
+          <span>{{ organization()!.name }}</span>
+        } @else {
+          <code>{{ branch()!.organization_id }}</code>
+        }
+      </nz-descriptions-item>
+
+      <nz-descriptions-item nzTitle="分支類型">
+        <nz-tag [nzColor]="branch()!.branch_type === 'contractor' ? 'blue' : branch()!.branch_type === 'subcontractor' ? 'cyan' : 'purple'">
+          {{ getBranchTypeLabel(branch()!.branch_type) }}
+        </nz-tag>
+      </nz-descriptions-item>
+
+      <nz-descriptions-item nzTitle="狀態">
+        <nz-tag [nzColor]="getBranchStatusColor(branch()!.status)">
+          {{ getBranchStatusLabel(branch()!.status) }}
+        </nz-tag>
+      </nz-descriptions-item>
+
+      @if (branch()!.notes) {
+        <nz-descriptions-item nzTitle="備註" [nzSpan]="2">
+          <pre style="white-space: pre-wrap; margin: 0; padding: 8px; background: #f5f5f5; border-radius: 4px;">{{ branch()!.notes }}</pre>
+        </nz-descriptions-item>
+      }
+
+      <nz-descriptions-item nzTitle="創建時間">
+        {{ branch()!.forked_at | date: 'yyyy-MM-dd HH:mm:ss' }}
+      </nz-descriptions-item>
+
+      @if (branch()!.last_sync_at) {
+        <nz-descriptions-item nzTitle="最後同步時間">
+          {{ branch()!.last_sync_at | date: 'yyyy-MM-dd HH:mm:ss' }}
+        </nz-descriptions-item>
+      }
+    </nz-descriptions>
+  </nz-card>
+
+  <!-- 權限信息 -->
+  <nz-card nzTitle="權限信息" style="margin-top: 16px;">
+    @if (branchPermissionService.loading()) {
+      <nz-spin></nz-spin>
+    } @else {
+      <nz-table
+        [nzData]="branchPermissionService.permissions()"
+        [nzShowPagination]="false"
+        nzSize="small"
+      >
+        <thead>
+          <tr>
+            <th>賬戶</th>
+            <th>權限級別</th>
+            <th>授予者</th>
+            <th>授予時間</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (perm of branchPermissionService.permissions(); track perm.id) {
+            <tr>
+              <td>
+                @if (getAccountName(perm.account_id)) {
+                  {{ getAccountName(perm.account_id) }}
+                } @else {
+                  <code>{{ perm.account_id }}</code>
+                }
+              </td>
+              <td>
+                <nz-tag [nzColor]="perm.permission_level === 'owner' ? 'red' : perm.permission_level === 'admin' ? 'orange' : perm.permission_level === 'write' ? 'blue' : 'default'">
+                  {{ perm.permission_level === 'owner' ? '擁有者' : perm.permission_level === 'admin' ? '管理員' : perm.permission_level === 'write' ? '寫入' : '讀取' }}
+                </nz-tag>
+              </td>
+              <td>
+                @if (getAccountName(perm.granted_by)) {
+                  {{ getAccountName(perm.granted_by) }}
+                } @else {
+                  <code>{{ perm.granted_by }}</code>
+                }
+              </td>
+              <td>
+                @if (perm.granted_at) {
+                  {{ perm.granted_at | date: 'yyyy-MM-dd HH:mm:ss' }}
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td [attr.colspan]="4" style="text-align: center; color: #999;">
+                暫無權限記錄
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    }
+  </nz-card>
+} @else {
+  <nz-card style="margin-top: 16px;">
+    <nz-empty nzNotFoundContent="分支不存在"></nz-empty>
+  </nz-card>
+}

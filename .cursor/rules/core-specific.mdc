@@ -1,0 +1,43 @@
+---
+description: Core module specific standards
+globs: ["src/app/core/**/*.ts"]
+alwaysApply: true
+---
+
+# Core Module Specific Standards
+
+> **Related Rules**: See [Architecture Standards](./architecture.mdc), [Security Standards](./security.mdc), [Error Handling](./error-handling.mdc)
+
+## HTTP Interceptors
+
+- Authentication interceptor for adding tokens
+- Error interceptor for global error handling
+- Logging interceptor for request/response logging
+- Use functional interceptors (Angular 20+)
+
+## Internationalization Services
+
+- i18n service for translations
+- Support multiple languages
+- Lazy load translations
+- Use ng-alain i18n integration
+
+## Route Guards
+
+- Authentication guard
+- Authorization guard
+- Unsaved changes guard
+- Use functional guards (Angular 20+)
+
+## Singleton Services
+
+- All services in core/ are singletons
+- Provide in root: `providedIn: 'root'`
+- Must be stateless or manage global state
+- No component-specific logic
+
+## Reference Documentation
+
+- [Architecture Standards](./architecture.mdc)
+- [Security Standards](./security.mdc)
+- [Error Handling Standards](./error-handling.mdc)

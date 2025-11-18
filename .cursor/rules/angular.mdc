@@ -1,0 +1,65 @@
+---
+description: Angular 20 best practices and modern syntax standards
+globs: ["**/*.ts", "**/*.html", "src/app/**"]
+alwaysApply: true
+---
+
+# Angular 20 Best Practices Standards
+
+> **Related Rules**: See [Angular 20 Modern Features](./modern-angular.mdc), [Shared Module Priority](./shared-imports.mdc), [Type Safety](./typescript.mdc), [Performance Optimization](./performance.mdc)
+
+## Standalone Components
+
+- Prefer Standalone Components, avoid NgModules (unless necessary)
+- Use `inject()` for dependency injection instead of constructor injection
+- Use `bootstrapApplication()` instead of `bootstrapModule()` for application bootstrap
+- Remove unused standalone imports (Angular will automatically detect)
+
+## Signals State Management
+
+- Use `signal()` to create reactive state
+- Use `computed()` to create derived state
+- Use `effect()` to handle side effects (use carefully)
+- Prefer Signals for component state, avoid old patterns of `@Input()` and `@Output()`
+- Use `input()` instead of `@Input()` decorator (see [Modern Features](./modern-angular.mdc))
+- Use `output()` instead of `@Output()` decorator
+- Use `viewChild()` and `contentChild()` instead of `@ViewChild()` and `@ContentChild()` decorators
+- Services should expose `ReadonlySignal` to components for state
+- When calling Signals in templates, parentheses must be used: `mySignal()`
+
+## Modern Control Flow
+
+- Prefer `@if`, `@for`, `@switch` over `*ngIf`, `*ngFor`, `[ngSwitch]`
+- Use `track` functions to optimize `@for` loop performance
+- Use `@empty` block to handle empty list cases
+- Avoid complex expressions in templates, prefer `computed()` Signals
+- When calling Signals in templates, parentheses must be used: `{{ mySignal() }}`
+
+## Deferrable Views and View Transitions
+
+- Progressive lazy loading: Use `@defer` with `@placeholder`, `@loading`, `@error` for non-critical content, choose triggers like `on idle`, `on viewport` based on scenarios
+- For Standalone apps, add `withViewTransitions()` in `provideRouter`, or enable `enableViewTransitions` in `RouterModule.forRoot`
+- Filter navigations with only fragment/query changes through `onViewTransitionCreated` and `skipTransition()` to ensure usability
+- When customizing `::view-transition-old/new` CSS animations, consider `prefers-reduced-motion` simultaneously
+
+## Typed Forms
+
+- Use Typed Forms to ensure form type safety
+- All form fields must have explicit type definitions
+
+## Change Detection Strategy
+
+- Use `OnPush` change detection strategy (default)
+- Avoid directly modifying Signal/state during change detection
+
+## Performance Optimization
+
+- Use `trackBy` functions to optimize `@for` loops
+- Use Virtual Scrolling for large lists
+- Use `loading="lazy"` for images to defer loading
+- See [Performance Optimization Standards](./performance.mdc) for more optimization strategies
+
+## Reference Documentation
+
+- [Angular Official Documentation](https://angular.dev/)
+- [SHARED_IMPORTS Usage Guide](../../docs/45-SHARED_IMPORTS-使用指南.md)

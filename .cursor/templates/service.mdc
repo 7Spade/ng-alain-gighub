@@ -1,0 +1,87 @@
+---
+description: Angular Service template (using Signals)
+globs: ["src/app/**/*.service.ts"]
+alwaysApply: false
+---
+
+# Angular Service Template
+
+## Service Structure
+
+```typescript
+import { Injectable, signal, computed, inject, resource } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ExampleService {
+  // Use inject() for dependency injection
+  private readonly http = inject(HttpClient);
+  private readonly repository = inject(ExampleRepository);
+  
+  // Use signal() to create private state
+  private readonly _state = signal<StateType>(initialValue);
+  
+  // Expose ReadonlySignal to components
+  readonly state = this._state.asReadonly();
+  
+  // Use computed() to create derived state
+  readonly derivedState = computed(() => {
+    return this._state().someProperty;
+  });
+  
+  // Methods to update state
+  updateState(newValue: StateType): void {
+    this._state.set(newValue);
+  }
+  
+  // Use update() method for complex state updates
+  updateStatePartial(partial: Partial<StateType>): void {
+    this._state.update(current => ({ ...current, ...partial }));
+  }
+
+  // Use resource() to wrap Supabase/HTTP calls as reloadable resources
+  readonly profileResource = resource({
+    params: () => ({ id: this.state().activeProfileId }),
+    loader: ({ params }) => this.repository.findById(params.id)
+  });
+
+  refreshProfile(): void {
+    this.profileResource.reload();
+  }
+}
+```
+
+## Repository Pattern
+
+```typescript
+import { Injectable, inject } from '@angular/core';
+import { SupabaseClient } from '@supabase/supabase-js';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ExampleRepository {
+  private readonly supabase = inject(SupabaseClient);
+  
+  async findAll(): Promise<Example[]> {
+    const { data, error } = await this.supabase
+      .from('examples')
+      .select('*');
+    
+    if (error) throw error;
+    return data;
+  }
+}
+```
+
+## Important Notes
+
+- Use `inject()` for dependency injection (avoid constructor injection)
+- Use Signals to manage state
+- Expose `ReadonlySignal` to components
+- Use `readonly` modifier to protect immutable properties
+- Use `update()` method for complex state updates
+- Prioritize wrapping async data as `resource()`/`rxResource()`, provide `reload()` hooks for UI
+- Database operations through Supabase MCP tools

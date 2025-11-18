@@ -1,0 +1,50 @@
+---
+description: Layered architecture and dependency relationship standards
+globs: ["src/app/**/*.ts"]
+alwaysApply: true
+---
+
+# Layered Architecture Standards
+
+> **Related Rules**: See [Git-like Branching Model](./git-model.mdc), [Module-Specific Standards](./shared-specific.mdc), [Routes Module Standards](./routes-specific.mdc), [Core Module Standards](./core-specific.mdc)
+
+## Dependency Direction
+
+- Strictly follow layered dependency direction: `routes` → `shared` → `core`
+- Prohibit `routes` from directly depending on `core` (except necessary services)
+- Prohibit `shared` from directly depending on `routes`
+- Use `inject()` for dependency injection
+
+## Architecture Understanding
+
+### Git-like Branching Model
+
+- System adopts a Git-like branching model, including main branch, organization branches, and PR mechanism
+- Refer to `docs/27-完整架構流程圖.mermaid.md` and `docs/28-架構審查報告.md` for complete architecture
+- For detailed standards, see [Git-like Branching Model Standards](./git-model.mdc)
+
+### 51-Table Database Architecture
+
+- System includes 51 tables in total, divided into 11 modules
+- Refer to `docs/30-0-完整SQL表結構定義.md` for complete database table structure
+- TypeScript model definitions must be consistent with database structure (see [Type Safety](./typescript.mdc))
+
+### Core Design Principles
+
+- **Staging Mechanism**: 48h rollback window
+- **Todo Center**: Five status categories
+- **Issue Sync**: Real-time sync to main branch
+- **Activity Logs**: Centralized logging
+- **Document Management**: Version control, thumbnails, soft delete
+
+## Design and Implementation Synchronization
+
+- Design documentation should reflect actual implementation, or clearly mark differences
+- Architecture changes need to synchronize updates to `docs/27-完整架構流程圖.mermaid.md`, `docs/28-架構審查報告.md`, `docs/30-0-完整SQL表結構定義.md` and other architecture documents
+- For documentation requirements, see [Code Quality Standards](./code-quality.mdc)
+
+## Reference Documentation
+
+- [Complete Architecture Flowchart](../../docs/27-完整架構流程圖.mermaid.md) ⭐⭐⭐⭐⭐
+- [Architecture Review Report](../../docs/28-架構審查報告.md) ⭐⭐⭐⭐⭐
+- [Database Table Structure Definition](../../docs/30-0-完整SQL表結構定義.md) ⭐⭐⭐⭐⭐

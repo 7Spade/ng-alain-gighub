@@ -1,0 +1,203 @@
+<page-header [title]="'任務進度追蹤'">
+  <ng-template #extra>
+    <button nz-button nzType="default" (click)="goBack()" style="margin-right: 8px;">
+      <span nz-icon nzType="arrow-left"></span>
+      返回
+    </button>
+    <button nz-button nzType="primary" (click)="exportReport()">
+      <span nz-icon nzType="download"></span>
+      匯出報表
+    </button>
+  </ng-template>
+</page-header>
+
+@if (loading()) {
+  <nz-spin nzSimple [nzSize]="'large'" style="display: block; padding: 50px; text-align: center;">
+    <ng-template #indicator>
+      <span nz-icon nzType="loading" style="font-size: 24px;"></span>
+    </ng-template>
+  </nz-spin>
+} @else if (error()) {
+  <nz-alert
+    nzType="error"
+    [nzMessage]="'載入失敗'"
+    [nzDescription]="error()"
+    nzShowIcon
+    style="margin: 16px;"
+  ></nz-alert>
+} @else if (taskProgress()) {
+  <div class="page-content">
+    <!-- 任務基本資訊 -->
+    <nz-card nzTitle="任務資訊" class="info-card">
+      <nz-descriptions nzBordered [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }">
+        <nz-descriptions-item nzTitle="任務名稱" [nzSpan]="2">
+          {{ taskProgress()!.task_name }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="所屬藍圖">
+          {{ taskProgress()!.blueprint_name }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="開始日期">
+          {{ taskProgress()!.start_date }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="目標日期">
+          {{ taskProgress()!.target_date }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="當前日期">
+          {{ taskProgress()!.current_date }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+    </nz-card>
+
+    <!-- 進度總覽 -->
+    <nz-card nzTitle="進度總覽" class="progress-card">
+      <div class="progress-overview">
+        <div class="progress-bar-section">
+          <h4>整體完成度</h4>
+          <nz-progress
+            [nzPercent]="overallProgress()"
+            [nzStatus]="scheduleStatus()"
+            [nzStrokeColor]="progressColor()"
+            [nzStrokeWidth]="16"
+          ></nz-progress>
+          <div class="progress-stats">
+            <div class="stat-item">
+              <span class="stat-label">總項目數</span>
+              <span class="stat-value">{{ taskProgress()!.total_items }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">已完成</span>
+              <span class="stat-value success">{{ taskProgress()!.completed_items }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">進行中</span>
+              <span class="stat-value primary">{{ taskProgress()!.pending_items }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+
+    <!-- 狀態分佈 -->
+    <nz-card nzTitle="狀態分佈" class="status-card">
+      <nz-row [nzGutter]="[16, 16]">
+        <nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+          <nz-statistic
+            [nzValue]="taskProgress()!.completed_items"
+            nzTitle="已完成"
+            [nzValueStyle]="{ color: '#52c41a' }"
+          >
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="check-circle"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+          <nz-statistic
+            [nzValue]="taskProgress()!.staging_items"
+            nzTitle="暫存區"
+            [nzValueStyle]="{ color: '#faad14' }"
+          >
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="clock-circle"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+          <nz-statistic
+            [nzValue]="taskProgress()!.qc_items"
+            nzTitle="品檢中"
+            [nzValueStyle]="{ color: '#1890ff' }"
+          >
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="safety-certificate"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6" [nzLg]="6">
+          <nz-statistic
+            [nzValue]="taskProgress()!.issue_items"
+            nzTitle="問題追蹤"
+            [nzValueStyle]="{ color: '#ff4d4f' }"
+          >
+            <ng-template #nzPrefix>
+              <span nz-icon nzType="exclamation-circle"></span>
+            </ng-template>
+          </nz-statistic>
+        </nz-col>
+      </nz-row>
+    </nz-card>
+
+    <!-- 里程碑 -->
+    <nz-card nzTitle="里程碑" class="milestone-card">
+      <nz-timeline>
+        @for (milestone of milestones(); track milestone.id) {
+          <nz-timeline-item [nzColor]="milestone.completed ? 'green' : 'gray'">
+            <div class="milestone-content">
+              <div class="milestone-header">
+                <strong>{{ milestone.name }}</strong>
+                @if (milestone.completed) {
+                  <nz-tag nzColor="success">已完成</nz-tag>
+                } @else {
+                  <nz-tag nzColor="default">待完成</nz-tag>
+                }
+              </div>
+              <div class="milestone-date">目標日期：{{ milestone.date }}</div>
+              <div class="milestone-description">{{ milestone.description }}</div>
+            </div>
+          </nz-timeline-item>
+        }
+      </nz-timeline>
+    </nz-card>
+
+    <!-- 項目明細 -->
+    <nz-card nzTitle="項目明細" class="items-card">
+      <nz-table
+        #itemsTable
+        [nzData]="progressItems()"
+        [nzPageSize]="10"
+        [nzShowPagination]="progressItems().length > 10"
+        [nzSize]="'middle'"
+      >
+        <thead>
+          <tr>
+            <th>項目名稱</th>
+            <th>狀態</th>
+            <th>負責團隊</th>
+            <th>進度</th>
+            <th>更新時間</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of itemsTable.data; track item.id) {
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>
+                <nz-tag [nzColor]="getStatusColor(item.status)">
+                  {{ getStatusText(item.status) }}
+                </nz-tag>
+              </td>
+              <td>{{ item.assignee }}</td>
+              <td>
+                <nz-progress
+                  [nzPercent]="item.progress"
+                  [nzShowInfo]="false"
+                  [nzStrokeWidth]="6"
+                ></nz-progress>
+                <span style="margin-left: 8px;">{{ item.progress }}%</span>
+              </td>
+              <td>{{ item.updated_at }}</td>
+              <td>
+                <button nz-button nzType="link" nzSize="small" (click)="viewDetails(item.id)">
+                  查看
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+} @else {
+  <nz-empty nzNotFoundContent="任務不存在" style="margin: 50px;"></nz-empty>
+}

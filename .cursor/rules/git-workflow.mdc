@@ -1,0 +1,39 @@
+---
+description: Git workflow and commit standards
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Git Workflow Standards
+
+> **Related Rules**: See [Git-like Branching Model](./git-model.mdc), [Linting](./linting.mdc), [Code Quality](./code-quality.mdc)
+
+## Conventional Commits
+
+- All commit messages must follow Conventional Commits format
+- Format: `<type>(<scope>): <description>`
+- Types: feat, fix, docs, style, refactor, test, chore
+
+## Husky Git Hooks
+
+- Pre-commit hook runs linting and type checking
+- Commit-msg hook validates commit message format
+- Pre-push hook runs tests (optional)
+
+## lint-staged Configuration
+
+- Only lint modified files
+- Auto-fix issues when possible
+- Block commit if linting fails
+
+## Branch Strategy
+
+- Main branch: `main` or `master`
+- Feature branches: `feature/<feature-name>`
+- Bug fix branches: `fix/<bug-name>`
+- Refactor branches: `refactor/<refactor-name>`
+
+## Reference Documentation
+
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [Husky Documentation](https://typicode.github.io/husky/)

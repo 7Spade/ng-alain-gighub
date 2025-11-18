@@ -1,0 +1,35 @@
+---
+description: Performance monitoring and optimization standards
+globs: ["**/*.ts", "**/*.html"]
+alwaysApply: false
+---
+
+# Performance Standards
+
+> **Related Rules**: See [Angular Best Practices](./angular.mdc), [Build and Deployment](./build-deploy.mdc)
+
+## Bundle Size Monitoring
+
+- Monitor bundle size regularly using `yarn analyze`
+- Keep main bundle under reasonable size
+- Use lazy loading for feature modules
+- Use code splitting for large dependencies
+
+## Performance Metrics
+
+- First Contentful Paint (FCP) < 1.8s
+- Time to Interactive (TTI) < 3.8s
+- Largest Contentful Paint (LCP) < 2.5s
+
+## Optimization Strategies
+
+- Use OnPush change detection (see [Angular Best Practices](./angular.mdc))
+- Use trackBy functions for lists
+- Lazy load images and routes
+- Minimize bundle size
+- Use virtual scrolling for large lists
+
+## Reference Documentation
+
+- [Angular Performance Guide](https://angular.dev/best-practices/runtime-performance)
+- [Web Vitals](https://web.dev/vitals/)

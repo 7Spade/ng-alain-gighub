@@ -1,0 +1,32 @@
+---
+description: ng-alain theme customization standards
+globs: ["**/*.less"]
+alwaysApply: false
+---
+
+# ng-alain Theme Customization Standards
+
+> **Related Rules**: See [Styling Standards](./styling.mdc), [Accessibility Standards](./accessibility.mdc)
+
+## Theme Tool Usage
+
+- Use `yarn color-less` to generate color palettes
+- Use `yarn theme` to generate theme CSS
+- Use theme variables consistently
+
+## Color System
+
+- Use theme variables for colors
+- Ensure color contrast meets WCAG 2.1 AA (see [Accessibility](./accessibility.mdc))
+- Define custom colors in theme configuration
+
+## Theme Variables
+
+- Use ng-alain theme variables
+- Override variables in custom theme file
+- Keep theme customization maintainable
+
+## Reference Documentation
+
+- [ng-alain Theme Documentation](https://ng-alain.com/theme)
+- [NG-ZORRO Theme Customization](https://ng.ant.design/docs/customize-theme/en)

@@ -1,0 +1,147 @@
+<page-header [title]="'創建藍圖'" [breadcrumb]="breadcrumb">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/blueprint/list']">藍圖列表</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>創建藍圖</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header>
+
+<nz-card [nzBordered]="false">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+    @if (!isUserView() && selectedOrganization()) {
+    <nz-form-item>
+      <nz-form-label>組織</nz-form-label>
+      <nz-form-control>
+        <input nz-input [value]="selectedOrganization()?.name" [disabled]="true" />
+        <div nz-form-explain>當前組織：{{ selectedOrganization()?.name }}</div>
+      </nz-form-control>
+    </nz-form-item>
+    }
+
+    <nz-form-item>
+      <nz-form-label nzRequired>藍圖名稱</nz-form-label>
+      <nz-form-control [nzErrorTip]="'請輸入藍圖名稱'">
+        <input nz-input formControlName="name" placeholder="例如：臺北101大樓建設專案" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>藍圖代號</nz-form-label>
+      <nz-form-control [nzErrorTip]="'請輸入藍圖代號（僅允許小寫字母、數字和連字符，最長50個字符）'">
+        <input nz-input formControlName="slug" placeholder="例如：taipei-101-project" maxlength="50" />
+        <div nz-form-explain>
+          藍圖代號將用於 URL，例如：{{ isUserView() ? '/blueprint/taipei-101-project' : '/blueprint/' +
+          (selectedOrganization()?.slug || 'org') + '/taipei-101-project' }}
+          <span class="text-muted">（最長50個字符，可手動編輯）</span>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>描述</nz-form-label>
+      <nz-form-control>
+        <textarea nz-input formControlName="description" [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+          placeholder="藍圖簡介（選填）"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>工地位置</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="site_location" placeholder="例如：臺北市信義區信義路五段7號" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col nzXs="24" nzSm="12">
+        <nz-form-item>
+          <nz-form-label>專案狀態</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="status">
+              <nz-option [nzLabel]="'規劃中'" [nzValue]="'planning'"></nz-option>
+              <nz-option [nzLabel]="'進行中'" [nzValue]="'active'"></nz-option>
+              <nz-option [nzLabel]="'暫停'" [nzValue]="'on-hold'"></nz-option>
+              <nz-option [nzLabel]="'已完成'" [nzValue]="'completed'"></nz-option>
+              <nz-option [nzLabel]="'已歸檔'" [nzValue]="'archived'"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzXs="24" nzSm="12">
+        <nz-form-item>
+          <nz-form-label>初始階段</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="current_stage" placeholder="例如：設計階段" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col nzXs="24" nzSm="12">
+        <nz-form-item>
+          <nz-form-label>開始日期</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker formControlName="start_date" style="width: 100%" nzPlaceHolder="選擇開始日期"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzXs="24" nzSm="12">
+        <nz-form-item>
+          <nz-form-label>結束日期</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker formControlName="end_date" style="width: 100%" nzPlaceHolder="選擇結束日期"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <nz-form-item>
+      <nz-form-label>標籤</nz-form-label>
+      <nz-form-control>
+        <div class="tag-input-container">
+          <nz-input-group [nzAddOnAfter]="addTagButton">
+            <input type="text" nz-input [ngModel]="tagInput()" (ngModelChange)="tagInput.set($event)"
+              (keyup.enter)="addTag()" placeholder="輸入標籤並按 Enter" [ngModelOptions]="{standalone: true}" />
+          </nz-input-group>
+          <ng-template #addTagButton>
+            <button nz-button nzType="primary" (click)="addTag()">
+              <i nz-icon nzType="plus"></i>
+              添加
+            </button>
+          </ng-template>
+        </div>
+        @if (tags().length > 0) {
+        <div class="tags-container mt-sm">
+          @for (tag of tags(); track tag) {
+          <nz-tag nzMode="closeable" (nzOnClose)="removeTag(tag)">{{ tag }}</nz-tag>
+          }
+        </div>
+        }
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control>
+        <label nz-checkbox formControlName="is_private">
+          <span>私有藍圖</span>
+        </label>
+        <div nz-form-explain>私有藍圖僅對成員可見</div>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary" [nzLoading]="loading()" [disabled]="!isFormValid()" type="submit">
+          創建藍圖
+        </button>
+        <button nz-button class="ml-sm" type="button" (click)="onCancel()">
+          取消
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>

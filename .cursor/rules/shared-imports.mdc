@@ -1,0 +1,44 @@
+---
+description: Shared module usage priority standards
+globs: ["src/app/**/*.ts", "src/app/**/*.html"]
+alwaysApply: true
+---
+
+# Shared Module Usage Priority Standards
+
+> **Related Rules**: See [Angular 20 Best Practices](./angular.mdc), [Shared Module Specific Standards](./shared-specific.mdc)
+
+## Basic Principles
+
+- All UI layer components must prioritize using `SHARED_IMPORTS`
+- Prohibit fragmented imports of Angular, ng-zorro-antd, @delon modules
+- Only import individually when `SHARED_IMPORTS` cannot meet requirements
+- Maintain consistency and maintainability of module imports
+
+## Usage
+
+```typescript
+import { SHARED_IMPORTS } from '@shared';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [SHARED_IMPORTS], // Prioritize using SHARED_IMPORTS
+  // ...
+})
+export class ExampleComponent {}
+```
+
+- Import `SHARED_IMPORTS` from `src/app/shared/shared-imports.ts`
+- Use `SHARED_IMPORTS` in the component's `imports` array
+- Refer to `docs/45-SHARED_IMPORTS-使用指南.md` for complete usage
+
+## Exception Cases
+
+- Only import individually when `SHARED_IMPORTS` truly cannot meet requirements
+- Must document the reason in code when importing individually
+
+## Reference Documentation
+
+- [SHARED_IMPORTS Usage Guide](../../docs/45-SHARED_IMPORTS-使用指南.md) ⭐ Must Read
+- [Shared Module Specific Standards](./shared-specific.mdc)

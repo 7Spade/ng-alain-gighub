@@ -1,0 +1,15 @@
+<nz-result nzStatus="success" [nzTitle]="'操作成功'" nzSubTitle="預計兩小時內到賬">
+  <div nz-result-extra>
+    <div sv-container col="1" labelWidth="150" class="mb-lg">
+      <sv label="付款賬戶">{{ item.pay_account }}</sv>
+      <sv label="賬戶類型">{{ item.receiver_type_str }}</sv>
+      <sv label="收款賬戶">{{ item.receiver_account }}</sv>
+      <sv label="轉賬金額">
+        <strong class="text-lg pr-sm">{{ item.amount }}</strong>
+        元
+      </sv>
+    </div>
+    <button nz-button (click)="item.again()" [nzType]="'primary'">再轉一筆</button>
+    <button nz-button class="ml-sm">查看賬單</button>
+  </div>
+</nz-result>

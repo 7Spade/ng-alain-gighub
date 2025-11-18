@@ -1,0 +1,49 @@
+@if (loading()) {
+  <nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else if (task(); as taskData) {
+  <nz-card [nzBordered]="false">
+    <div class="task-detail-header">
+      <button nz-button nzType="link" (click)="goBack()">
+        <i nz-icon nzType="arrow-left"></i>
+        返回
+      </button>
+      <h2>{{ taskData.name }}</h2>
+    </div>
+
+    <nz-tabset [nzSelectedIndex]="activeTab()" (nzSelectChange)="onTabChange($event)">
+      <nz-tab nzTitle="基本資訊" nzValue="basic">
+        <app-task-detail-basic [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="時間維度" nzValue="time">
+        <app-task-detail-time [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="關聯維度" nzValue="dependency">
+        <app-task-detail-dependency [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="資源維度" nzValue="resource">
+        <app-task-detail-resource [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="進度維度" nzValue="progress">
+        <app-task-detail-progress [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="成本維度" nzValue="cost">
+        <app-task-detail-cost [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="品質維度" nzValue="quality">
+        <app-task-detail-quality [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="風險維度" nzValue="risk">
+        <app-task-detail-risk [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="安全維度" nzValue="safety">
+        <app-task-detail-safety [task]="taskData" />
+      </nz-tab>
+      <nz-tab nzTitle="變更維度" nzValue="change">
+        <app-task-detail-change [task]="taskData" />
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+} @else {
+  <nz-empty nzNotFoundContent="任務不存在"></nz-empty>
+}
+
