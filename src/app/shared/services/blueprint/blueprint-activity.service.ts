@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { ActivityLogRepository, type ActivityLog, type ActivityLogInsert, type Json } from '@core';
+import { ErrorStateService } from '../common';
 import { firstValueFrom } from 'rxjs';
 
 import { type ActivityLogFilters } from '../../models/data.models';
@@ -51,6 +52,7 @@ export interface ActivityChange {
 export class BlueprintActivityService {
   private readonly activityLogRepository = inject(ActivityLogRepository);
   private readonly authState = inject(AuthStateService);
+  private readonly errorService = inject(ErrorStateService);
 
   // Signal 狀態管理
   private readonly loadingState = signal<boolean>(false);
@@ -64,6 +66,17 @@ export class BlueprintActivityService {
 
   // Computed: 最近的活動記錄（前 10 筆）
   readonly recentLogs = computed(() => this.logs().slice(0, 10));
+
+  // Computed: 活動統計
+  readonly activityStats = computed(() => {
+    const logs = this.logs();
+    return {
+      total: logs.length,
+      byAction: this.groupByAction(logs),
+      byResourceType: this.groupByResourceType(logs),
+      byActor: this.groupByActor(logs)
+    };
+  });
 
   // 敏感欄位列表（這些欄位的值會被遮蔽）
   private readonly SENSITIVE_FIELDS = [
@@ -141,6 +154,15 @@ export class BlueprintActivityService {
       // 記錄失敗不拋出錯誤，避免影響主流程
       console.error('[BlueprintActivityService] Failed to log activity:', error);
       this.errorState.set(error instanceof Error ? error.message : 'Failed to log activity');
+      
+      // Also report to ErrorStateService for centralized error tracking
+      this.errorService.addError({
+        category: 'System',
+        severity: 'warning',
+        message: 'Failed to log activity',
+        details: error,
+        context: 'BlueprintActivityService.logActivity'
+      });
     }
   }
 
@@ -326,7 +348,145 @@ export class BlueprintActivityService {
   }
 
   /**
-   * 獲取特定資源的活動記錄
+   * 批次記錄活動日誌
+   *
+   * 用於一次性記錄多個活動，提高效能
+   *
+   * @param logs 活動日誌列表
+   * @returns Promise<void>
+   *
+   * @example
+   * ```typescript
+   * await activityService.logBatchActivities([
+   *   { blueprintId: 'bp-1', resourceType: 'task', resourceId: 't-1', action: 'created', changes: [] },
+   *   { blueprintId: 'bp-1', resourceType: 'task', resourceId: 't-2', action: 'created', changes: [] }
+   * ]);
+   * ```
+   */
+  async logBatchActivities(
+    logs: Array<{
+      blueprintId: string;
+      resourceType: string;
+      resourceId: string;
+      action: string;
+      changes: ActivityChange[];
+      actionDetails?: Record<string, unknown>;
+    }>
+  ): Promise<void> {
+    const currentUser = this.authState.user();
+
+    if (!currentUser) {
+      console.warn('[BlueprintActivityService] Cannot log batch activities: No authenticated user');
+      return;
+    }
+
+    const logEntries: ActivityLogInsert[] = logs.map(log => {
+      const sanitizedChanges = this.sanitizeChanges(log.changes);
+
+      return {
+        blueprint_id: log.blueprintId,
+        resource_type: log.resourceType,
+        resource_id: log.resourceId,
+        action: log.action,
+        actor_id: currentUser.id,
+        action_details: JSON.parse(
+          JSON.stringify({
+            changes: sanitizedChanges,
+            ...log.actionDetails
+          })
+        ) as unknown as Json
+      };
+    });
+
+    try {
+      // Create all logs in parallel
+      await Promise.all(logEntries.map(entry => firstValueFrom(this.activityLogRepository.create(entry))));
+
+      console.log(`[BlueprintActivityService] Logged ${logEntries.length} activities in batch`);
+    } catch (error) {
+      console.error('[BlueprintActivityService] Failed to log batch activities:', error);
+      this.errorService.addError({
+        category: 'System',
+        severity: 'warning',
+        message: 'Failed to log batch activities',
+        details: error,
+        context: 'BlueprintActivityService.logBatchActivities'
+      });
+    }
+  }
+
+  /**
+   * 查詢特定日期範圍的活動記錄
+   *
+   * @param blueprintId 藍圖 ID
+   * @param startDate 開始日期 (ISO 8601)
+   * @param endDate 結束日期 (ISO 8601)
+   * @returns Promise<ActivityLog[]>
+   *
+   * @example
+   * ```typescript
+   * const logs = await activityService.getActivitiesByDateRange(
+   *   'blueprint-123',
+   *   new Date('2024-01-01'),
+   *   new Date('2024-01-31')
+   * );
+   * ```
+   */
+  async getActivitiesByDateRange(blueprintId: string, startDate: Date, endDate: Date): Promise<ActivityLog[]> {
+    return this.getActivityLogs(blueprintId, {
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString()
+    } as ActivityLogFilters);
+  }
+
+  /**
+   * 匯出活動記錄
+   *
+   * 將活動記錄匯出為 JSON 或 CSV 格式
+   *
+   * @param blueprintId 藍圖 ID
+   * @param format 匯出格式
+   * @param filters 過濾條件（可選）
+   * @returns Promise<Blob>
+   *
+   * @example
+   * ```typescript
+   * const blob = await activityService.exportActivities('blueprint-123', 'csv');
+   * const url = URL.createObjectURL(blob);
+   * const a = document.createElement('a');
+   * a.href = url;
+   * a.download = 'activity-logs.csv';
+   * a.click();
+   * ```
+   */
+  async exportActivities(blueprintId: string, format: 'json' | 'csv', filters?: ActivityLogFilters): Promise<Blob> {
+    this.loadingState.set(true);
+
+    try {
+      const logs = await this.getActivityLogs(blueprintId, filters);
+
+      if (format === 'json') {
+        const json = JSON.stringify(logs, null, 2);
+        return new Blob([json], { type: 'application/json' });
+      } else {
+        // CSV format
+        const csv = this.convertToCsv(logs);
+        return new Blob([csv], { type: 'text/csv' });
+      }
+    } catch (error) {
+      console.error('[BlueprintActivityService] Failed to export activities:', error);
+      this.errorService.addError({
+        category: 'System',
+        severity: 'error',
+        message: 'Failed to export activities',
+        details: error,
+        context: 'BlueprintActivityService.exportActivities'
+      });
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
    *
    * 快捷方法，用於查詢特定資源的所有活動記錄
    *
@@ -414,5 +574,78 @@ export class BlueprintActivityService {
     this.loadingState.set(false);
     this.errorState.set(null);
     this.logsState.set([]);
+  }
+
+  // ============================================================================
+  // Private Helper Methods
+  // ============================================================================
+
+  /**
+   * 統計活動按動作分組
+   * @private
+   */
+  private groupByAction(logs: ActivityLog[]): Record<string, number> {
+    return logs.reduce(
+      (acc, log) => {
+        acc[log.action] = (acc[log.action] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+  }
+
+  /**
+   * 統計活動按資源類型分組
+   * @private
+   */
+  private groupByResourceType(logs: ActivityLog[]): Record<string, number> {
+    return logs.reduce(
+      (acc, log) => {
+        acc[log.resource_type] = (acc[log.resource_type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+  }
+
+  /**
+   * 統計活動按操作者分組
+   * @private
+   */
+  private groupByActor(logs: ActivityLog[]): Record<string, number> {
+    return logs.reduce(
+      (acc, log) => {
+        acc[log.actor_id] = (acc[log.actor_id] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+  }
+
+  /**
+   * 轉換為 CSV 格式
+   * @private
+   */
+  private convertToCsv(logs: ActivityLog[]): string {
+    if (logs.length === 0) {
+      return 'No data';
+    }
+
+    // CSV headers
+    const headers = ['ID', 'Blueprint ID', 'Resource Type', 'Resource ID', 'Action', 'Actor ID', 'Created At'];
+    const rows = logs.map(log => [
+      log.id,
+      log.blueprint_id,
+      log.resource_type,
+      log.resource_id || '',
+      log.action,
+      log.actor_id,
+      log.created_at || ''
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+    return csvContent;
   }
 }
