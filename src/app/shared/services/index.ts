@@ -17,6 +17,7 @@ export * from './blueprint';
 export * from './task';
 export * from './todo';
 export * from './permission';
+export * from './issue';
 
 // Supabase adapter
 export * from './supabase-adapter.service';
