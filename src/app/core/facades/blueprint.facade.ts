@@ -9,7 +9,7 @@ import {
   type BlueprintBranch
 } from '@core';
 import { BlueprintService, BlueprintActivityService, BranchService, type BlueprintStatus } from '@shared';
-import { BlueprintAggregationRefreshService } from '@shared/services/common';
+import { BlueprintAggregationRefreshService, ErrorStateService } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -589,8 +589,10 @@ export class BlueprintFacade implements OnDestroy {
    * @see BlueprintAggregationRefreshService
    */
   private setupAggregationRefreshListener(): void {
+    const refreshService = this.aggregationRefreshService;
+    
     // Listen for refresh events
-    this.aggregationRefreshService.listen().subscribe(event => {
+    refreshService.listen().subscribe((event: any) => {
       console.log('[BlueprintFacade] Aggregation refresh triggered:', event);
       
       // Only refresh if the event is for the current blueprint
@@ -607,17 +609,17 @@ export class BlueprintFacade implements OnDestroy {
       const blueprintId = this.currentBlueprintId();
       
       // Cleanup previous subscriptions
-      const previousBlueprints = this.aggregationRefreshService.getActiveBlueprints();
-      previousBlueprints.forEach(id => {
+      const previousBlueprints: string[] = refreshService.getActiveBlueprints();
+      previousBlueprints.forEach((id: string) => {
         if (id !== blueprintId) {
-          this.aggregationRefreshService.cleanup(id);
+          refreshService.cleanup(id);
         }
       });
 
       // Setup new subscriptions if blueprint is set
       if (blueprintId) {
         console.log('[BlueprintFacade] Setting up aggregation refresh for blueprint:', blueprintId);
-        this.aggregationRefreshService.setupRealtimeSubscriptions(blueprintId);
+        refreshService.setupRealtimeSubscriptions(blueprintId);
       }
     });
   }

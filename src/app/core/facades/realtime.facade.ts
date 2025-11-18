@@ -166,7 +166,7 @@ export class RealtimeFacade implements OnDestroy {
    * });
    * ```
    */
-  subscribeToTable<T = any>(config: SubscriptionConfig, callback: (payload: RealtimePostgresChangesPayload<T>) => void): string {
+  subscribeToTable<T extends Record<string, any> = any>(config: SubscriptionConfig, callback: (payload: RealtimePostgresChangesPayload<T>) => void): string {
     if (!config.table) {
       throw new Error('Table name is required for table subscription');
     }

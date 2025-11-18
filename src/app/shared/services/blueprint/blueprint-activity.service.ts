@@ -459,6 +459,26 @@ export class BlueprintActivityService {
    * a.click();
    * ```
    */
+  /**
+   * 導出活動記錄
+   *
+   * 支援導出為 JSON 或 CSV 格式
+   *
+   * @param blueprintId 藍圖 ID
+   * @param format 導出格式（'json' 或 'csv'）
+   * @param filters 篩選條件（選填）
+   * @returns Promise<Blob> 檔案 Blob
+   *
+   * @example
+   * ```typescript
+   * const blob = await service.exportActivities('blueprint-123', 'csv');
+   * const url = URL.createObjectURL(blob);
+   * const a = document.createElement('a');
+   * a.href = url;
+   * a.download = 'activities.csv';
+   * a.click();
+   * ```
+   */
   async exportActivities(blueprintId: string, format: 'json' | 'csv', filters?: ActivityLogFilters): Promise<Blob> {
     this.loadingState.set(true);
 
@@ -487,6 +507,9 @@ export class BlueprintActivityService {
       this.loadingState.set(false);
     }
   }
+
+  /**
+   * 取得資源活動記錄
    *
    * 快捷方法，用於查詢特定資源的所有活動記錄
    *
