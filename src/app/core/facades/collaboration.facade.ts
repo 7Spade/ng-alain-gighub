@@ -1,8 +1,4 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import { CollaborationService } from '@shared/services/collaboration/collaboration.service';
-import { NotificationService } from '@shared/services/collaboration/notification.service';
-import { RealtimeFacade } from './realtime.facade';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
 import type {
   OrganizationCollaboration,
   CollaborationInsert,
@@ -11,13 +7,18 @@ import type {
   InvitationInsert
 } from '@shared/models/collaboration.model';
 import type { Notification, NotificationInsert, NotificationUpdate } from '@shared/models/notification.model';
+import { CollaborationService } from '@shared/services/collaboration/collaboration.service';
+import { NotificationService } from '@shared/services/collaboration/notification.service';
+import { ErrorStateService } from '@shared/services/common/error-state.service';
+
+import { RealtimeFacade } from './realtime.facade';
 
 /**
  * CollaborationFacade - Enterprise collaboration and notification management facade
- * 
+ *
  * Provides complete collaboration management with notifications and real-time updates.
  * Follows Angular 20 Signal patterns with automatic cleanup.
- * 
+ *
  * Features:
  * - Organization collaboration CRUD operations
  * - Collaboration invitation system
@@ -27,11 +28,11 @@ import type { Notification, NotificationInsert, NotificationUpdate } from '@shar
  * - Real-time notification updates via RealtimeFacade
  * - Computed signals for filtered views and statistics
  * - ErrorStateService integration for centralized error handling
- * 
+ *
  * @example
  * ```typescript
  * const facade = inject(CollaborationFacade);
- * 
+ *
  * // Create collaboration
  * const collab = await facade.createCollaboration({
  *   blueprint_id: 'bp-123',
@@ -39,10 +40,10 @@ import type { Notification, NotificationInsert, NotificationUpdate } from '@shar
  *   collaborator_org_id: 'org-2',
  *   collaboration_type: 'contractor'
  * });
- * 
+ *
  * // Send invitation
  * await facade.sendInvitation(collab.id, 'org-2');
- * 
+ *
  * // Create notification
  * await facade.createNotification({
  *   recipient_id: userId,
@@ -50,7 +51,7 @@ import type { Notification, NotificationInsert, NotificationUpdate } from '@shar
  *   title: 'New task assigned',
  *   message: 'You have been assigned to Task #123'
  * });
- * 
+ *
  * // Monitor state
  * effect(() => {
  *   console.log('Unread notifications:', facade.unreadNotifications());
@@ -74,26 +75,23 @@ export class CollaborationFacade implements OnDestroy {
   readonly lastOperation = signal<string>('');
 
   // Computed signals
-  readonly activeCollaborations = computed(() =>
-    this.collaborations().filter(c => c.status === 'active')
-  );
+  readonly activeCollaborations = computed(() => this.collaborations().filter(c => c.status === 'active'));
 
-  readonly pendingInvitations = computed(() =>
-    this.invitations().filter(inv => inv.status === 'pending')
-  );
+  readonly pendingInvitations = computed(() => this.invitations().filter(inv => inv.status === 'pending'));
 
-  readonly unreadNotifications = computed(() =>
-    this.notifications().filter(notif => !notif.read_at)
-  );
+  readonly unreadNotifications = computed(() => this.notifications().filter(notif => !notif.read_at));
 
   readonly notificationsByType = computed(() => {
     const notifs = this.notifications();
-    return notifs.reduce((acc, notif) => {
-      const type = notif.type;
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(notif);
-      return acc;
-    }, {} as Record<string, Notification[]>);
+    return notifs.reduce(
+      (acc, notif) => {
+        const type = notif.type;
+        if (!acc[type]) acc[type] = [];
+        acc[type].push(notif);
+        return acc;
+      },
+      {} as Record<string, Notification[]>
+    );
   });
 
   readonly collaborationStats = computed(() => {
@@ -101,7 +99,7 @@ export class CollaborationFacade implements OnDestroy {
     const active = this.activeCollaborations();
     const pending = this.pendingInvitations();
     const unread = this.unreadNotifications();
-    
+
     return {
       totalCollaborations: collabs.length,
       activeCollaborations: active.length,
@@ -148,24 +146,25 @@ export class CollaborationFacade implements OnDestroy {
    * Setup real-time notification updates
    */
   private setupRealtimeNotifications(): void {
-    this.notificationSubscriptionId = this.realtimeFacade.subscribeToTable({
-      table: 'notifications',
-      schema: 'public',
-      events: ['INSERT', 'UPDATE']
-    }, (payload) => {
-      console.log('[CollaborationFacade] Notification update:', payload);
-      
-      if (payload.eventType === 'INSERT') {
-        const newNotif = payload.new as Notification;
-        this.notifications.set([newNotif, ...this.notifications()]);
-      } else if (payload.eventType === 'UPDATE') {
-        const updatedNotif = payload.new as Notification;
-        const notifs = this.notifications().map(n =>
-          n.id === updatedNotif.id ? updatedNotif : n
-        );
-        this.notifications.set(notifs);
+    this.notificationSubscriptionId = this.realtimeFacade.subscribeToTable(
+      {
+        table: 'notifications',
+        schema: 'public',
+        events: ['INSERT', 'UPDATE']
+      },
+      payload => {
+        console.log('[CollaborationFacade] Notification update:', payload);
+
+        if (payload.eventType === 'INSERT') {
+          const newNotif = payload.new as Notification;
+          this.notifications.set([newNotif, ...this.notifications()]);
+        } else if (payload.eventType === 'UPDATE') {
+          const updatedNotif = payload.new as Notification;
+          const notifs = this.notifications().map(n => (n.id === updatedNotif.id ? updatedNotif : n));
+          this.notifications.set(notifs);
+        }
       }
-    });
+    );
   }
 
   /**
@@ -174,7 +173,7 @@ export class CollaborationFacade implements OnDestroy {
   async loadCollaborations(): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadCollaborations');
-    
+
     try {
       const collabs = await this.collaborationService.getAllCollaborations();
       this.collaborations.set(collabs);
@@ -197,7 +196,7 @@ export class CollaborationFacade implements OnDestroy {
   async loadCollaborationsByBlueprint(blueprintId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadCollaborationsByBlueprint');
-    
+
     try {
       const collabs = await this.collaborationService.getCollaborationsByBlueprint(blueprintId);
       this.collaborations.set(collabs);
@@ -220,11 +219,11 @@ export class CollaborationFacade implements OnDestroy {
   async loadCollaborationById(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadCollaborationById');
-    
+
     try {
       const collab = await this.collaborationService.getCollaborationById(id);
       this.selectedCollaboration.set(collab);
-      
+
       // Add to collaborations list if not already present
       const current = this.collaborations();
       if (!current.find(c => c.id === id)) {
@@ -249,14 +248,14 @@ export class CollaborationFacade implements OnDestroy {
   async createCollaboration(data: CollaborationInsert): Promise<OrganizationCollaboration> {
     this.loading.set(true);
     this.lastOperation.set('createCollaboration');
-    
+
     try {
       const collab = await this.collaborationService.createCollaboration(data);
-      
+
       // Update state
       this.collaborations.set([...this.collaborations(), collab]);
       this.selectedCollaboration.set(collab);
-      
+
       return collab;
     } catch (error) {
       this.errorStateService.addError({
@@ -277,18 +276,18 @@ export class CollaborationFacade implements OnDestroy {
   async updateCollaboration(id: string, data: CollaborationUpdate): Promise<OrganizationCollaboration> {
     this.loading.set(true);
     this.lastOperation.set('updateCollaboration');
-    
+
     try {
       const collab = await this.collaborationService.updateCollaboration(id, data);
-      
+
       // Update state
-      const collabs = this.collaborations().map(c => c.id === id ? collab : c);
+      const collabs = this.collaborations().map(c => (c.id === id ? collab : c));
       this.collaborations.set(collabs);
-      
+
       if (this.selectedCollaboration()?.id === id) {
         this.selectedCollaboration.set(collab);
       }
-      
+
       return collab;
     } catch (error) {
       this.errorStateService.addError({
@@ -309,13 +308,13 @@ export class CollaborationFacade implements OnDestroy {
   async deleteCollaboration(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('deleteCollaboration');
-    
+
     try {
       await this.collaborationService.deleteCollaboration(id);
-      
+
       // Update state
       this.collaborations.set(this.collaborations().filter(c => c.id !== id));
-      
+
       if (this.selectedCollaboration()?.id === id) {
         this.selectedCollaboration.set(null);
       }
@@ -338,13 +337,13 @@ export class CollaborationFacade implements OnDestroy {
   async sendInvitation(collaborationId: string, invitedOrgId: string): Promise<CollaborationInvitation> {
     this.loading.set(true);
     this.lastOperation.set('sendInvitation');
-    
+
     try {
       const invitation = await this.collaborationService.sendInvitation(collaborationId, invitedOrgId);
-      
+
       // Update state
       this.invitations.set([...this.invitations(), invitation]);
-      
+
       return invitation;
     } catch (error) {
       this.errorStateService.addError({
@@ -365,14 +364,12 @@ export class CollaborationFacade implements OnDestroy {
   async acceptInvitation(invitationId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('acceptInvitation');
-    
+
     try {
       await this.collaborationService.acceptInvitation(invitationId);
-      
+
       // Update state
-      const invitations = this.invitations().map(inv =>
-        inv.id === invitationId ? { ...inv, status: 'accepted' as const } : inv
-      );
+      const invitations = this.invitations().map(inv => (inv.id === invitationId ? { ...inv, status: 'accepted' as const } : inv));
       this.invitations.set(invitations);
     } catch (error) {
       this.errorStateService.addError({
@@ -393,14 +390,12 @@ export class CollaborationFacade implements OnDestroy {
   async rejectInvitation(invitationId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('rejectInvitation');
-    
+
     try {
       await this.collaborationService.rejectInvitation(invitationId);
-      
+
       // Update state
-      const invitations = this.invitations().map(inv =>
-        inv.id === invitationId ? { ...inv, status: 'rejected' as const } : inv
-      );
+      const invitations = this.invitations().map(inv => (inv.id === invitationId ? { ...inv, status: 'rejected' as const } : inv));
       this.invitations.set(invitations);
     } catch (error) {
       this.errorStateService.addError({
@@ -421,7 +416,7 @@ export class CollaborationFacade implements OnDestroy {
   async loadNotifications(userId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadNotifications');
-    
+
     try {
       const notifs = await this.notificationService.getNotificationsByUser(userId);
       this.notifications.set(notifs);
@@ -444,13 +439,13 @@ export class CollaborationFacade implements OnDestroy {
   async createNotification(data: NotificationInsert): Promise<Notification> {
     this.loading.set(true);
     this.lastOperation.set('createNotification');
-    
+
     try {
       const notif = await this.notificationService.createNotification(data);
-      
+
       // Update state (real-time will also add it, but this ensures immediate update)
       this.notifications.set([notif, ...this.notifications()]);
-      
+
       return notif;
     } catch (error) {
       this.errorStateService.addError({
@@ -471,14 +466,12 @@ export class CollaborationFacade implements OnDestroy {
   async markAsRead(notificationId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('markAsRead');
-    
+
     try {
       await this.notificationService.markAsRead(notificationId);
-      
+
       // Update state
-      const notifs = this.notifications().map(n =>
-        n.id === notificationId ? { ...n, read_at: new Date() } : n
-      );
+      const notifs = this.notifications().map(n => (n.id === notificationId ? { ...n, read_at: new Date() } : n));
       this.notifications.set(notifs);
     } catch (error) {
       this.errorStateService.addError({
@@ -499,10 +492,10 @@ export class CollaborationFacade implements OnDestroy {
   async markAllAsRead(userId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('markAllAsRead');
-    
+
     try {
       await this.notificationService.markAllAsRead(userId);
-      
+
       // Update state
       const notifs = this.notifications().map(n => ({
         ...n,
@@ -528,10 +521,10 @@ export class CollaborationFacade implements OnDestroy {
   async deleteNotification(notificationId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('deleteNotification');
-    
+
     try {
       await this.notificationService.deleteNotification(notificationId);
-      
+
       // Update state
       this.notifications.set(this.notifications().filter(n => n.id !== notificationId));
     } catch (error) {
@@ -553,10 +546,10 @@ export class CollaborationFacade implements OnDestroy {
   async clearAllNotifications(userId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('clearAllNotifications');
-    
+
     try {
       await this.notificationService.clearAllNotifications(userId);
-      
+
       // Update state
       this.notifications.set([]);
     } catch (error) {

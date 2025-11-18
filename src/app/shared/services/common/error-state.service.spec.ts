@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+
 import { ErrorStateService, AppError, ErrorCategory, ErrorSeverity } from './error-state.service';
 
 describe('ErrorStateService', () => {

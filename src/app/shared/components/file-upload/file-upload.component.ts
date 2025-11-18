@@ -166,13 +166,13 @@ export class FileUploadComponent {
    */
   handleChange(info: NzUploadChangeParam): void {
     const fileList = [...info.fileList];
-    
+
     // 更新状态
     this.fileListState.set(fileList);
-    
+
     // 发出变化事件
     this.filesChange.emit(fileList);
-    
+
     // 更新上传状态
     const uploading = fileList.some(file => file.status === 'uploading');
     this.uploading.set(uploading);

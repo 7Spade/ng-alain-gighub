@@ -1,15 +1,15 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import { IssueService } from '@shared/services/issue/issue.service';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
-import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
 import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model';
+import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
+import { ErrorStateService } from '@shared/services/common/error-state.service';
+import { IssueService } from '@shared/services/issue/issue.service';
 
 /**
  * IssueFacade - Enterprise issue tracking facade
- * 
+ *
  * Provides complete issue management with cross-branch synchronization.
  * Follows Angular 20 Signal patterns with automatic cleanup.
- * 
+ *
  * Features:
  * - Issue CRUD operations with Signal state management
  * - Priority and severity management
@@ -20,11 +20,11 @@ import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model
  * - Computed signals for filtered views and statistics
  * - Activity logging via BlueprintActivityService
  * - ErrorStateService integration for centralized error handling
- * 
+ *
  * @example
  * ```typescript
  * const facade = inject(IssueFacade);
- * 
+ *
  * // Create issue
  * const issue = await facade.createIssue({
  *   title: 'Concrete crack detected',
@@ -34,13 +34,13 @@ import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model
  *   blueprint_id: 'bp-123',
  *   branch_id: 'branch-456'
  * });
- * 
+ *
  * // Assign issue
  * await facade.assignIssue(issue.id, userId, 'user');
- * 
+ *
  * // Sync to main
  * await facade.syncToMainBranch(issue.id);
- * 
+ *
  * // Monitor state
  * effect(() => {
  *   console.log('Open issues:', facade.openIssues());
@@ -61,21 +61,13 @@ export class IssueFacade implements OnDestroy {
   readonly lastOperation = signal<string>('');
 
   // Computed signals
-  readonly openIssues = computed(() =>
-    this.issues().filter(issue => issue.status === 'open')
-  );
+  readonly openIssues = computed(() => this.issues().filter(issue => issue.status === 'open'));
 
-  readonly closedIssues = computed(() =>
-    this.issues().filter(issue => issue.status === 'closed')
-  );
+  readonly closedIssues = computed(() => this.issues().filter(issue => issue.status === 'closed'));
 
-  readonly criticalIssues = computed(() =>
-    this.issues().filter(issue => issue.severity === 'critical' && issue.status === 'open')
-  );
+  readonly criticalIssues = computed(() => this.issues().filter(issue => issue.severity === 'critical' && issue.status === 'open'));
 
-  readonly highPriorityIssues = computed(() =>
-    this.issues().filter(issue => issue.priority === 'high' && issue.status === 'open')
-  );
+  readonly highPriorityIssues = computed(() => this.issues().filter(issue => issue.priority === 'high' && issue.status === 'open'));
 
   readonly issuesByStatus = computed(() => {
     const issues = this.issues();
@@ -102,7 +94,7 @@ export class IssueFacade implements OnDestroy {
     const open = this.openIssues();
     const critical = this.criticalIssues();
     const highPriority = this.highPriorityIssues();
-    
+
     return {
       total: issues.length,
       open: open.length,
@@ -140,7 +132,7 @@ export class IssueFacade implements OnDestroy {
   async loadIssues(): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssues');
-    
+
     try {
       const issues = await this.issueService.getAllIssues();
       this.issues.set(issues);
@@ -163,7 +155,7 @@ export class IssueFacade implements OnDestroy {
   async loadIssuesByBlueprint(blueprintId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssuesByBlueprint');
-    
+
     try {
       const issues = await this.issueService.getIssuesByBlueprint(blueprintId);
       this.issues.set(issues);
@@ -186,7 +178,7 @@ export class IssueFacade implements OnDestroy {
   async loadIssuesByBranch(branchId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssuesByBranch');
-    
+
     try {
       const issues = await this.issueService.getIssuesByBranch(branchId);
       this.issues.set(issues);
@@ -209,11 +201,11 @@ export class IssueFacade implements OnDestroy {
   async loadIssueById(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssueById');
-    
+
     try {
       const issue = await this.issueService.getIssueById(id);
       this.selectedIssue.set(issue);
-      
+
       // Add to issues list if not already present
       const current = this.issues();
       if (!current.find(i => i.id === id)) {
@@ -238,14 +230,14 @@ export class IssueFacade implements OnDestroy {
   async createIssue(data: IssueInsert): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('createIssue');
-    
+
     try {
       const issue = await this.issueService.createIssue(data);
-      
+
       // Update state
       this.issues.set([...this.issues(), issue]);
       this.selectedIssue.set(issue);
-      
+
       // Log activity
       await this.activityService.logActivity({
         blueprintId: data.blueprint_id,
@@ -254,7 +246,7 @@ export class IssueFacade implements OnDestroy {
         action: 'created',
         changes: []
       });
-      
+
       return issue;
     } catch (error) {
       this.errorStateService.addError({
@@ -275,19 +267,19 @@ export class IssueFacade implements OnDestroy {
   async updateIssue(id: string, data: IssueUpdate): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('updateIssue');
-    
+
     try {
       const oldIssue = this.issues().find(i => i.id === id);
       const issue = await this.issueService.updateIssue(id, data);
-      
+
       // Update state
-      const issues = this.issues().map(i => i.id === id ? issue : i);
+      const issues = this.issues().map(i => (i.id === id ? issue : i));
       this.issues.set(issues);
-      
+
       if (this.selectedIssue()?.id === id) {
         this.selectedIssue.set(issue);
       }
-      
+
       // Log activity
       await this.activityService.logActivity({
         blueprintId: issue.blueprint_id,
@@ -296,7 +288,7 @@ export class IssueFacade implements OnDestroy {
         action: 'updated',
         changes: []
       });
-      
+
       return issue;
     } catch (error) {
       this.errorStateService.addError({
@@ -317,18 +309,18 @@ export class IssueFacade implements OnDestroy {
   async deleteIssue(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('deleteIssue');
-    
+
     try {
       const issue = this.issues().find(i => i.id === id);
       await this.issueService.deleteIssue(id);
-      
+
       // Update state
       this.issues.set(this.issues().filter(i => i.id !== id));
-      
+
       if (this.selectedIssue()?.id === id) {
         this.selectedIssue.set(null);
       }
-      
+
       // Log activity
       if (issue) {
         await this.activityService.logActivity({
@@ -355,25 +347,21 @@ export class IssueFacade implements OnDestroy {
   /**
    * Assign issue to user/team/organization
    */
-  async assignIssue(
-    issueId: string,
-    assigneeId: string,
-    assigneeType: 'user' | 'team' | 'organization'
-  ): Promise<Issue> {
+  async assignIssue(issueId: string, assigneeId: string, assigneeType: 'user' | 'team' | 'organization'): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('assignIssue');
-    
+
     try {
       const issue = await this.issueService.assignIssue(issueId, assigneeId, assigneeType);
-      
+
       // Update state
-      const issues = this.issues().map(i => i.id === issueId ? issue : i);
+      const issues = this.issues().map(i => (i.id === issueId ? issue : i));
       this.issues.set(issues);
-      
+
       if (this.selectedIssue()?.id === issueId) {
         this.selectedIssue.set(issue);
       }
-      
+
       // Log activity
       await this.activityService.logActivity({
         blueprintId: issue.blueprint_id,
@@ -382,7 +370,7 @@ export class IssueFacade implements OnDestroy {
         action: 'assigned',
         changes: [{ field: 'assignee', oldValue: null, newValue: assigneeId }]
       });
-      
+
       return issue;
     } catch (error) {
       this.errorStateService.addError({
@@ -403,20 +391,20 @@ export class IssueFacade implements OnDestroy {
   async addTag(issueId: string, tag: string): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('addTag');
-    
+
     try {
       const issue = this.issues().find(i => i.id === issueId);
       if (!issue) throw new Error('Issue not found');
-      
+
       const currentTags = issue.tags || [];
       if (currentTags.includes(tag)) {
         return issue; // Tag already exists
       }
-      
+
       const updatedIssue = await this.updateIssue(issueId, {
         tags: [...currentTags, tag]
       });
-      
+
       return updatedIssue;
     } catch (error) {
       this.errorStateService.addError({
@@ -437,16 +425,16 @@ export class IssueFacade implements OnDestroy {
   async removeTag(issueId: string, tag: string): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('removeTag');
-    
+
     try {
       const issue = this.issues().find(i => i.id === issueId);
       if (!issue) throw new Error('Issue not found');
-      
+
       const currentTags = issue.tags || [];
       const updatedIssue = await this.updateIssue(issueId, {
         tags: currentTags.filter(t => t !== tag)
       });
-      
+
       return updatedIssue;
     } catch (error) {
       this.errorStateService.addError({
@@ -467,13 +455,13 @@ export class IssueFacade implements OnDestroy {
   async syncToMainBranch(issueId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('syncToMainBranch');
-    
+
     try {
       await this.issueService.syncIssueToMain(issueId);
-      
+
       // Reload issue to get updated sync status
       await this.loadIssueById(issueId);
-      
+
       const issue = this.selectedIssue();
       if (issue) {
         await this.activityService.logActivity({

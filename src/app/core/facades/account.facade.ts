@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
+import { type Account, AccountType, AccountStatus } from '@shared/models';
 import { AccountService } from '@shared/services/account';
 import { ErrorStateService } from '@shared/services/common';
-import { type Account, AccountType, AccountStatus } from '@shared/models';
 import { firstValueFrom } from 'rxjs';
 
 /**

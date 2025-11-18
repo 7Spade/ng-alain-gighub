@@ -1,10 +1,10 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { ActivityLogRepository, type ActivityLog, type ActivityLogInsert, type Json } from '@core';
-import { ErrorStateService } from '../common';
 import { firstValueFrom } from 'rxjs';
 
 import { type ActivityLogFilters } from '../../models/data.models';
 import { AuthStateService } from '../auth';
+import { ErrorStateService } from '../common';
 
 /**
  * Activity Change Detail
@@ -154,7 +154,7 @@ export class BlueprintActivityService {
       // 記錄失敗不拋出錯誤，避免影響主流程
       console.error('[BlueprintActivityService] Failed to log activity:', error);
       this.errorState.set(error instanceof Error ? error.message : 'Failed to log activity');
-      
+
       // Also report to ErrorStateService for centralized error tracking
       this.errorService.addError({
         category: 'System',
@@ -605,6 +605,7 @@ export class BlueprintActivityService {
 
   /**
    * 統計活動按動作分組
+   *
    * @private
    */
   private groupByAction(logs: ActivityLog[]): Record<string, number> {
@@ -619,6 +620,7 @@ export class BlueprintActivityService {
 
   /**
    * 統計活動按資源類型分組
+   *
    * @private
    */
   private groupByResourceType(logs: ActivityLog[]): Record<string, number> {
@@ -633,6 +635,7 @@ export class BlueprintActivityService {
 
   /**
    * 統計活動按操作者分組
+   *
    * @private
    */
   private groupByActor(logs: ActivityLog[]): Record<string, number> {
@@ -647,6 +650,7 @@ export class BlueprintActivityService {
 
   /**
    * 轉換為 CSV 格式
+   *
    * @private
    */
   private convertToCsv(logs: ActivityLog[]): string {

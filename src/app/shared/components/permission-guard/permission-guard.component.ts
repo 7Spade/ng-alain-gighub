@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, input, inject, effect, signal } from '@angular/core';
-import { SHARED_IMPORTS } from '@shared';
 import { PermissionService } from '@core';
+import { SHARED_IMPORTS } from '@shared';
 
 /**
  * Permission Guard Component
@@ -122,9 +122,9 @@ export class PermissionGuardComponent {
     // 检查角色
     if (this.roles().length > 0) {
       // 使用 canAny 检查角色权限
-      return new Promise<boolean>((resolve) => {
+      return new Promise<boolean>(resolve => {
         this.permissionService.canAny(this.roles().map(r => `role.${r}`)).subscribe({
-          next: (result) => resolve(result),
+          next: result => resolve(result),
           error: () => resolve(false)
         });
       });

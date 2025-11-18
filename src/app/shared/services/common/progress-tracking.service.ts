@@ -1,10 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import {
-  ProgressTrackingRepository,
-  type ProgressTracking,
-  type ProgressTrackingInsert,
-  type ProgressTrackingUpdate
-} from '@core';
+import { ProgressTrackingRepository, type ProgressTracking, type ProgressTrackingInsert, type ProgressTrackingUpdate } from '@core';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -97,13 +92,13 @@ export class ProgressTrackingService {
   readonly progressTrend = computed(() => {
     const records = [...(this.progressRecords() as any[])];
     if (records.length < 2) return 'stable';
-    
+
     const latest = records[0];
     const previous = records[1];
-    
+
     const latestProgress = latest.completed_tasks / latest.total_tasks;
     const previousProgress = previous.completed_tasks / previous.total_tasks;
-    
+
     if (latestProgress > previousProgress) return 'increasing';
     if (latestProgress < previousProgress) return 'decreasing';
     return 'stable';
@@ -118,9 +113,7 @@ export class ProgressTrackingService {
 
     try {
       const records = await firstValueFrom(
-        branchId
-          ? this.progressTrackingRepository.findByBranchId(branchId)
-          : this.progressTrackingRepository.findByBlueprintId(blueprintId)
+        branchId ? this.progressTrackingRepository.findByBranchId(branchId) : this.progressTrackingRepository.findByBlueprintId(blueprintId)
       );
       this.progressRecordsState.set(records);
     } catch (error) {
@@ -135,19 +128,12 @@ export class ProgressTrackingService {
   /**
    * 载入指定日期范围的进度追踪数据
    */
-  async loadProgressByDateRange(
-    blueprintId: string,
-    startDate: Date,
-    endDate: Date,
-    branchId?: string
-  ): Promise<ProgressTracking[]> {
+  async loadProgressByDateRange(blueprintId: string, startDate: Date, endDate: Date, branchId?: string): Promise<ProgressTracking[]> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const records = await firstValueFrom(
-        this.progressTrackingRepository.findByDateRange(blueprintId, startDate, endDate, branchId)
-      );
+      const records = await firstValueFrom(this.progressTrackingRepository.findByDateRange(blueprintId, startDate, endDate, branchId));
       this.progressRecordsState.set(records);
       return records;
     } catch (error) {
@@ -168,10 +154,10 @@ export class ProgressTrackingService {
 
     try {
       const record = await firstValueFrom(this.progressTrackingRepository.create(data as any));
-      
+
       // 更新本地状态
       this.progressRecordsState.update(records => [record, ...records]);
-      
+
       return record;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '创建进度追踪失败';
@@ -191,12 +177,10 @@ export class ProgressTrackingService {
 
     try {
       const record = await firstValueFrom(this.progressTrackingRepository.update(id, data as any));
-      
+
       // 更新本地状态
-      this.progressRecordsState.update(records =>
-        records.map(r => (r.id === id ? record : r))
-      );
-      
+      this.progressRecordsState.update(records => records.map(r => (r.id === id ? record : r)));
+
       return record;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '更新进度追踪失败';
@@ -216,7 +200,7 @@ export class ProgressTrackingService {
 
     try {
       await firstValueFrom(this.progressTrackingRepository.delete(id));
-      
+
       // 更新本地状态
       this.progressRecordsState.update(records => records.filter(r => r.id !== id));
     } catch (error) {
@@ -236,9 +220,7 @@ export class ProgressTrackingService {
     this.errorState.set(null);
 
     try {
-      const record = await firstValueFrom(
-        this.progressTrackingRepository.findLatestByBlueprintId(blueprintId, branchId)
-      );
+      const record = await firstValueFrom(this.progressTrackingRepository.findLatestByBlueprintId(blueprintId, branchId));
       return record;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '获取最新进度失败';

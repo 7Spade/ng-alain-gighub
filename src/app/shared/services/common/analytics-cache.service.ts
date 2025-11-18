@@ -1,10 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import {
-  AnalyticsCacheRepository,
-  type AnalyticsCache,
-  type AnalyticsCacheInsert,
-  type AnalyticsCacheUpdate
-} from '@core';
+import { AnalyticsCacheRepository, type AnalyticsCache, type AnalyticsCacheInsert, type AnalyticsCacheUpdate } from '@core';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -91,7 +86,7 @@ export class AnalyticsCacheService {
 
   /**
    * 获取快取数据
-   * 
+   *
    * @param cacheType 快取类型
    * @param resourceId 资源 ID（如 blueprint_id）
    * @returns 快取数据，如果不存在或已过期则返回 null
@@ -112,7 +107,7 @@ export class AnalyticsCacheService {
       // 检查是否过期
       const now = new Date();
       const expiresAt = new Date((cache as any).expires_at);
-      
+
       if (expiresAt <= now) {
         // 快取已过期，删除并返回 null
         await firstValueFrom(this.analyticsCacheRepository.delete(cache.id));
@@ -133,18 +128,13 @@ export class AnalyticsCacheService {
 
   /**
    * 设置快取数据
-   * 
+   *
    * @param cacheType 快取类型
    * @param resourceId 资源 ID
    * @param data 要快取的数据
    * @param ttlSeconds 过期时间（秒），默认 3600 秒（1 小时）
    */
-  async setCache(
-    cacheType: string,
-    resourceId: string,
-    data: any,
-    ttlSeconds: number = 3600
-  ): Promise<AnalyticsCache> {
+  async setCache(cacheType: string, resourceId: string, data: any, ttlSeconds = 3600): Promise<AnalyticsCache> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
@@ -153,9 +143,7 @@ export class AnalyticsCacheService {
       const expiresAt = new Date(Date.now() + ttlSeconds * 1000).toISOString();
 
       // 检查是否已存在
-      const existingCache = await firstValueFrom(
-        this.analyticsCacheRepository.findByCacheKey(cacheKey)
-      );
+      const existingCache = await firstValueFrom(this.analyticsCacheRepository.findByCacheKey(cacheKey));
 
       let cache: AnalyticsCache;
 
@@ -210,7 +198,7 @@ export class AnalyticsCacheService {
 
       if (cache) {
         await firstValueFrom(this.analyticsCacheRepository.delete(cache.id));
-        
+
         // 更新本地状态
         this.cachesState.update(caches => caches.filter(c => c.id !== cache.id));
       }
@@ -232,7 +220,7 @@ export class AnalyticsCacheService {
 
     try {
       const expiredCaches = await firstValueFrom(this.analyticsCacheRepository.findExpiredCaches());
-      
+
       let deletedCount = 0;
       for (const cache of expiredCaches) {
         try {
@@ -244,9 +232,7 @@ export class AnalyticsCacheService {
       }
 
       // 更新本地状态
-      this.cachesState.update(caches =>
-        caches.filter(c => !expiredCaches.find(ec => ec.id === c.id))
-      );
+      this.cachesState.update(caches => caches.filter(c => !expiredCaches.find(ec => ec.id === c.id)));
 
       return deletedCount;
     } catch (error) {
@@ -266,9 +252,7 @@ export class AnalyticsCacheService {
     this.errorState.set(null);
 
     try {
-      const caches = await firstValueFrom(
-        this.analyticsCacheRepository.findByBlueprintId(blueprintId)
-      );
+      const caches = await firstValueFrom(this.analyticsCacheRepository.findByBlueprintId(blueprintId));
       this.cachesState.set(caches);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '载入快取失败';
@@ -296,6 +280,7 @@ export class AnalyticsCacheService {
 
   /**
    * 生成快取键
+   *
    * @private
    */
   private generateCacheKey(cacheType: string, resourceId: string): string {
@@ -304,6 +289,7 @@ export class AnalyticsCacheService {
 
   /**
    * 从资源 ID 中提取 blueprint ID
+   *
    * @private
    */
   private extractBlueprintId(resourceId: string): string | null {
@@ -315,6 +301,7 @@ export class AnalyticsCacheService {
 
   /**
    * 从资源 ID 中提取 branch ID
+   *
    * @private
    */
   private extractBranchId(resourceId: string): string | null {
