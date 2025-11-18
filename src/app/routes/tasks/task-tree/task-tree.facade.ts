@@ -1,8 +1,11 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { TaskRepository, type Task, type TaskUpdate } from '@core';
+import { TaskRepository, type Task, type TaskUpdate, SupabaseService } from '@core';
 import { BlueprintActivityService, type TaskTreeNode } from '@shared';
+import type { RealtimeChannel, RealtimeChannelSendResponse } from '@supabase/supabase-js';
+import { ConflictResolutionService } from './conflict-resolution.service';
+import type { VersionedTask } from './conflict-resolution.types';
 
 /**
  * Task Tree Facade
@@ -12,12 +15,14 @@ import { BlueprintActivityService, type TaskTreeNode } from '@shared';
  * - Provides task tree transformation (flat → hierarchical)
  * - Orchestrates TaskRepository + BlueprintActivityService
  * - Handles all business logic for task operations
+ * - Realtime subscriptions for collaborative updates
  *
  * Design principles:
  * - Signal-based state management (Angular 20)
  * - Non-invasive error handling
  * - Automatic audit logging via ActivityService
  * - Computed tree structure for performance
+ * - Realtime collaboration via Supabase
  *
  * @example
  * ```typescript
@@ -38,9 +43,14 @@ import { BlueprintActivityService, type TaskTreeNode } from '@shared';
 @Injectable({
   providedIn: 'root'
 })
-export class TaskTreeFacade {
+export class TaskTreeFacade implements OnDestroy {
   private readonly taskRepository = inject(TaskRepository);
   private readonly activityService = inject(BlueprintActivityService);
+  private readonly supabase = inject(SupabaseService);
+  private readonly conflictResolution = inject(ConflictResolutionService);
+
+  // Realtime channel
+  private realtimeChannel: RealtimeChannel | null = null;
 
   // Signal state
   private readonly tasksState = signal<Task[]>([]);
@@ -48,6 +58,10 @@ export class TaskTreeFacade {
   private readonly loadingState = signal<boolean>(false);
   private readonly errorState = signal<string | null>(null);
   private readonly currentBlueprintIdState = signal<string | null>(null);
+  
+  // Phase 5: Connection status tracking
+  private readonly connectionStatusState = signal<'connected' | 'disconnected' | 'reconnecting'>('disconnected');
+  private readonly lastConnectionUpdateState = signal<Date | null>(null);
 
   // Readonly signals exposed to components
   readonly tasks = this.tasksState.asReadonly();
@@ -55,6 +69,11 @@ export class TaskTreeFacade {
   readonly loading = this.loadingState.asReadonly();
   readonly error = this.errorState.asReadonly();
   readonly currentBlueprintId = this.currentBlueprintIdState.asReadonly();
+  
+  // Phase 5: Readonly connection status signals
+  readonly connectionStatus = this.connectionStatusState.asReadonly();
+  readonly lastConnectionUpdate = this.lastConnectionUpdateState.asReadonly();
+  readonly conflicts = this.conflictResolution.conflicts;
 
   // Computed: Transform flat task list to tree structure
   readonly taskTree = computed(() => {
@@ -101,6 +120,9 @@ export class TaskTreeFacade {
     try {
       const tasks = await firstValueFrom(this.taskRepository.findByBlueprintId(blueprintId));
       this.tasksState.set(tasks);
+      
+      // Subscribe to realtime updates
+      this.subscribeToTaskChanges(blueprintId);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load tasks';
       this.errorState.set(errorMessage);
@@ -350,6 +372,179 @@ export class TaskTreeFacade {
    */
   clearError(): void {
     this.errorState.set(null);
+  }
+
+  /**
+   * Cleanup on destroy
+   * Implements Phase 3.3.1: Realtime cleanup
+   */
+  ngOnDestroy(): void {
+    this.unsubscribeFromTaskChanges();
+  }
+  
+  /**
+   * Reconnect to Realtime (Phase 5, Task 5.2)
+   * Manually trigger reconnection to Supabase Realtime
+   */
+  reconnect(): void {
+    const blueprintId = this.currentBlueprintId();
+    if (!blueprintId) {
+      console.warn('[TaskTreeFacade] Cannot reconnect: no blueprint ID set');
+      return;
+    }
+    
+    console.log('[TaskTreeFacade] Manual reconnect initiated');
+    this.connectionStatusState.set('reconnecting');
+    this.lastConnectionUpdateState.set(new Date());
+    
+    // Unsubscribe and resubscribe
+    this.unsubscribeFromTaskChanges();
+    this.subscribeToTaskChanges(blueprintId);
+  }
+
+  /**
+   * Subscribe to Realtime task changes
+   * Implements Phase 3.3.1 from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
+   * Enhanced in Phase 5 with connection status tracking
+   * 
+   * @param blueprintId Blueprint ID to subscribe to
+   * @private
+   */
+  private subscribeToTaskChanges(blueprintId: string): void {
+    // Unsubscribe from previous channel if exists
+    this.unsubscribeFromTaskChanges();
+
+    console.log('[TaskTreeFacade] Subscribing to Realtime updates for blueprint:', blueprintId);
+    
+    // Phase 5: Set connecting status
+    this.connectionStatusState.set('reconnecting');
+    this.lastConnectionUpdateState.set(new Date());
+
+    // Create new channel for this blueprint
+    this.realtimeChannel = this.supabase.client
+      .channel(`tasks:blueprint_id=eq.${blueprintId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'tasks',
+          filter: `blueprint_id=eq.${blueprintId}`
+        },
+        (payload) => {
+          console.log('[TaskTreeFacade] Realtime task change:', payload);
+          this.handleRealtimeUpdate(payload);
+        }
+      )
+      .subscribe((status) => {
+        console.log('[TaskTreeFacade] Realtime subscription status:', status);
+        
+        // Phase 5: Update connection status
+        if (status === 'SUBSCRIBED') {
+          this.connectionStatusState.set('connected');
+          this.lastConnectionUpdateState.set(new Date());
+        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+          this.connectionStatusState.set('disconnected');
+          this.lastConnectionUpdateState.set(new Date());
+        }
+      });
+  }
+
+  /**
+   * Unsubscribe from Realtime task changes
+   * @private
+   */
+  private unsubscribeFromTaskChanges(): void {
+    if (this.realtimeChannel) {
+      console.log('[TaskTreeFacade] Unsubscribing from Realtime updates');
+      this.supabase.client.removeChannel(this.realtimeChannel);
+      this.realtimeChannel = null;
+    }
+  }
+
+  /**
+   * Handle Realtime update
+   * Updates local state without full reload for better performance
+   * Enhanced in Phase 5 with conflict detection
+   * 
+   * @param payload Realtime payload
+   * @private
+   */
+  private handleRealtimeUpdate(payload: any): void {
+    const eventType = payload.eventType;
+    
+    if (eventType === 'INSERT') {
+      // New task added
+      const newTask = payload.new as Task;
+      const currentTasks = this.tasks();
+      
+      // Check if task already exists (avoid duplicates)
+      if (!currentTasks.find(t => t.id === newTask.id)) {
+        this.tasksState.set([...currentTasks, newTask]);
+        console.log('[TaskTreeFacade] Task added via Realtime:', newTask.id);
+      }
+    } else if (eventType === 'UPDATE') {
+      // Task updated - Phase 5: Detect conflicts
+      const updatedTask = payload.new as Task;
+      const currentTasks = this.tasks();
+      const localTask = currentTasks.find(t => t.id === updatedTask.id);
+      
+      if (localTask) {
+        // Phase 5: Conflict detection
+        const localVersioned: VersionedTask = {
+          id: localTask.id,
+          version: 1, // TODO: Add version field to Task type
+          updated_at: localTask.updated_at || new Date().toISOString(),
+          data: localTask as any
+        };
+        
+        const remoteVersioned: VersionedTask = {
+          id: updatedTask.id,
+          version: 1, // TODO: Add version field to Task type
+          updated_at: updatedTask.updated_at || new Date().toISOString(),
+          data: updatedTask as any
+        };
+        
+        const conflict = this.conflictResolution.detectConflict(localVersioned, remoteVersioned);
+        
+        if (conflict.hasConflict) {
+          console.warn('[TaskTreeFacade] Conflict detected for task:', updatedTask.id, conflict);
+          
+          // Resolve conflict
+          const resolution = this.conflictResolution.resolveConflict(localVersioned, remoteVersioned, conflict);
+          
+          if (resolution.resolved) {
+            // Apply resolved value
+            const resolvedTask = resolution.finalValue as Task;
+            const updated = currentTasks.map(t =>
+              t.id === resolvedTask.id ? { ...t, ...resolvedTask } : t
+            );
+            this.tasksState.set(updated);
+            console.log('[TaskTreeFacade] Conflict resolved:', resolution.message);
+          }
+        } else {
+          // No conflict - direct update
+          const updated = currentTasks.map(t =>
+            t.id === updatedTask.id ? { ...t, ...updatedTask } : t
+          );
+          this.tasksState.set(updated);
+        }
+      } else {
+        // Task not found locally - treat as INSERT
+        this.tasksState.set([...currentTasks, updatedTask]);
+      }
+      
+      console.log('[TaskTreeFacade] Task updated via Realtime:', updatedTask.id);
+    } else if (eventType === 'DELETE') {
+      // Task deleted
+      const deletedTask = payload.old as Task;
+      const currentTasks = this.tasks();
+      
+      const filtered = currentTasks.filter(t => t.id !== deletedTask.id);
+      
+      this.tasksState.set(filtered);
+      console.log('[TaskTreeFacade] Task deleted via Realtime:', deletedTask.id);
+    }
   }
 
   /**
