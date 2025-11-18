@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import type { Document, DocumentInsert, DocumentUpdate } from '@shared/models/document.model';
+import type { Document, DocumentInsert, DocumentUpdate } from '@shared/models/data.models';
 import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
 import { DocumentService } from '@shared/services/document/document.service';
@@ -118,7 +118,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to load documents',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadDocuments', error }
+        context: 'DocumentFacade.loadDocuments'
       });
       throw error;
     } finally {
@@ -141,7 +141,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to load blueprint documents',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadDocumentsByBlueprint', blueprintId, error }
+        context: 'DocumentFacade.loadDocumentsByBlueprint'
       });
       throw error;
     } finally {
@@ -170,7 +170,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to load document',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadDocumentById', id, error }
+        context: 'DocumentFacade.loadDocumentById'
       });
       throw error;
     } finally {
@@ -209,7 +209,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to create document',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createDocument', data, error }
+        context: 'DocumentFacade.createDocument'
       });
       throw error;
     } finally {
@@ -252,7 +252,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to update document',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'updateDocument', id, data, error }
+        context: 'DocumentFacade.updateDocument'
       });
       throw error;
     } finally {
@@ -291,7 +291,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to delete document',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'deleteDocument', id, error }
+        context: 'DocumentFacade.deleteDocument'
       });
       throw error;
     } finally {
@@ -381,7 +381,7 @@ export class DocumentFacade implements OnDestroy {
         message: 'Failed to search documents',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'searchDocuments', query, error }
+        context: 'DocumentFacade.searchDocuments'
       });
       throw error;
     } finally {

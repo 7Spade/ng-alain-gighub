@@ -1,17 +1,21 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import type {
   OrganizationCollaboration,
-  CollaborationInsert,
-  CollaborationUpdate,
+  OrganizationCollaborationInsert,
+  OrganizationCollaborationUpdate,
   CollaborationInvitation,
-  InvitationInsert
-} from '@shared/models/collaboration.model';
-import type { Notification, NotificationInsert, NotificationUpdate } from '@shared/models/notification.model';
+  CollaborationInvitationInsert
+} from '@shared/models/collaboration.models';
+import type { Notification, NotificationInsert, NotificationUpdate } from '@shared/models/communication.models';
 import { CollaborationService } from '@shared/services/collaboration/collaboration.service';
 import { NotificationService } from '@shared/services/collaboration/notification.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
 
 import { RealtimeFacade } from './realtime.facade';
+
+// Type aliases for backward compatibility
+type CollaborationInsert = OrganizationCollaborationInsert;
+type CollaborationUpdate = OrganizationCollaborationUpdate;
 
 /**
  * CollaborationFacade - Enterprise collaboration and notification management facade
@@ -182,7 +186,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to load collaborations',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadCollaborations', error }
+        context: 'CollaborationFacade.loadCollaborations'
       });
       throw error;
     } finally {
@@ -205,7 +209,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to load blueprint collaborations',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadCollaborationsByBlueprint', blueprintId, error }
+        context: 'CollaborationFacade.loadCollaborationsByBlueprint'
       });
       throw error;
     } finally {
@@ -234,7 +238,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to load collaboration',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadCollaborationById', id, error }
+        context: 'CollaborationFacade.loadCollaborationById'
       });
       throw error;
     } finally {
@@ -262,7 +266,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to create collaboration',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createCollaboration', data, error }
+        context: 'CollaborationFacade.createCollaboration'
       });
       throw error;
     } finally {
@@ -294,7 +298,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to update collaboration',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'updateCollaboration', id, data, error }
+        context: 'CollaborationFacade.updateCollaboration'
       });
       throw error;
     } finally {
@@ -323,7 +327,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to delete collaboration',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'deleteCollaboration', id, error }
+        context: 'CollaborationFacade.deleteCollaboration'
       });
       throw error;
     } finally {
@@ -350,7 +354,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to send invitation',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'sendInvitation', collaborationId, invitedOrgId, error }
+        context: 'CollaborationFacade.sendInvitation'
       });
       throw error;
     } finally {
@@ -376,7 +380,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to accept invitation',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'acceptInvitation', invitationId, error }
+        context: 'CollaborationFacade.acceptInvitation'
       });
       throw error;
     } finally {
@@ -402,7 +406,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to reject invitation',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'rejectInvitation', invitationId, error }
+        context: 'CollaborationFacade.rejectInvitation'
       });
       throw error;
     } finally {
@@ -425,7 +429,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to load notifications',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadNotifications', userId, error }
+        context: 'CollaborationFacade.loadNotifications'
       });
       throw error;
     } finally {
@@ -452,7 +456,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to create notification',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createNotification', data, error }
+        context: 'CollaborationFacade.createNotification'
       });
       throw error;
     } finally {
@@ -478,7 +482,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to mark notification as read',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'markAsRead', notificationId, error }
+        context: 'CollaborationFacade.markAsRead'
       });
       throw error;
     } finally {
@@ -507,7 +511,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to mark all notifications as read',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'markAllAsRead', userId, error }
+        context: 'CollaborationFacade.markAllAsRead'
       });
       throw error;
     } finally {
@@ -532,7 +536,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to delete notification',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'deleteNotification', notificationId, error }
+        context: 'CollaborationFacade.deleteNotification'
       });
       throw error;
     } finally {
@@ -557,7 +561,7 @@ export class CollaborationFacade implements OnDestroy {
         message: 'Failed to clear all notifications',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'clearAllNotifications', userId, error }
+        context: 'CollaborationFacade.clearAllNotifications'
       });
       throw error;
     } finally {

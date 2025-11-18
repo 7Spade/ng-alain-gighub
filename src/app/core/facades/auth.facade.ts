@@ -83,7 +83,7 @@ export class AuthFacade {
   readonly displayName = computed(() => {
     const user = this.user();
     if (!user) return null;
-    return user.display_name || user.email || 'User';
+    return user.name || user.email || 'User';
   });
 
   /** User email */

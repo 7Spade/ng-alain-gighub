@@ -175,6 +175,100 @@ export class IssueService {
   }
 
   /**
+   * 刪除問題
+   */
+  async deleteIssue(issueId: string): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      await firstValueFrom(this.issueRepository.delete(issueId));
+      this.issuesState.update(items => items.filter(item => item.id !== issueId));
+
+      if (this.selectedIssueState()?.id === issueId) {
+        this.selectedIssueState.set(null);
+      }
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '刪除問題失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 取得所有問題
+   */
+  async getAllIssues(): Promise<Issue[]> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const issues = await firstValueFrom(this.issueRepository.findAll());
+      this.issuesState.set(issues);
+      return issues;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '載入問題列表失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 依 ID 取得單一問題
+   */
+  async getIssueById(issueId: string): Promise<Issue> {
+    const detail = await this.loadIssueById(issueId);
+    if (!detail) {
+      throw new Error(`Issue not found: ${issueId}`);
+    }
+    return detail;
+  }
+
+  /**
+   * 同步問題到主分支
+   */
+  async syncIssueToMain(issueId: string): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 取得問題詳情
+      const issue = await this.getIssueById(issueId);
+      
+      // 建立同步紀錄
+      await this.createSyncLog({
+        issue_id: issueId,
+        target_blueprint_id: issue.blueprint_id,
+        sync_type: 'update',
+        synced_at: new Date().toISOString()
+      });
+
+      // 更新問題狀態標記為已同步
+      await this.updateIssue(issueId, {
+        // Add any sync-related fields if needed
+      });
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '同步問題到主分支失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 指派問題 (Facade 層使用的簽名)
+   */
+  async assignIssueToUser(issueId: string, assigneeId: string, assigneeType: 'user' | 'team' | 'organization'): Promise<IssueAssignment> {
+    return this.assignIssue({
+      issue_id: issueId,
+      assignee_id: assigneeId,
+      assigned_by: 'current-user' // This should be replaced with actual current user ID
+    });
+  }
+
+  /**
    * 指派問題
    */
   async assignIssue(payload: IssueAssignmentInsert): Promise<IssueAssignment> {

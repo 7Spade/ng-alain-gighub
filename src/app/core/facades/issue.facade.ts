@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model';
+import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.models';
 import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
 import { IssueService } from '@shared/services/issue/issue.service';
@@ -141,7 +141,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to load issues',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssues', error }
+        context: 'IssueFacade.loadIssues'
       });
       throw error;
     } finally {
@@ -157,14 +157,14 @@ export class IssueFacade implements OnDestroy {
     this.lastOperation.set('loadIssuesByBlueprint');
 
     try {
-      const issues = await this.issueService.getIssuesByBlueprint(blueprintId);
+      const issues = await this.issueService.loadIssuesByBlueprint(blueprintId);
       this.issues.set(issues);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load blueprint issues',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssuesByBlueprint', blueprintId, error }
+        context: `IssueFacade.loadIssuesByBlueprint: ${blueprintId}`
       });
       throw error;
     } finally {
@@ -180,14 +180,14 @@ export class IssueFacade implements OnDestroy {
     this.lastOperation.set('loadIssuesByBranch');
 
     try {
-      const issues = await this.issueService.getIssuesByBranch(branchId);
+      const issues = await this.issueService.loadIssuesByBranch(branchId);
       this.issues.set(issues);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load branch issues',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssuesByBranch', branchId, error }
+        context: `IssueFacade.loadIssuesByBranch: ${branchId}`
       });
       throw error;
     } finally {
@@ -216,7 +216,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to load issue',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssueById', id, error }
+        context: `IssueFacade.loadIssueById: ${id}`
       });
       throw error;
     } finally {
@@ -239,13 +239,13 @@ export class IssueFacade implements OnDestroy {
       this.selectedIssue.set(issue);
 
       // Log activity
-      await this.activityService.logActivity({
-        blueprintId: data.blueprint_id,
-        resourceType: 'issue',
-        resourceId: issue.id,
-        action: 'created',
-        changes: []
-      });
+      await this.activityService.logActivity(
+        data.blueprint_id,
+        'issue',
+        issue.id,
+        'created',
+        []
+      );
 
       return issue;
     } catch (error) {
@@ -253,7 +253,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to create issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createIssue', data, error }
+        context: 'IssueFacade.createIssue'
       });
       throw error;
     } finally {
@@ -281,13 +281,13 @@ export class IssueFacade implements OnDestroy {
       }
 
       // Log activity
-      await this.activityService.logActivity({
-        blueprintId: issue.blueprint_id,
-        resourceType: 'issue',
-        resourceId: issue.id,
-        action: 'updated',
-        changes: []
-      });
+      await this.activityService.logActivity(
+        issue.blueprint_id,
+        'issue',
+        issue.id,
+        'updated',
+        []
+      );
 
       return issue;
     } catch (error) {
@@ -295,7 +295,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to update issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'updateIssue', id, data, error }
+        context: `IssueFacade.updateIssue: ${id}`
       });
       throw error;
     } finally {
@@ -323,20 +323,20 @@ export class IssueFacade implements OnDestroy {
 
       // Log activity
       if (issue) {
-        await this.activityService.logActivity({
-          blueprintId: issue.blueprint_id,
-          resourceType: 'issue',
-          resourceId: id,
-          action: 'deleted',
-          changes: []
-        });
+        await this.activityService.logActivity(
+          issue.blueprint_id,
+          'issue',
+          id,
+          'deleted',
+          []
+        );
       }
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to delete issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'deleteIssue', id, error }
+        context: `IssueFacade.deleteIssue: ${id}`
       });
       throw error;
     } finally {
@@ -352,32 +352,42 @@ export class IssueFacade implements OnDestroy {
     this.lastOperation.set('assignIssue');
 
     try {
-      const issue = await this.issueService.assignIssue(issueId, assigneeId, assigneeType);
-
-      // Update state
-      const issues = this.issues().map(i => (i.id === issueId ? issue : i));
-      this.issues.set(issues);
-
-      if (this.selectedIssue()?.id === issueId) {
-        this.selectedIssue.set(issue);
+      // Get the issue first to access blueprint_id
+      const currentIssue = this.issues().find(i => i.id === issueId);
+      if (!currentIssue) {
+        throw new Error('Issue not found');
       }
 
-      // Log activity
-      await this.activityService.logActivity({
-        blueprintId: issue.blueprint_id,
-        resourceType: 'issue',
-        resourceId: issueId,
-        action: 'assigned',
-        changes: [{ field: 'assignee', oldValue: null, newValue: assigneeId }]
-      });
+      const assignment = await this.issueService.assignIssueToUser(issueId, assigneeId, assigneeType);
 
-      return issue;
+      // Reload the issue to get updated state
+      await this.loadIssueById(issueId);
+      const issue = this.selectedIssue();
+
+      if (issue) {
+        // Update state
+        const issues = this.issues().map(i => (i.id === issueId ? issue : i));
+        this.issues.set(issues);
+
+        // Log activity
+        await this.activityService.logActivity(
+          currentIssue.blueprint_id,
+          'issue',
+          issueId,
+          'assigned',
+          [{ field: 'assignee', oldValue: null, newValue: assigneeId }]
+        );
+
+        return issue;
+      }
+
+      throw new Error('Failed to reload issue after assignment');
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to assign issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'assignIssue', issueId, assigneeId, assigneeType, error }
+        context: `IssueFacade.assignIssue: ${issueId}`
       });
       throw error;
     } finally {
@@ -411,7 +421,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to add tag',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'addTag', issueId, tag, error }
+        context: `IssueFacade.addTag: ${issueId}`
       });
       throw error;
     } finally {
@@ -432,7 +442,7 @@ export class IssueFacade implements OnDestroy {
 
       const currentTags = issue.tags || [];
       const updatedIssue = await this.updateIssue(issueId, {
-        tags: currentTags.filter(t => t !== tag)
+        tags: currentTags.filter((t: string) => t !== tag)
       });
 
       return updatedIssue;
@@ -441,7 +451,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to remove tag',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'removeTag', issueId, tag, error }
+        context: `IssueFacade.removeTag: ${issueId}`
       });
       throw error;
     } finally {
@@ -464,20 +474,20 @@ export class IssueFacade implements OnDestroy {
 
       const issue = this.selectedIssue();
       if (issue) {
-        await this.activityService.logActivity({
-          blueprintId: issue.blueprint_id,
-          resourceType: 'issue',
-          resourceId: issueId,
-          action: 'synced_to_main',
-          changes: []
-        });
+        await this.activityService.logActivity(
+          issue.blueprint_id,
+          'issue',
+          issueId,
+          'synced_to_main',
+          []
+        );
       }
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to sync issue to main branch',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'syncToMainBranch', issueId, error }
+        context: `IssueFacade.syncToMainBranch: ${issueId}`
       });
       throw error;
     } finally {
