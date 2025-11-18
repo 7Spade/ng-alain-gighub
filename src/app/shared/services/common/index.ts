@@ -5,3 +5,4 @@
  */
 
 export * from './error-state.service';
+export * from './blueprint-aggregation-refresh.service';
