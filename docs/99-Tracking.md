@@ -131,6 +131,93 @@ Guards 整合現有 PermissionService（Observable 包裝）[✅已完成]
 
 ---
 
+## 📊 架構層級完成情況總覽
+
+### 依賴規則
+
+```
+Routes → Shared → Core
+Facades → Services → Repositories → SupabaseService
+Component → Facade → Service → Repository → SupabaseService → Supabase
+```
+
+### 數據流
+
+```
+User Action → Component (Routes) → Facade/Service (Shared/Core) → Repository (Core/infra) → SupabaseService (Core) → Supabase (Database)
+```
+
+### 各層完成情況統計
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：135/135 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：108/135 組件功能完成（80%）
+- ⏳ **待完成**：27 個組件功能實現
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：35/35 服務完成（100%）
+- ✅ **Models（數據模型）**：51 張表的類型定義完成（100%）
+- ✅ **Components（共享組件）**：共享組件完成（100%）
+- ✅ **Pipes（管道）**：共享管道完成（100%）
+
+#### Core Layer（基礎設施層）
+- 🚧 **Facades（門面層）**：5/8 Facade 完成（63%）
+  - ✅ IssueFacade（問題追蹤）
+  - ✅ BlueprintFacade（藍圖專案）
+  - ✅ AccountFacade（帳戶與身份）
+  - ✅ CollaborationFacade（組織協作）
+  - ✅ TaskTreeFacade（任務樹）
+  - ⏳ TaskFacade（任務執行，待實施）
+  - ⏳ SystemFacade（系統管理，待實施）
+  - ⏳ CommunicationFacade（協作溝通，待實施）
+  - ⏳ QualityFacade（品質驗收，待實施）
+  - ⏳ BotFacade（機器人，待實施）
+  - ⏳ PermissionFacade（權限，待實施）
+- ✅ **Services（核心服務）**：核心服務完成（100%）
+- ✅ **Repositories（數據訪問層）**：51/51 Repository 完成（100%）
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
+### 模組完成情況對照表
+
+| 模組 | Routes 骨架 | Routes 功能 | Shared Services | Core Facades | Repositories | 總體完成度 |
+|------|------------|------------|----------------|--------------|--------------|-----------|
+| 帳戶與身份系統 | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% |
+| 組織協作系統 | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% |
+| 藍圖專案系統 | ✅ 100% | 🚧 79% | ✅ 100% | ✅ 100% | ✅ 100% | 🚧 96% |
+| 任務執行系統 | ✅ 100% | 🚧 95% | ✅ 100% | 🚧 50% | ✅ 100% | 🚧 89% |
+| 品質驗收系統 | ✅ 100% | 🚧 75% | ✅ 100% | ⏳ 0% | ✅ 100% | 🚧 75% |
+| 問題追蹤系統 | ✅ 100% | 🚧 33% | ✅ 100% | ✅ 100% | ✅ 100% | 🚧 83% |
+| 協作溝通系統 | ✅ 100% | 🚧 22% | ✅ 100% | ⏳ 0% | ✅ 100% | 🚧 64% |
+| 資料分析系統 | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% |
+| 機器人系統 | ✅ 100% | 🚧 75% | 🚧 50% | ⏳ 0% | ✅ 100% | 🚧 65% |
+| 系統管理 | ✅ 100% | 🚧 45% | ✅ 100% | ⏳ 0% | ✅ 100% | 🚧 69% |
+| 權限系統 | ✅ 100% | ✅ 100% | ✅ 100% | ⏳ 0% | ✅ 100% | 🚧 80% |
+
+**圖例**：
+- ✅ 已完成（100%）
+- 🚧 進行中（部分完成）
+- ⏳ 待開始（0%）
+
+### 待完成任務優先級
+
+#### 高優先級（核心功能）
+1. **Routes Layer 功能實現**：27 個組件功能待完成
+2. **Core Facades 實施**：6 個 Facade 待實施（TaskFacade, SystemFacade, CommunicationFacade, QualityFacade, BotFacade, PermissionFacade）
+3. **BotTaskService 實施**：機器人系統依賴的服務
+
+#### 中優先級（功能完善）
+1. **Routes Layer 功能完善**：部分組件的篩選、排序、批量操作等功能
+2. **實時更新整合**：RealtimeFacade 與各模組的整合
+3. **活動記錄整合**：BlueprintActivityService 與各 Facade 的整合
+
+#### 低優先級（優化與測試）
+1. **單元測試**：各模組的單元測試（目標 80% 覆蓋率）
+2. **集成測試**：模組間的集成測試
+3. **E2E 測試**：端到端測試
+4. **API 文檔**：各模組的 API 文檔
+
+---
+
 ## 📋 模組任務追蹤
 
 所有模組的詳細任務追蹤已分配到對應的子文檔：
