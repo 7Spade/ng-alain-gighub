@@ -1,6 +1,14 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { DocumentRepository, DocumentVersionRepository, DocumentThumbnailRepository } from '@core';
-import { Document, DocumentInsert, DocumentUpdate, DocumentVersion, DocumentVersionInsert, DocumentThumbnail, DocumentThumbnailInsert } from '@shared';
+import {
+  Document,
+  DocumentInsert,
+  DocumentUpdate,
+  DocumentVersion,
+  DocumentVersionInsert,
+  DocumentThumbnail,
+  DocumentThumbnailInsert
+} from '@shared';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -71,7 +79,14 @@ export class DocumentService {
       image: docs.filter(d => d.fileType?.startsWith('image/')),
       document: docs.filter(d => d.fileType?.includes('document') || d.fileType?.includes('pdf')),
       drawing: docs.filter(d => d.fileType?.includes('dwg') || d.fileType?.includes('dxf')),
-      other: docs.filter(d => !d.fileType?.startsWith('image/') && !d.fileType?.includes('document') && !d.fileType?.includes('pdf') && !d.fileType?.includes('dwg') && !d.fileType?.includes('dxf'))
+      other: docs.filter(
+        d =>
+          !d.fileType?.startsWith('image/') &&
+          !d.fileType?.includes('document') &&
+          !d.fileType?.includes('pdf') &&
+          !d.fileType?.includes('dwg') &&
+          !d.fileType?.includes('dxf')
+      )
     };
   });
 

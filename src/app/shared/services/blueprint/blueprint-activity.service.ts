@@ -1,8 +1,9 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { ActivityLogRepository, type ActivityLog, type ActivityLogInsert, type Json } from '@core';
 import { firstValueFrom } from 'rxjs';
-import { AuthStateService } from '../auth';
+
 import { type ActivityLogFilters } from '../../models/data.models';
+import { AuthStateService } from '../auth';
 
 /**
  * Activity Change Detail
@@ -126,10 +127,12 @@ export class BlueprintActivityService {
       resource_id: resourceId,
       action,
       actor_id: currentUser.id,
-      action_details: JSON.parse(JSON.stringify({
-        changes: sanitizedChanges,
-        ...actionDetails
-      })) as unknown as Json
+      action_details: JSON.parse(
+        JSON.stringify({
+          changes: sanitizedChanges,
+          ...actionDetails
+        })
+      ) as unknown as Json
     };
 
     try {

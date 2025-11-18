@@ -3,7 +3,6 @@ import { NotificationRepository, NotificationRuleRepository, NotificationSubscri
 import {
   Notification,
   NotificationInsert,
-  NotificationUpdate,
   NotificationRule,
   NotificationRuleInsert,
   NotificationSubscription,
@@ -197,13 +196,15 @@ export class NotificationService {
   /**
    * 批量標記通知為已讀
    */
-  async markAllAsRead(userId: string): Promise<void> {
+  async markAllAsRead(): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
       const unread = this.unreadNotifications();
-      await Promise.all(unread.map(n => firstValueFrom(this.notificationRepository.update(n.id, { isRead: true, readAt: new Date().toISOString() }))));
+      await Promise.all(
+        unread.map(n => firstValueFrom(this.notificationRepository.update(n.id, { isRead: true, readAt: new Date().toISOString() })))
+      );
 
       // 更新本地狀態
       this.notificationsState.update(current =>

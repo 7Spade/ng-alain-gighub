@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { TaskAssignmentRepository } from '@core';
-import { TaskAssignment, TaskAssignmentInsert, TaskAssignmentUpdate, TaskAssignmentWithAssignee } from '@shared';
+import { TaskAssignment, TaskAssignmentInsert, TaskAssignmentUpdate } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
 /**

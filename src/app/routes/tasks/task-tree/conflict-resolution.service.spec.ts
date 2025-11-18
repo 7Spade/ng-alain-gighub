@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+
 import { ConflictResolutionService } from './conflict-resolution.service';
 import { VersionedTask } from './conflict-resolution.types';
 
@@ -31,7 +32,7 @@ describe('ConflictResolutionService', () => {
       };
 
       const conflict = service.detectConflict(local, remote);
-      
+
       expect(conflict.hasConflict).toBe(true);
       expect(conflict.conflictingFields).toContain('title');
     });
@@ -52,7 +53,7 @@ describe('ConflictResolutionService', () => {
       };
 
       const conflict = service.detectConflict(local, remote);
-      
+
       expect(conflict.hasConflict).toBe(false);
       expect(conflict.conflictingFields.length).toBe(0);
     });
@@ -75,7 +76,7 @@ describe('ConflictResolutionService', () => {
       };
 
       const conflict = service.detectConflict(local, remote);
-      
+
       expect(conflict.hasConflict).toBe(true);
       expect(conflict.conflictingFields).toContain('title');
       expect(conflict.conflictingFields).toContain('description');
@@ -100,7 +101,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'last-write-wins');
-      
+
       expect(resolution.resolved.title).toBe('Remote Title');
       expect(resolution.strategy).toBe('last-write-wins');
     });
@@ -122,7 +123,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'last-write-wins');
-      
+
       expect(resolution.resolved.title).toBe('Local Title');
     });
 
@@ -144,7 +145,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'last-write-wins');
-      
+
       // Should default to remote on tie
       expect(resolution.resolved.title).toBe('Remote Title');
     });
@@ -170,7 +171,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'merge');
-      
+
       // For conflicting title, should use remote (newer)
       expect(resolution.resolved.title).toBe('Remote Title');
       // For non-conflicting description, should keep same
@@ -196,7 +197,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'merge');
-      
+
       // Both fields conflict, should use remote (newer)
       expect(resolution.resolved.title).toBe('Remote Title');
       expect(resolution.resolved.status).toBe('completed');
@@ -221,7 +222,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'manual');
-      
+
       expect(resolution.strategy).toBe('manual');
       expect(resolution.requiresManualIntervention).toBe(true);
       // Should temporarily use local version
@@ -247,7 +248,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       service.resolveConflict(local, remote, conflict, 'manual');
-      
+
       expect(service.conflictNotifications.set).toHaveBeenCalled();
     });
   });
@@ -270,7 +271,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'reject');
-      
+
       expect(resolution.resolved.title).toBe('Local Title');
       expect(resolution.strategy).toBe('reject');
     });
@@ -296,7 +297,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'reject');
-      
+
       expect(resolution.resolved.title).toBe('Local Title');
       expect(resolution.resolved.description).toBe('Local Description');
       expect(resolution.resolved.status).toBe('in_progress');
@@ -318,7 +319,7 @@ describe('ConflictResolutionService', () => {
       };
 
       const conflict = service.detectConflict(local, remote);
-      
+
       // Should still detect conflict based on timestamps
       expect(conflict.hasConflict).toBe(true);
     });
@@ -340,7 +341,7 @@ describe('ConflictResolutionService', () => {
 
       const conflict = service.detectConflict(local, remote);
       const resolution = service.resolveConflict(local, remote, conflict, 'last-write-wins');
-      
+
       expect(resolution.resolved.title).toBe('Remote Title');
     });
   });

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { TaskListRepository } from '@core';
-import { TaskList, TaskListInsert, TaskListUpdate, TaskAssigneeType, TaskListType } from '@shared';
+import { TaskList, TaskListInsert, TaskListUpdate } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
 /**

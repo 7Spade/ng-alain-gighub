@@ -217,7 +217,9 @@ export class BotService {
     this.errorState.set(null);
 
     try {
-      const data = botId ? await firstValueFrom(this.botTaskRepository.findByBotId(botId)) : await firstValueFrom(this.botTaskRepository.findAll());
+      const data = botId
+        ? await firstValueFrom(this.botTaskRepository.findByBotId(botId))
+        : await firstValueFrom(this.botTaskRepository.findAll());
       this.tasksState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入任務列表失敗');
@@ -317,7 +319,9 @@ export class BotService {
     this.errorState.set(null);
 
     try {
-      const data = botId ? await firstValueFrom(this.botExecutionLogRepository.findByBotId(botId)) : await firstValueFrom(this.botExecutionLogRepository.findAll());
+      const data = botId
+        ? await firstValueFrom(this.botExecutionLogRepository.findByBotId(botId))
+        : await firstValueFrom(this.botExecutionLogRepository.findAll());
       this.executionLogsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入執行日誌失敗');

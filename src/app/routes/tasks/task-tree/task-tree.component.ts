@@ -1,15 +1,16 @@
+import { CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
-import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 import { SHARED_IMPORTS, Task, TaskTreeNode, TaskStatus } from '@shared';
-import { TaskTreeFacade } from './task-tree.facade';
-import { TaskTreeDragService } from './task-tree-drag.service';
-import { TaskStatusSwitcherComponent } from './task-status-switcher/task-status-switcher.component';
-import { TaskAssigneeSelectorComponent } from './task-assignee-selector/task-assignee-selector.component';
-import { ConnectionStatusComponent } from './connection-status/connection-status.component';
-import { AssignmentChangeEvent } from './task-assignment.types';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
+
+import { ConnectionStatusComponent } from './connection-status/connection-status.component';
+import { TaskAssigneeSelectorComponent } from './task-assignee-selector/task-assignee-selector.component';
+import { AssignmentChangeEvent } from './task-assignment.types';
+import { TaskStatusSwitcherComponent } from './task-status-switcher/task-status-switcher.component';
+import { TaskTreeDragService } from './task-tree-drag.service';
+import { TaskTreeFacade } from './task-tree.facade';
 
 interface NzTreeNodeOptions {
   title: string;
@@ -57,14 +58,7 @@ interface NzTreeNodeOptions {
 @Component({
   selector: 'app-task-tree',
   standalone: true,
-  imports: [
-    SHARED_IMPORTS, 
-    CdkDrag, 
-    CdkDropList, 
-    TaskStatusSwitcherComponent, 
-    TaskAssigneeSelectorComponent,
-    ConnectionStatusComponent
-  ],
+  imports: [SHARED_IMPORTS, CdkDrag, CdkDropList, TaskStatusSwitcherComponent, TaskAssigneeSelectorComponent, ConnectionStatusComponent],
   providers: [TaskTreeDragService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './task-tree.component.html',
@@ -84,12 +78,12 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   readonly loading = this.facade.loading;
   readonly error = this.facade.error;
   readonly taskStats = this.facade.taskStats;
-  
+
   // Phase 5: Connection status signals
   readonly connectionStatus = this.facade.connectionStatus;
   readonly lastConnectionUpdate = this.facade.lastConnectionUpdate;
   readonly conflicts = this.facade.conflicts;
-  
+
   // Reconnect function for connection status component
   readonly reconnectFn = (): void => {
     this.facade.reconnect();
@@ -177,7 +171,7 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
    */
   async onDrop(event: CdkDragDrop<TaskTreeNode[]>): Promise<void> {
     console.log('[TaskTreeComponent] Drop event:', event);
-    
+
     try {
       await this.dragService.handleDrop(event, this.taskTree());
     } catch (error) {
@@ -215,26 +209,26 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
       await this.facade.updateTaskStatus(event.taskId, event.newStatus);
       this.message.success('任務狀態已更新');
     } catch (error) {
-      this.message.error('更新失敗：' + (error as Error).message);
+      this.message.error(`更新失敗：${(error as Error).message}`);
       console.error('[TaskTreeComponent] Status change failed:', error);
     }
   }
 
   /**
    * Handle task assignment change
-   * 
+   *
    * Note: Facade updateTaskAssignment method requires task_assignments table integration
    * Current implementation logs the event pending full implementation.
-   * 
+   *
    * Phase 3.2: Assignment integration
    */
   async onAssignmentChange(event: AssignmentChangeEvent): Promise<void> {
     try {
       console.log('[TaskTreeComponent] Assignment change:', event);
-      
+
       // TODO: Uncomment when facade.updateTaskAssignment is fully implemented
       // await this.facade.updateTaskAssignment(event.taskId, event.assigneeId);
-      
+
       // For now, just show success message (implementation pending)
       if (event.assigneeId) {
         this.message.success('任務已指派 (功能實作中)');
@@ -242,7 +236,7 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
         this.message.success('已取消指派 (功能實作中)');
       }
     } catch (error) {
-      this.message.error('指派失敗：' + (error as Error).message);
+      this.message.error(`指派失敗：${(error as Error).message}`);
       console.error('[TaskTreeComponent] Assignment change failed:', error);
     }
   }

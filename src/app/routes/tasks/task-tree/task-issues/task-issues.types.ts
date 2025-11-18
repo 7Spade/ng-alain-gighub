@@ -1,7 +1,7 @@
 /**
  * Task Issues Integration Types
  * Phase 7.1: Issues integration with task tree
- * 
+ *
  * Provides type definitions for linking issues to tasks,
  * displaying issue status, and creating issues from tasks.
  */

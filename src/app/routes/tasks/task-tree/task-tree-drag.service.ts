@@ -1,8 +1,9 @@
-import { Injectable, inject } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Injectable, inject } from '@angular/core';
 import { TaskTreeNode } from '@shared';
-import { TaskTreeFacade } from './task-tree.facade';
 import { NzMessageService } from 'ng-zorro-antd/message';
+
+import { TaskTreeFacade } from './task-tree.facade';
 
 /**
  * Task Tree Drag Service
@@ -22,13 +23,11 @@ export class TaskTreeDragService {
 
   /**
    * Handle drop event from CDK DragDrop
+   *
    * @param event CDK DragDrop event
    * @param containerTasks Tasks in the drop container
    */
-  async handleDrop(
-    event: CdkDragDrop<TaskTreeNode[]>,
-    containerTasks: TaskTreeNode[]
-  ): Promise<void> {
+  async handleDrop(event: CdkDragDrop<TaskTreeNode[]>, containerTasks: TaskTreeNode[]): Promise<void> {
     // Step 1: Extract drag information
     const draggedNode = event.item.data as TaskTreeNode;
     const previousIndex = event.previousIndex;
@@ -49,11 +48,7 @@ export class TaskTreeDragService {
     }
 
     // Step 3: Calculate new parent and sequence order
-    const { newParentId, newSequenceOrder } = this.calculateNewPosition(
-      draggedNode,
-      containerTasks,
-      currentIndex
-    );
+    const { newParentId, newSequenceOrder } = this.calculateNewPosition(draggedNode, containerTasks, currentIndex);
 
     // Step 4: Validate drop legality
     if (newParentId && !this.isValidDrop(draggedNode.id, newParentId, containerTasks)) {
@@ -64,11 +59,7 @@ export class TaskTreeDragService {
 
     // Step 5: Execute optimistic update
     try {
-      await this.facade.updateTaskHierarchyOptimistic(
-        draggedNode.id,
-        newParentId,
-        newSequenceOrder
-      );
+      await this.facade.updateTaskHierarchyOptimistic(draggedNode.id, newParentId, newSequenceOrder);
       this.message.success('任務位置已更新');
     } catch (error) {
       this.message.error('更新失敗，請重試');
@@ -78,6 +69,7 @@ export class TaskTreeDragService {
 
   /**
    * Calculate new parent ID and sequence order based on drop position
+   *
    * @private
    */
   private calculateNewPosition(
@@ -96,7 +88,7 @@ export class TaskTreeDragService {
 
     // Get the task before drop position
     const taskBefore = containerTasks[dropIndex - 1];
-    
+
     if (!taskBefore) {
       return {
         newParentId: null,
@@ -114,13 +106,10 @@ export class TaskTreeDragService {
   /**
    * Validate if drop operation is legal
    * Prevents circular dependencies: child cannot become ancestor of itself
+   *
    * @private
    */
-  private isValidDrop(
-    taskId: string,
-    newParentId: string,
-    allTasks: TaskTreeNode[]
-  ): boolean {
+  private isValidDrop(taskId: string, newParentId: string, allTasks: TaskTreeNode[]): boolean {
     // Cannot make a task its own parent
     if (taskId === newParentId) {
       return false;
@@ -133,13 +122,10 @@ export class TaskTreeDragService {
   /**
    * Check if potentialDescendantId is a descendant of ancestorId
    * Uses breadth-first search to detect circular dependency
+   *
    * @private
    */
-  private isDescendant(
-    potentialDescendantId: string,
-    ancestorId: string,
-    allTasks: TaskTreeNode[]
-  ): boolean {
+  private isDescendant(potentialDescendantId: string, ancestorId: string, allTasks: TaskTreeNode[]): boolean {
     const visited = new Set<string>();
     let currentId: string | null = potentialDescendantId;
 
@@ -165,15 +151,12 @@ export class TaskTreeDragService {
   /**
    * Check if a node can be dropped on a specific target
    * Used for visual feedback during drag
+   *
    * @param dragNodeId ID of the node being dragged
    * @param dropTargetId ID of the potential drop target
    * @param allTasks All tasks for circular dependency check
    */
-  canDropOn(
-    dragNodeId: string,
-    dropTargetId: string,
-    allTasks: TaskTreeNode[]
-  ): boolean {
+  canDropOn(dragNodeId: string, dropTargetId: string, allTasks: TaskTreeNode[]): boolean {
     return this.isValidDrop(dragNodeId, dropTargetId, allTasks);
   }
 }

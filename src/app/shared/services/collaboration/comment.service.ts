@@ -74,7 +74,7 @@ export class CommentService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.commentRepository.findByResource(resourceType, resourceId));
+      const data = await firstValueFrom(this.commentRepository.findByCommentableId(resourceType, resourceId));
       this.commentsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入留言失敗');
@@ -199,7 +199,6 @@ export class CommentService {
   buildCommentTree(): CommentDetail[] {
     const comments = this.comments();
     const topLevel = comments.filter(c => !c.parentCommentId);
-    const commentMap = new Map(comments.map(c => [c.id, c]));
 
     const buildTree = (comment: Comment): CommentDetail => {
       const replies = comments.filter(c => c.parentCommentId === comment.id).map(buildTree);

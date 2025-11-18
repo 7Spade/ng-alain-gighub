@@ -1,9 +1,9 @@
 import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-
 import { TaskRepository, type Task, type TaskUpdate, SupabaseService } from '@core';
 import { BlueprintActivityService, type TaskTreeNode } from '@shared';
 import type { RealtimeChannel, RealtimeChannelSendResponse } from '@supabase/supabase-js';
+import { firstValueFrom } from 'rxjs';
+
 import { ConflictResolutionService } from './conflict-resolution.service';
 import type { VersionedTask } from './conflict-resolution.types';
 
@@ -58,7 +58,7 @@ export class TaskTreeFacade implements OnDestroy {
   private readonly loadingState = signal<boolean>(false);
   private readonly errorState = signal<string | null>(null);
   private readonly currentBlueprintIdState = signal<string | null>(null);
-  
+
   // Phase 5: Connection status tracking
   private readonly connectionStatusState = signal<'connected' | 'disconnected' | 'reconnecting'>('disconnected');
   private readonly lastConnectionUpdateState = signal<Date | null>(null);
@@ -69,7 +69,7 @@ export class TaskTreeFacade implements OnDestroy {
   readonly loading = this.loadingState.asReadonly();
   readonly error = this.errorState.asReadonly();
   readonly currentBlueprintId = this.currentBlueprintIdState.asReadonly();
-  
+
   // Phase 5: Readonly connection status signals
   readonly connectionStatus = this.connectionStatusState.asReadonly();
   readonly lastConnectionUpdate = this.lastConnectionUpdateState.asReadonly();
@@ -120,7 +120,7 @@ export class TaskTreeFacade implements OnDestroy {
     try {
       const tasks = await firstValueFrom(this.taskRepository.findByBlueprintId(blueprintId));
       this.tasksState.set(tasks);
-      
+
       // Subscribe to realtime updates
       this.subscribeToTaskChanges(blueprintId);
     } catch (error) {
@@ -215,7 +215,7 @@ export class TaskTreeFacade implements OnDestroy {
 
   /**
    * Update task assignment with automatic audit logging
-   * 
+   *
    * TODO: Implement using task_assignments table instead of direct field
    * The tasks table doesn't have an assigned_to field - assignments are managed
    * through the task_assignments join table
@@ -226,7 +226,7 @@ export class TaskTreeFacade implements OnDestroy {
    */
   async updateTaskAssignment(taskId: string, assignedTo: string | null): Promise<void> {
     throw new Error('updateTaskAssignment not yet implemented - requires task_assignments table integration');
-    
+
     // TODO: Implementation should:
     // 1. Query task_assignments table
     // 2. Create/update assignment record
@@ -236,19 +236,15 @@ export class TaskTreeFacade implements OnDestroy {
 
   /**
    * Update task hierarchy (parent and sequence order)
-   * 
+   *
    * Implements Phase 2 (Task 2.1.3) from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
-   * 
+   *
    * @param taskId Task ID
    * @param newParentId New parent task ID (null for root)
    * @param newSequenceOrder New sequence order
    * @returns Promise<void>
    */
-  async updateTaskHierarchy(
-    taskId: string,
-    newParentId: string | null,
-    newSequenceOrder: number
-  ): Promise<void> {
+  async updateTaskHierarchy(taskId: string, newParentId: string | null, newSequenceOrder: number): Promise<void> {
     const oldTask = this.tasks().find(t => t.id === taskId);
     if (!oldTask) {
       throw new Error(`Task not found: ${taskId}`);
@@ -317,19 +313,15 @@ export class TaskTreeFacade implements OnDestroy {
 
   /**
    * Optimistically update task hierarchy with automatic rollback on failure
-   * 
+   *
    * Implements Phase 2 (Task 2.2.1) from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
-   * 
+   *
    * @param taskId Task ID
    * @param newParentId New parent task ID (null for root)
    * @param newSequenceOrder New sequence order
    * @returns Promise<void>
    */
-  async updateTaskHierarchyOptimistic(
-    taskId: string,
-    newParentId: string | null,
-    newSequenceOrder: number
-  ): Promise<void> {
+  async updateTaskHierarchyOptimistic(taskId: string, newParentId: string | null, newSequenceOrder: number): Promise<void> {
     // Save current state for rollback
     const previousTasks = [...this.tasks()];
 
@@ -381,7 +373,7 @@ export class TaskTreeFacade implements OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribeFromTaskChanges();
   }
-  
+
   /**
    * Reconnect to Realtime (Phase 5, Task 5.2)
    * Manually trigger reconnection to Supabase Realtime
@@ -392,11 +384,11 @@ export class TaskTreeFacade implements OnDestroy {
       console.warn('[TaskTreeFacade] Cannot reconnect: no blueprint ID set');
       return;
     }
-    
+
     console.log('[TaskTreeFacade] Manual reconnect initiated');
     this.connectionStatusState.set('reconnecting');
     this.lastConnectionUpdateState.set(new Date());
-    
+
     // Unsubscribe and resubscribe
     this.unsubscribeFromTaskChanges();
     this.subscribeToTaskChanges(blueprintId);
@@ -406,7 +398,7 @@ export class TaskTreeFacade implements OnDestroy {
    * Subscribe to Realtime task changes
    * Implements Phase 3.3.1 from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
    * Enhanced in Phase 5 with connection status tracking
-   * 
+   *
    * @param blueprintId Blueprint ID to subscribe to
    * @private
    */
@@ -415,7 +407,7 @@ export class TaskTreeFacade implements OnDestroy {
     this.unsubscribeFromTaskChanges();
 
     console.log('[TaskTreeFacade] Subscribing to Realtime updates for blueprint:', blueprintId);
-    
+
     // Phase 5: Set connecting status
     this.connectionStatusState.set('reconnecting');
     this.lastConnectionUpdateState.set(new Date());
@@ -431,14 +423,14 @@ export class TaskTreeFacade implements OnDestroy {
           table: 'tasks',
           filter: `blueprint_id=eq.${blueprintId}`
         },
-        (payload) => {
+        payload => {
           console.log('[TaskTreeFacade] Realtime task change:', payload);
           this.handleRealtimeUpdate(payload);
         }
       )
-      .subscribe((status) => {
+      .subscribe(status => {
         console.log('[TaskTreeFacade] Realtime subscription status:', status);
-        
+
         // Phase 5: Update connection status
         if (status === 'SUBSCRIBED') {
           this.connectionStatusState.set('connected');
@@ -452,6 +444,7 @@ export class TaskTreeFacade implements OnDestroy {
 
   /**
    * Unsubscribe from Realtime task changes
+   *
    * @private
    */
   private unsubscribeFromTaskChanges(): void {
@@ -466,18 +459,18 @@ export class TaskTreeFacade implements OnDestroy {
    * Handle Realtime update
    * Updates local state without full reload for better performance
    * Enhanced in Phase 5 with conflict detection
-   * 
+   *
    * @param payload Realtime payload
    * @private
    */
   private handleRealtimeUpdate(payload: any): void {
     const eventType = payload.eventType;
-    
+
     if (eventType === 'INSERT') {
       // New task added
       const newTask = payload.new as Task;
       const currentTasks = this.tasks();
-      
+
       // Check if task already exists (avoid duplicates)
       if (!currentTasks.find(t => t.id === newTask.id)) {
         this.tasksState.set([...currentTasks, newTask]);
@@ -488,7 +481,7 @@ export class TaskTreeFacade implements OnDestroy {
       const updatedTask = payload.new as Task;
       const currentTasks = this.tasks();
       const localTask = currentTasks.find(t => t.id === updatedTask.id);
-      
+
       if (localTask) {
         // Phase 5: Conflict detection
         const localVersioned: VersionedTask = {
@@ -497,51 +490,47 @@ export class TaskTreeFacade implements OnDestroy {
           updated_at: localTask.updated_at || new Date().toISOString(),
           data: localTask as any
         };
-        
+
         const remoteVersioned: VersionedTask = {
           id: updatedTask.id,
           version: 1, // TODO: Add version field to Task type
           updated_at: updatedTask.updated_at || new Date().toISOString(),
           data: updatedTask as any
         };
-        
+
         const conflict = this.conflictResolution.detectConflict(localVersioned, remoteVersioned);
-        
+
         if (conflict.hasConflict) {
           console.warn('[TaskTreeFacade] Conflict detected for task:', updatedTask.id, conflict);
-          
+
           // Resolve conflict
           const resolution = this.conflictResolution.resolveConflict(localVersioned, remoteVersioned, conflict);
-          
+
           if (resolution.resolved) {
             // Apply resolved value
             const resolvedTask = resolution.finalValue as Task;
-            const updated = currentTasks.map(t =>
-              t.id === resolvedTask.id ? { ...t, ...resolvedTask } : t
-            );
+            const updated = currentTasks.map(t => (t.id === resolvedTask.id ? { ...t, ...resolvedTask } : t));
             this.tasksState.set(updated);
             console.log('[TaskTreeFacade] Conflict resolved:', resolution.message);
           }
         } else {
           // No conflict - direct update
-          const updated = currentTasks.map(t =>
-            t.id === updatedTask.id ? { ...t, ...updatedTask } : t
-          );
+          const updated = currentTasks.map(t => (t.id === updatedTask.id ? { ...t, ...updatedTask } : t));
           this.tasksState.set(updated);
         }
       } else {
         // Task not found locally - treat as INSERT
         this.tasksState.set([...currentTasks, updatedTask]);
       }
-      
+
       console.log('[TaskTreeFacade] Task updated via Realtime:', updatedTask.id);
     } else if (eventType === 'DELETE') {
       // Task deleted
       const deletedTask = payload.old as Task;
       const currentTasks = this.tasks();
-      
+
       const filtered = currentTasks.filter(t => t.id !== deletedTask.id);
-      
+
       this.tasksState.set(filtered);
       console.log('[TaskTreeFacade] Task deleted via Realtime:', deletedTask.id);
     }
@@ -549,9 +538,9 @@ export class TaskTreeFacade implements OnDestroy {
 
   /**
    * Check if moving taskId under newParentId would create circular dependency
-   * 
+   *
    * Implements circular dependency detection for Phase 2 (Task 2.1.3)
-   * 
+   *
    * @param taskId Task being moved
    * @param newParentId Proposed new parent
    * @returns true if circular dependency would be created
@@ -581,9 +570,9 @@ export class TaskTreeFacade implements OnDestroy {
 
   /**
    * Recalculate sequence orders for siblings to ensure they are continuous
-   * 
+   *
    * Implements Phase 2 (Task 2.2.2) from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
-   * 
+   *
    * @param parentId Parent task ID (null for root level)
    * @returns Promise<void>
    * @private
@@ -612,9 +601,7 @@ export class TaskTreeFacade implements OnDestroy {
 
     try {
       await Promise.all(
-        updates.map(update =>
-          firstValueFrom(this.taskRepository.update(update.id, { sequence_order: update.sequence_order }))
-        )
+        updates.map(update => firstValueFrom(this.taskRepository.update(update.id, { sequence_order: update.sequence_order })))
       );
 
       console.log(`[TaskTreeFacade] Recalculated ${updates.length} sibling orders for parent ${parentId || 'root'}`);
