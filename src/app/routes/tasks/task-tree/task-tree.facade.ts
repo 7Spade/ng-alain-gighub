@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
 import { TaskRepository, type Task, type TaskUpdate, SupabaseService } from '@core';
-import { BlueprintActivityService, type TaskTreeNode } from '@shared';
+import { ActivityLogService, type TaskTreeNode } from '@shared';
 import type { RealtimeChannel, RealtimeChannelSendResponse } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
@@ -13,7 +13,7 @@ import type { VersionedTask } from './conflict-resolution.types';
  * Facade pattern service for Task Tree component
  * - Manages task state with Signals
  * - Provides task tree transformation (flat → hierarchical)
- * - Orchestrates TaskRepository + BlueprintActivityService
+ * - Orchestrates TaskRepository + ActivityLogService
  * - Handles all business logic for task operations
  * - Realtime subscriptions for collaborative updates
  *
@@ -45,7 +45,7 @@ import type { VersionedTask } from './conflict-resolution.types';
 })
 export class TaskTreeFacade implements OnDestroy {
   private readonly taskRepository = inject(TaskRepository);
-  private readonly activityService = inject(BlueprintActivityService);
+  private readonly activityService = inject(ActivityLogService);
   private readonly supabase = inject(SupabaseService);
   private readonly conflictResolution = inject(ConflictResolutionService);
 

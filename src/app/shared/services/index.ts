@@ -14,6 +14,8 @@
  * - document: 文件管理服务
  * - bot: 机器人服务
  * - system: 系统管理服务（含 setting, feature flag）
+ * - activity-log: 活动记录服务
+ * - progress-tracking: 进度追踪服务
  *
  * @module shared/services
  */
@@ -31,6 +33,8 @@ export * from './issue';
 export * from './document';
 export * from './bot';
 export * from './system';
+export * from './activity-log';
+export * from './progress-tracking';
 
 // Supabase adapter
 export * from './supabase-adapter.service';

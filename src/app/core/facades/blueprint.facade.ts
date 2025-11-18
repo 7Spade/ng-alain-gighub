@@ -8,14 +8,14 @@ import {
   type BlueprintUpdate,
   type BlueprintBranch
 } from '@core';
-import { BlueprintService, BlueprintActivityService, BranchService, type BlueprintStatus } from '@shared';
+import { BlueprintService, ActivityLogService, BranchService, type BlueprintStatus } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
 /**
  * Blueprint Facade
  *
  * Enterprise-grade facade for Blueprint/Project management following the Git-like branching model.
- * Orchestrates BlueprintService, BranchService, and BlueprintActivityService to provide a unified
+ * Orchestrates BlueprintService, BranchService, and ActivityLogService to provide a unified
  * interface for all blueprint operations.
  *
  * Design Principles:
@@ -71,7 +71,7 @@ export class BlueprintFacade {
   // Inject dependencies
   private readonly blueprintService = inject(BlueprintService);
   private readonly branchService = inject(BranchService);
-  private readonly activityService = inject(BlueprintActivityService);
+  private readonly activityService = inject(ActivityLogService);
   private readonly blueprintRepository = inject(BlueprintRepository);
   private readonly blueprintBranchRepository = inject(BlueprintBranchRepository);
   private readonly branchForkRepository = inject(BranchForkRepository);

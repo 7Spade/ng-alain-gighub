@@ -7,7 +7,7 @@ import {
   type BlueprintInsert,
   type BlueprintUpdate
 } from '@core';
-import { BlueprintService, BlueprintActivityService, BranchService } from '@shared';
+import { BlueprintService, ActivityLogService, BranchService } from '@shared';
 import { of } from 'rxjs';
 
 import { BlueprintFacade } from './blueprint.facade';
@@ -15,7 +15,7 @@ import { BlueprintFacade } from './blueprint.facade';
 describe('BlueprintFacade', () => {
   let facade: BlueprintFacade;
   let blueprintService: jasmine.SpyObj<BlueprintService>;
-  let activityService: jasmine.SpyObj<BlueprintActivityService>;
+  let activityService: jasmine.SpyObj<ActivityLogService>;
   let blueprintRepository: jasmine.SpyObj<BlueprintRepository>;
   let blueprintBranchRepository: jasmine.SpyObj<BlueprintBranchRepository>;
   let branchForkRepository: jasmine.SpyObj<BranchForkRepository>;
@@ -69,7 +69,7 @@ describe('BlueprintFacade', () => {
       }
     );
 
-    const activityServiceSpy = jasmine.createSpyObj('BlueprintActivityService', ['logActivity']);
+    const activityServiceSpy = jasmine.createSpyObj('ActivityLogService', ['logActivity']);
 
     const blueprintRepoSpy = jasmine.createSpyObj('BlueprintRepository', ['findAll', 'findById', 'create', 'update', 'delete']);
 
@@ -83,7 +83,7 @@ describe('BlueprintFacade', () => {
       providers: [
         BlueprintFacade,
         { provide: BlueprintService, useValue: blueprintServiceSpy },
-        { provide: BlueprintActivityService, useValue: activityServiceSpy },
+        { provide: ActivityLogService, useValue: activityServiceSpy },
         { provide: BlueprintRepository, useValue: blueprintRepoSpy },
         { provide: BlueprintBranchRepository, useValue: blueprintBranchRepoSpy },
         { provide: BranchForkRepository, useValue: branchForkRepoSpy },
@@ -93,7 +93,7 @@ describe('BlueprintFacade', () => {
 
     facade = TestBed.inject(BlueprintFacade);
     blueprintService = TestBed.inject(BlueprintService) as jasmine.SpyObj<BlueprintService>;
-    activityService = TestBed.inject(BlueprintActivityService) as jasmine.SpyObj<BlueprintActivityService>;
+    activityService = TestBed.inject(ActivityLogService) as jasmine.SpyObj<ActivityLogService>;
     blueprintRepository = TestBed.inject(BlueprintRepository) as jasmine.SpyObj<BlueprintRepository>;
     blueprintBranchRepository = TestBed.inject(BlueprintBranchRepository) as jasmine.SpyObj<BlueprintBranchRepository>;
     branchForkRepository = TestBed.inject(BranchForkRepository) as jasmine.SpyObj<BranchForkRepository>;
