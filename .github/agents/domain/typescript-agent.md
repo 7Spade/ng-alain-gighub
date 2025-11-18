@@ -1,6 +1,6 @@
 # TypeScript 開發代理
 
-> **相關文檔**：參考 [TypeScript 規範](../../.cursor/rules/typescript.mdc)、[代碼質量](../../.cursor/rules/code-quality.mdc)
+> **相關文檔**：參考 [TypeScript 規範](../../../.cursor/rules/typescript.mdc)、[代碼質量](../../../.cursor/rules/code-quality.mdc)
 
 ## 代理職責
 
@@ -106,8 +106,8 @@ if (isSpecificType(data)) {
 
 - [TypeScript 官方文檔](https://www.typescriptlang.org/docs/)
 - [TypeScript 深入理解](https://basarat.gitbook.io/typescript/)
-- [專案 TypeScript 規範](../../.cursor/rules/typescript.mdc)
-- [資料表結構定義](../../docs/30-0-完整SQL表結構定義.md)
+- [專案 TypeScript 規範](../../../.cursor/rules/typescript.mdc)
+- [資料表結構定義](../../../docs/30-0-完整SQL表結構定義.md)
 
 ---
 

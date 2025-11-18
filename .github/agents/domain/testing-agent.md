@@ -1,6 +1,6 @@
 # 測試代理
 
-> **相關文檔**：參考 [測試規範](../../.cursor/rules/testing.mdc)、[測試指南](../../docs/38-測試指南.md)
+> **相關文檔**：參考 [測試規範](../../../.cursor/rules/testing.mdc)、[測試指南](../../../docs/38-測試指南.md)
 
 ## 代理職責
 
@@ -355,8 +355,8 @@ module.exports = function(config) {
 - [Jasmine 官方文檔](https://jasmine.github.io/)
 - [Karma 官方文檔](https://karma-runner.github.io/)
 - [Angular Testing 指南](https://angular.dev/guide/testing)
-- [專案測試規範](../../.cursor/rules/testing.mdc)
-- [測試指南](../../docs/38-測試指南.md)
+- [專案測試規範](../../../.cursor/rules/testing.mdc)
+- [測試指南](../../../docs/38-測試指南.md)
 
 ---
 

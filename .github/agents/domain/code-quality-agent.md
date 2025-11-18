@@ -1,6 +1,6 @@
 # 代碼質量代理
 
-> **相關文檔**：參考 [代碼質量](../../.cursor/rules/code-quality.mdc)、[代碼檢查](../../.cursor/rules/linting.mdc)
+> **相關文檔**：參考 [代碼質量](../../../.cursor/rules/code-quality.mdc)、[代碼檢查](../../../.cursor/rules/linting.mdc)
 
 ## 代理職責
 
@@ -225,11 +225,11 @@ yarn stylelint
 
 ## 參考資源
 
-- [ESLint 配置](../../eslint.config.mjs)
-- [Prettier 配置](../../.prettierrc.js)
-- [Stylelint 配置](../../stylelint.config.mjs)
-- [代碼質量規範](../../.cursor/rules/code-quality.mdc)
-- [代碼檢查規範](../../.cursor/rules/linting.mdc)
+- [ESLint 配置](../../../eslint.config.mjs)
+- [Prettier 配置](../../../.prettierrc.js)
+- [Stylelint 配置](../../../stylelint.config.mjs)
+- [代碼質量規範](../../../.cursor/rules/code-quality.mdc)
+- [代碼檢查規範](../../../.cursor/rules/linting.mdc)
 
 ---
 
