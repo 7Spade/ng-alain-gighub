@@ -434,11 +434,33 @@ export class BlueprintFacade {
   /**
    * Fork blueprint to create new independent blueprint
    *
+   * **⚠️ ARCHITECTURAL LIMITATION**: Due to the current database schema design, the `branch_forks`
+   * table tracks branch-level forks (blueprint_id + branch_id) rather than blueprint-to-blueprint
+   * relationships. This implementation creates a new blueprint and records the source branch in
+   * the fork table, but does NOT establish a direct source/target blueprint relationship.
+   *
+   * **Implications**:
+   * - The new blueprint is independent and has no direct link to the source blueprint
+   * - Fork tracking is at the branch level, not blueprint level
+   * - To query "all blueprints forked from X", you would need to join through branch_forks
+   * - Consider schema evolution if cross-blueprint fork tracking is needed
+   *
    * @param sourceBlueprintId Source blueprint ID
-   * @param sourceBranchId Source branch ID
-   * @param data Fork data
+   * @param sourceBranchId Source branch ID (required for fork tracking)
+   * @param data Fork data (name, project_code, owner_id)
    * @param forkedBy User ID who performs the fork
-   * @returns Promise<{ newBlueprint: Blueprint; fork: unknown }>
+   * @returns Promise containing the new blueprint and fork record
+   *
+   * @example
+   * ```typescript
+   * const result = await facade.forkBlueprint(
+   *   'blueprint-123',
+   *   'branch-456',
+   *   { name: 'Forked Project', project_code: 'FORK-001', owner_id: 'user-789' },
+   *   'user-789'
+   * );
+   * // result.newBlueprint is independent, result.fork tracks branch-level fork
+   * ```
    */
   async forkBlueprint(
     sourceBlueprintId: string,
@@ -458,9 +480,8 @@ export class BlueprintFacade {
         status: 'planning'
       });
 
-      // 2. Create fork record  
-      // Note: branch_forks table links blueprint_id + branch_id, not source/target blueprints
-      // This represents forking a branch, not the entire blueprint
+      // 2. Create fork record
+      // NOTE: This tracks the source branch, not a blueprint-to-blueprint relationship
       const fork = await firstValueFrom(
         this.branchForkRepository.create({
           blueprint_id: sourceBlueprintId,
@@ -566,13 +587,24 @@ export class BlueprintFacade {
   }
 
   /**
-   * Setup aggregation refresh listener
-   * Listens for task/document/quality updates and refreshes blueprint data
+   * Setup aggregation refresh listener (NOT YET IMPLEMENTED)
+   *
+   * This method is scaffolding for future BlueprintAggregationRefreshService integration.
+   * When implemented, it will listen for task/document/quality updates and automatically
+   * refresh blueprint data to maintain consistency across the application.
+   *
+   * **Implementation Status**: Awaiting BlueprintAggregationRefreshService
+   * **Tracking**: See docs/COMPONENT-MAPPING-REPORT.md - "BlueprintAggregationRefreshService" (High Priority)
+   * **Integration Point**: Line 138 in constructor (currently commented out)
    *
    * @private
+   * @todo Implement when BlueprintAggregationRefreshService is available
+   * @see docs/COMPONENT-MAPPING-REPORT.md
    */
   private setupAggregationRefreshListener(): void {
-    // TODO: Implement when BlueprintAggregationRefreshService is available
+    // Scaffolding for future implementation
+    // Uncomment when BlueprintAggregationRefreshService is ready:
+    //
     // const aggregationService = inject(BlueprintAggregationRefreshService);
     // aggregationService.listen().subscribe(() => {
     //   const blueprintId = this.currentBlueprintId();
