@@ -1,11 +1,60 @@
 > **📌 重要提示**：
 > - 基礎開發規範已遷移至 `.cursor/rules/` 目錄，這些規則會自動應用於 Cursor IDE 的 AI 功能
-> - GitHub Copilot 指引位於 `.github/agents/copilot-instructions.md` 和 `.github/instructions/` 目錄
+> - **VSCode GitHub Copilot 指引**位於根目錄的 `.copilot-*.md` 檔案（與 `.vscode/settings.json` 整合）
+> - **GitHub Copilot Agent Mode 指引**位於 `.github/agents/` 目錄（供 Workspace/Agent Mode 使用）
 > - 模組特定規範請參考各模組目錄下的 `AGENTS.md` 文件
 > - 詳細規範請參考對應的規則文件
 > - **⭐ [Agent 開發指南與限制說明](./docs/43-Agent開發指南與限制說明.md)** - 了解 AI Agent 開發的限制和最佳實踐
 
-## 📋 Cursor 規則文件
+## 📂 AI 助手檔案組織結構
+
+本專案的 AI 助手相關檔案分為三個層級，各有不同的用途和目標受眾：
+
+### 1. 根目錄 Copilot 指引（VSCode 整合）⭐
+位於專案根目錄的 `.copilot-*.md` 檔案，由 `.vscode/settings.json` 參照，供 VSCode GitHub Copilot 日常開發使用：
+
+- [`.copilot-instructions.md`](./.copilot-instructions.md) - **主要開發指引**
+  - 專案概述和技術架構
+  - 核心開發原則（常見做法、企業標準、符合邏輯、符合常理）
+  - Angular 20 + Signals 規範
+  - 開發工作流程和文件參考
+
+- [`.copilot-review-instructions.md`](./.copilot-review-instructions.md) - **程式碼審查指引**
+  - 10 大審查檢查清單（架構、型別、Signals、品質、錯誤、安全、效能、測試、文件、格式）
+  - 審查流程和建議格式
+  - 最佳實踐範例
+
+- [`.copilot-commit-message-instructions.md`](./.copilot-commit-message-instructions.md) - **Commit 訊息規範**
+  - Conventional Commits 1.0.0 標準
+  - Type/Scope/Subject 規範
+  - 正體中文撰寫指引
+
+- [`.copilot-pull-request-description-instructions.md`](./.copilot-pull-request-description-instructions.md) - **PR 描述規範**
+  - PR 描述模板和結構
+  - 不同類型 PR 的完整範例
+  - 檢查清單和格式建議
+
+- [`.copilot-test-instructions.md`](./.copilot-test-instructions.md) - **測試產生指引**
+  - Jasmine/Karma 測試框架規範
+  - 元件、服務、整合測試範例
+  - Signals API 測試方法
+  - 覆蓋率要求 (≥ 80%)
+
+### 2. GitHub Agents 目錄（Agent Mode）
+位於 `.github/agents/` 目錄，供 GitHub Copilot Workspace 和 Agent Mode 使用：
+
+詳細說明請參考 [.github/agents/README.md](./.github/agents/README.md)
+
+### 3. Cursor 規則目錄（Cursor IDE）
+位於 `.cursor/rules/` 目錄，Cursor IDE 會自動載入這些規則：
+
+詳細說明請參考 [.cursor/rules/README.md](./.cursor/rules/README.md)
+
+---
+
+## 📋 快速參考：Cursor 規則文件
+
+詳細規則請參考 [.cursor/rules/README.md](./.cursor/rules/README.md)
 
 ### 核心開發規範
 - [TypeScript 類型安全](./.cursor/rules/typescript.mdc) - TypeScript 類型安全與最佳實踐
@@ -48,45 +97,84 @@
 
 ---
 
-## 🤖 GitHub Copilot 指引
+## 📋 快速參考：GitHub Agents 目錄
 
-GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
+詳細說明請參考 [.github/agents/README.md](./.github/agents/README.md)
 
 ### 主要指引文件
-- [GitHub Copilot Instructions](./.github/agents/copilot-instructions.md) - 完整的專案指引和開發規範
-  - 專案架構概覽（Git-like 分支模型，51 張資料表）
-  - 開發標準和最佳實踐
-  - 模組結構和依賴規則
-  - 測試要求和安全指南
-
-### 專案特定 Agent ⭐
-- [ng-alain-project-agent.md](./.github/agents/ng-alain-project-agent.md) - **ng-alain-github 專案開發代理**
+- [ng-project-agent.md](./.github/agents/ng-project-agent.md) ⭐ - **專案開發代理**
   - 專案核心架構（Git-like 分支模型 + 51 張表）
   - 認證系統整合（Supabase Auth + @delon/auth）
   - SHARED_IMPORTS 模式
   - 完整開發工作流程
-  - 常見任務和問題排查
 
-### 開發相關 Agents
-- [typescript-agent.md](./.github/agents/typescript-agent.md) - TypeScript 開發代理
-- [angular-agent.md](./.github/agents/angular-agent.md) - Angular 開發代理
-- [architecture-agent.md](./.github/agents/architecture-agent.md) - 架構審查代理
-- [code-quality-agent.md](./.github/agents/code-quality-agent.md) - 代碼質量代理
-- [testing-agent.md](./.github/agents/testing-agent.md) - 測試代理
-- [template-agent.md](./.github/agents/template-agent.md) - 模板代理
+- [role.agent.md](./.github/agents/role.agent.md) - **AI 角色定位與回覆原則**
+- [role-config.md](./.github/agents/role-config.md) - **System message 快速參考**
+- [docs-index.md](./.github/agents/docs-index.md) - **docs/ 目錄索引**
+- [copilot-instructions.md](./.github/agents/copilot-instructions.md) - **Copilot 快速提醒**
 
-詳細說明請參考 [.github/agents/README.md](./.github/agents/README.md)
+### 領域專家 Agents（domain/）
+- [angular-agent.md](./.github/agents/domain/angular-agent.md) - Angular 開發代理
+- [typescript-agent.md](./.github/agents/domain/typescript-agent.md) - TypeScript 開發代理
+- [code-quality-agent.md](./.github/agents/domain/code-quality-agent.md) - 代碼質量代理
+- [security-agent.md](./.github/agents/domain/security-agent.md) - 安全代理
+- [performance-agent.md](./.github/agents/domain/performance-agent.md) - 效能代理
+- [testing-agent.md](./.github/agents/domain/testing-agent.md) - 測試代理
+- [accessibility-agent.md](./.github/agents/domain/accessibility-agent.md) - 可訪問性代理
+- [docs-agent.md](./.github/agents/domain/docs-agent.md) - 文件代理
 
-### 模組特定指引
-位於 `.github/instructions/` 目錄，會根據編輯的文件自動應用：
+---
 
-- [Shared Module](./.github/instructions/shared.instructions.md) - 共享模組指引（`src/app/shared/**/*`）
-- [Routes Module](./.github/instructions/routes.instructions.md) - 路由模組指引（`src/app/routes/**/*`）
-- [Core Module](./.github/instructions/core.instructions.md) - 核心模組指引（`src/app/core/**/*`）
-- [Testing](./.github/instructions/testing.instructions.md) - 測試指引（`**/*.spec.ts`）
-- [Documentation](./.github/instructions/documentation.instructions.md) - 文檔指引（`docs/**/*.md`）
+## 🔧 VSCode 設定檔整合
 
-詳細說明請參考 [.github/instructions/README.md](./.github/instructions/README.md)
+`.vscode/settings.json` 已配置 GitHub Copilot 使用根目錄的指引檔案：
+
+### Copilot 程式碼產生（Line 86-96）
+```json
+"github.copilot.chat.codeGeneration.instructions": [
+  { "text": "術語對照..." },
+  { "text": "Always response in #zh-tw." },
+  { "file": ".copilot-instructions.md" }  // ← 主要開發指引
+]
+```
+
+### Copilot 程式碼審查（Line 98-105）
+```json
+"github.copilot.chat.reviewSelection.instructions": [
+  { "text": "Always response in #zh-tw." },
+  { "file": ".copilot-review-instructions.md" }  // ← 審查指引
+]
+```
+
+### Copilot Commit 訊息（Line 107-117）
+```json
+"github.copilot.chat.commitMessageGeneration.instructions": [
+  { "text": "# Use Conventional Commits 1.0.0..." },
+  { "text": "請一律使用正體中文..." },
+  { "file": ".copilot-commit-message-instructions.md" }  // ← Commit 規範
+]
+```
+
+### Copilot PR 描述（Line 119-126）
+```json
+"github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
+  { "text": "請一律使用正體中文..." },
+  { "file": ".copilot-pull-request-description-instructions.md" }  // ← PR 規範
+]
+```
+
+### Copilot 測試產生（Line 71-78）
+```json
+"github.copilot.chat.testGeneration.instructions": [
+  { "file": ".copilot-test-instructions.md" },  // ← 測試指引
+  { "text": "Always try uniting related tests in a suite." }
+]
+```
+
+### 使用建議
+- **日常開發**：使用根目錄的 `.copilot-*.md` 檔案（VSCode 自動載入）
+- **專案規劃**：參考 `.github/agents/` 檔案（Agent Mode 使用）
+- **深入規範**：查閱 `.cursor/rules/` 檔案（Cursor IDE 自動載入）
 
 ---
 
