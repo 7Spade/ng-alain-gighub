@@ -1,4 +1,42 @@
 {
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
-  "recommendations": ["cipchk.ng-alain-extension-pack"]
+  "recommendations": [
+    // ng-alain 官方擴充套件包
+    "cipchk.ng-alain-extension-pack",
+    
+    // Angular 核心擴充功能
+    "angular.ng-template",
+    
+    // 程式碼品質與格式化
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "stylelint.vscode-stylelint",
+    
+    // Git 與版本控制
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+    
+    // GitHub Copilot
+    "github.copilot",
+    "github.copilot-chat",
+    
+    // Supabase 開發
+    "supabase.supabase-vscode",
+    
+    // 測試與除錯
+    "hbenl.vscode-test-explorer",
+    "ms-playwright.playwright",
+    
+    // 其他實用工具
+    "usernamehw.errorlens",
+    "christian-kohler.path-intellisense",
+    "visualstudioexptteam.vscodeintellicode",
+    "visualstudioexptteam.intellicode-api-usage-examples"
+  ],
+  "unwantedRecommendations": [
+    // 避免與專案現有工具衝突的擴充功能
+    "hookyqr.beautify",
+    "dbaeumer.jshint",
+    "ms-vscode.vscode-typescript-tslint-plugin"
+  ]
 }
