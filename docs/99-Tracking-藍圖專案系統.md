@@ -133,10 +133,13 @@ BranchDataIsolationService（分支數據隔離）[✅已完成]
 藍圖詳情頁面（BlueprintDetailComponent）[✅已完成]
 藍圖詳情殼頁面（BlueprintDetailShellComponent）[✅已完成]
 藍圖主分支頁面（BlueprintMainBranchComponent）[✅已完成]
-藍圖設置頁面（BlueprintSettingsComponent）[⏳待開始]
-  - 目前狀態：骨架頁面，僅顯示「功能開發中」提示
-  - 待實現：配置管理 UI、工作日曆設定、通知規則設定
-藍圖設置殼頁面（BlueprintSettingsShellComponent）[⏳待開始]
+藍圖設置頁面（BlueprintSettingsComponent）[✅已完成]
+  - 整合骨架組件表單模板（基本資訊、權限策略、自動化任務）[✅已完成]
+  - 連接真實 BlueprintService 和配置數據[✅已完成]
+  - 添加表單驗證和保存功能[✅已完成]
+  - 保留預設審核人列表[✅已完成]
+  - 使用 OnPush 變更檢測策略[✅已完成]
+藍圖設置殼頁面（BlueprintSettingsShellComponent）[✅已完成]
 
 #### 分支管理
 
@@ -238,6 +241,16 @@ API 文檔更新（藍圖系統 API 文檔）[⏳待開始]
 | **權限控制** | 90% | ✅ 基本完整 |
 
 ---
+
+## 📜 開發歷程記錄
+
+### 2025-01-15：藍圖設置組件整合
+
+- ✅ **整合骨架組件功能**：將 `BlueprintSettingsShellComponent` 的表單模板整合到 `BlueprintSettingsComponent`
+- ✅ **表單功能**：實現基本資訊、權限策略、自動化任務三個標籤頁的表單
+- ✅ **數據連接**：連接真實的 BlueprintService 和 BlueprintConfig 數據
+- ✅ **UI 改進**：使用 `nz-tabset`、`nz-form` 改進布局，添加快速儲存和版本查看按鈕
+- ✅ **企業標準**：使用 Signals、OnPush 變更檢測、表單驗證、完善的錯誤處理
 
 ## 🚧 進行中的任務詳情
 
@@ -463,7 +476,7 @@ Edge Function 調用服務創建（Supabase Edge Function 客戶端封裝）[⏳
 - Service 層：🚧 80%（4/5 任務）
 - Git-like 分支模型：🚧 80%（4/5 任務）
 - 權限與安全：✅ 100%（3/3 任務）
-- 頁面組件：🚧 70%（10/14 任務）
+- 頁面組件：🚧 79%（11/14 任務，藍圖設置頁面已完成）
 - 測試：⏳ 0%（0/8 任務）
 - 文檔：🚧 33%（1/3 任務）
 

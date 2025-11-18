@@ -137,6 +137,11 @@ TaskListComponent Phase 5.1 單元測試[✅已完成]
 任務看板頁面（TaskBoardComponent）[✅已完成]
 任務日曆頁面（TaskCalendarComponent）[✅已完成]
 任務詳情頁面（TaskDetailComponent）[✅已完成]
+- 整合骨架組件 Checklist 功能[✅已完成]
+- 添加排程和指派按鈕[✅已完成]
+- 使用 computed 根據任務狀態生成 Checklist[✅已完成]
+- 改進 UI 布局（nz-descriptions、nz-card）[✅已完成]
+- 使用 OnPush 變更檢測策略[✅已完成]
 任務詳情殼頁面（TaskDetailShellComponent）[✅已完成]
 任務表單頁面（TaskFormComponent）[✅已完成]
 任務表單中心頁面（TaskFormHubComponent）[✅已完成]
@@ -243,6 +248,13 @@ API 文檔更新（任務系統 API 文檔）[⏳待開始]
 - 測試覆蓋率：100% 新增方法覆蓋
 
 ### Phase 6-8: 待實施（2025-01 起）
+
+### 2025-01-15：任務詳情組件整合
+
+- ✅ **整合骨架組件功能**：將 `TaskDetailShellComponent` 的 Checklist 功能整合到 `TaskDetailComponent`
+- ✅ **UI 改進**：使用 `nz-descriptions` 和 `nz-card` 改進布局，添加排程和指派按鈕
+- ✅ **動態 Checklist**：使用 `computed` 根據任務狀態動態生成 Checklist 項目
+- ✅ **企業標準**：使用 Signals、OnPush 變更檢測、完善的錯誤處理
 
 #### Phase 5: 即時更新與 Optimistic Update（待開始）
 - ⏳ 衝突解決策略（Last-Write-Wins）
