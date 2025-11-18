@@ -69,23 +69,29 @@ export class DocumentService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly activeDocuments = computed(() => this.documents().filter(d => !d.deletedAt));
+  readonly activeDocuments = computed(() => {
+    const docs = this.documents() as any[];
+    return docs.filter(d => !d.permanent_delete_at);
+  });
 
-  readonly deletedDocuments = computed(() => this.documents().filter(d => d.deletedAt));
+  readonly deletedDocuments = computed(() => {
+    const docs = this.documents() as any[];
+    return docs.filter(d => d.permanent_delete_at);
+  });
 
   readonly documentsByType = computed(() => {
-    const docs = this.activeDocuments();
+    const docs = this.activeDocuments() as any[];
     return {
-      image: docs.filter(d => d.fileType?.startsWith('image/')),
-      document: docs.filter(d => d.fileType?.includes('document') || d.fileType?.includes('pdf')),
-      drawing: docs.filter(d => d.fileType?.includes('dwg') || d.fileType?.includes('dxf')),
+      image: docs.filter(d => d.file_type?.startsWith('image/')),
+      document: docs.filter(d => d.file_type?.includes('document') || d.file_type?.includes('pdf')),
+      drawing: docs.filter(d => d.file_type?.includes('dwg') || d.file_type?.includes('dxf')),
       other: docs.filter(
         d =>
-          !d.fileType?.startsWith('image/') &&
-          !d.fileType?.includes('document') &&
-          !d.fileType?.includes('pdf') &&
-          !d.fileType?.includes('dwg') &&
-          !d.fileType?.includes('dxf')
+          !d.file_type?.startsWith('image/') &&
+          !d.file_type?.includes('document') &&
+          !d.file_type?.includes('pdf') &&
+          !d.file_type?.includes('dwg') &&
+          !d.file_type?.includes('dxf')
       )
     };
   });

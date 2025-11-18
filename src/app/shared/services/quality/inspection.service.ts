@@ -91,7 +91,11 @@ export class InspectionService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.inspectionRepository.findByType(taskId, inspectionType));
+      const data = await firstValueFrom(
+        this.inspectionRepository.findByTaskId(taskId, { 
+          filters: { inspectionType } 
+        })
+      );
       this.inspectionsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入驗收類型失敗');

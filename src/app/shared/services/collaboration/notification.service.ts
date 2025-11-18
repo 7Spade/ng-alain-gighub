@@ -71,22 +71,26 @@ export class NotificationService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly unreadNotifications = computed(() => this.notifications().filter(n => !n.isRead));
+  readonly unreadNotifications = computed(() => {
+    const notifications = this.notifications() as any[];
+    return notifications.filter(n => !n.is_read);
+  });
 
   readonly unreadCount = computed(() => this.unreadNotifications().length);
 
-  readonly recentNotifications = computed(() =>
-    [...this.notifications()].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 20)
-  );
+  readonly recentNotifications = computed(() => {
+    const notifications = [...this.notifications()] as any[];
+    return notifications.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 20);
+  });
 
   readonly notificationsByType = computed(() => {
-    const notifications = this.notifications();
+    const notifications = this.notifications() as any[];
     return {
-      task: notifications.filter(n => n.notificationType === 'task'),
-      issue: notifications.filter(n => n.notificationType === 'issue'),
-      comment: notifications.filter(n => n.notificationType === 'comment'),
-      pullRequest: notifications.filter(n => n.notificationType === 'pull_request'),
-      system: notifications.filter(n => n.notificationType === 'system')
+      task: notifications.filter(n => n.notification_type === 'task'),
+      issue: notifications.filter(n => n.notification_type === 'issue'),
+      comment: notifications.filter(n => n.notification_type === 'comment'),
+      pullRequest: notifications.filter(n => n.notification_type === 'pull_request'),
+      system: notifications.filter(n => n.notification_type === 'system')
     };
   });
 
@@ -203,15 +207,15 @@ export class NotificationService {
     try {
       const unread = this.unreadNotifications();
       await Promise.all(
-        unread.map(n => firstValueFrom(this.notificationRepository.update(n.id, { isRead: true, readAt: new Date().toISOString() })))
+        unread.map(n => firstValueFrom(this.notificationRepository.update(n.id, { is_read: true, read_at: new Date().toISOString() } as any)))
       );
 
       // 更新本地狀態
       this.notificationsState.update(current =>
-        current.map(n => ({
+        current.map((n: any) => ({
           ...n,
-          isRead: true,
-          readAt: new Date().toISOString()
+          is_read: true,
+          read_at: new Date().toISOString()
         }))
       );
     } catch (error) {

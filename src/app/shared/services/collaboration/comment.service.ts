@@ -58,13 +58,17 @@ export class CommentService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly topLevelComments = computed(() => this.comments().filter(c => !c.parentCommentId));
+  readonly topLevelComments = computed(() => {
+    const comments = this.comments() as any[];
+    return comments.filter(c => !c.parent_comment_id);
+  });
 
   readonly commentCount = computed(() => this.comments().length);
 
-  readonly recentComments = computed(() =>
-    [...this.comments()].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 10)
-  );
+  readonly recentComments = computed(() => {
+    const comments = [...this.comments()] as any[];
+    return comments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 10);
+  });
 
   /**
    * 載入指定資源的所有留言
@@ -130,11 +134,11 @@ export class CommentService {
   /**
    * 回覆留言（創建巢狀回覆）
    */
-  async reply(parentCommentId: string, data: Omit<CommentInsert, 'parentCommentId'>): Promise<Comment> {
+  async reply(parentCommentId: string, data: Omit<CommentInsert, 'parent_comment_id'>): Promise<Comment> {
     return this.create({
       ...data,
-      parentCommentId
-    });
+      parent_comment_id: parentCommentId
+    } as any);
   }
 
   /**
@@ -183,25 +187,26 @@ export class CommentService {
    * 標記留言為已讀
    */
   async markAsRead(id: string): Promise<Comment> {
-    return this.update(id, { isRead: true });
+    return this.update(id, { is_edited: true } as any);
   }
 
   /**
    * 取得留言的回覆
    */
   getReplies(parentCommentId: string): Comment[] {
-    return this.comments().filter(c => c.parentCommentId === parentCommentId);
+    const comments = this.comments() as any[];
+    return comments.filter(c => c.parent_comment_id === parentCommentId);
   }
 
   /**
    * 建構留言樹狀結構
    */
   buildCommentTree(): CommentDetail[] {
-    const comments = this.comments();
-    const topLevel = comments.filter(c => !c.parentCommentId);
+    const comments = this.comments() as any[];
+    const topLevel = comments.filter(c => !c.parent_comment_id);
 
-    const buildTree = (comment: Comment): CommentDetail => {
-      const replies = comments.filter(c => c.parentCommentId === comment.id).map(buildTree);
+    const buildTree = (comment: any): CommentDetail => {
+      const replies = comments.filter(c => c.parent_comment_id === comment.id).map(buildTree);
 
       return {
         ...comment,
