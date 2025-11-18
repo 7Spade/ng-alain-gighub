@@ -1,9 +1,10 @@
-import { TestBed } from '@angular/core/testing';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { TestBed } from '@angular/core/testing';
+import { TaskTreeNode } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+
 import { TaskTreeDragService } from './task-tree-drag.service';
 import { TaskTreeFacade } from './task-tree.facade';
-import { TaskTreeNode } from '@shared';
 
 describe('TaskTreeDragService', () => {
   let service: TaskTreeDragService;
@@ -11,20 +12,11 @@ describe('TaskTreeDragService', () => {
   let messageSpy: jasmine.SpyObj<NzMessageService>;
 
   beforeEach(() => {
-    const facade = jasmine.createSpyObj('TaskTreeFacade', [
-      'updateTaskHierarchyOptimistic'
-    ]);
-    const message = jasmine.createSpyObj('NzMessageService', [
-      'success',
-      'error'
-    ]);
+    const facade = jasmine.createSpyObj('TaskTreeFacade', ['updateTaskHierarchyOptimistic']);
+    const message = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
 
     TestBed.configureTestingModule({
-      providers: [
-        TaskTreeDragService,
-        { provide: TaskTreeFacade, useValue: facade },
-        { provide: NzMessageService, useValue: message }
-      ]
+      providers: [TaskTreeDragService, { provide: TaskTreeFacade, useValue: facade }, { provide: NzMessageService, useValue: message }]
     });
 
     service = TestBed.inject(TaskTreeDragService);
@@ -92,11 +84,7 @@ describe('TaskTreeDragService', () => {
 
       await service.handleDrop(mockEvent, mockTaskNodes);
 
-      expect(facadeSpy.updateTaskHierarchyOptimistic).toHaveBeenCalledWith(
-        'task-1',
-        null,
-        jasmine.any(Number)
-      );
+      expect(facadeSpy.updateTaskHierarchyOptimistic).toHaveBeenCalledWith('task-1', null, jasmine.any(Number));
       expect(messageSpy.success).toHaveBeenCalledWith('任務位置已更新');
     });
 
@@ -113,10 +101,7 @@ describe('TaskTreeDragService', () => {
       const containerTasks = [parentTask, childTask];
 
       // Mock the calculation to return child as new parent
-      await service.handleDrop(
-        mockEvent,
-        containerTasks
-      );
+      await service.handleDrop(mockEvent, containerTasks);
 
       // Should not update if circular dependency
       // Note: The actual detection logic is in the service
@@ -124,9 +109,7 @@ describe('TaskTreeDragService', () => {
     });
 
     it('should show error message on update failure', async () => {
-      facadeSpy.updateTaskHierarchyOptimistic.and.returnValue(
-        Promise.reject(new Error('Update failed'))
-      );
+      facadeSpy.updateTaskHierarchyOptimistic.and.returnValue(Promise.reject(new Error('Update failed')));
 
       await service.handleDrop(mockEvent, mockTaskNodes);
 

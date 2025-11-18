@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TaskAssigneeSelectorComponent } from './task-assignee-selector.component';
 import { SHARED_IMPORTS } from '@shared';
+
+import { TaskAssigneeSelectorComponent } from './task-assignee-selector.component';
 
 /**
  * Task Assignee Selector Component Tests
- * 
+ *
  * Phase 6, Task 6.2: Assignee Selector Tests
- * 
+ *
  * Tests the TaskAssigneeSelectorComponent functionality:
  * - Displays current assignee correctly
  * - Shows grouped assignees by type
@@ -47,7 +48,7 @@ describe('TaskAssigneeSelectorComponent', () => {
     it('should group assignees by type', () => {
       const assignees = component.assigneeOptions();
       const groupedByType = component.groupedAssignees();
-      
+
       expect(groupedByType.users).toBeDefined();
       expect(groupedByType.teams).toBeDefined();
       expect(groupedByType.organizations).toBeDefined();
@@ -171,10 +172,10 @@ describe('TaskAssigneeSelectorComponent', () => {
 
     it('should filter assignees by search term', () => {
       const allAssignees = component.assigneeOptions();
-      
+
       // Search should work (implementation depends on nz-select)
       expect(allAssignees.length).toBeGreaterThan(0);
-      
+
       // Verify assignees have searchable fields
       allAssignees.forEach(assignee => {
         expect(assignee.name).toBeTruthy();
@@ -184,7 +185,7 @@ describe('TaskAssigneeSelectorComponent', () => {
     it('should support case-insensitive search', () => {
       const assignees = component.assigneeOptions();
       const firstAssignee = assignees[0];
-      
+
       // Verify name exists for search
       expect(firstAssignee.name).toBeTruthy();
       expect(firstAssignee.name.toLowerCase()).toBe(firstAssignee.name.toLowerCase());

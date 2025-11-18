@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { ConnectionStatusComponent } from './connection-status.component';
 import { ConnectionStatus } from '../task-tree.facade';
 
@@ -84,7 +85,7 @@ describe('ConnectionStatusComponent', () => {
     statuses.forEach(status => {
       fixture.componentRef.setInput('status', status);
       fixture.detectChanges();
-      
+
       const tooltip = component.statusTooltip();
       expect(tooltip).toBeTruthy();
       expect(typeof tooltip).toBe('string');
@@ -94,7 +95,7 @@ describe('ConnectionStatusComponent', () => {
   it('should handle signal-based reactivity', () => {
     fixture.componentRef.setInput('status', 'connected');
     fixture.detectChanges();
-    
+
     expect(component.statusColor()).toBe('green');
 
     // Change status

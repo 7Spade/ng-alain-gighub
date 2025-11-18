@@ -1,0 +1,241 @@
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { SettingRepository } from '@core';
+import { Setting, SettingInsert, SettingUpdate } from '@shared';
+import { firstValueFrom } from 'rxjs';
+
+/**
+ * Setting Service
+ *
+ * 提供系統設定相關的業務邏輯和狀態管理
+ * 使用 Signals 管理狀態，暴露 ReadonlySignal 給組件
+ *
+ * 支援三種層級的設定：
+ * - global: 全域設定
+ * - project: 專案設定
+ * - user: 使用者偏好設定
+ *
+ * @example
+ * ```typescript
+ * const settingService = inject(SettingService);
+ *
+ * // 載入全域設定
+ * await settingService.loadGlobalSettings();
+ *
+ * // 訂閱設定狀態
+ * effect(() => {
+ *   console.log('Settings:', settingService.settings());
+ * });
+ * ```
+ */
+@Injectable({
+  providedIn: 'root'
+})
+export class SettingService {
+  private settingRepository = inject(SettingRepository);
+
+  // 使用 Signals 管理狀態
+  private settingsState = signal<Setting[]>([]);
+  private loadingState = signal<boolean>(false);
+  private errorState = signal<string | null>(null);
+
+  // 暴露 ReadonlySignal 給組件
+  readonly settings = this.settingsState.asReadonly();
+  readonly loading = this.loadingState.asReadonly();
+  readonly error = this.errorState.asReadonly();
+
+  // Computed signals - 按層級分類
+  // Note: Settings table uses setting_key and setting_value fields
+  readonly settingsMap = computed(() => {
+    const map = new Map<string, Setting>();
+    const settings = this.settings() as any[];
+    settings.forEach(setting => {
+      map.set(setting.setting_key, setting);
+    });
+    return map;
+  });
+
+  /**
+   * 載入所有設定
+   */
+  async loadAll(): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const data = await firstValueFrom(this.settingRepository.findAll());
+      this.settingsState.set(data);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '載入設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 載入公開設定
+   */
+  async loadPublicSettings(): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const data = await firstValueFrom(this.settingRepository.findPublicSettings());
+      this.settingsState.set(data);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '載入公開設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 載入指定作用域的設定
+   */
+  async loadByScopeId(scopeId: string): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const data = await firstValueFrom(this.settingRepository.findByScopeId(scopeId));
+      this.settingsState.set(data);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '載入作用域設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據 key 取得設定值
+   */
+  getValue<T = any>(key: string, defaultValue?: T): T {
+    const setting = this.settingsMap().get(key);
+    if (!setting) {
+      return defaultValue as T;
+    }
+    const settingData = setting as any;
+    return (settingData.setting_value as T) || (defaultValue as T);
+  }
+
+  /**
+   * 根據 key 取得設定
+   */
+  async getByKey(key: string): Promise<Setting | null> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const setting = await firstValueFrom(this.settingRepository.findByKey(key));
+      return setting;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '載入設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 創建新設定
+   */
+  async create(data: SettingInsert): Promise<Setting> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const setting = await firstValueFrom(this.settingRepository.create(data));
+
+      // 更新本地狀態
+      this.settingsState.update(current => [...current, setting]);
+
+      return setting;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '創建設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 更新設定
+   */
+  async update(id: string, data: SettingUpdate): Promise<Setting> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const updated = await firstValueFrom(this.settingRepository.update(id, data));
+
+      // 更新本地狀態
+      this.settingsState.update(current => current.map(s => (s.id === id ? updated : s)));
+
+      return updated;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '更新設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據 key 更新設定值
+   */
+  async updateByKey(key: string, value: any): Promise<Setting> {
+    const setting = await this.getByKey(key);
+    if (!setting) {
+      throw new Error(`設定 ${key} 不存在`);
+    }
+
+    return this.update(setting.id, { setting_value: value } as any);
+  }
+
+  /**
+   * 刪除設定
+   */
+  async delete(id: string): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      await firstValueFrom(this.settingRepository.delete(id));
+
+      // 更新本地狀態
+      this.settingsState.update(current => current.filter(s => s.id !== id));
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '刪除設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 批量更新設定
+   */
+  async updateBatch(updates: Array<{ key: string; value: any }>): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      await Promise.all(updates.map(({ key, value }) => this.updateByKey(key, value)));
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '批量更新設定失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 清空本地狀態
+   */
+  clear(): void {
+    this.settingsState.set([]);
+    this.errorState.set(null);
+  }
+}

@@ -1,12 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, input, output, signal, computed } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
-import {
-  Assignee,
-  AssigneeType,
-  AssignmentChangeEvent,
-  getAssigneeIcon,
-  getAssigneeTypeLabel
-} from '../task-assignment.types';
+
+import { Assignee, AssigneeType, AssignmentChangeEvent, getAssigneeIcon, getAssigneeTypeLabel } from '../task-assignment.types';
 
 /**
  * Task Assignee Selector Component
@@ -44,14 +39,12 @@ import {
       [nzLoading]="loading()"
       [nzDisabled]="disabled()"
       class="assignee-selector"
-      style="min-width: 180px;">
-      
+      style="min-width: 180px;"
+    >
       @if (users().length > 0) {
         <nz-option-group [nzLabel]="getAssigneeTypeLabel('user')">
           @for (user of users(); track user.id) {
-            <nz-option
-              [nzValue]="user.id"
-              [nzLabel]="user.name">
+            <nz-option [nzValue]="user.id" [nzLabel]="user.name">
               <div class="assignee-option">
                 @if (user.avatar) {
                   <nz-avatar [nzSize]="24" [nzSrc]="user.avatar"></nz-avatar>
@@ -117,50 +110,51 @@ import {
       }
 
       @if (hasNoAssignees()) {
-        <nz-option [nzValue]="null" [nzLabel]="'無可用的指派對象'" [nzDisabled]="true">
-        </nz-option>
+        <nz-option [nzValue]="null" [nzLabel]="'無可用的指派對象'" [nzDisabled]="true"> </nz-option>
       }
     </nz-select>
   `,
-  styles: [`
-    .assignee-selector {
-      :host ::ng-deep {
-        .ant-select-selection-item {
-          display: flex;
-          align-items: center;
-          gap: 8px;
+  styles: [
+    `
+      .assignee-selector {
+        :host ::ng-deep {
+          .ant-select-selection-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
         }
       }
-    }
 
-    .assignee-option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 0;
+      .assignee-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 0;
 
-      .assignee-icon {
-        font-size: 18px;
-        color: rgba(0, 0, 0, 0.65);
+        .assignee-icon {
+          font-size: 18px;
+          color: rgba(0, 0, 0, 0.65);
+        }
+
+        .assignee-name {
+          font-weight: 500;
+          color: rgba(0, 0, 0, 0.85);
+          flex-shrink: 0;
+        }
+
+        .assignee-email {
+          font-size: 12px;
+          color: rgba(0, 0, 0, 0.45);
+          margin-left: auto;
+          flex-shrink: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
-
-      .assignee-name {
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.85);
-        flex-shrink: 0;
-      }
-
-      .assignee-email {
-        font-size: 12px;
-        color: rgba(0, 0, 0, 0.45);
-        margin-left: auto;
-        flex-shrink: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-  `]
+    `
+  ]
 })
 export class TaskAssigneeSelectorComponent implements OnInit {
   // Inputs
@@ -181,10 +175,9 @@ export class TaskAssigneeSelectorComponent implements OnInit {
 
   // Computed
   readonly hasNoAssignees = computed(() => {
-    return this.users().length === 0 &&
-           this.teams().length === 0 &&
-           this.organizations().length === 0 &&
-           this.subcontractors().length === 0;
+    return (
+      this.users().length === 0 && this.teams().length === 0 && this.organizations().length === 0 && this.subcontractors().length === 0
+    );
   });
 
   readonly placeholder = computed(() => {
@@ -209,7 +202,7 @@ export class TaskAssigneeSelectorComponent implements OnInit {
     try {
       // Mock data for now - replace with actual service calls
       // const blueprintId = this.blueprintId();
-      
+
       // TODO: Load from UserService, TeamService, etc.
       // For now, use mock data
       await this.loadMockData();
@@ -222,6 +215,7 @@ export class TaskAssigneeSelectorComponent implements OnInit {
 
   /**
    * Mock data loader - replace with actual service integration
+   *
    * @private
    */
   private async loadMockData(): Promise<void> {
@@ -298,7 +292,7 @@ export class TaskAssigneeSelectorComponent implements OnInit {
 
     // Find assignee type
     let assigneeType: AssigneeType | undefined;
-    
+
     if (assigneeId) {
       if (this.users().find(u => u.id === assigneeId)) {
         assigneeType = 'user';

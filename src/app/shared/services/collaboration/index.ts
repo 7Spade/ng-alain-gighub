@@ -5,3 +5,5 @@
  */
 export * from './collaboration.service';
 export * from './invitation.service';
+export * from './comment.service';
+export * from './notification.service';

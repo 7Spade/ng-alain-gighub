@@ -1,10 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
-import {
-  TASK_STATUS_CONFIGS,
-  getAllowedNextStatuses,
-  getStatusConfig
-} from '../task-status.config';
+
+import { TASK_STATUS_CONFIGS, getAllowedNextStatuses, getStatusConfig } from '../task-status.config';
 
 /**
  * Task Status Switcher Component
@@ -32,12 +29,7 @@ import {
   imports: [SHARED_IMPORTS],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nz-tag
-      [nzColor]="currentStatusConfig().color"
-      nz-dropdown
-      [nzDropdownMenu]="menu"
-      [nzTrigger]="'click'"
-      class="status-tag clickable">
+    <nz-tag [nzColor]="currentStatusConfig().color" nz-dropdown [nzDropdownMenu]="menu" [nzTrigger]="'click'" class="status-tag clickable">
       @if (currentStatusConfig().icon) {
         <span nz-icon [nzType]="currentStatusConfig().icon!"></span>
       }
@@ -56,45 +48,45 @@ import {
             <span nz-icon [nzType]="status.icon || 'tag'" [style.color]="getIconColor(status.color)"></span>
             <span style="margin-left: 8px;">{{ status.label }}</span>
             @if (status.description) {
-              <span style="margin-left: 8px; color: rgba(0, 0, 0, 0.45); font-size: 12px;">
-                ({{ status.description }})
-              </span>
+              <span style="margin-left: 8px; color: rgba(0, 0, 0, 0.45); font-size: 12px;"> ({{ status.description }}) </span>
             }
           </li>
         }
       </ul>
     </nz-dropdown-menu>
   `,
-  styles: [`
-    .status-tag {
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.2s;
-      
-      &.clickable:hover {
-        opacity: 0.8;
-        transform: translateY(-1px);
+  styles: [
+    `
+      .status-tag {
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s;
+
+        &.clickable:hover {
+          opacity: 0.8;
+          transform: translateY(-1px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
       }
 
-      &:active {
-        transform: translateY(0);
-      }
-    }
+      :host ::ng-deep {
+        .ant-dropdown-menu-item {
+          display: flex;
+          align-items: center;
+          min-width: 200px;
 
-    :host ::ng-deep {
-      .ant-dropdown-menu-item {
-        display: flex;
-        align-items: center;
-        min-width: 200px;
-
-        &:hover {
-          .ant-dropdown-menu-title-content {
-            color: #1890ff;
+          &:hover {
+            .ant-dropdown-menu-title-content {
+              color: #1890ff;
+            }
           }
         }
       }
-    }
-  `]
+    `
+  ]
 })
 export class TaskStatusSwitcherComponent {
   // Inputs
@@ -124,12 +116,12 @@ export class TaskStatusSwitcherComponent {
     }
 
     const currentStatus = this.currentStatus();
-    
+
     // Don't emit if status hasn't changed
     if (newStatus === currentStatus) {
       return;
     }
-    
+
     // Double-check transition is allowed (defensive programming)
     const config = TASK_STATUS_CONFIGS[currentStatus];
     if (!config || !config.allowedTransitions.includes(newStatus)) {
@@ -145,17 +137,18 @@ export class TaskStatusSwitcherComponent {
 
   /**
    * Get icon color from color name
+   *
    * @private
    */
   getIconColor(colorName: string): string {
     const colorMap: Record<string, string> = {
-      'success': '#52c41a',
-      'processing': '#1890ff',
-      'error': '#ff4d4f',
-      'warning': '#faad14',
-      'cyan': '#13c2c2',
-      'blue': '#1890ff',
-      'default': '#d9d9d9'
+      success: '#52c41a',
+      processing: '#1890ff',
+      error: '#ff4d4f',
+      warning: '#faad14',
+      cyan: '#13c2c2',
+      blue: '#1890ff',
+      default: '#d9d9d9'
     };
     return colorMap[colorName] || '#d9d9d9';
   }

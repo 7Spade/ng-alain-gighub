@@ -3,8 +3,8 @@ import { ActivityLogRepository, type ActivityLog } from '@core';
 import { of, throwError } from 'rxjs';
 
 import { BlueprintActivityService, type ActivityChange } from './blueprint-activity.service';
-import { type ActivityLogFilters } from '../../models/data.models';
 import { type Account } from '../../models/account.models';
+import { type ActivityLogFilters } from '../../models/data.models';
 import { AuthStateService } from '../auth';
 
 describe('BlueprintActivityService', () => {

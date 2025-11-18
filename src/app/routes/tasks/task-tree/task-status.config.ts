@@ -20,7 +20,7 @@ export interface TaskStatusConfig {
 
 /**
  * Task status configuration map
- * 
+ *
  * Status flow:
  * pending → in_progress → staging → qc → acceptance → completed
  *                 ↓
@@ -103,6 +103,7 @@ export function getStatusConfig(status: string): TaskStatusConfig {
 
 /**
  * Check if status transition is allowed
+ *
  * @param from Current status
  * @param to Target status
  * @returns true if transition is allowed
@@ -114,6 +115,7 @@ export function isStatusTransitionAllowed(from: string, to: string): boolean {
 
 /**
  * Get all allowed next statuses for a given status
+ *
  * @param currentStatus Current status
  * @returns Array of allowed next status configurations
  */
@@ -121,13 +123,12 @@ export function getAllowedNextStatuses(currentStatus: string): TaskStatusConfig[
   const config = TASK_STATUS_CONFIGS[currentStatus];
   if (!config) return [];
 
-  return config.allowedTransitions
-    .map(status => TASK_STATUS_CONFIGS[status])
-    .filter(Boolean);
+  return config.allowedTransitions.map(status => TASK_STATUS_CONFIGS[status]).filter(Boolean);
 }
 
 /**
  * Get all status configurations as array
+ *
  * @returns Array of all status configurations
  */
 export function getAllStatusConfigs(): TaskStatusConfig[] {
@@ -136,6 +137,7 @@ export function getAllStatusConfigs(): TaskStatusConfig[] {
 
 /**
  * Validate status transition with detailed error message
+ *
  * @param from Current status
  * @param to Target status
  * @returns Error message if invalid, null if valid

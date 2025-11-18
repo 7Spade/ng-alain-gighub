@@ -1,6 +1,4 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-
 import {
   BlueprintRepository,
   BlueprintBranchRepository,
@@ -10,12 +8,8 @@ import {
   type BlueprintUpdate,
   type BlueprintBranch
 } from '@core';
-import {
-  BlueprintService,
-  BlueprintActivityService,
-  BranchService,
-  type BlueprintStatus
-} from '@shared';
+import { BlueprintService, BlueprintActivityService, BranchService, type BlueprintStatus } from '@shared';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Blueprint Facade
@@ -305,16 +299,9 @@ export class BlueprintFacade {
         const changes = this.calculateChanges(oldBlueprint, data);
         if (changes.length > 0) {
           try {
-            await this.activityService.logActivity(
-              blueprintId,
-              'blueprint',
-              blueprintId,
-              'updated',
-              changes,
-              {
-                blueprintName: updatedBlueprint.name
-              }
-            );
+            await this.activityService.logActivity(blueprintId, 'blueprint', blueprintId, 'updated', changes, {
+              blueprintName: updatedBlueprint.name
+            });
           } catch (error) {
             console.error('[BlueprintFacade] Failed to log blueprint update:', error);
           }
@@ -348,16 +335,9 @@ export class BlueprintFacade {
       // Log activity
       if (blueprint) {
         try {
-          await this.activityService.logActivity(
-            blueprintId,
-            'blueprint',
-            blueprintId,
-            'deleted',
-            [],
-            {
-              blueprintName: blueprint.name
-            }
-          );
+          await this.activityService.logActivity(blueprintId, 'blueprint', blueprintId, 'deleted', [], {
+            blueprintName: blueprint.name
+          });
         } catch (error) {
           console.error('[BlueprintFacade] Failed to log blueprint deletion:', error);
         }
@@ -386,10 +366,7 @@ export class BlueprintFacade {
    * @param data Branch creation data
    * @returns Promise<BlueprintBranch>
    */
-  async createBranch(
-    blueprintId: string,
-    data: { org_id: string; branch_name: string; notes?: string }
-  ): Promise<BlueprintBranch> {
+  async createBranch(blueprintId: string, data: { org_id: string; branch_name: string; notes?: string }): Promise<BlueprintBranch> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('create_branch');
 
@@ -493,18 +470,11 @@ export class BlueprintFacade {
 
       // 3. Log activity in source blueprint
       try {
-        await this.activityService.logActivity(
-          sourceBlueprintId,
-          'blueprint',
-          sourceBlueprintId,
-          'forked',
-          [],
-          {
-            newBlueprintId: newBlueprint.id,
-            newBlueprintName: data.name,
-            forkId: fork.id
-          }
-        );
+        await this.activityService.logActivity(sourceBlueprintId, 'blueprint', sourceBlueprintId, 'forked', [], {
+          newBlueprintId: newBlueprint.id,
+          newBlueprintName: data.name,
+          forkId: fork.id
+        });
       } catch (error) {
         console.error('[BlueprintFacade] Failed to log fork activity:', error);
       }
@@ -564,7 +534,10 @@ export class BlueprintFacade {
    * @returns Array of changes
    * @private
    */
-  private calculateChanges(oldBlueprint: Blueprint, updateData: BlueprintUpdate): Array<{
+  private calculateChanges(
+    oldBlueprint: Blueprint,
+    updateData: BlueprintUpdate
+  ): Array<{
     field: string;
     oldValue: unknown;
     newValue: unknown;

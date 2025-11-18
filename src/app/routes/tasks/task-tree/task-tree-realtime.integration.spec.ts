@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { TaskTreeFacade } from './task-tree.facade';
 import { SupabaseService } from '@core';
+
 import { ConflictResolutionService } from './conflict-resolution.service';
+import { TaskTreeFacade } from './task-tree.facade';
 
 describe('TaskTree Realtime Integration', () => {
   let facade: TaskTreeFacade;
@@ -28,10 +29,7 @@ describe('TaskTree Realtime Integration', () => {
     });
 
     // Create conflict resolution mock
-    conflictResolutionMock = jasmine.createSpyObj('ConflictResolutionService', [
-      'detectConflict',
-      'resolveConflict'
-    ]);
+    conflictResolutionMock = jasmine.createSpyObj('ConflictResolutionService', ['detectConflict', 'resolveConflict']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -48,9 +46,7 @@ describe('TaskTree Realtime Integration', () => {
     it('should subscribe to Realtime on loadTasks', async () => {
       await facade.loadTasks('blueprint-123');
 
-      expect(supabaseMock.client.channel).toHaveBeenCalledWith(
-        jasmine.stringContaining('tasks:blueprint_id=eq.blueprint-123')
-      );
+      expect(supabaseMock.client.channel).toHaveBeenCalledWith(jasmine.stringContaining('tasks:blueprint_id=eq.blueprint-123'));
       expect(mockChannel.on).toHaveBeenCalled();
     });
 
@@ -107,7 +103,7 @@ describe('TaskTree Realtime Integration', () => {
       };
 
       const insertCallback = mockChannel.on.calls.first().args[2];
-      
+
       // Simulate INSERT twice
       insertCallback({ eventType: 'INSERT', new: newTask, old: null });
       insertCallback({ eventType: 'INSERT', new: newTask, old: null });
@@ -235,7 +231,7 @@ describe('TaskTree Realtime Integration', () => {
       await facade.loadTasks('blueprint-123');
 
       const deleteCallback = mockChannel.on.calls.first().args[2];
-      
+
       // Should not throw error
       expect(() => {
         deleteCallback({
@@ -280,7 +276,7 @@ describe('TaskTree Realtime Integration', () => {
 
       const tasks = facade.tasks();
       const task = tasks.find(t => t.id === 'task-1');
-      
+
       // Should have the latest update
       expect(task?.version).toBe(4);
       expect(task?.title).toBe('Update 3');
@@ -304,12 +300,12 @@ describe('TaskTree Realtime Integration', () => {
       await facade.loadTasks('blueprint-123');
 
       const updateCallback = mockChannel.on.calls.first().args[2];
-      
+
       facade.ngOnDestroy();
 
       // Attempt to process event after destroy
       const tasksBefore = facade.tasks().length;
-      
+
       updateCallback({
         eventType: 'INSERT',
         new: {

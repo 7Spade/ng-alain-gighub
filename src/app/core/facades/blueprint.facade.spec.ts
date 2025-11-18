@@ -1,7 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-
-import { BlueprintFacade } from './blueprint.facade';
 import {
   BlueprintRepository,
   BlueprintBranchRepository,
@@ -10,7 +7,10 @@ import {
   type BlueprintInsert,
   type BlueprintUpdate
 } from '@core';
-import { BlueprintService, BlueprintActivityService, BranchService} from '@shared';
+import { BlueprintService, BlueprintActivityService, BranchService } from '@shared';
+import { of } from 'rxjs';
+
+import { BlueprintFacade } from './blueprint.facade';
 
 describe('BlueprintFacade', () => {
   let facade: BlueprintFacade;
@@ -44,47 +44,38 @@ describe('BlueprintFacade', () => {
   ];
 
   beforeEach(() => {
-    const blueprintServiceSpy = jasmine.createSpyObj('BlueprintService', [
-      'loadBlueprints',
-      'loadBlueprintsByOwnerId',
-      'loadBlueprintsByStatus',
-      'loadBlueprintById',
-      'loadBlueprintByProjectCode',
-      'createBlueprint',
-      'updateBlueprint',
-      'deleteBlueprint',
-      'selectBlueprint'
-    ], {
-      blueprints: jasmine.createSpy('blueprints').and.returnValue([]),
-      selectedBlueprint: jasmine.createSpy('selectedBlueprint').and.returnValue(null),
-      configs: jasmine.createSpy('configs').and.returnValue([]),
-      loading: jasmine.createSpy('loading').and.returnValue(false),
-      error: jasmine.createSpy('error').and.returnValue(null),
-      activeBlueprints: jasmine.createSpy('activeBlueprints').and.returnValue([]),
-      planningBlueprints: jasmine.createSpy('planningBlueprints').and.returnValue([]),
-      completedBlueprints: jasmine.createSpy('completedBlueprints').and.returnValue([])
-    });
+    const blueprintServiceSpy = jasmine.createSpyObj(
+      'BlueprintService',
+      [
+        'loadBlueprints',
+        'loadBlueprintsByOwnerId',
+        'loadBlueprintsByStatus',
+        'loadBlueprintById',
+        'loadBlueprintByProjectCode',
+        'createBlueprint',
+        'updateBlueprint',
+        'deleteBlueprint',
+        'selectBlueprint'
+      ],
+      {
+        blueprints: jasmine.createSpy('blueprints').and.returnValue([]),
+        selectedBlueprint: jasmine.createSpy('selectedBlueprint').and.returnValue(null),
+        configs: jasmine.createSpy('configs').and.returnValue([]),
+        loading: jasmine.createSpy('loading').and.returnValue(false),
+        error: jasmine.createSpy('error').and.returnValue(null),
+        activeBlueprints: jasmine.createSpy('activeBlueprints').and.returnValue([]),
+        planningBlueprints: jasmine.createSpy('planningBlueprints').and.returnValue([]),
+        completedBlueprints: jasmine.createSpy('completedBlueprints').and.returnValue([])
+      }
+    );
 
-    const activityServiceSpy = jasmine.createSpyObj('BlueprintActivityService', [
-      'logActivity'
-    ]);
+    const activityServiceSpy = jasmine.createSpyObj('BlueprintActivityService', ['logActivity']);
 
-    const blueprintRepoSpy = jasmine.createSpyObj('BlueprintRepository', [
-      'findAll',
-      'findById',
-      'create',
-      'update',
-      'delete'
-    ]);
+    const blueprintRepoSpy = jasmine.createSpyObj('BlueprintRepository', ['findAll', 'findById', 'create', 'update', 'delete']);
 
-    const blueprintBranchRepoSpy = jasmine.createSpyObj('BlueprintBranchRepository', [
-      'create',
-      'findByBlueprintId'
-    ]);
+    const blueprintBranchRepoSpy = jasmine.createSpyObj('BlueprintBranchRepository', ['create', 'findByBlueprintId']);
 
-    const branchForkRepoSpy = jasmine.createSpyObj('BranchForkRepository', [
-      'create'
-    ]);
+    const branchForkRepoSpy = jasmine.createSpyObj('BranchForkRepository', ['create']);
 
     const branchServiceSpy = jasmine.createSpyObj('BranchService', []);
 

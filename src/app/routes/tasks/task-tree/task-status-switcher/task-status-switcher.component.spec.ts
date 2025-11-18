@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TaskStatusSwitcherComponent } from './task-status-switcher.component';
 import { SHARED_IMPORTS } from '@shared';
+
+import { TaskStatusSwitcherComponent } from './task-status-switcher.component';
 
 /**
  * Task Status Switcher Component Tests
- * 
+ *
  * Phase 6, Task 6.1: Status Switcher Tests
- * 
+ *
  * Tests the TaskStatusSwitcherComponent functionality:
  * - Displays current status correctly
  * - Shows only allowed transitions
@@ -74,7 +75,7 @@ describe('TaskStatusSwitcherComponent', () => {
 
       const allowed = component.allowedStatuses();
       const values = allowed.map(s => s.value);
-      
+
       expect(values).toContain('in_progress');
       expect(values).toContain('cancelled');
       expect(values.length).toBe(2);
@@ -87,7 +88,7 @@ describe('TaskStatusSwitcherComponent', () => {
 
       const allowed = component.allowedStatuses();
       const values = allowed.map(s => s.value);
-      
+
       expect(values).toContain('staging');
       expect(values).toContain('pending');
       expect(values).toContain('cancelled');
@@ -212,20 +213,20 @@ describe('TaskStatusSwitcherComponent', () => {
 
       const allowed = component.allowedStatuses();
       const values = allowed.map(s => s.value);
-      
+
       expect(values).not.toContain('completed');
     });
 
     it('should allow progression through complete workflow', () => {
       const workflow = ['pending', 'in_progress', 'staging', 'qc', 'acceptance', 'completed'];
-      
+
       for (let i = 0; i < workflow.length - 1; i++) {
         fixture.componentRef.setInput('currentStatus', workflow[i]);
         fixture.detectChanges();
-        
+
         const allowed = component.allowedStatuses();
         const values = allowed.map(s => s.value);
-        
+
         expect(values).toContain(workflow[i + 1]);
       }
     });
@@ -237,7 +238,7 @@ describe('TaskStatusSwitcherComponent', () => {
 
       const allowed = component.allowedStatuses();
       const values = allowed.map(s => s.value);
-      
+
       expect(values).toContain('cancelled');
     });
 
