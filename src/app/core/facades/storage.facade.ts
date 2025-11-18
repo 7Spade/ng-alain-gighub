@@ -238,7 +238,7 @@ export class StorageFacade {
     this.lastOperationState.set('download_file');
 
     try {
-      const { data, error } = await this.supabase.client.storage.from(bucket).download(options.path, options.transform);
+      const { data, error } = await this.supabase.client.storage.from(bucket).download(options.path, options.transform ? { transform: options.transform } : undefined);
 
       if (error) {
         throw error;
@@ -455,9 +455,9 @@ export class StorageFacade {
 
       return data.map(file => ({
         path: path ? `${path}/${file.name}` : file.name,
-        size: file.metadata?.size || 0,
+        size: file.metadata?.['size'] || 0,
         lastModified: new Date(file.updated_at || file.created_at),
-        contentType: file.metadata?.mimetype,
+        contentType: file.metadata?.['mimetype'],
         bucket
       }));
     } catch (error) {
