@@ -44,17 +44,12 @@ export class SettingService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals - 按層級分類
-  readonly globalSettings = computed(() => this.settings().filter(s => s.scope === 'global'));
-
-  readonly projectSettings = computed(() => this.settings().filter(s => s.scope === 'project'));
-
-  readonly userSettings = computed(() => this.settings().filter(s => s.scope === 'user'));
-
-  // Settings cache map for quick lookup
+  // Note: Settings table uses setting_key and setting_value fields
   readonly settingsMap = computed(() => {
     const map = new Map<string, Setting>();
-    this.settings().forEach(setting => {
-      map.set(setting.key, setting);
+    const settings = this.settings() as any[];
+    settings.forEach(setting => {
+      map.set(setting.setting_key, setting);
     });
     return map;
   });
@@ -78,17 +73,17 @@ export class SettingService {
   }
 
   /**
-   * 載入全域設定
+   * 載入公開設定
    */
-  async loadGlobalSettings(): Promise<void> {
+  async loadPublicSettings(): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.settingRepository.findByScope('global'));
+      const data = await firstValueFrom(this.settingRepository.findPublicSettings());
       this.settingsState.set(data);
     } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入全域設定失敗');
+      this.errorState.set(error instanceof Error ? error.message : '載入公開設定失敗');
       throw error;
     } finally {
       this.loadingState.set(false);
@@ -96,35 +91,17 @@ export class SettingService {
   }
 
   /**
-   * 載入專案設定
+   * 載入指定作用域的設定
    */
-  async loadProjectSettings(projectId: string): Promise<void> {
+  async loadByScopeId(scopeId: string): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.settingRepository.findByProject(projectId));
+      const data = await firstValueFrom(this.settingRepository.findByScopeId(scopeId));
       this.settingsState.set(data);
     } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入專案設定失敗');
-      throw error;
-    } finally {
-      this.loadingState.set(false);
-    }
-  }
-
-  /**
-   * 載入使用者偏好設定
-   */
-  async loadUserPreferences(userId: string): Promise<void> {
-    this.loadingState.set(true);
-    this.errorState.set(null);
-
-    try {
-      const data = await firstValueFrom(this.settingRepository.findByUser(userId));
-      this.settingsState.set(data);
-    } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入使用者設定失敗');
+      this.errorState.set(error instanceof Error ? error.message : '載入作用域設定失敗');
       throw error;
     } finally {
       this.loadingState.set(false);
@@ -139,7 +116,8 @@ export class SettingService {
     if (!setting) {
       return defaultValue as T;
     }
-    return (setting.value as T) || (defaultValue as T);
+    const settingData = setting as any;
+    return (settingData.setting_value as T) || (defaultValue as T);
   }
 
   /**
@@ -213,7 +191,7 @@ export class SettingService {
       throw new Error(`設定 ${key} 不存在`);
     }
 
-    return this.update(setting.id, { value });
+    return this.update(setting.id, { setting_value: value } as any);
   }
 
   /**

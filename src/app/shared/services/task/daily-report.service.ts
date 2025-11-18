@@ -53,12 +53,15 @@ export class DailyReportService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly totalWorkHours = computed(() => this.reports().reduce((sum, r) => sum + (r.workHours || 0), 0));
+  readonly totalWorkHours = computed(() => {
+    const reports = this.reports() as any[];
+    return reports.reduce((sum, r) => sum + (r.work_hours || 0), 0);
+  });
 
   readonly totalWorkerCount = computed(() => {
-    const reports = this.reports();
+    const reports = this.reports() as any[];
     if (reports.length === 0) return 0;
-    return Math.max(...reports.map(r => r.workerCount || 0));
+    return Math.max(...reports.map(r => r.worker_count || 0));
   });
 
   /**
@@ -82,33 +85,15 @@ export class DailyReportService {
   /**
    * 載入指定日期的報表
    */
-  async loadByDate(taskId: string, reportDate: string): Promise<void> {
+  async loadByDate(reportDate: string): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.dailyReportRepository.findByDate(taskId, reportDate));
+      const data = await firstValueFrom(this.dailyReportRepository.findByReportDate(reportDate));
       this.reportsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入日期報表失敗');
-      throw error;
-    } finally {
-      this.loadingState.set(false);
-    }
-  }
-
-  /**
-   * 載入指定日期範圍的報表
-   */
-  async loadByDateRange(taskId: string, startDate: string, endDate: string): Promise<void> {
-    this.loadingState.set(true);
-    this.errorState.set(null);
-
-    try {
-      const data = await firstValueFrom(this.dailyReportRepository.findByDateRange(taskId, startDate, endDate));
-      this.reportsState.set(data);
-    } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入日期範圍報表失敗');
       throw error;
     } finally {
       this.loadingState.set(false);
@@ -130,10 +115,13 @@ export class DailyReportService {
       }
 
       // 載入關聯資料
-      const [photos, weather] = await Promise.all([
-        firstValueFrom(this.reportPhotoRepository.findByReportId(reportId)),
-        report.weatherCacheId ? firstValueFrom(this.weatherCacheRepository.findById(report.weatherCacheId)) : Promise.resolve(null)
-      ]);
+      const photos = await firstValueFrom(this.reportPhotoRepository.findByReportId(reportId));
+      
+      // Note: weather_cache_id field needs to be accessed at runtime as it's converted from snake_case
+      const reportData = report as any;
+      const weather = reportData.weather_cache_id 
+        ? await firstValueFrom(this.weatherCacheRepository.findById(reportData.weather_cache_id)) 
+        : null;
 
       const reportDetail: DailyReportDetail = {
         ...report,

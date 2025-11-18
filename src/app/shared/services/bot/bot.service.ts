@@ -65,17 +65,30 @@ export class BotService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly activeBots = computed(() => this.bots().filter(b => b.status === 'active'));
+  readonly activeBots = computed(() => {
+    const bots = this.bots() as any[];
+    return bots.filter(b => b.is_enabled === true);
+  });
 
-  readonly pendingTasks = computed(() => this.tasks().filter(t => t.status === 'pending'));
+  readonly pendingTasks = computed(() => {
+    const tasks = this.tasks() as any[];
+    return tasks.filter(t => t.task_status === 'pending');
+  });
 
-  readonly runningTasks = computed(() => this.tasks().filter(t => t.status === 'running'));
+  readonly runningTasks = computed(() => {
+    const tasks = this.tasks() as any[];
+    return tasks.filter(t => t.task_status === 'running');
+  });
 
-  readonly failedTasks = computed(() => this.tasks().filter(t => t.status === 'failed'));
+  readonly failedTasks = computed(() => {
+    const tasks = this.tasks() as any[];
+    return tasks.filter(t => t.task_status === 'failed');
+  });
 
-  readonly recentExecutions = computed(() =>
-    [...this.executionLogs()].sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime()).slice(0, 20)
-  );
+  readonly recentExecutions = computed(() => {
+    const logs = [...this.executionLogs()] as any[];
+    return logs.sort((a, b) => new Date(b.executed_at).getTime() - new Date(a.executed_at).getTime()).slice(0, 20);
+  });
 
   /**
    * 載入所有機器人
@@ -116,7 +129,9 @@ export class BotService {
       ]);
 
       // 找出最後一次執行
-      const lastExecution = executionLogs.sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())[0];
+      const lastExecution = executionLogs.length > 0 
+        ? executionLogs.sort((a: any, b: any) => new Date(b.executed_at).getTime() - new Date(a.executed_at).getTime())[0]
+        : undefined;
 
       const botDetail: BotDetail = {
         ...bot,
@@ -282,7 +297,7 @@ export class BotService {
 
     try {
       // 更新任務狀態為 running
-      await this.updateTask(taskId, { status: 'running' });
+      await this.updateTask(taskId, { taskStatus: 'running' } as any);
 
       // 創建執行日誌
       const task = this.tasks().find(t => t.id === taskId);
@@ -290,13 +305,14 @@ export class BotService {
         throw new Error('任務不存在');
       }
 
+      const taskData = task as any;
       const executionLog = await firstValueFrom(
         this.botExecutionLogRepository.create({
-          botId: task.botId,
-          taskId: taskId,
-          status: 'running',
-          startedAt: new Date().toISOString()
-        })
+          botId: taskData.bot_id,
+          botTaskId: taskId,
+          executionStatus: 'running',
+          executedAt: new Date().toISOString()
+        } as any)
       );
 
       // 更新本地狀態

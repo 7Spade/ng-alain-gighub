@@ -39,8 +39,6 @@ export class TaskAssignmentService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly activeAssignments = computed(() => this.assignments().filter(a => a.status === 'active'));
-
   readonly assignmentCount = computed(() => this.assignments().length);
 
   /**
@@ -62,17 +60,17 @@ export class TaskAssignmentService {
   }
 
   /**
-   * 載入指定帳戶的所有指派
+   * 載入指定指派對象的所有指派
    */
-  async loadByAccountId(accountId: string): Promise<void> {
+  async loadByAssigneeId(assigneeId: string): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.taskAssignmentRepository.findByAccountId(accountId));
+      const data = await firstValueFrom(this.taskAssignmentRepository.findByAssigneeId(assigneeId));
       this.assignmentsState.set(data);
     } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入帳戶指派失敗');
+      this.errorState.set(error instanceof Error ? error.message : '載入指派對象指派失敗');
       throw error;
     } finally {
       this.loadingState.set(false);

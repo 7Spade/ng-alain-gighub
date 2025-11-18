@@ -98,7 +98,7 @@ export class NotificationService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.notificationRepository.findByUserId(userId));
+      const data = await firstValueFrom(this.notificationRepository.findByRecipientId(userId));
       this.notificationsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入通知失敗');
@@ -116,7 +116,7 @@ export class NotificationService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.notificationRepository.findUnread(userId));
+      const data = await firstValueFrom(this.notificationRepository.findUnreadByRecipientId(userId));
       this.notificationsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入未讀通知失敗');
@@ -134,7 +134,7 @@ export class NotificationService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.notificationRepository.findByType(userId, notificationType));
+      const data = await firstValueFrom(this.notificationRepository.findByNotificationType(notificationType, { filters: { recipientId: userId } }));
       this.notificationsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入通知類型失敗');
@@ -176,9 +176,9 @@ export class NotificationService {
     try {
       const updated = await firstValueFrom(
         this.notificationRepository.update(id, {
-          isRead: true,
-          readAt: new Date().toISOString()
-        })
+          is_read: true,
+          read_at: new Date().toISOString()
+        } as any)
       );
 
       // 更新本地狀態
@@ -250,7 +250,7 @@ export class NotificationService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.notificationRuleRepository.findByUserId(userId));
+      const data = await firstValueFrom(this.notificationRuleRepository.findByAccountId(userId));
       this.rulesState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入通知規則失敗');
@@ -290,7 +290,7 @@ export class NotificationService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.notificationSubscriptionRepository.findByUserId(userId));
+      const data = await firstValueFrom(this.notificationSubscriptionRepository.findByAccountId(userId));
       this.subscriptionsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入通知訂閱失敗');

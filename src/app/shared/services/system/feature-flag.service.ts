@@ -45,15 +45,22 @@ export class FeatureFlagService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals
-  readonly enabledFlags = computed(() => this.flags().filter(f => f.enabled));
+  readonly enabledFlags = computed(() => {
+    const flags = this.flags() as any[];
+    return flags.filter(f => f.is_enabled);
+  });
 
-  readonly disabledFlags = computed(() => this.flags().filter(f => !f.enabled));
+  readonly disabledFlags = computed(() => {
+    const flags = this.flags() as any[];
+    return flags.filter(f => !f.is_enabled);
+  });
 
   // Flags map for quick lookup
   readonly flagsMap = computed(() => {
     const map = new Map<string, FeatureFlag>();
-    this.flags().forEach(flag => {
-      map.set(flag.key, flag);
+    const flags = this.flags() as any[];
+    flags.forEach(flag => {
+      map.set(flag.flag_key, flag);
     });
     return map;
   });
@@ -77,14 +84,14 @@ export class FeatureFlagService {
   }
 
   /**
-   * 載入啟用的功能開關
+   * 載入所有啟用的功能開關
    */
   async loadEnabledFlags(): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.featureFlagRepository.findEnabled());
+      const data = await firstValueFrom(this.featureFlagRepository.findEnabledFlags());
       this.flagsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入啟用的功能開關失敗');
@@ -112,8 +119,9 @@ export class FeatureFlagService {
       }
 
       // 更新本地快取
+      const flagAsAny = flag as any;
       this.flagsState.update(current => {
-        const exists = current.find(f => f.key === key);
+        const exists = current.find((f: any) => f.flag_key === flagAsAny.flag_key);
         if (!exists) {
           return [...current, flag];
         }
@@ -131,32 +139,33 @@ export class FeatureFlagService {
    * 檢查功能開關是否對特定帳戶/組織啟用
    */
   private checkFlagEnabled(flag: FeatureFlag, accountId?: string, organizationId?: string): boolean {
-    if (!flag.enabled) {
+    const flagData = flag as any;
+    if (!flagData.is_enabled) {
       return false;
     }
 
     // 如果有目標限制，檢查是否符合
-    if (flag.targetAccounts && flag.targetAccounts.length > 0) {
-      if (!accountId || !flag.targetAccounts.includes(accountId)) {
+    if (flagData.target_accounts && flagData.target_accounts.length > 0) {
+      if (!accountId || !flagData.target_accounts.includes(accountId)) {
         return false;
       }
     }
 
-    if (flag.targetOrganizations && flag.targetOrganizations.length > 0) {
-      if (!organizationId || !flag.targetOrganizations.includes(organizationId)) {
+    if (flagData.target_organizations && flagData.target_organizations.length > 0) {
+      if (!organizationId || !flagData.target_organizations.includes(organizationId)) {
         return false;
       }
     }
 
     // 如果有灰度比例，根據帳戶 ID 計算是否啟用
-    if (flag.rolloutPercentage !== null && flag.rolloutPercentage !== undefined && flag.rolloutPercentage < 100) {
+    if (flagData.rollout_percentage !== null && flagData.rollout_percentage !== undefined && flagData.rollout_percentage < 100) {
       if (!accountId) {
         return false;
       }
 
       // 使用簡單的雜湊函數決定是否啟用（確保相同帳戶總是得到相同結果）
-      const hash = this.hashString(accountId + flag.key);
-      const threshold = (flag.rolloutPercentage / 100) * Number.MAX_SAFE_INTEGER;
+      const hash = this.hashString(accountId + flagData.flag_key);
+      const threshold = (flagData.rollout_percentage / 100) * Number.MAX_SAFE_INTEGER;
       return hash <= threshold;
     }
 
@@ -247,7 +256,8 @@ export class FeatureFlagService {
       throw new Error(`功能開關 ${key} 不存在`);
     }
 
-    return this.update(flag.id, { enabled: !flag.enabled });
+    const flagData2 = flag as any;
+    return this.update(flag.id, { is_enabled: !flagData2.is_enabled } as any);
   }
 
   /**
@@ -263,7 +273,7 @@ export class FeatureFlagService {
       throw new Error('灰度比例必須在 0-100 之間');
     }
 
-    return this.update(flag.id, { rolloutPercentage: percentage });
+    return this.update(flag.id, { rollout_percentage: percentage } as any);
   }
 
   /**
@@ -275,7 +285,7 @@ export class FeatureFlagService {
       throw new Error(`功能開關 ${key} 不存在`);
     }
 
-    return this.update(flag.id, { targetAccounts: accountIds });
+    return this.update(flag.id, { target_accounts: accountIds } as any);
   }
 
   /**
@@ -287,7 +297,7 @@ export class FeatureFlagService {
       throw new Error(`功能開關 ${key} 不存在`);
     }
 
-    return this.update(flag.id, { targetOrganizations: organizationIds });
+    return this.update(flag.id, { target_organizations: organizationIds } as any);
   }
 
   /**

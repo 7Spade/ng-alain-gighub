@@ -244,9 +244,9 @@ export class InspectionService {
   async complete(id: string, passed: boolean, remarks?: string): Promise<Inspection> {
     const updateData: InspectionUpdate = {
       status: passed ? 'passed' : 'failed',
-      inspectedAt: new Date().toISOString(),
+      inspected_at: new Date().toISOString(),
       remarks: remarks || undefined
-    };
+    } as any;
 
     return this.update(id, updateData);
   }
@@ -257,9 +257,9 @@ export class InspectionService {
   async transferResponsibility(id: string, remarks?: string): Promise<Inspection> {
     const updateData: InspectionUpdate = {
       status: 'passed',
-      inspectedAt: new Date().toISOString(),
+      inspected_at: new Date().toISOString(),
       remarks: remarks || '責任已轉移'
-    };
+    } as any;
 
     return this.update(id, updateData);
   }

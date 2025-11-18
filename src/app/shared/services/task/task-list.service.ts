@@ -39,23 +39,54 @@ export class TaskListService {
   readonly error = this.errorState.asReadonly();
 
   // Computed signals - 按列表類型分類
-  readonly personalLists = computed(() => this.taskLists().filter(list => list.listType === 'personal'));
+  // Note: list_type is accessed at runtime as it's converted from snake_case
+  readonly personalLists = computed(() => {
+    const lists = this.taskLists() as any[];
+    return lists.filter(list => list.list_type === 'personal');
+  });
 
-  readonly teamLists = computed(() => this.taskLists().filter(list => list.listType === 'team'));
+  readonly teamLists = computed(() => {
+    const lists = this.taskLists() as any[];
+    return lists.filter(list => list.list_type === 'team');
+  });
 
-  readonly organizationLists = computed(() => this.taskLists().filter(list => list.listType === 'organization'));
+  readonly organizationLists = computed(() => {
+    const lists = this.taskLists() as any[];
+    return lists.filter(list => list.list_type === 'organization');
+  });
 
-  readonly sharedLists = computed(() => this.taskLists().filter(list => list.listType === 'shared'));
+  readonly sharedLists = computed(() => {
+    const lists = this.taskLists() as any[];
+    return lists.filter(list => list.list_type === 'shared');
+  });
 
   /**
-   * 載入指定類型和 ID 的任務列表
+   * 載入指定帳戶的任務列表
    */
-  async loadByAssigneeType(assigneeType: string, assigneeId: string): Promise<void> {
+  async loadByAccountId(accountId: string): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.taskListRepository.findByAssignee(assigneeType, assigneeId));
+      const data = await firstValueFrom(this.taskListRepository.findByAccountId(accountId));
+      this.taskListsState.set(data);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '載入帳戶任務列表失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 載入指定任務的列表
+   */
+  async loadByTaskId(taskId: string): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const data = await firstValueFrom(this.taskListRepository.findByTaskId(taskId));
       this.taskListsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入任務列表失敗');
@@ -66,35 +97,17 @@ export class TaskListService {
   }
 
   /**
-   * 載入指定指派對象的任務列表
+   * 載入已指派的任務列表
    */
-  async loadByAssigneeId(assigneeId: string): Promise<void> {
+  async loadAssigned(accountId: string): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.taskListRepository.findByAssigneeId(assigneeId));
+      const data = await firstValueFrom(this.taskListRepository.findAssigned(accountId));
       this.taskListsState.set(data);
     } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入指派對象任務列表失敗');
-      throw error;
-    } finally {
-      this.loadingState.set(false);
-    }
-  }
-
-  /**
-   * 載入指定藍圖的任務列表
-   */
-  async loadByBlueprintId(blueprintId: string): Promise<void> {
-    this.loadingState.set(true);
-    this.errorState.set(null);
-
-    try {
-      const data = await firstValueFrom(this.taskListRepository.findByBlueprintId(blueprintId));
-      this.taskListsState.set(data);
-    } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入藍圖任務列表失敗');
+      this.errorState.set(error instanceof Error ? error.message : '載入已指派任務列表失敗');
       throw error;
     } finally {
       this.loadingState.set(false);
@@ -165,12 +178,7 @@ export class TaskListService {
     }
   }
 
-  /**
-   * 更新任務列表順序
-   */
-  async updateOrder(id: string, newOrder: number): Promise<TaskList> {
-    return this.update(id, { displayOrder: newOrder });
-  }
+
 
   /**
    * 清空本地狀態

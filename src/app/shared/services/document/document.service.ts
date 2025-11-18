@@ -91,35 +91,17 @@ export class DocumentService {
   });
 
   /**
-   * 載入指定藍圖的所有文件
+   * 載入指定上傳者的所有文件
    */
-  async loadByBlueprint(blueprintId: string): Promise<void> {
+  async loadByUploader(uploaderId: string): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.documentRepository.findByBlueprintId(blueprintId));
+      const data = await firstValueFrom(this.documentRepository.findByUploaderId(uploaderId));
       this.documentsState.set(data);
     } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入藍圖文件失敗');
-      throw error;
-    } finally {
-      this.loadingState.set(false);
-    }
-  }
-
-  /**
-   * 載入指定任務的文件
-   */
-  async loadByTask(taskId: string): Promise<void> {
-    this.loadingState.set(true);
-    this.errorState.set(null);
-
-    try {
-      const data = await firstValueFrom(this.documentRepository.findByTaskId(taskId));
-      this.documentsState.set(data);
-    } catch (error) {
-      this.errorState.set(error instanceof Error ? error.message : '載入任務文件失敗');
+      this.errorState.set(error instanceof Error ? error.message : '載入上傳者文件失敗');
       throw error;
     } finally {
       this.loadingState.set(false);
@@ -147,7 +129,8 @@ export class DocumentService {
       ]);
 
       // 找出當前版本
-      const currentVersion = versions.find(v => v.versionNumber === document.currentVersion);
+      const documentData = document as any;
+      const currentVersion = versions.find((v: any) => v.version_number === documentData.current_version);
 
       const documentDetail: DocumentDetail = {
         ...document,
@@ -229,18 +212,19 @@ export class DocumentService {
         throw new Error('文件不存在');
       }
 
-      const newVersionNumber = (document.currentVersion || 0) + 1;
+      const documentData = document as any;
+      const newVersionNumber = (documentData.current_version || 0) + 1;
 
       const version = await firstValueFrom(
         this.documentVersionRepository.create({
           ...versionData,
-          documentId,
-          versionNumber: newVersionNumber
-        })
+          document_id: documentId,
+          version_number: newVersionNumber
+        } as any)
       );
 
       // 更新文件的當前版本號
-      await this.update(documentId, { currentVersion: newVersionNumber });
+      await this.update(documentId, { current_version: newVersionNumber } as any);
 
       // 如果當前選中的文件就是這個，更新其版本列表
       if (this.selectedDocumentState()?.id === documentId) {
@@ -275,8 +259,8 @@ export class DocumentService {
       const thumbnail = await firstValueFrom(
         this.documentThumbnailRepository.create({
           ...thumbnailData,
-          documentId
-        })
+          document_id: documentId
+        } as any)
       );
 
       // 如果當前選中的文件就是這個，更新其縮圖列表
@@ -304,14 +288,16 @@ export class DocumentService {
    * 軟刪除文件（30天內可復原）
    */
   async softDelete(id: string): Promise<Document> {
-    return this.update(id, { deletedAt: new Date().toISOString() });
+    const now = new Date();
+    const deleteDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days later
+    return this.update(id, { permanent_delete_at: deleteDate.toISOString() } as any);
   }
 
   /**
    * 復原已刪除的文件
    */
   async restore(id: string): Promise<Document> {
-    return this.update(id, { deletedAt: null });
+    return this.update(id, { permanent_delete_at: null } as any);
   }
 
   /**
@@ -343,10 +329,12 @@ export class DocumentService {
    * 清理超過 30 天的已刪除文件
    */
   async cleanupDeletedDocuments(): Promise<void> {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const now = new Date();
 
-    const documentsToDelete = this.deletedDocuments().filter(d => d.deletedAt && new Date(d.deletedAt) < thirtyDaysAgo);
+    const documentsToDelete = this.deletedDocuments().filter(d => {
+      const docData = d as any;
+      return docData.permanent_delete_at && new Date(docData.permanent_delete_at) < now;
+    });
 
     await Promise.all(documentsToDelete.map(d => this.permanentDelete(d.id)));
   }
