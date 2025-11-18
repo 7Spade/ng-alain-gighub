@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -7,6 +7,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   selector: 'app-issue-form',
   standalone: true,
   imports: [SHARED_IMPORTS],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <page-header [title]="isEdit ? '编辑问题' : '新建问题'"></page-header>
 

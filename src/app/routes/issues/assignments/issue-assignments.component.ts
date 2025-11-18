@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 
 @Component({
   selector: 'app-issue-assignments',
   standalone: true,
   imports: [SHARED_IMPORTS],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <page-header [title]="'问题分配'"></page-header>
 

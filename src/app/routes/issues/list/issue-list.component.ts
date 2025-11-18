@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -7,6 +7,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   selector: 'app-issue-list',
   standalone: true,
   imports: [SHARED_IMPORTS],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <page-header [title]="'问题列表'">
       <ng-template #extra>
