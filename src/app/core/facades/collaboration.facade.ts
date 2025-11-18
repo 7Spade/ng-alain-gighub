@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import type {
   OrganizationCollaboration,
-  CollaborationInsert,
-  CollaborationUpdate,
+  OrganizationCollaborationInsert,
+  OrganizationCollaborationUpdate,
   CollaborationInvitation,
-  InvitationInsert
-} from '@shared/models/collaboration.model';
-import type { Notification, NotificationInsert, NotificationUpdate } from '@shared/models/notification.model';
+  CollaborationInvitationInsert
+} from '@shared/models/collaboration.models';
+import type { Notification, NotificationInsert, NotificationUpdate } from '@shared/models/communication.models';
 import { CollaborationService } from '@shared/services/collaboration/collaboration.service';
 import { NotificationService } from '@shared/services/collaboration/notification.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
