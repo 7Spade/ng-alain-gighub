@@ -39,6 +39,10 @@ import { TodoWidgetComponent } from './components/todo-widget';
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
+// Shared Pipes
+import { FileSizePipe } from './pipes/file-size.pipe';
+import { StatusPipe } from './pipes/status.pipe';
+
 export const SHARED_IMPORTS = [
   // ========== Angular 表單模組 ==========
   FormsModule, // 模板式表單 — https://angular.dev/guide/forms#template-driven-forms
@@ -89,5 +93,9 @@ export const SHARED_IMPORTS = [
   TodoWidgetComponent, // 待辦小工具
   CommentThreadComponent, // 討論串 (巢狀留言 + @提及)
   ChartWrapperComponent, // 圖表封裝元件
-  QcCameraComponent // 品管相機 (拍照 + 標註)
+  QcCameraComponent, // 品管相機 (拍照 + 標註)
+
+  // ========== Shared 自訂管道 ==========
+  FileSizePipe, // 文件大小格式化管道
+  StatusPipe // 狀態格式化管道
 ];

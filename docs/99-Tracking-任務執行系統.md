@@ -256,6 +256,26 @@ API 文檔更新（任務系統 API 文檔）[⏳待開始]
 - ✅ **動態 Checklist**：使用 `computed` 根據任務狀態動態生成 Checklist 項目
 - ✅ **企業標準**：使用 Signals、OnPush 變更檢測、完善的錯誤處理
 
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：`TaskListComponent` 和 `TaskDetailComponent` 使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/tasks/list/task-list.component.ts`（3 處 @switch：status、type、priority）
+     - `src/app/routes/tasks/detail/task-detail.component.ts`（2 處 @switch：status）
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+3. **過濾邏輯重複**：
+   - **問題**：多個組件都有類似的 `computed` 過濾邏輯
+   - **建議**：提取共享過濾工具函數到 `shared/utils/filter.utils.ts`
+
 #### Phase 5: 即時更新與 Optimistic Update（待開始）
 - ⏳ 衝突解決策略（Last-Write-Wins）
 - ⏳ 連線狀態指示器增強

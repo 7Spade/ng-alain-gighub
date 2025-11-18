@@ -425,6 +425,25 @@ API 文檔更新（帳戶系統 API 文檔）[⏳待開始]
 - ✅ **系統評估與優化**：完成架構評估、違規修復、RLS 遞歸問題修復
 - ✅ **部分單元測試**：完成 AccountService 和 TeamService 單元測試
 
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/accounts/list/account-list.component.ts`
+     - `src/app/routes/accounts/detail/account-detail.component.ts`
+     - `src/app/routes/accounts/users/user-list.component.ts`
+     - `src/app/routes/accounts/organizations/organization-list/organization-list.component.ts`
+     - `src/app/routes/accounts/bots/bot-list.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
 ### 待完成階段
 
 - ⏳ **測試覆蓋率補齊**：補齊 Service 層、Repository 層、組件層測試

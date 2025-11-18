@@ -334,6 +334,36 @@ API 文檔更新（資料分析系統 API 文檔）[⏳待開始]
 - ✅ **文件管理頁面改進**：添加完整的文件管理骨架結構（文件列表、文件上傳、文件瀏覽器、文件預覽、圖紙查看器、文件元數據、文件版本、文件權限），實現文件操作功能
 - ✅ **所有組件符合企業標準**：OnPush 變更檢測、Signals 狀態管理、類型安全、錯誤處理
 
+### 2025-01-15：代碼審查改進建議
+
+#### ✅ 已修復
+
+1. **管道使用統一**（✅ 已完成）：
+   - ✅ 將 `FileSizePipe` 和 `StatusPipe` 添加到 `SHARED_IMPORTS`
+   - ✅ 替換所有 `formatFileSize` 函數調用為 `FileSizePipe`
+   - **修復文件**：
+     - `src/app/routes/documents/list/document-list.component.ts`
+     - `src/app/routes/documents/versions/document-version.component.ts`
+     - `src/app/routes/documents/browser/document-browser.component.ts`
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：`ReportExportComponent` 使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/analytics/reports/report-export.component.ts`
+
+2. **接口定義分散**：
+   - **問題**：組件內部定義了接口（如 `KPIItem`, `ProgressItem` 等）
+   - **影響**：接口重複定義，維護成本高
+   - **建議**：將通用接口提取到 `shared/models/analytics.models.ts` 和 `shared/models/data.models.ts`
+
+3. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
 ### 2025-11-14：路由骨架建立
 
 - ✅ **全站路由骨架鋪設**：依據 `app-data.json` 建立 analytics 和 documents 模組的路由與頁面骨架

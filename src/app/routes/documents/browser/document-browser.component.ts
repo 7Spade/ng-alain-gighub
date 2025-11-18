@@ -75,7 +75,7 @@ interface FolderItem {
                 }
               </td>
               <td>{{ item.type === 'folder' ? '文件夹' : '文件' }}</td>
-              <td>{{ item.size ? formatFileSize(item.size) : '-' }}</td>
+              <td>{{ item.size ? (item.size | fileSize) : '-' }}</td>
               <td>{{ item.modifiedAt | date: 'yyyy-MM-dd HH:mm' }}</td>
               <td>
                 <button nz-button nzType="link" nzSize="small" (click)="viewDetail(item.id)">查看</button>
@@ -140,11 +140,4 @@ export class DocumentBrowserComponent implements OnInit {
     this.message.info('删除功能开发中');
   }
 
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-  }
 }

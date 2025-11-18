@@ -252,6 +252,27 @@ API 文檔更新（藍圖系統 API 文檔）[⏳待開始]
 - ✅ **UI 改進**：使用 `nz-tabset`、`nz-form` 改進布局，添加快速儲存和版本查看按鈕
 - ✅ **企業標準**：使用 Signals、OnPush 變更檢測、表單驗證、完善的錯誤處理
 
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/blueprints/list/blueprint-list.component.ts`
+     - `src/app/routes/blueprints/detail/blueprint-detail.component.ts`
+     - `src/app/routes/blueprints/branches/branch-management.component.ts`
+     - `src/app/routes/blueprints/branches/branch-detail.component.ts`
+     - `src/app/routes/blueprints/pull-requests/pull-request-list.component.ts`
+     - `src/app/routes/blueprints/pull-requests/pull-request-detail.component.ts`
+     - `src/app/routes/blueprints/pull-requests/pull-request-merge.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
 ## 🚧 進行中的任務詳情
 
 ### PR 合併邏輯（PullRequestService.mergePullRequest）

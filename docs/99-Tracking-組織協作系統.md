@@ -17,6 +17,23 @@
   - 路由組件：完整的分支詳情頁面，支持切換分支、權限管理
 - ✅ **組件整合完成**：所有組件已符合企業標準（Signals、OnPush、錯誤處理）
 
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/collaboration/list/collaboration-list.component.ts`
+     - `src/app/routes/collaboration/detail/collaboration-detail.component.ts`
+     - `src/app/routes/collaboration/invitations/invitation-list.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
 ---  
 **維護者**：開發團隊  
 **模組編號**：M2  

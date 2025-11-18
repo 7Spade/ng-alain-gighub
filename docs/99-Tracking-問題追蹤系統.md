@@ -259,6 +259,27 @@ API 文檔更新（問題追蹤系統 API 文檔）[⏳待開始]
 - ✅ **UI 改進**：使用 `nz-descriptions` 和 `nz-timeline` 改進布局，添加編輯和派送按鈕
 - ✅ **企業標準**：使用 Signals、OnPush 變更檢測、完善的錯誤處理、靜默失敗不影響主流程
 
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/issues/list/issue-list.component.ts`
+     - `src/app/routes/issues/detail/issue-detail.component.ts`
+     - `src/app/routes/issues/assignments/issue-assignments.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+3. **過濾邏輯重複**：
+   - **問題**：多個組件都有類似的 `computed` 過濾邏輯
+   - **建議**：提取共享過濾工具函數到 `shared/utils/filter.utils.ts`
+
 ### 待開發階段
 
 - ⏳ **業務功能實現**：問題追蹤流程、與任務系統同步、問題照片上傳
