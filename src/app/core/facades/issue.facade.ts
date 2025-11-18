@@ -157,8 +157,10 @@ export class IssueFacade implements OnDestroy {
     this.lastOperation.set('loadIssuesByBlueprint');
 
     try {
-      const issues = await this.issueService.loadIssuesByBlueprint(blueprintId);
-      this.issues.set(issues);
+      // Service method returns void, state is managed via Signals
+      await this.issueService.loadIssuesByBlueprint(blueprintId);
+      // Get data from service state
+      this.issues.set(this.issueService.issues());
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load blueprint issues',
@@ -180,8 +182,10 @@ export class IssueFacade implements OnDestroy {
     this.lastOperation.set('loadIssuesByBranch');
 
     try {
-      const issues = await this.issueService.loadIssuesByBranch(branchId);
-      this.issues.set(issues);
+      // Service method returns void, state is managed via Signals
+      await this.issueService.loadIssuesByBranch(branchId);
+      // Get data from service state
+      this.issues.set(this.issueService.issues());
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load branch issues',
@@ -239,13 +243,7 @@ export class IssueFacade implements OnDestroy {
       this.selectedIssue.set(issue);
 
       // Log activity
-      await this.activityService.logActivity(
-        data.blueprint_id,
-        'issue',
-        issue.id,
-        'created',
-        []
-      );
+      await this.activityService.logActivity(data.blueprint_id, 'issue', issue.id, 'created', []);
 
       return issue;
     } catch (error) {
@@ -281,13 +279,7 @@ export class IssueFacade implements OnDestroy {
       }
 
       // Log activity
-      await this.activityService.logActivity(
-        issue.blueprint_id,
-        'issue',
-        issue.id,
-        'updated',
-        []
-      );
+      await this.activityService.logActivity(issue.blueprint_id, 'issue', issue.id, 'updated', []);
 
       return issue;
     } catch (error) {
@@ -323,13 +315,7 @@ export class IssueFacade implements OnDestroy {
 
       // Log activity
       if (issue) {
-        await this.activityService.logActivity(
-          issue.blueprint_id,
-          'issue',
-          id,
-          'deleted',
-          []
-        );
+        await this.activityService.logActivity(issue.blueprint_id, 'issue', id, 'deleted', []);
       }
     } catch (error) {
       this.errorStateService.addError({
@@ -370,13 +356,9 @@ export class IssueFacade implements OnDestroy {
         this.issues.set(issues);
 
         // Log activity
-        await this.activityService.logActivity(
-          currentIssue.blueprint_id,
-          'issue',
-          issueId,
-          'assigned',
-          [{ field: 'assignee', oldValue: null, newValue: assigneeId }]
-        );
+        await this.activityService.logActivity(currentIssue.blueprint_id, 'issue', issueId, 'assigned', [
+          { field: 'assignee', oldValue: null, newValue: assigneeId }
+        ]);
 
         return issue;
       }
@@ -397,6 +379,9 @@ export class IssueFacade implements OnDestroy {
 
   /**
    * Add tag to issue
+   *
+   * @deprecated Tags feature not implemented in database. Issue table does not have tags field.
+   * This method is kept for future implementation.
    */
   async addTag(issueId: string, tag: string): Promise<Issue> {
     this.loading.set(true);
@@ -406,16 +391,15 @@ export class IssueFacade implements OnDestroy {
       const issue = this.issues().find(i => i.id === issueId);
       if (!issue) throw new Error('Issue not found');
 
-      const currentTags = issue.tags || [];
-      if (currentTags.includes(tag)) {
-        return issue; // Tag already exists
-      }
+      // Tags feature not implemented in database
+      // TODO: Implement tags table or add tags field to issues table
+      throw new Error('Tags feature not implemented. Database does not support tags field.');
 
-      const updatedIssue = await this.updateIssue(issueId, {
-        tags: [...currentTags, tag]
-      });
-
-      return updatedIssue;
+      // Placeholder for future implementation
+      // const updatedIssue = await this.updateIssue(issueId, {
+      //   tags: [...currentTags, tag]
+      // });
+      // return updatedIssue;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to add tag',
@@ -431,6 +415,9 @@ export class IssueFacade implements OnDestroy {
 
   /**
    * Remove tag from issue
+   *
+   * @deprecated Tags feature not implemented in database. Issue table does not have tags field.
+   * This method is kept for future implementation.
    */
   async removeTag(issueId: string, tag: string): Promise<Issue> {
     this.loading.set(true);
@@ -440,12 +427,16 @@ export class IssueFacade implements OnDestroy {
       const issue = this.issues().find(i => i.id === issueId);
       if (!issue) throw new Error('Issue not found');
 
-      const currentTags = issue.tags || [];
-      const updatedIssue = await this.updateIssue(issueId, {
-        tags: currentTags.filter((t: string) => t !== tag)
-      });
+      // Tags feature not implemented in database
+      // TODO: Implement tags table or add tags field to issues table
+      throw new Error('Tags feature not implemented. Database does not support tags field.');
 
-      return updatedIssue;
+      // Placeholder for future implementation
+      // const currentTags = issue.tags || [];
+      // const updatedIssue = await this.updateIssue(issueId, {
+      //   tags: currentTags.filter((t: string) => t !== tag)
+      // });
+      // return updatedIssue;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to remove tag',
@@ -474,13 +465,7 @@ export class IssueFacade implements OnDestroy {
 
       const issue = this.selectedIssue();
       if (issue) {
-        await this.activityService.logActivity(
-          issue.blueprint_id,
-          'issue',
-          issueId,
-          'synced_to_main',
-          []
-        );
+        await this.activityService.logActivity(issue.blueprint_id, 'issue', issueId, 'synced_to_main', []);
       }
     } catch (error) {
       this.errorStateService.addError({
@@ -498,11 +483,11 @@ export class IssueFacade implements OnDestroy {
   /**
    * Close issue
    */
-  async closeIssue(issueId: string, resolution?: string): Promise<Issue> {
+  async closeIssue(issueId: string, resolutionNote?: string): Promise<Issue> {
     return this.updateIssue(issueId, {
       status: 'closed',
-      resolution,
-      resolved_at: new Date()
+      resolution_note: resolutionNote || null,
+      resolved_at: new Date().toISOString()
     });
   }
 
@@ -512,7 +497,7 @@ export class IssueFacade implements OnDestroy {
   async reopenIssue(issueId: string): Promise<Issue> {
     return this.updateIssue(issueId, {
       status: 'open',
-      resolution: null,
+      resolution_note: null,
       resolved_at: null
     });
   }
@@ -556,8 +541,16 @@ export class IssueFacade implements OnDestroy {
 
   /**
    * Filter issues by assignee
+   *
+   * @deprecated Issues table does not have assigned_to field. Assignment is managed via issue_assignments table.
+   * Use IssueService.getIssueAssignments() or query issue_assignments table directly.
    */
   filterByAssignee(assigneeId: string): Issue[] {
-    return this.issues().filter(issue => issue.assigned_to === assigneeId);
+    // Issues table does not have assigned_to field
+    // Assignment is managed via issue_assignments table (many-to-many relationship)
+    // TODO: Implement proper filtering using issue_assignments table
+    // For now, return empty array as placeholder
+    console.warn('filterByAssignee: Issues table does not have assigned_to field. Use issue_assignments table instead.');
+    return [];
   }
 }

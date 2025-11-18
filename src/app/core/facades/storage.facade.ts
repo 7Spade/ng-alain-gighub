@@ -238,7 +238,9 @@ export class StorageFacade {
     this.lastOperationState.set('download_file');
 
     try {
-      const { data, error } = await this.supabase.client.storage.from(bucket).download(options.path, options.transform ? { transform: options.transform } : undefined);
+      const { data, error } = await this.supabase.client.storage
+        .from(bucket)
+        .download(options.path, options.transform ? { transform: options.transform } : undefined);
 
       if (error) {
         throw error;

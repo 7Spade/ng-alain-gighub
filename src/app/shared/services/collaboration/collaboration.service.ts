@@ -275,6 +275,7 @@ export class CollaborationService {
 
   /**
    * Get all collaborations (Adapter)
+   *
    * @deprecated Use loadCollaborations() and access collaborations() signal instead
    * This is an adapter method for facade compatibility
    */
@@ -285,6 +286,7 @@ export class CollaborationService {
 
   /**
    * Get collaborations by blueprint (Adapter)
+   *
    * @deprecated Use loadCollaborationsByBlueprintId() instead
    * This is an adapter method for facade compatibility
    */
@@ -294,6 +296,7 @@ export class CollaborationService {
 
   /**
    * Get collaboration by ID (Adapter)
+   *
    * @deprecated Use loadCollaborationById() instead
    * This is an adapter method for facade compatibility
    */
@@ -303,6 +306,7 @@ export class CollaborationService {
 
   /**
    * Send invitation (Adapter)
+   *
    * @deprecated To be implemented properly in future refactoring
    * This is a stub adapter method for facade compatibility
    */
@@ -313,6 +317,7 @@ export class CollaborationService {
 
   /**
    * Accept invitation (Adapter)
+   *
    * @deprecated To be implemented properly in future refactoring
    * This is a stub adapter method for facade compatibility
    */
@@ -323,6 +328,7 @@ export class CollaborationService {
 
   /**
    * Reject invitation (Adapter)
+   *
    * @deprecated To be implemented properly in future refactoring
    * This is a stub adapter method for facade compatibility
    */

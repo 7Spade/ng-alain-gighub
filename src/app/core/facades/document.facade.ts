@@ -59,12 +59,14 @@ export class DocumentFacade implements OnDestroy {
   // Computed signals
   /**
    * Active documents (not soft deleted)
+   *
    * @note Documents use permanent_delete_at field for soft delete with 30-day retention
    */
   readonly activeDocuments = computed(() => this.documents().filter(doc => !doc.permanent_delete_at));
 
   /**
    * Archived documents (soft deleted)
+   *
    * @note Documents use permanent_delete_at field for soft delete with 30-day retention
    */
   readonly archivedDocuments = computed(() => this.documents().filter(doc => !!doc.permanent_delete_at));
@@ -166,6 +168,9 @@ export class DocumentFacade implements OnDestroy {
 
     try {
       const doc = await this.documentService.getDocumentById(id);
+      if (!doc) {
+        throw new Error(`Document with id ${id} not found`);
+      }
       this.selectedDocument.set(doc);
 
       // Add to documents list if not already present
@@ -270,7 +275,9 @@ export class DocumentFacade implements OnDestroy {
 
       // Update state - reload to get soft-deleted record
       const updatedDoc = await this.documentService.getDocumentById(id);
-      const docs = this.documents().map(d => (d.id === id && updatedDoc ? updatedDoc : d)).filter((d): d is Document => d !== null);
+      const docs = this.documents()
+        .map(d => (d.id === id && updatedDoc ? updatedDoc : d))
+        .filter((d): d is Document => d !== null);
       this.documents.set(docs);
 
       /**
@@ -307,7 +314,18 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('createVersion');
 
     try {
-      await this.documentService.createDocumentVersion(documentId, versionData);
+      // Map facade parameters to DocumentVersionInsert structure
+      // Database uses: storage_path (not file_path), created_by (not uploaded_by), change_description (not changes_summary)
+      // Note: document_id is required but omitted from Omit type, so we need to include it
+      await this.documentService.createDocumentVersion(documentId, {
+        document_id: documentId,
+        storage_path: versionData.file_path,
+        file_name: versionData.file_path.split('/').pop() || 'unknown',
+        file_size: versionData.file_size,
+        version_number: versionData.version_number,
+        change_description: versionData.changes_summary || null,
+        created_by: versionData.uploaded_by
+      });
 
       // Reload document to get updated version list
       await this.loadDocumentById(documentId);

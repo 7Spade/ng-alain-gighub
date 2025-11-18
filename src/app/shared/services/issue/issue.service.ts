@@ -236,7 +236,7 @@ export class IssueService {
     try {
       // 取得問題詳情
       const issue = await this.getIssueById(issueId);
-      
+
       // 建立同步紀錄
       await this.createSyncLog({
         issue_id: issueId,

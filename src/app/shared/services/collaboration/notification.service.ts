@@ -368,6 +368,7 @@ export class NotificationService {
 
   /**
    * Get notifications by user (Adapter)
+   *
    * @deprecated Use loadNotificationsByUserId() and access notifications() signal instead
    * This is an adapter method for facade compatibility
    */
@@ -378,6 +379,7 @@ export class NotificationService {
 
   /**
    * Create notification (Adapter)
+   *
    * @deprecated Use create() instead
    * This is an adapter method for facade compatibility
    */
@@ -387,6 +389,7 @@ export class NotificationService {
 
   /**
    * Delete notification (Adapter)
+   *
    * @deprecated Use delete() instead
    * This is an adapter method for facade compatibility
    */
@@ -396,6 +399,7 @@ export class NotificationService {
 
   /**
    * Clear all notifications (Adapter)
+   *
    * @deprecated Use markAllAsRead() instead
    * This is an adapter method for facade compatibility
    */

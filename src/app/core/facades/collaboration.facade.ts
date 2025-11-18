@@ -1,12 +1,11 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import type {
+  CollaborationInvitation,
   OrganizationCollaboration,
   OrganizationCollaborationInsert,
-  OrganizationCollaborationUpdate,
-  CollaborationInvitation,
-  CollaborationInvitationInsert
+  OrganizationCollaborationUpdate
 } from '@shared/models/collaboration.models';
-import type { Notification, NotificationInsert, NotificationUpdate } from '@shared/models/communication.models';
+import type { Notification, NotificationInsert } from '@shared/models/communication.models';
 import { CollaborationService } from '@shared/services/collaboration/collaboration.service';
 import { NotificationService } from '@shared/services/collaboration/notification.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
@@ -342,6 +341,7 @@ export class CollaborationFacade implements OnDestroy {
 
   /**
    * Send collaboration invitation
+   *
    * @note Currently returns void as invitation system is not fully implemented
    */
   async sendInvitation(collaborationId: string, invitedOrgId: string): Promise<void> {
@@ -480,8 +480,8 @@ export class CollaborationFacade implements OnDestroy {
     try {
       await this.notificationService.markAsRead(notificationId);
 
-      // Update state
-      const notifs = this.notifications().map(n => (n.id === notificationId ? { ...n, read_at: new Date() } : n));
+      // Update state - read_at is string (ISO format) from database
+      const notifs = this.notifications().map(n => (n.id === notificationId ? { ...n, read_at: new Date().toISOString() } : n));
       this.notifications.set(notifs);
     } catch (error) {
       this.errorStateService.addError({
@@ -506,10 +506,10 @@ export class CollaborationFacade implements OnDestroy {
     try {
       await this.notificationService.markAllAsRead();
 
-      // Update state
+      // Update state - read_at is string (ISO format) from database
       const notifs = this.notifications().map(n => ({
         ...n,
-        read_at: n.read_at || new Date()
+        read_at: n.read_at || new Date().toISOString()
       }));
       this.notifications.set(notifs);
     } catch (error) {
@@ -553,12 +553,12 @@ export class CollaborationFacade implements OnDestroy {
   /**
    * Clear all notifications for user
    */
-  async clearAllNotifications(userId: string): Promise<void> {
+  async clearAllNotifications(): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('clearAllNotifications');
 
     try {
-      await this.notificationService.clearAllNotifications(userId);
+      await this.notificationService.clearAllNotifications();
 
       // Update state
       this.notifications.set([]);

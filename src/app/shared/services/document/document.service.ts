@@ -362,6 +362,7 @@ export class DocumentService {
 
   /**
    * Get all documents (Adapter)
+   *
    * @deprecated Use loadByUploader() and access documents() signal instead
    * This is an adapter method for facade compatibility
    */
@@ -372,6 +373,7 @@ export class DocumentService {
 
   /**
    * Get documents by blueprint (Adapter)
+   *
    * @deprecated Documents don't have direct blueprint_id - use document_links
    * This is an adapter method for facade compatibility
    */
@@ -383,6 +385,7 @@ export class DocumentService {
 
   /**
    * Get document by ID (Adapter)
+   *
    * @deprecated Use loadDocumentById() instead
    * This is an adapter method for facade compatibility
    */
@@ -393,6 +396,7 @@ export class DocumentService {
 
   /**
    * Create document (Adapter)
+   *
    * @deprecated Use create() instead
    * This is an adapter method for facade compatibility
    */
@@ -402,6 +406,7 @@ export class DocumentService {
 
   /**
    * Update document (Adapter)
+   *
    * @deprecated Use update() instead
    * This is an adapter method for facade compatibility
    */
@@ -411,6 +416,7 @@ export class DocumentService {
 
   /**
    * Delete document (Adapter)
+   *
    * @deprecated Use softDelete() instead
    * This is an adapter method for facade compatibility
    */
@@ -420,6 +426,7 @@ export class DocumentService {
 
   /**
    * Create document version (Adapter)
+   *
    * @deprecated Use createVersion() with documentId parameter
    * This is an adapter method for facade compatibility
    */
@@ -429,6 +436,7 @@ export class DocumentService {
 
   /**
    * Get document versions (Adapter)
+   *
    * @deprecated To be implemented properly in future refactoring
    * This is a stub adapter method for facade compatibility
    */
@@ -440,6 +448,7 @@ export class DocumentService {
 
   /**
    * Search documents (Adapter)
+   *
    * @deprecated To be implemented properly in future refactoring
    * This is a stub adapter method for facade compatibility
    */
