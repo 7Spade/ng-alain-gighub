@@ -138,7 +138,9 @@ export class NotificationService {
     this.errorState.set(null);
 
     try {
-      const data = await firstValueFrom(this.notificationRepository.findByNotificationType(notificationType, { filters: { recipientId: userId } }));
+      const data = await firstValueFrom(
+        this.notificationRepository.findByNotificationType(notificationType, { filters: { recipientId: userId } })
+      );
       this.notificationsState.set(data);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '載入通知類型失敗');
@@ -207,7 +209,9 @@ export class NotificationService {
     try {
       const unread = this.unreadNotifications();
       await Promise.all(
-        unread.map(n => firstValueFrom(this.notificationRepository.update(n.id, { is_read: true, read_at: new Date().toISOString() } as any)))
+        unread.map(n =>
+          firstValueFrom(this.notificationRepository.update(n.id, { is_read: true, read_at: new Date().toISOString() } as any))
+        )
       );
 
       // 更新本地狀態

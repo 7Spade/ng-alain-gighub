@@ -92,8 +92,8 @@ export class InspectionService {
 
     try {
       const data = await firstValueFrom(
-        this.inspectionRepository.findByTaskId(taskId, { 
-          filters: { inspectionType } 
+        this.inspectionRepository.findByTaskId(taskId, {
+          filters: { inspectionType }
         })
       );
       this.inspectionsState.set(data);

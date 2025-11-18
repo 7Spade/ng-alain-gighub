@@ -116,11 +116,11 @@ export class DailyReportService {
 
       // 載入關聯資料
       const photos = await firstValueFrom(this.reportPhotoRepository.findByReportId(reportId));
-      
+
       // Note: weather_cache_id field needs to be accessed at runtime as it's converted from snake_case
       const reportData = report as any;
-      const weather = reportData.weather_cache_id 
-        ? await firstValueFrom(this.weatherCacheRepository.findById(reportData.weather_cache_id)) 
+      const weather = reportData.weather_cache_id
+        ? await firstValueFrom(this.weatherCacheRepository.findById(reportData.weather_cache_id))
         : null;
 
       const reportDetail: DailyReportDetail = {
