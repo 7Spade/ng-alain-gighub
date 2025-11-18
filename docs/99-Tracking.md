@@ -50,6 +50,85 @@ Session 同步機制[✅已完成]
 移除手機號登入功能[✅已完成]
 移除社交登入功能[✅已完成]
 
+### 核心層完善（Infrastructure Completion）
+
+#### Facade 導出
+Export 7 個缺失的 Facades 到 core/index.ts[✅已完成]
+導出 AccountFacade[✅已完成]
+導出 AuthFacade[✅已完成]
+導出 CollaborationFacade[✅已完成]
+導出 DocumentFacade[✅已完成]
+導出 IssueFacade[✅已完成]
+導出 RealtimeFacade[✅已完成]
+導出 StorageFacade[✅已完成]
+
+#### 類型定義擴充
+創建 quality.types.ts（QC 狀態、照片類型）[✅已完成]
+創建 issue.types.ts（Issue 狀態、優先級、嚴重程度）[✅已完成]
+創建 communication.types.ts（評論、通知類型）[✅已完成]
+創建 data.types.ts（文檔、報告類型）[✅已完成]
+創建 bot.types.ts（Bot 執行類型）[✅已完成]
+創建 system.types.ts（功能標識、活動日誌類型）[✅已完成]
+更新 core/infra/types/index.ts 導出所有新類型[✅已完成]
+
+#### 路由守衛（Guards）
+創建 guards 目錄結構[✅已完成]
+實現 AuthGuard（認證檢查、returnUrl 重定向）[✅已完成]
+實現 RoleGuard（RBAC 多角色 OR 邏輯）[✅已完成]
+實現 UnsavedChangesGuard（NzModalService 確認對話框）[✅已完成]
+實現 BranchPermissionGuard（分支級別權限控制）[✅已完成]
+創建 guards/index.ts 統一導出[✅已完成]
+更新 core/index.ts 導出 guards 模組[✅已完成]
+
+### 共享層完善（Shared Layer Enhancement）
+
+#### 服務層
+創建 ProgressTrackingService（匹配 ProgressTrackingRepository）[✅已完成]
+實現 ProgressTrackingService 趨勢分析功能[✅已完成]
+實現 ProgressTrackingService 日期範圍查詢[✅已完成]
+創建 AnalyticsCacheService（匹配 AnalyticsCacheRepository）[✅已完成]
+實現 AnalyticsCacheService TTL 自動過期機制[✅已完成]
+實現 AnalyticsCacheService 快取命中率統計[✅已完成]
+更新 shared/services/common/index.ts 導出新服務[✅已完成]
+
+#### 管道（Pipes）
+創建 pipes 目錄結構[✅已完成]
+實現 StatusPipe（9 種實體類型、100+ 狀態映射）[✅已完成]
+實現 RolePipe（4 種權限上下文）[✅已完成]
+實現 FileSizePipe（B 到 TB、可配置精度）[✅已完成]
+實現 DurationPipe（short/long/compact 三種格式）[✅已完成]
+創建 pipes/index.ts 統一導出[✅已完成]
+更新 shared/index.ts 導出 pipes 模組[✅已完成]
+
+#### 共享組件
+創建 FileUploadComponent（驗證、預覽、拖放）[✅已完成]
+實現 FileUploadComponent 文件類型限制[✅已完成]
+實現 FileUploadComponent 文件大小檢查[✅已完成]
+創建 DateRangePickerComponent（5 個快速選擇預設）[✅已完成]
+實現 DateRangePickerComponent 快速選擇功能[✅已完成]
+創建 StatusBadgeComponent（自動顏色/圖標映射）[✅已完成]
+實現 StatusBadgeComponent 100+ 狀態顏色映射[✅已完成]
+創建 PermissionGuardComponent（AND/OR 模式條件渲染）[✅已完成]
+實現 PermissionGuardComponent 角色檢查功能[✅已完成]
+更新 shared/index.ts 導出新組件[✅已完成]
+
+### 架構規範遵循
+所有 Guards 使用 Angular 20 函數式模式[✅已完成]
+所有 Services 使用 Signal 狀態管理[✅已完成]
+所有 Components 使用 Signal Inputs/Outputs[✅已完成]
+所有 Components 使用 OnPush 變更檢測策略[✅已完成]
+所有 Pipes 實現為 Standalone[✅已完成]
+Guards 整合現有 PermissionService（Observable 包裝）[✅已完成]
+完整 TypeScript 類型定義[✅已完成]
+完整 JSDoc 文檔註解[✅已完成]
+遵循 ng-alain 架構規範[✅已完成]
+
+### 建置與驗證
+解決新代碼建置錯誤[✅已完成]
+驗證所有導出正確性[✅已完成]
+驗證與現有代碼整合[✅已完成]
+確認無 TypeScript 錯誤（新代碼）[✅已完成]
+
 ---
 
 ## 🔐 模組 1：帳戶與身份系統（4 張表）
@@ -697,10 +776,19 @@ Pro 結果頁面[⏳待開始]
 
 ## 📊 統計資訊
 
-**總任務數**：約 350+ 個任務  
-**已完成**：約 60 個任務（17%）  
-**進行中**：約 20 個任務（6%）  
-**待開始**：約 270+ 個任務（77%）
+**總任務數**：約 410+ 個任務（含基礎設施完善 60+ 任務）  
+**已完成**：約 120 個任務（29%）  
+**進行中**：約 20 個任務（5%）  
+**待開始**：約 270+ 個任務（66%）
+
+**基礎設施完善統計**：
+- Facade 導出：8/8 完成（100%）
+- 類型定義：6/6 完成（100%）
+- 路由守衛：4/4 完成（100%）
+- 服務層：2/2 完成（100%）
+- 管道：4/4 完成（100%）
+- 共享組件：4/4 完成（100%）
+- 架構規範：9/9 符合（100%）
 
 **預計完成時間**：
 - Phase 1 MVP：2025-04（3 個月）
@@ -709,6 +797,6 @@ Pro 結果頁面[⏳待開始]
 
 ---
 
-**最後更新**：2025-01-15  
+**最後更新**：2025-11-18（基礎設施完善）  
 **維護者**：開發團隊
 
