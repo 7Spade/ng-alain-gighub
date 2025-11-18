@@ -21,8 +21,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   imports: [SHARED_IMPORTS],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <page-header [title]="'任务列表'">
-      <ng-template #extra>
+    <page-header [title]="'任务列表'" [extra]="extraTemplate">
+      <ng-template #extraTemplate>
         <button nz-button nzType="primary" (click)="createTask()">
           <span nz-icon nzType="plus"></span>
           新建任务

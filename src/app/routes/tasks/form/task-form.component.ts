@@ -9,8 +9,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   standalone: true,
   imports: [SHARED_IMPORTS],
   template: `
-    <page-header [title]="isEdit() ? '编辑任务' : '新建任务'">
-      <ng-template #extra>
+    <page-header [title]="isEdit() ? '编辑任务' : '新建任务'" [extra]="extraTemplate">
+      <ng-template #extraTemplate>
         <button nz-button nzType="default" (click)="cancel()">
           <span nz-icon nzType="close"></span>
           取消
