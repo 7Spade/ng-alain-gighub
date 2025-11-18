@@ -22,13 +22,18 @@
 ```
 src/app/
 ├── core/    # 單例服務、Supabase、拦截器、權限
-go├── shared/  # 可重用元件、服務、utils、SHARED_IMPORTS
+├── shared/  # 可重用元件、服務、utils、SHARED_IMPORTS
 ├── routes/  # 功能/領域頁面，遵循 feature-first 結構
 └── layout/  # 佈局、導航、主題
 ```
 - **依賴方向**：routes → shared → core；嚴禁反向依賴。
 - **Angular 20 標準**：Standalone Components、Signals（input/output/viewChild API）、現代控制流（@if/@for/@switch/@defer）。
 - **Change Detection**：預設 `OnPush`，僅在 `ngProjectAgent::Exceptions` 記錄時可使用 Default。
+
+## 2.3 文檔索引（Docs Index）
+- `@file .github/agents/docs-index.md`：九大類 `docs/` 資源索引（架構、流程、資料、權限、Agent...）。
+- 核心流程：`@C7` → 查官方 → 比對 `docs-index.md` → `@S7` 分析 → `@SPT` 計畫。
+- 若 `docs/` 有新增/更新，需同步維護 `docs-index.md` 與 `meta/CHANGELOG.md`。
 
 ## 3. 數據與 API 摘要
 ### 3.1 51 表模組（摘自 `database-overview.md`）
@@ -75,6 +80,7 @@ go├── shared/  # 可重用元件、服務、utils、SHARED_IMPORTS
 | 區塊 | 位置 | 內容 |
 | --- | --- | --- |
 | 規範 | `AGENTS.md`, `.cursor/rules/` | 全域規範、模組規範 |
+| Docs 索引 | `.github/agents/docs-index.md` | `docs/` 目錄分類、快速引用 |
 | Agent 說明 | `.github/agents/*.md` | 角色、流程、模板 |
 | 技術背景 | `docs/00-開發作業指引.md`, `docs/27-完整架構流程圖.mermaid.md` | 詳細設計、流程圖 |
 | 模板 | `.github/agents/templates/` | Prompt / Issue 樣板 |
