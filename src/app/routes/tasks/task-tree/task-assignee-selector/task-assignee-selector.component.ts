@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, input, output, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input, output, signal, computed } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
 import {
   Assignee,
@@ -288,6 +288,11 @@ export class TaskAssigneeSelectorComponent implements OnInit {
    */
   onAssigneeChange(assigneeId: string | null): void {
     if (this.disabled()) {
+      return;
+    }
+
+    // Don't emit if assignee hasn't changed
+    if (assigneeId === this.currentAssigneeId()) {
       return;
     }
 

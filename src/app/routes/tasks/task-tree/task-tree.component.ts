@@ -222,19 +222,24 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
 
   /**
    * Handle task assignment change
+   * 
+   * Note: Facade updateTaskAssignment method requires task_assignments table integration
+   * Current implementation logs the event pending full implementation.
+   * 
    * Phase 3.2: Assignment integration
    */
   async onAssignmentChange(event: AssignmentChangeEvent): Promise<void> {
     try {
-      // TODO: Implement actual assignment update via facade
-      // await this.facade.updateTaskAssignment(event.taskId, event.assigneeId);
       console.log('[TaskTreeComponent] Assignment change:', event);
       
-      // For now, just show success message
+      // TODO: Uncomment when facade.updateTaskAssignment is fully implemented
+      // await this.facade.updateTaskAssignment(event.taskId, event.assigneeId);
+      
+      // For now, just show success message (implementation pending)
       if (event.assigneeId) {
-        this.message.success('任務已指派');
+        this.message.success('任務已指派 (功能實作中)');
       } else {
-        this.message.success('已取消指派');
+        this.message.success('已取消指派 (功能實作中)');
       }
     } catch (error) {
       this.message.error('指派失敗：' + (error as Error).message);

@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, input, output, computed } from '@an
 import { SHARED_IMPORTS } from '@shared';
 import {
   TASK_STATUS_CONFIGS,
-  TaskStatusConfig,
   getAllowedNextStatuses,
   getStatusConfig
 } from '../task-status.config';
@@ -125,6 +124,11 @@ export class TaskStatusSwitcherComponent {
     }
 
     const currentStatus = this.currentStatus();
+    
+    // Don't emit if status hasn't changed
+    if (newStatus === currentStatus) {
+      return;
+    }
     
     // Double-check transition is allowed (defensive programming)
     const config = TASK_STATUS_CONFIGS[currentStatus];

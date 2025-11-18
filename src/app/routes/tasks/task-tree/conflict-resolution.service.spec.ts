@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ConflictResolutionService } from './conflict-resolution.service';
-import { ConflictResolutionStrategy, VersionedTask } from './conflict-resolution.types';
+import { VersionedTask } from './conflict-resolution.types';
 
 describe('ConflictResolutionService', () => {
   let service: ConflictResolutionService;
