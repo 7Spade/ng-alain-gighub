@@ -10,6 +10,9 @@ export * from './components/comment-thread';
 export * from './components/chart-wrapper';
 export * from './components/qc-camera';
 
+// Pipes
+export * from './pipes';
+
 // Utils
 export * from './utils/yuan';
 
