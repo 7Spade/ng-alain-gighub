@@ -370,7 +370,10 @@ export class OrganizationScheduleService {
 
 ### 設計模式
 - **適配器模式**：SupabaseAuthAdapterService
-- **Repository 模式**：規劃中（shared/services/）
+- **Repository 模式**：✅ 已實施（core/infra/repositories/）
+  - BaseRepository 提供通用 CRUD 操作
+  - 自動處理 snake_case ↔ camelCase 轉換
+  - 統一錯誤處理機制
 - **分層架構**：routes → shared → core
 - **領域驅動設計（DDD）**：按業務模組組織
 

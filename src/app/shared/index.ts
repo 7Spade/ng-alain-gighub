@@ -9,6 +9,13 @@ export * from './components/todo-widget';
 export * from './components/comment-thread';
 export * from './components/chart-wrapper';
 export * from './components/qc-camera';
+export * from './components/file-upload';
+export * from './components/date-range-picker';
+export * from './components/status-badge';
+export * from './components/permission-guard';
+
+// Pipes
+export * from './pipes';
 
 // Utils
 export * from './utils/yuan';

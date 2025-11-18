@@ -146,7 +146,6 @@ export default tseslint.config(
       // Temporarily downgrade to warnings while we fix pre-existing issues
       '@typescript-eslint/no-unused-vars': 'warn',
       '@angular-eslint/no-empty-lifecycle-method': 'warn',
-      '@angular-eslint/component-class-suffix': 'warn'
     }
   },
   {

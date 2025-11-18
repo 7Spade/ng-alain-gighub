@@ -140,6 +140,24 @@
 
 ---
 
+### 📄 12. 系統架構思維導圖（Mind Map）
+➡ [fyi-mind-map.md](./fyi-mind-map.md)
+
+展示系統整體架構的思維導圖，以視覺化方式呈現系統各層級組件與模組關係。
+
+**主要內容**：
+- 身份認證層（Supabase Auth、帳戶系統、組織管理）
+- 權限控制層（Row Level Security、角色系統、權限矩陣）
+- 專案藍圖層（Git-like 分支模型、主分支、組織分支、Pull Request）
+- 任務執行模組（任務管理、每日報表、品質驗收、最終驗收）
+- 異常處理模組（問題追蹤、跨分支同步）
+- 協作溝通模組（討論區、通知中心、待辦中心）
+- 資料分析模組（文件管理、活動記錄、數據分析）
+- 系統管理模組（系統設定、功能開關、天氣整合、機器人系統）
+- Supabase 核心服務（PostgreSQL、Storage、Realtime、Edge Functions、RLS）
+
+---
+
 ## 🔍 快速查找
 
 ### 按主題查找
@@ -160,6 +178,13 @@
 - 新增/調整後請更新「最後更新」日期與維護者資訊。
 
 ### 2025-01-15 更新
+
+- ✅ **FYI 文檔完整更新**（2025-01-15）
+  - 使用 Sequential Thinking + Software Planning Tool 分析項目完整上下文
+  - 更新 `fyi-background.md` - 補充項目背景、願景、用戶痛點、商業動機
+  - 更新 `fyi-notes.md` - 補充開發方法論、技術研究筆記、架構設計筆記
+  - 更新 `fyi-performance.md` - 補充構建性能指標和優化策略
+  - 更新 `fyi.md` 索引，確保所有文檔引用正確
 
 - ✅ **模型結構清理**（2025-01-15 晚）
   - 刪除遺留文件 `activity-log.model.ts` 和 `quality-check.model.ts`
