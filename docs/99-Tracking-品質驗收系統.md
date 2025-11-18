@@ -13,6 +13,30 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：20/20 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：15/20 組件功能完成（75%）
+- ⏳ **待完成**：5 個組件功能完善（篩選、排序、批量操作、照片上傳、核准/退回）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：2/2 服務完成（100%）
+  - ✅ QualityCheckService
+  - ✅ InspectionService
+- ✅ **Models（數據模型）**：4 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：0/1 Facade 完成（0%）
+  - ⏳ QualityFacade（品質驗收 Facade，待實施）
+- ✅ **Services（核心服務）**：無（品質驗收使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：4/4 Repository 完成（100%）
+  - ✅ QualityCheckRepository
+  - ✅ QcPhotoRepository
+  - ✅ InspectionRepository
+  - ✅ InspectionPhotoRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **quality_checks** - 品質管理表（品管檢查記錄）
@@ -148,9 +172,13 @@ InspectionService[✅已完成]
 - delete 方法[✅已完成]
 - Computed signals（按狀態分類）[✅已完成]
 
-#### Facade 层（Core）
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
 
 QualityFacade 實施（core/facades/quality.facade.ts）[⏳待開始]
+- **依賴**：QualityCheckService, InspectionService（Shared Layer）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
 QualityFacade Signals 狀態管理[⏳待開始]
 QualityFacade 品質檢查管理（createQualityCheck, updateQualityCheck, deleteQualityCheck）[⏳待開始]
 QualityFacade 驗收管理（createInspection, updateInspection, deleteInspection）[⏳待開始]
@@ -161,6 +189,20 @@ QualityFacade 統計功能（qualityStats, inspectionStats, passRate）[⏳待�
 QualityFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
 QualityFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 QualityFacade[⏳待開始]
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：4/4 Repository（100%）
+- ✅ QualityCheckRepository（依賴 SupabaseService）
+- ✅ QcPhotoRepository（依賴 SupabaseService）
+- ✅ InspectionRepository（依賴 SupabaseService）
+- ✅ InspectionPhotoRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 #### 業務邏輯層
 

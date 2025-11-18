@@ -13,6 +13,31 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：23/23 組件骨架完成（100%）
+- ✅ **頁面組件功能**：23/23 組件功能完成（100%）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：4/4 服務完成（100%）
+  - ✅ AccountService
+  - ✅ TeamService
+  - ✅ OrganizationScheduleService
+  - ✅ OrganizationMemberService
+- ✅ **Models（數據模型）**：4 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：1/1 Facade 完成（100%）
+  - ✅ AccountFacade（帳戶與身份 Facade）
+- ✅ **Services（核心服務）**：無（帳戶系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：4/4 Repository 完成（100%）
+  - ✅ AccountRepository
+  - ✅ TeamRepository
+  - ✅ TeamMemberRepository
+  - ✅ OrganizationScheduleRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **accounts** - 帳戶主表（統一身份抽象，支援 User/Bot/Organization）

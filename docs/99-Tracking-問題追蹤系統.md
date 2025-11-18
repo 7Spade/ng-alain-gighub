@@ -13,6 +13,29 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：12/12 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：4/12 組件功能完成（33%）
+- ⏳ **待完成**：8 個組件功能實現（問題處理中心、問題處理、問題照片、問題照片牆、問題關閉、問題關閉摘要、同步日誌）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：1/1 服務完成（100%）
+  - ✅ IssueService
+- ✅ **Models（數據模型）**：4 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：1/1 Facade 完成（100%）
+  - ✅ IssueFacade（問題追蹤 Facade，包含跨分支同步功能）
+- ✅ **Services（核心服務）**：無（問題追蹤使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：4/4 Repository 完成（100%）
+  - ✅ IssueRepository
+  - ✅ IssueAssignmentRepository
+  - ✅ IssuePhotoRepository
+  - ✅ IssueSyncLogRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **issues** - 問題主表（施工異常問題追蹤）
@@ -117,20 +140,39 @@ IssueService 同步功能（syncIssueToMain）[✅已完成]
 IssueService Computed signals（openIssues, criticalIssues）[✅已完成]
 更新 shared/services/issue/index.ts 導出 IssueService[✅已完成]
 
-#### Core 層（Facade）
+#### Core Layer - Facades（門面層）
 
-IssueFacade 實施（core/facades/issue.facade.ts）[✅已完成]
-IssueFacade Signals 狀態管理[✅已完成]
-IssueFacade CRUD 操作（createIssue, updateIssue, deleteIssue）[✅已完成]
-IssueFacade 指派管理（assignIssue, unassignIssue）[✅已完成]
-IssueFacade 標籤管理（addTag, removeTag）[✅已完成]
-IssueFacade 跨分支同步（syncToMainBranch）[✅已完成]
-IssueFacade 過濾功能（按狀態、優先級、嚴重程度、指派人）[✅已完成]
-IssueFacade Computed signals（openIssues, closedIssues, criticalIssues, highPriorityIssues）[✅已完成]
-IssueFacade 統計功能（issuesByStatus, issuesBySeverity, issueStats）[✅已完成]
-IssueFacade 活動記錄整合（BlueprintActivityService）[✅已完成]
-IssueFacade 錯誤處理整合（ErrorStateService）[✅已完成]
-更新 core/index.ts 導出 IssueFacade[✅已完成]
+**依賴關係**：Facades → Services → Repositories → SupabaseService
+
+✅ **已完成**：1/1 Facade（100%）
+- ✅ IssueFacade（core/facades/issue.facade.ts）
+  - **依賴**：IssueService（Shared Layer）
+  - **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
+  - ✅ Signals 狀態管理
+  - ✅ CRUD 操作（createIssue, updateIssue, deleteIssue）
+  - ✅ 指派管理（assignIssue, unassignIssue）
+  - ✅ 標籤管理（addTag, removeTag）
+  - ✅ 跨分支同步（syncToMainBranch）
+  - ✅ 過濾功能（按狀態、優先級、嚴重程度、指派人）
+  - ✅ Computed signals（openIssues, closedIssues, criticalIssues, highPriorityIssues）
+  - ✅ 統計功能（issuesByStatus, issuesBySeverity, issueStats）
+  - ✅ 活動記錄整合（BlueprintActivityService）
+  - ✅ 錯誤處理整合（ErrorStateService）
+  - ✅ 已導出到 core/index.ts
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：4/4 Repository（100%）
+- ✅ IssueRepository（依賴 SupabaseService）
+- ✅ IssueAssignmentRepository（依賴 SupabaseService）
+- ✅ IssuePhotoRepository（依賴 SupabaseService）
+- ✅ IssueSyncLogRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 #### 業務功能實現
 

@@ -24,6 +24,29 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：4/4 組件骨架完成（100%）
+- ✅ **頁面組件功能**：3/4 組件功能完成（75%）
+- ⏳ **待完成**：Bot 任務管理頁面功能實現
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：1/2 服務完成（50%）
+  - ✅ BotService
+  - ⏳ BotTaskService（待實施）
+- ✅ **Models（數據模型）**：3 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：0/1 Facade 完成（0%）
+  - ⏳ BotFacade（機器人 Facade，待實施）
+- ✅ **Services（核心服務）**：無（機器人系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：3/3 Repository 完成（100%）
+  - ✅ BotRepository
+  - ✅ BotTaskRepository
+  - ✅ BotExecutionLogRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **bots** - 機器人定義表（定期報表、通知、備份）
@@ -123,9 +146,13 @@ Bot 任務排程系統[⏳待開始]
 Bot 執行引擎[⏳待開始]
 Bot 執行日誌記錄[⏳待開始]
 
-#### Facade 层（Core）
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
 
 BotFacade 實施（core/facades/bot.facade.ts）[⏳待開始]
+- **依賴**：BotService, BotTaskService（Shared Layer，BotTaskService 待實施）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
 BotFacade Signals 狀態管理[⏳待開始]
 BotFacade Bot 管理（createBot, updateBot, deleteBot, loadBots）[⏳待開始]
 BotFacade Bot 任務管理（createBotTask, updateBotTask, executeBotTask）[⏳待開始]
@@ -137,6 +164,19 @@ BotFacade 統計功能（botStats, taskStats, executionStats）[⏳待開始]
 BotFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
 BotFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 BotFacade[⏳待開始]
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：3/3 Repository（100%）
+- ✅ BotRepository（依賴 SupabaseService）
+- ✅ BotTaskRepository（依賴 SupabaseService）
+- ✅ BotExecutionLogRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 #### 業務功能實現
 

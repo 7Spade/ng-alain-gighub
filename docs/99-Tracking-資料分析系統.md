@@ -13,6 +13,34 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：19/19 組件骨架完成（100%）
+- ✅ **頁面組件功能**：19/19 組件功能完成（100%）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：4/4 服務完成（100%）
+  - ✅ DocumentService
+  - ✅ ProgressTrackingService
+  - ✅ AnalyticsCacheService
+  - ✅ AnalyticsService
+- ✅ **Models（數據模型）**：6 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：2/2 Facade 完成（100%）
+  - ✅ DocumentFacade（文件管理 Facade）
+  - ✅ StorageFacade（存儲 Facade）
+- ✅ **Services（核心服務）**：無（資料分析使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：6/6 Repository 完成（100%）
+  - ✅ DocumentRepository
+  - ✅ DocumentVersionRepository
+  - ✅ DocumentThumbnailRepository
+  - ✅ ProgressTrackingRepository
+  - ✅ ActivityLogRepository
+  - ✅ AnalyticsCacheRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **documents** - 文件元資料表（統一文件管理，支援版本控制、縮圖、軟刪除）

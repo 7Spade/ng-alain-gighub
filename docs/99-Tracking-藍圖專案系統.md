@@ -13,6 +13,33 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：14/14 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：11/14 組件功能完成（79%）
+- ⏳ **待完成**：3 個組件功能實現（BlueprintForkLandingComponent, BlueprintReviewWorkspaceComponent, BranchManagementComponent 部分功能）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：4/4 服務完成（100%）
+  - ✅ BlueprintService
+  - ✅ BranchService
+  - ✅ PullRequestService
+  - ✅ BlueprintActivityService
+- ✅ **Models（數據模型）**：5 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：1/1 Facade 完成（100%）
+  - ✅ BlueprintFacade（藍圖專案 Facade）
+- ✅ **Services（核心服務）**：無（藍圖系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：5/5 Repository 完成（100%）
+  - ✅ BlueprintRepository
+  - ✅ BlueprintBranchRepository
+  - ✅ BranchForkRepository
+  - ✅ PullRequestRepository
+  - ✅ BlueprintConfigRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **blueprints** - 藍圖主表（主分支，擁有者組織控制任務結構）

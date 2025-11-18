@@ -66,6 +66,34 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：9/9 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：2/9 組件功能完成（22%）
+- ⏳ **待完成**：7 個組件功能實現（討論列表、評論列表、評論創建、通知中心、實時通知、待辦中心、團隊通知）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：3/3 服務完成（100%）
+  - ✅ CommentService
+  - ✅ NotificationService
+  - ✅ PersonalTodoService
+- ✅ **Models（數據模型）**：6 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：0/2 Facade 完成（0%）
+  - ⏳ CommunicationFacade（協作溝通 Facade，待實施）
+  - ✅ RealtimeFacade（實時 Facade，已完成，屬於 Core 層）
+- ✅ **Services（核心服務）**：無（協作溝通使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：6/6 Repository 完成（100%）
+  - ✅ CommentRepository
+  - ✅ NotificationRepository
+  - ✅ NotificationRuleRepository
+  - ✅ NotificationSubscriptionRepository
+  - ✅ PersonalTodoRepository
+  - ✅ TodoStatusTrackingRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **comments** - 留言表（任務、問題的討論留言）
@@ -142,9 +170,14 @@ Repository 層（6 個 Repository）[✅已完成]
 待辦中心實現（五種狀態分類）[✅已完成]
 待辦狀態追蹤（PersonalTodoService）[✅已完成]
 
-#### Facade 层（Core）
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
 
 CommunicationFacade 實施（core/facades/communication.facade.ts）[⏳待開始]
+- **依賴**：CommentService, NotificationService, PersonalTodoService（Shared Layer）
+- **依賴**：RealtimeFacade（Core Layer）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
 CommunicationFacade Signals 狀態管理[⏳待開始]
 CommunicationFacade 評論管理（createComment, updateComment, deleteComment）[⏳待開始]
 CommunicationFacade 通知管理（createNotification, markAsRead, markAllAsRead）[⏳待開始]
@@ -157,6 +190,22 @@ CommunicationFacade 實時更新整合（RealtimeFacade）[⏳待開始]
 CommunicationFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
 CommunicationFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 CommunicationFacade[⏳待開始]
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：6/6 Repository（100%）
+- ✅ CommentRepository（依賴 SupabaseService）
+- ✅ NotificationRepository（依賴 SupabaseService）
+- ✅ NotificationRuleRepository（依賴 SupabaseService）
+- ✅ NotificationSubscriptionRepository（依賴 SupabaseService）
+- ✅ PersonalTodoRepository（依賴 SupabaseService）
+- ✅ TodoStatusTrackingRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 #### Realtime 邊界功能（Core）
 

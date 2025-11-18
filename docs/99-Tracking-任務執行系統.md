@@ -22,6 +22,40 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：19/19 組件骨架完成（100%）
+- ✅ **頁面組件功能**：18/19 組件功能完成（95%）
+- ⏳ **待完成**：TaskProgressComponent 功能實現
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：5/5 服務完成（100%）
+  - ✅ TaskService
+  - ✅ TaskAssignmentService
+  - ✅ TaskListService
+  - ✅ TaskStagingService
+  - ✅ DailyReportService
+- ✅ **Models（數據模型）**：9 張表的類型定義完成（100%）
+- ✅ **Components（共享組件）**：任務樹相關組件完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：1/2 Facade 完成（50%）
+  - ✅ TaskTreeFacade（任務樹 Facade）
+  - ⏳ TaskFacade（任務 Facade，待實施）
+- ✅ **Services（核心服務）**：無（任務系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：9/9 Repository 完成（100%）
+  - ✅ TaskRepository
+  - ✅ TaskAssignmentRepository
+  - ✅ TaskListRepository
+  - ✅ TaskStagingRepository
+  - ✅ DailyReportRepository
+  - ✅ ReportPhotoRepository
+  - ✅ WeatherCacheRepository
+  - ✅ TaskDependencyRepository
+  - ✅ TaskTemplateRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **tasks** - 任務主表（樹狀結構，無層級限制）
@@ -100,9 +134,13 @@ Repository 層（9 個 Repository）[✅已完成]
 自動同步主分支（施工日誌）[⏳待開始]
 任務指派邏輯（個人/團隊/組織/承攬）[✅已完成]
 
-#### Facade 层（Core）
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
 
 TaskFacade 實施（core/facades/task.facade.ts）[⏳待開始]
+- **依賴**：TaskService, TaskAssignmentService, TaskListService, TaskStagingService, DailyReportService（Shared Layer）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
 TaskFacade Signals 狀態管理[⏳待開始]
 TaskFacade CRUD 操作（createTask, updateTask, deleteTask）[⏳待開始]
 TaskFacade 任務指派管理（assignTask, unassignTask）[⏳待開始]
@@ -116,6 +154,25 @@ TaskFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 TaskFacade[⏳待開始]
 任務樹 Facade（TaskTreeFacade）[✅已完成]
 TaskTreeFacade 支援層級更新[✅已完成]
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：9/9 Repository（100%）
+- ✅ TaskRepository（依賴 SupabaseService）
+- ✅ TaskAssignmentRepository（依賴 SupabaseService）
+- ✅ TaskListRepository（依賴 SupabaseService）
+- ✅ TaskStagingRepository（依賴 SupabaseService）
+- ✅ DailyReportRepository（依賴 SupabaseService）
+- ✅ ReportPhotoRepository（依賴 SupabaseService）
+- ✅ WeatherCacheRepository（依賴 SupabaseService）
+- ✅ TaskDependencyRepository（依賴 SupabaseService）
+- ✅ TaskTemplateRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 #### Edge Function 整合
 
