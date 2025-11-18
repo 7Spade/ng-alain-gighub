@@ -1,6 +1,6 @@
 > **📌 重要提示**：
 > - 基礎開發規範已遷移至 `.cursor/rules/` 目錄，這些規則會自動應用於 Cursor IDE 的 AI 功能
-> - GitHub Copilot 指引位於 `.github/copilot-instructions.md` 和 `.github/instructions/` 目錄
+> - GitHub Copilot 指引位於 `.github/agents/copilot-instructions.md` 和 `.github/instructions/` 目錄
 > - 模組特定規範請參考各模組目錄下的 `AGENTS.md` 文件
 > - 詳細規範請參考對應的規則文件
 > - **⭐ [Agent 開發指南與限制說明](./docs/43-Agent開發指南與限制說明.md)** - 了解 AI Agent 開發的限制和最佳實踐
@@ -53,7 +53,7 @@
 GitHub Copilot 編碼代理的指引文件位於 `.github/` 目錄：
 
 ### 主要指引文件
-- [GitHub Copilot Instructions](./.github/copilot-instructions.md) - 完整的專案指引和開發規範
+- [GitHub Copilot Instructions](./.github/agents/copilot-instructions.md) - 完整的專案指引和開發規範
   - 專案架構概覽（Git-like 分支模型，51 張資料表）
   - 開發標準和最佳實踐
   - 模組結構和依賴規則

@@ -5,7 +5,7 @@ This directory contains module-specific and context-specific instructions for Gi
 ## 📁 Structure
 
 ### Main Instructions
-- **[copilot-instructions.md](../copilot-instructions.md)** - Primary instructions applied to all code
+- **[copilot-instructions.md](../agents/copilot-instructions.md)** - Primary instructions applied to all code
 
 ### Module-Specific Instructions
 - **[shared.instructions.md](./shared.instructions.md)** - Applied to `src/app/shared/**/*`

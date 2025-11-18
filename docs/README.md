@@ -25,7 +25,7 @@
 - [AI 助手角色配置](./50-AI助手角色配置.md) - 🆕 工程師級 AI 助手角色定義（含系統架構導圖遵循規則）
 - [Agent 開發指南與限制說明](./52-Agent開發指南與限制說明.md) - 了解 AI Agent 開發的限制和最佳實踐
 - [AGENTS.md](../AGENTS.md) - Agent 指引總覽
-- [GitHub Copilot Instructions](../.github/copilot-instructions.md) - 完整指引
+- [GitHub Copilot Instructions](../.github/agents/copilot-instructions.md) - 完整指引
 
 ### 📖 按角色查找
 
