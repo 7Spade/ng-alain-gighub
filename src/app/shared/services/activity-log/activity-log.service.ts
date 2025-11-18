@@ -115,7 +115,7 @@ export class ActivityLogService {
     const currentUser = this.authState.user();
 
     if (!currentUser) {
-      console.warn('[BlueprintActivityService] Cannot log activity: No authenticated user');
+      console.warn('[ActivityLogService] Cannot log activity: No authenticated user');
       return;
     }
 

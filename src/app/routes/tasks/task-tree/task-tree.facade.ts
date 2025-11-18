@@ -230,7 +230,7 @@ export class TaskTreeFacade implements OnDestroy {
     // TODO: Implementation should:
     // 1. Query task_assignments table
     // 2. Create/update assignment record
-    // 3. Log activity via BlueprintActivityService
+    // 3. Log activity via ActivityLogService
     // 4. Reload tasks to refresh state
   }
 
