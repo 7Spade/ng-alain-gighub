@@ -129,9 +129,10 @@ export class BotService {
       ]);
 
       // 找出最後一次執行
-      const lastExecution = executionLogs.length > 0 
-        ? executionLogs.sort((a: any, b: any) => new Date(b.executed_at).getTime() - new Date(a.executed_at).getTime())[0]
-        : undefined;
+      const lastExecution =
+        executionLogs.length > 0
+          ? executionLogs.sort((a: any, b: any) => new Date(b.executed_at).getTime() - new Date(a.executed_at).getTime())[0]
+          : undefined;
 
       const botDetail: BotDetail = {
         ...bot,

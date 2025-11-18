@@ -1,5 +1,5 @@
 import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
-import { TaskRepository, type Task, type TaskUpdate, SupabaseService } from '@core';
+import { TaskRepository, TaskAssignmentRepository, type Task, type TaskUpdate, SupabaseService } from '@core';
 import { BlueprintActivityService, type TaskTreeNode } from '@shared';
 import type { RealtimeChannel, RealtimeChannelSendResponse } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
@@ -45,6 +45,7 @@ import type { VersionedTask } from './conflict-resolution.types';
 })
 export class TaskTreeFacade implements OnDestroy {
   private readonly taskRepository = inject(TaskRepository);
+  private readonly taskAssignmentRepository = inject(TaskAssignmentRepository);
   private readonly activityService = inject(BlueprintActivityService);
   private readonly supabase = inject(SupabaseService);
   private readonly conflictResolution = inject(ConflictResolutionService);
@@ -216,22 +217,159 @@ export class TaskTreeFacade implements OnDestroy {
   /**
    * Update task assignment with automatic audit logging
    *
-   * TODO: Implement using task_assignments table instead of direct field
-   * The tasks table doesn't have an assigned_to field - assignments are managed
-   * through the task_assignments join table
+   * Implements task assignment using the task_assignments join table.
+   * Supports assigning tasks to users, teams, or organizations.
+   *
+   * Assignment flow:
+   * 1. Check for existing assignment
+   * 2. Create new assignment or update existing
+   * 3. Log activity via BlueprintActivityService
+   * 4. Reload tasks to refresh state
    *
    * @param taskId Task ID
-   * @param assignedTo User/Team/Org ID to assign
+   * @param assigneeId User/Team/Org ID to assign (null to remove assignment)
+   * @param assigneeType Type of assignee ('user', 'team', 'organization')
+   * @param assignedBy User ID who is making the assignment
    * @returns Promise<void>
    */
-  async updateTaskAssignment(taskId: string, assignedTo: string | null): Promise<void> {
-    throw new Error('updateTaskAssignment not yet implemented - requires task_assignments table integration');
+  async updateTaskAssignment(
+    taskId: string,
+    assigneeId: string | null,
+    assigneeType: 'user' | 'team' | 'organization' = 'user',
+    assignedBy?: string
+  ): Promise<void> {
+    const task = this.tasks().find(t => t.id === taskId);
+    if (!task) {
+      throw new Error(`Task not found: ${taskId}`);
+    }
 
-    // TODO: Implementation should:
-    // 1. Query task_assignments table
-    // 2. Create/update assignment record
-    // 3. Log activity via BlueprintActivityService
-    // 4. Reload tasks to refresh state
+    const blueprintId = this.currentBlueprintId();
+    if (!blueprintId) {
+      throw new Error('No blueprint ID set');
+    }
+
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 1. Find existing assignments for this task
+      const existingAssignments = await firstValueFrom(this.taskAssignmentRepository.findByTaskId(taskId));
+
+      if (assigneeId === null) {
+        // Remove all assignments
+        if (existingAssignments.length > 0) {
+          for (const assignment of existingAssignments) {
+            await firstValueFrom(this.taskAssignmentRepository.delete(assignment.id));
+          }
+
+          // Log removal activity
+          if (this.activityService) {
+            await this.activityService.logActivity(
+              blueprintId,
+              'task',
+              taskId,
+              'unassigned',
+              [{ field: 'assignee', oldValue: existingAssignments[0].assignee_id, newValue: null }],
+              {
+                taskId,
+                taskTitle: task.title || 'Unnamed Task'
+              }
+            );
+          }
+        }
+      } else {
+        // Check if this assignee is already assigned
+        const existingAssignment = existingAssignments.find(
+          a => a.assignee_id === assigneeId && a.assignee_type === assigneeType
+        );
+
+        if (!existingAssignment) {
+          // Create new assignment
+          await firstValueFrom(
+            this.taskAssignmentRepository.create({
+              task_id: taskId,
+              assignee_id: assigneeId,
+              assignee_type: assigneeType,
+              assigned_by: assignedBy || '', // Empty string if not provided
+              assigned_at: new Date().toISOString()
+            })
+          );
+
+          // Log assignment activity
+          if (this.activityService) {
+            await this.activityService.logActivity(
+              blueprintId,
+              'task',
+              taskId,
+              'assigned',
+              [{ field: 'assignee', oldValue: null, newValue: assigneeId }],
+              {
+                taskId,
+                taskTitle: task.title || 'Unnamed Task',
+                assigneeType
+              }
+            );
+          }
+        }
+      }
+
+      // 2. Reload tasks to refresh state
+      await this.reloadTasks();
+
+      console.log('[TaskTreeFacade] Task assignment updated:', {
+        taskId,
+        assigneeId,
+        assigneeType
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update task assignment';
+      this.errorState.set(errorMessage);
+      console.error('[TaskTreeFacade] Update assignment error:', error);
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * Get assignments for a task
+   *
+   * @param taskId Task ID
+   * @returns Promise<TaskAssignment[]>
+   */
+  async getTaskAssignments(taskId: string): Promise<any[]> {
+    try {
+      return await firstValueFrom(this.taskAssignmentRepository.findByTaskId(taskId));
+    } catch (error) {
+      console.error('[TaskTreeFacade] Get assignments error:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Assign multiple tasks to the same assignee
+   *
+   * @param taskIds Array of task IDs
+   * @param assigneeId User/Team/Org ID
+   * @param assigneeType Type of assignee
+   * @param assignedBy User ID who is making the assignment
+   * @returns Promise<void>
+   */
+  async assignMultipleTasks(
+    taskIds: string[],
+    assigneeId: string,
+    assigneeType: 'user' | 'team' | 'organization' = 'user',
+    assignedBy?: string
+  ): Promise<void> {
+    this.loadingState.set(true);
+
+    try {
+      for (const taskId of taskIds) {
+        await this.updateTaskAssignment(taskId, assigneeId, assigneeType, assignedBy);
+      }
+    } finally {
+      this.loadingState.set(false);
+    }
   }
 
   /**

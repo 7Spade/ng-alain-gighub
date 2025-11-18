@@ -14,6 +14,7 @@
  * - document: 文件管理服务
  * - bot: 机器人服务
  * - system: 系统管理服务（含 setting, feature flag）
+ * - common: 通用基础服务（error state, aggregation refresh）
  *
  * @module shared/services
  */
@@ -31,6 +32,7 @@ export * from './issue';
 export * from './document';
 export * from './bot';
 export * from './system';
+export * from './common';
 
 // Supabase adapter
 export * from './supabase-adapter.service';
