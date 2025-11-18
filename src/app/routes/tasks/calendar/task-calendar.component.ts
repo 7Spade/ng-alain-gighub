@@ -8,8 +8,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   standalone: true,
   imports: [SHARED_IMPORTS],
   template: `
-    <page-header [title]="'任务日历'">
-      <ng-template #extra>
+    <page-header [title]="'任务日历'" [extra]="extraTemplate">
+      <ng-template #extraTemplate>
         <nz-select
           [ngModel]="selectedBlueprintId()"
           (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
