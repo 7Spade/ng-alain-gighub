@@ -70,11 +70,12 @@ export const branchPermissionGuard: CanActivateFn = async (
   const requiredPermission = (route.data['requiredPermission'] as string) || 'read';
 
   // 检查用户对分支的权限
-  const hasPermission = await permissionService.checkBranchPermission(
-    branchId,
-    blueprintId || '',
-    requiredPermission
-  );
+  const hasPermission = await new Promise<boolean>((resolve) => {
+    permissionService.canAccessBlueprint(blueprintId || branchId, requiredPermission as any).subscribe({
+      next: (result) => resolve(result),
+      error: () => resolve(false)
+    });
+  });
 
   if (!hasPermission) {
     console.log(

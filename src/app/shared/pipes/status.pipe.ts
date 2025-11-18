@@ -109,7 +109,7 @@ export class StatusPipe implements PipeTransform {
     if (!value) return '';
 
     const normalizedValue = value.toLowerCase();
-    const typeMap = this.statusMap[type] || this.statusMap.default;
+    const typeMap = this.statusMap[type] || this.statusMap['default'];
     
     return typeMap[normalizedValue] || value;
   }

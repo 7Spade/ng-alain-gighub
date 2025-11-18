@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, input, output, signal, effect } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 /**
  * Date Range Picker Component
@@ -32,13 +33,13 @@ import { SHARED_IMPORTS } from '@shared';
 @Component({
   selector: 'app-date-range-picker',
   standalone: true,
-  imports: [SHARED_IMPORTS],
+  imports: [SHARED_IMPORTS, NzButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="date-range-picker-container">
       @if (showQuickSelect()) {
         <div class="quick-select">
-          <nz-button-group>
+          <div class="button-group">
             <button
               nz-button
               nzSize="small"
@@ -79,7 +80,7 @@ import { SHARED_IMPORTS } from '@shared';
             >
               今年
             </button>
-          </nz-button-group>
+          </div>
         </div>
       }
 
@@ -105,6 +106,27 @@ import { SHARED_IMPORTS } from '@shared';
       .quick-select {
         display: flex;
         justify-content: flex-start;
+      }
+
+      .button-group {
+        display: inline-flex;
+        gap: 0;
+
+        button {
+          border-radius: 0;
+          margin-left: -1px;
+
+          &:first-child {
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+            margin-left: 0;
+          }
+
+          &:last-child {
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+          }
+        }
       }
     `
   ]

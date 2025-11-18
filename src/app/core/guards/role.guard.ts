@@ -57,7 +57,12 @@ export const roleGuard: CanActivateFn = async (
   }
 
   // 检查用户是否拥有任一所需角色
-  const hasRequiredRole = await permissionService.hasAnyRole(requiredRoles);
+  const hasRequiredRole = await new Promise<boolean>((resolve) => {
+    permissionService.canAny(requiredRoles.map(r => `role.${r}`)).subscribe({
+      next: (result) => resolve(result),
+      error: () => resolve(false)
+    });
+  });
 
   if (!hasRequiredRole) {
     console.log('[RoleGuard] User does not have required roles:', requiredRoles);

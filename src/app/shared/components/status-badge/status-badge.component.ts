@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared';
-import { StatusPipe } from '../../pipes/status.pipe';
 
 /**
  * Status Badge Component
@@ -32,7 +31,7 @@ import { StatusPipe } from '../../pipes/status.pipe';
 @Component({
   selector: 'app-status-badge',
   standalone: true,
-  imports: [SHARED_IMPORTS, StatusPipe],
+  imports: [SHARED_IMPORTS],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nz-tag [nzColor]="badgeColor()">
@@ -164,10 +163,82 @@ export class StatusBadgeComponent {
       return this.text();
     }
     
-    // 使用 StatusPipe 转换
-    const statusPipe = new StatusPipe();
-    return statusPipe.transform(this.status(), this.type());
+    // 使用状态文本映射
+    const status = this.status().toLowerCase();
+    const type = this.type();
+    const textMap = this.statusTextMap[type] || this.statusTextMap['default'];
+    
+    return textMap[status] || this.status();
   });
+
+  // 状态文本映射
+  private readonly statusTextMap: Record<string, Record<string, string>> = {
+    blueprint: {
+      planning: '规划中',
+      active: '进行中',
+      on_hold: '暂停',
+      completed: '已完成',
+      archived: '已归档'
+    },
+    branch: {
+      active: '活跃',
+      merged: '已合并',
+      closed: '已关闭'
+    },
+    task: {
+      pending: '待处理',
+      in_progress: '进行中',
+      completed: '已完成',
+      cancelled: '已取消'
+    },
+    issue: {
+      open: '待处理',
+      in_progress: '处理中',
+      resolved: '已解决',
+      closed: '已关闭',
+      reopened: '已重开'
+    },
+    pr: {
+      open: '打开',
+      reviewing: '审核中',
+      approved: '已批准',
+      rejected: '已拒绝',
+      merged: '已合并',
+      closed: '已关闭'
+    },
+    qc: {
+      pending: '待检查',
+      passed: '已通过',
+      failed: '未通过',
+      recheck_required: '需重检'
+    },
+    bot: {
+      active: '活跃',
+      inactive: '非活跃',
+      suspended: '已暂停',
+      pending: '待执行',
+      running: '执行中',
+      completed: '已完成',
+      failed: '失败',
+      cancelled: '已取消'
+    },
+    notification: {
+      unread: '未读',
+      read: '已读',
+      archived: '已归档'
+    },
+    default: {
+      active: '活跃',
+      inactive: '非活跃',
+      pending: '待处理',
+      in_progress: '进行中',
+      completed: '已完成',
+      failed: '失败',
+      success: '成功',
+      error: '错误',
+      warning: '警告'
+    }
+  };
 
   /** 计算图标类型 */
   iconType = computed(() => {
