@@ -1,6 +1,6 @@
 # Angular 開發代理
 
-> **相關文檔**：參考 [Angular 規範](../../.cursor/rules/angular.mdc)、[現代 Angular](../../.cursor/rules/modern-angular.mdc)
+> **相關文檔**：參考 [Angular 規範](../../../.cursor/rules/angular.mdc)、[現代 Angular](../../../.cursor/rules/modern-angular.mdc)
 
 ## 代理職責
 
@@ -188,10 +188,10 @@ export class UserComponent {
 
 ## 參考資源
 
-- [Angular 官方文檔](https://angular.dev/)
-- [Angular Signals 指南](https://angular.dev/guide/signals)
-- [專案 Angular 規範](../../.cursor/rules/angular.mdc)
-- [SHARED_IMPORTS 使用指南](../../docs/45-SHARED_IMPORTS-使用指南.md)
+  - [Angular 官方文檔](https://angular.dev/)
+  - [Angular Signals 指南](https://angular.dev/guide/signals)
+  - [專案 Angular 規範](../../../.cursor/rules/angular.mdc)
+  - [SHARED_IMPORTS 使用指南](../../../docs/45-SHARED_IMPORTS-使用指南.md)
 
 ---
 

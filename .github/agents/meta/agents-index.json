@@ -1,0 +1,46 @@
+{
+  "version": "2.0.0",
+  "updatedAt": "2025-11-18",
+  "core": [
+    {
+      "id": "role",
+      "name": "ng-alain Copilot 角色",
+      "path": ".github/agents/role.agent.md",
+      "description": "定義 AI / Copilot 的行為、原則與回覆格式"
+    },
+    {
+      "id": "project",
+      "name": "ng-alain Project Agent",
+      "path": ".github/agents/ng-project-agent.md",
+      "description": "提供專案背景、架構、資料與 API 摘要"
+    },
+    {
+      "id": "template",
+      "name": "Template Agent",
+      "path": ".github/agents/template-agent.md",
+      "description": "說明回答模板與 prompt/issue 範例"
+    }
+  ],
+  "domains": [
+    { "id": "angular", "path": ".github/agents/domain/angular-agent.md", "focus": "Angular 20 / Signals / Standalone" },
+    { "id": "typescript", "path": ".github/agents/domain/typescript-agent.md", "focus": "Type safety / models" },
+    { "id": "code-quality", "path": ".github/agents/domain/code-quality-agent.md", "focus": "命名、重用、文檔" },
+    { "id": "testing", "path": ".github/agents/domain/testing-agent.md", "focus": "Karma/Jasmine / coverage" },
+    { "id": "security", "path": ".github/agents/domain/security-agent.md", "focus": "RLS / secrets / dependency 漏洞" },
+    { "id": "performance", "path": ".github/agents/domain/performance-agent.md", "focus": "Lighthouse / bundle size" },
+    { "id": "accessibility", "path": ".github/agents/domain/accessibility-agent.md", "focus": "WCAG / keyboard / aria" },
+    { "id": "docs", "path": ".github/agents/domain/docs-agent.md", "focus": "README / API / ADR 品質" }
+  ],
+  "workflows": [
+    { "id": "agents-workflow", "path": ".github/agents/workflows/agents-workflow.md" },
+    { "id": "agents-actions", "path": ".github/agents/workflows/agents-actions.md" }
+  ],
+  "templates": [
+    { "id": "prompt", "path": ".github/agents/templates/agent-prompt-template.md" },
+    { "id": "issue", "path": ".github/agents/templates/issue-template-for-agents.md" }
+  ],
+  "examples": [
+    { "id": "config", "path": ".github/agents/examples/sample-agent-config.md" },
+    { "id": "patch", "path": ".github/agents/examples/sample-patch-response.md" }
+  ]
+}

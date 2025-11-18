@@ -4,16 +4,16 @@
   "modes": {
     "development": {
       "description": "Development mode - for daily development work",
-      "contextFiles": [
-        ".ai/quick-reference.md",
-        ".ai/architecture.md",
-        ".ai/tech-stack.md",
-        ".ai/business-context.md",
-        "AGENTS.md",
-        "docs/fyi.md",
-        "docs/fyi-context.md",
-        "docs/fyi-development.md"
-      ],
+        "contextFiles": [
+          ".github/agents/ng-project-agent.md",
+          ".github/agents/domain/angular-agent.md",
+          ".github/agents/domain/typescript-agent.md",
+          ".github/agents/domain/code-quality-agent.md",
+          "AGENTS.md",
+          "docs/fyi.md",
+          "docs/fyi-context.md",
+          "docs/fyi-development.md"
+        ],
       "rules": [
         ".cursor/rules/angular.mdc",
         ".cursor/rules/typescript.mdc",
@@ -24,19 +24,19 @@
     },
     "architecture": {
       "description": "Architecture mode - for architecture design and decisions",
-      "contextFiles": [
-        ".ai/architecture.md",
-        ".ai/database-overview.md",
-        ".ai/api-overview.md",
-        "docs/27-完整架構流程圖.mermaid.md",
-        "docs/28-架構審查報告.md",
-        "docs/30-資料表清單總覽.md",
-        "docs/fyi.md",
-        "docs/fyi-architecture.md",
-        "docs/fyi-development.md",
-        "docs/fyi-history.md",
-        "docs/fyi-challenges.md"
-      ],
+        "contextFiles": [
+          ".github/agents/ng-project-agent.md",
+          ".github/agents/domain/docs-agent.md",
+          ".github/agents/domain/security-agent.md",
+          "docs/27-完整架構流程圖.mermaid.md",
+          "docs/28-架構審查報告.md",
+          "docs/30-資料表清單總覽.md",
+          "docs/fyi.md",
+          "docs/fyi-architecture.md",
+          "docs/fyi-development.md",
+          "docs/fyi-history.md",
+          "docs/fyi-challenges.md"
+        ],
       "rules": [
         ".cursor/rules/architecture.mdc",
         ".cursor/rules/git-model.mdc",
@@ -47,11 +47,11 @@
     },
     "testing": {
       "description": "Testing mode - for writing and executing tests",
-      "contextFiles": [
-        ".ai/tech-stack.md",
-        ".ai/quick-reference.md",
-        "docs/38-測試指南.md"
-      ],
+        "contextFiles": [
+          ".github/agents/ng-project-agent.md",
+          ".github/agents/domain/testing-agent.md",
+          "docs/38-測試指南.md"
+        ],
       "rules": [
         ".cursor/rules/testing.mdc",
         ".cursor/rules/typescript.mdc",
@@ -61,12 +61,12 @@
     },
     "documentation": {
       "description": "Documentation mode - for writing and updating documentation",
-      "contextFiles": [
-        ".ai/architecture.md",
-        ".ai/business-context.md",
-        ".ai/quick-reference.md",
-        "docs/README.md"
-      ],
+        "contextFiles": [
+          ".github/agents/ng-project-agent.md",
+          ".github/agents/domain/docs-agent.md",
+          ".github/agents/domain/accessibility-agent.md",
+          "docs/README.md"
+        ],
       "rules": [
         ".cursor/rules/code-quality.mdc"
       ],
@@ -74,16 +74,16 @@
     },
     "api-development": {
       "description": "API development mode - for API and database related development",
-      "contextFiles": [
-        ".ai/api-overview.md",
-        ".ai/database-overview.md",
-        ".ai/architecture.md",
-        "docs/33-API-接口詳細文檔.md",
-        "docs/30-資料表清單總覽.md",
-        "docs/fyi.md",
-        "docs/fyi-context.md",
-        "docs/fyi-architecture.md"
-      ],
+        "contextFiles": [
+          ".github/agents/ng-project-agent.md",
+          ".github/agents/domain/security-agent.md",
+          ".github/agents/domain/typescript-agent.md",
+          "docs/33-API-接口詳細文檔.md",
+          "docs/30-資料表清單總覽.md",
+          "docs/fyi.md",
+          "docs/fyi-context.md",
+          "docs/fyi-architecture.md"
+        ],
       "rules": [
         ".cursor/rules/api-design.mdc",
         ".cursor/rules/error-handling.mdc",

@@ -1,102 +1,29 @@
-# [Agent 名稱] 代理
+# Template Agent 指南
 
-> **相關文檔**：參考 [相關規範1](../../.cursor/rules/xxx.mdc)、[相關規範2](../../.cursor/rules/yyy.mdc)
+此文件定義所有 AI / Copilot 在撰寫輸出時應套用的結構化模板，並說明如何使用 `templates/` 內的範本。
 
-## 代理職責
+## 1. 回覆格式
+1. **Context**：引用 `ng-project-agent.md` 或 domain 文件的章節，確保答案可追溯。
+2. **Analysis**：使用 Sequential Thinking，列出假設、風險與依賴。
+3. **Plan / Steps**：對應 `@SPT` 任務節點，清楚標示 Step 1, Step 2 ...。
+4. **Changes / Code**：必要時使用 fenced code block，並標記 `@file path`。
+5. **Validation**：列出 type-check、lint、test、build、runtime 驗證狀態。
+6. **Next Actions**：說明後續建議或風險。
 
-簡要描述此代理的主要職責和目的。
+## 2. 常用模板（位於 `templates/`）
+| 檔名 | 用途 |
+| --- | --- |
+| `agent-prompt-template.md` | 建立全新 Agent 或 Chat Prompt 的前置欄位（Role, Context, Rules, Checklist）。 |
+| `issue-template-for-agents.md` | 在 GitHub Issues 中指派給 Agent 任務時的填寫格式。 |
 
-## 檢查項目
+## 3. 使用規範
+- 所有模板皆需列出：**目標、輸入、輸出、風險、驗證、依賴**。
+- 調整模板時需更新 `meta/CHANGELOG.md` 並 bump `agents-index.json` 版本欄位。
+- 若模板引用外部規範，需提供相對路徑（例如 `../domain/security-agent.md`）。
 
-### 1. 檢查項目分類 1
-
-- ✅ 檢查點 1
-- ✅ 檢查點 2
-- ✅ 檢查點 3
-
-```typescript
-// 示例代碼
-```
-
-### 2. 檢查項目分類 2
-
-- ✅ 檢查點 1
-- ✅ 檢查點 2
-
-```typescript
-// ❌ 錯誤示例
-const example = 'bad practice';
-
-// ✅ 正確示例
-const example = 'good practice';
-```
-
-## 自動化檢查
-
-### Pre-commit 檢查
-
-```bash
-# 執行檢查命令
-yarn check:something
-```
-
-### Pull Request 檢查
-
-在 Pull Request 中，代理會自動執行：
-
-1. 檢查項目 1
-2. 檢查項目 2
-3. 檢查項目 3
-
-## 常見問題
-
-### 問題 1
-
-問題描述...
-
-```typescript
-// ❌ 錯誤做法
-// ...
-
-// ✅ 正確做法
-// ...
-```
-
-### 問題 2
-
-問題描述...
-
-## 最佳實踐
-
-### 1. 最佳實踐 1
-
-描述...
-
-```typescript
-// 示例代碼
-```
-
-### 2. 最佳實踐 2
-
-描述...
-
-## 配置文件
-
-### 配置文件名稱
-
-```json
-{
-  "配置項": "值"
-}
-```
-
-## 參考資源
-
-- [相關資源 1](link)
-- [相關資源 2](link)
-- [專案規範](../../.cursor/rules/xxx.mdc)
+## 4. 範例
+請參考 `examples/sample-patch-response.md` 了解 code review / patch 回覆，以及 `examples/sample-agent-config.md` 了解在 Actions 中載入模板的方式。
 
 ---
-
-**最後更新**：YYYY-MM-DD  
-**代理版本**：v1.0
+**最後更新**：2025-11-18  
+**維護者**：模板工作小組
