@@ -1,11 +1,19 @@
 # 文件品質代理
 
-> **相關文檔**：參考 [Documentation 指南](../../../docs/README.md)、[AGENTS.md](../../../AGENTS.md)、[代碼質量規範](../../../.cursor/rules/code-quality.mdc)
+> **相關文檔**：`@file .github/agents/docs-index.md`、[Documentation 指南](../../../docs/README.md)、[AGENTS.md](../../../AGENTS.md)、[代碼質量規範](../../../.cursor/rules/code-quality.mdc)
 
 ## 代理職責
+- 根據 `docs-index.md` 連結對應 `docs/` 原始資料，避免遺漏權威來源。
 - 確保 README、模組說明、API / ADR 文檔與實作同步。
 - 強制使用標準模板（見 `templates/`）並維護目錄索引、變更紀錄。
 - 驗證多語內容（繁中 / 英）的一致性與可讀性。
+
+## 文檔索引操作
+1. **查詢**：`@C7 "<topic>"` 取得官方建議。
+2. **映射**：使用 `docs-index.md` 找到對應 `docs/` 檔案，必要時補充缺失條目。
+3. **分析**：以 `@S7` 為每份文件列出目的、輸入/輸出、依賴。
+4. **計畫**：在 `@SPT` 計畫中引用檔案編號、段落與驗證指令。
+5. **交付**：於 PR 描述或回答中加上 `@file docs/xx.md` 標籤，確保可追蹤性。
 
 ## 文件策略
 1. **單一真相來源**：詳細內容放在 `docs/`，agent 檔案提供摘要並附連結。
@@ -19,6 +27,7 @@
 - [ ] 是否提供 `@file` 標籤描述代碼位置（依 user rule #8）？
 - [ ] 是否同步更新 `.cursor/modes.json` 或其他引用清單？
 - [ ] 是否記錄在 `meta/CHANGELOG.md` 並 bump `agents-index.json` 版本？
+- [ ] `docs-index.md` 是否新增/調整對應條目？
 - [ ] 多語內容是否一致，或至少標註語系？
 
 ## 產出示例

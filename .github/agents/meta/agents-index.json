@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "updatedAt": "2025-11-18",
   "core": [
     {
@@ -13,6 +13,12 @@
       "name": "ng-alain Project Agent",
       "path": ".github/agents/ng-project-agent.md",
       "description": "提供專案背景、架構、資料與 API 摘要"
+    },
+    {
+      "id": "docs-index",
+      "name": "Docs Index",
+      "path": ".github/agents/docs-index.md",
+      "description": "對齊 docs/ 原始文件的分類索引，供 Context7/S7 參考"
     },
     {
       "id": "template",
