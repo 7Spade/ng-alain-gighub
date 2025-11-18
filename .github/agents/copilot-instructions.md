@@ -1,106 +1,31 @@
-# GitHub Copilot Instructions for ng-alain-github
-
-> **Purpose**: This file provides GitHub Copilot coding agent with essential context about this repository's architecture, coding standards, and development practices.
-
-## 🤖 AI Assistant Role
-
-**For comprehensive AI assistant guidelines, see**: [`docs/50-AI助手角色配置.md`](../docs/50-AI助手角色配置.md)
-
-This document provides detailed role definitions, behavior guidelines, and response formats for AI assistants working on this project. Key requirements include:
-
-- **First Priority**: Always review `docs/10-系統架構思維導圖.mermaid.md` before making any architectural decisions
-- **Enterprise Standards**: Follow strict TypeScript, Angular, and code structure standards
-- **4-Step Response Format**: Conclusion → Implementation → Risk/Testing → Manual Review Flag
-- **Security**: Never expose `.env`, tokens, or sensitive information
-
-## 📋 Project Overview
-
-**Project**: ng-alain-github - Enterprise Angular admin panel framework  
-**Tech Stack**: Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.1.x + Supabase  
-**Architecture**: Git-like branching model with 51-table database structure  
-**Package Manager**: Yarn 4.9.2 (required)  
-**Node.js**: v20.19.5 (required)  
-**Authentication**: ✅ Supabase Auth + @delon/auth integrated (implemented)
-
-## 🏗️ Architecture Overview
-
-### Authentication System (✅ Implemented)
-
-The system uses **Supabase Auth** as the underlying authentication service, integrated with **@delon/auth** for frontend authentication:
-
-- **Supabase Auth**: Backend authentication (signIn, signUp, signOut, Session management)
-- **SupabaseSessionAdapter**: Converts Supabase Session to @delon/auth Token format
-- **@delon/auth**: Frontend auth framework (TokenService, route guards, HTTP interceptors)
-- **AuthService**: Business layer service integrating Supabase Auth with AccountRepository
-- **AuthStateService**: Authentication state management using Angular Signals
-
-**Implementation locations**:
-- `src/app/shared/services/auth/` - AuthService, AuthStateService, types
-- `src/app/core/supabase/supabase-session-adapter.service.ts` - Session adapter
-- `src/app/core/repositories/account.repository.ts` - Account data access
-
-**Authentication flow**:
-1. User logs in via Supabase Auth (signInWithPassword)
-2. SupabaseSessionAdapter converts Session to Token format
-3. Syncs to TokenService for @delon system (route guards, interceptors)
-4. Loads user Account data from `accounts` table
-5. Updates AuthStateService with user state
-
-**Reference**: `docs/13-帳戶層流程圖.mermaid.md`, `docs/14-業務流程圖.mermaid.md`
-
-### Git-like Branching Model
-
-This system implements a Git-like branching model for collaborative project management:
-
-- **Main Branch (blueprints)**: Owner has full control over task structure
-- **Organization Branches (blueprint_branches)**: Collaborating organizations can only fill in assignment fields
-- **Pull Requests**: Submit execution data → Owner review → Merge updates
-- **Permission Separation**: Owners modify task structure; collaborators fill assignment fields only
-
-**Key Documents**:
-- Full architecture: `docs/27-完整架構流程圖.mermaid.md`
-- Architecture review: `docs/28-架構審查報告.md`
-- Account layer flows: `docs/13-帳戶層流程圖.mermaid.md`
-
-### Database Structure (51 Tables, 11 Modules)
-
-1. **🔐 Account & Identity** (4 tables): accounts, teams, team_members, organization_schedules
-2. **🤝 Organization Collaboration** (3 tables): organization_collaborations, collaboration_invitations, collaboration_members
-3. **🔒 Permissions** (5 tables): roles, user_roles, permissions, role_permissions, branch_permissions
-4. **🎯 Blueprint/Project** (5 tables): blueprints, blueprint_configs, blueprint_branches, branch_forks, pull_requests
-5. **📋 Task Execution** (9 tables): tasks, task_assignments, task_lists, task_staging, daily_reports, report_photos, weather_cache, task_dependencies, task_templates
-6. **✅ Quality Assurance** (4 tables): quality_checks, qc_photos, inspections, inspection_photos
-7. **⚠️ Issue Tracking** (4 tables): issues, issue_assignments, issue_photos, issue_sync_logs
-8. **💬 Collaboration** (6 tables): comments, notifications, notification_rules, notification_subscriptions, personal_todos, todo_status_tracking
-9. **📊 Data Analysis** (6 tables): documents, document_versions, document_thumbnails, progress_tracking, activity_logs, analytics_cache
-10. **🤖 Bot System** (3 tables): bots, bot_tasks, bot_execution_logs
-11. **⚙️ System Management** (2 tables): settings, feature_flags
-
-**Full schema**: `docs/30-0-完整SQL表結構定義.md`
-
-### Core Design Principles
-
-- **Staging Mechanism**: 48-hour rollback window (`task_staging` table)
-- **Todo Center**: Five status categories (pending/staging/qc/acceptance/issue-tracking)
-- **Issue Sync**: Real-time sync to main branch (`issue_sync_logs` table)
-- **Activity Logs**: Centralized recording in main branch (`activity_logs` table)
-- **Document Management**: Version control, thumbnails, soft delete (30 days)
-- **Data Sync**: Construction logs and QC records auto-sync to main branch
-
-## 💻 Development Standards
-
-### TypeScript & Angular Best Practices
-
-#### Always Use
-
-- **Strict TypeScript**: Enable all strict compilation options
-- **Angular Signals**: For state management (Angular 20 feature)
-- **Standalone Components**: Modern Angular 20 architecture
-- **OnPush Change Detection**: `ChangeDetectionStrategy.OnPush` for all components
-- **Typed Forms**: Use Angular's typed form APIs
-- **Signal Inputs/Outputs**: Use new Angular 20 signal-based APIs
-- **Signal Queries**: `viewChild()`, `viewChildren()`, `contentChild()`, `contentChildren()`
-
-#### Never Use
-
-- `any` type (use `unknown` or specific types)
+ # GitHub Copilot Instructions (ng-alain)
+ 
+ Use this page as the minimal reminder before invoking Copilot/AI agents. All detailed rules live in `docs/50-AI助手角色配置.md`, `ng-project-agent.md`, and the domain checklists.
+ 
+ ## 1. Role Snapshot
+ - Lead Angular/Supabase engineer enforcing Standalone + SHARED_IMPORTS + Signals + OnPush.
+ - Uphold Git-like Branch model（main ⇄ org branches ⇄ staging）與 48h rollback。
+ - Never leak secrets or guess missing context; request specific files or logs instead.
+ 
+ ## 2. Non‑Negotiables
+ - Node 20.19.5, Yarn 4.9.2, strict TypeScript (`yarn type-check` must pass).
+ - Required validation sequence: `yarn lint` → `yarn lint:style` → `yarn type-check` → `yarn build` → `yarn test --watch=false` (plus feature-specific tests).
+ - Components: Standalone, `imports: [SHARED_IMPORTS]`, Signals for state/inputs/outputs, modern control flow (`@if/@for/@switch/@defer`).
+ - Data & Security: follow Supabase RLS policies, `@delon/auth TokenService`, no hard-coded roles/secrets, reference `docs/50-RLS策略開發指南.md`.
+ 
+ ## 3. Architecture Pointers
+ - Review `ng-project-agent.md` for the condensed blueprint (branch flow, 51-table modules, guardrails).
+ - Core directories: `src/app/core` (singletons, Supabase, interceptors), `src/app/shared` (reusable UI + services), `src/app/routes` (feature-first pages), `src/app/layout`.
+ - Path aliases only from root exports (`@core`, `@shared`, `@env`). No deep aliasing.
+ 
+ ## 4. Response Format
+ 1. **Conclusion** – 1–2 sentences referencing source docs via `@file`.
+ 2. **Implementation / Diff** – ordered steps or code with explicit file paths.
+ 3. **Risks & Tests** – list validation commands + expected results + rollback idea.
+ 4. **Manual Follow-up** – flag anything that still needs human review.
+ 
+ ## 5. References
+ - `docs-index.md` → pick the authoritative doc under `docs/`.
+ - `ng-project-agent.md` → project context & guardrails.
+ - `domain/*.md` → focused checklists (Angular, TS, Security, Performance, etc.).
+ - `docs/50-AI助手角色配置.md` → complete persona, examples, and PR templates.

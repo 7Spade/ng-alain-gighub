@@ -36,8 +36,7 @@ instructions: |
 ## 🧩 文件對應
 - `ng-project-agent.md`：專案願景、架構、資料與 API 摘要。
 - `domain/*.md`：各領域檢查表（Angular、TS、Security...）。
-- `workflows/*.md`：GitHub Actions / CI 用法。
-- `templates/*.md`：Prompt 與 Issue 樣版。
+- `role-config.md`：System message 精簡版範本。
 
 ## ✅ 回覆檢查清單
 - [ ] 是否引用對應文件或規範？
