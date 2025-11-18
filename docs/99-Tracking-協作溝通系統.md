@@ -105,6 +105,25 @@ CommunicationFacade 活動記錄整合（BlueprintActivityService）[⏳待開�
 CommunicationFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 CommunicationFacade[⏳待開始]
 
+#### Realtime 邊界功能（Core）
+
+RealtimeFacade 實施（core/facades/realtime.facade.ts）[⏳待開始]
+RealtimeFacade Signals 狀態管理[⏳待開始]
+RealtimeFacade 訂閱管理（subscribe, unsubscribe, subscribeToChannel）[⏳待開始]
+RealtimeFacade 資料庫變更訂閱（subscribeToTable, subscribeToFilter）[⏳待開始]
+RealtimeFacade Broadcast 廣播（broadcast, onBroadcast）[⏳待開始]
+RealtimeFacade Presence 狀態管理（trackPresence, getPresence）[⏳待開始]
+RealtimeFacade 連線狀態管理（connectionStatus, reconnect）[⏳待開始]
+RealtimeFacade 錯誤處理與重連機制[⏳待開始]
+RealtimeFacade 訂閱生命週期管理（自動清理、記憶體洩漏防止）[⏳待開始]
+更新 core/index.ts 導出 RealtimeFacade[✅已完成]
+
+#### Edge Function 整合
+
+通知處理 Edge Function（notification-handler）實施[⏳待開始]
+通知處理 Edge Function 整合（發送通知邏輯）[⏳待開始]
+通知處理 Edge Function 錯誤處理與重試機制[⏳待開始]
+
 #### 權限與安全
 
 RLS 權限驗證[⏳待開始]

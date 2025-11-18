@@ -120,6 +120,17 @@ RLS 權限驗證（feature_flags 表）[⏳待開始]
 系統活動記錄頁面（SystemActivityLogComponent）[⏳待開始]
 備份頁面（BackupComponent）[🚧進行中]
 
+#### 系統邊界功能
+
+CDN 配置管理（Cloudflare CDN 設定）[⏳待開始]
+Redis 快取配置（天氣快取、Session、熱點資料）[⏳待開始]
+第三方 API 整合（天氣 API、郵件服務、OAuth 提供商）[⏳待開始]
+天氣 API 整合（OpenWeather/WeatherAPI.com，Edge Function 封裝）[⏳待開始]
+郵件服務整合（SendGrid/AWS SES，通知郵件發送）[⏳待開始]
+OAuth 提供商整合（Google/GitHub 登入）[⏳待開始]
+系統監控與告警配置[⏳待開始]
+備份與還原機制（PostgreSQL、Storage 自動化備份）[⏳待開始]
+
 ### 測試
 
 單元測試[⏳待開始]

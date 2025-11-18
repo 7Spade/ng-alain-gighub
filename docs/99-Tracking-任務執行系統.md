@@ -108,6 +108,13 @@ TaskFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 任務樹 Facade（TaskTreeFacade）[✅已完成]
 TaskTreeFacade 支援層級更新[✅已完成]
 
+#### Edge Function 整合
+
+天氣 API Edge Function（weather-api）實施[⏳待開始]
+天氣 API Edge Function 整合（查詢天氣、快取機制）[⏳待開始]
+天氣 API Edge Function 錯誤處理與重試機制[⏳待開始]
+天氣快取表（weather_cache）管理[⏳待開始]
+
 #### 權限與安全
 
 RLS 權限驗證[⏳待開始]

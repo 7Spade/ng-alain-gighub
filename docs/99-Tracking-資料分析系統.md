@@ -129,6 +129,31 @@ AnalyticsService 活動記錄查詢（getActivityLogs, getActivityLogById）[✅
 AnalyticsService 活動記錄創建（createActivityLog）[✅已完成]
 更新 shared/services 導出所有資料分析服務[✅已完成]
 
+#### Storage 邊界功能（Core）
+
+StorageFacade 實施（core/facades/storage.facade.ts）[⏳待開始]
+StorageFacade Signals 狀態管理[⏳待開始]
+StorageFacade 檔案上傳（uploadFile, uploadImage, uploadDocument）[⏳待開始]
+StorageFacade 檔案下載（downloadFile, getPublicUrl）[⏳待開始]
+StorageFacade 檔案刪除（deleteFile, deleteFiles）[⏳待開始]
+StorageFacade Bucket 管理（listFiles, listBuckets）[⏳待開始]
+StorageFacade 圖片處理（壓縮、縮圖生成、EXIF 提取）[⏳待開始]
+StorageFacade 檔案權限管理（setPublic, setPrivate, updatePolicy）[⏳待開始]
+StorageFacade 上傳進度追蹤（uploadProgress）[⏳待開始]
+StorageFacade 錯誤處理與重試機制[⏳待開始]
+Storage RLS 策略實施（images/, documents/, drawings/ buckets）[⏳待開始]
+更新 core/index.ts 導出 StorageFacade[✅已完成]
+
+#### Edge Function 整合
+
+進度計算 Edge Function（progress-calculator）實施[⏳待開始]
+進度計算 Edge Function 整合（計算專案完成度）[⏳待開始]
+數據分析 Edge Function（analytics-processor）實施[⏳待開始]
+數據分析 Edge Function 整合（統計計算、聚合分析）[⏳待開始]
+報表生成 Edge Function（report-generator）實施[⏳待開始]
+報表生成 Edge Function 整合（PDF/Excel 報表生成）[⏳待開始]
+Edge Function 錯誤處理與重試機制[⏳待開始]
+
 #### 業務功能實現
 
 文件版本控制實現[⏳待開始]
