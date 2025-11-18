@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, effect, OnDestroy } from '@angular/core';
 import {
   BlueprintRepository,
   BlueprintBranchRepository,
@@ -9,6 +9,7 @@ import {
   type BlueprintBranch
 } from '@core';
 import { BlueprintService, BlueprintActivityService, BranchService, type BlueprintStatus } from '@shared';
+import { BlueprintAggregationRefreshService } from '@shared/services/common';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -67,7 +68,7 @@ import { firstValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class BlueprintFacade {
+export class BlueprintFacade implements OnDestroy {
   // Inject dependencies
   private readonly blueprintService = inject(BlueprintService);
   private readonly branchService = inject(BranchService);
@@ -75,6 +76,7 @@ export class BlueprintFacade {
   private readonly blueprintRepository = inject(BlueprintRepository);
   private readonly blueprintBranchRepository = inject(BlueprintBranchRepository);
   private readonly branchForkRepository = inject(BranchForkRepository);
+  private readonly aggregationRefreshService = inject(BlueprintAggregationRefreshService);
 
   // Signal state - Facade-specific state
   private readonly currentBlueprintIdState = signal<string | null>(null);
@@ -127,9 +129,18 @@ export class BlueprintFacade {
    * Initialize facade and set up aggregation refresh listener
    */
   constructor() {
-    // Setup aggregation refresh listener if service is available
-    // TODO: Implement BlueprintAggregationRefreshService integration
-    // this.setupAggregationRefreshListener();
+    // Setup aggregation refresh listener
+    this.setupAggregationRefreshListener();
+  }
+
+  /**
+   * Cleanup on destroy
+   */
+  ngOnDestroy(): void {
+    const blueprintId = this.currentBlueprintId();
+    if (blueprintId) {
+      this.aggregationRefreshService.cleanup(blueprintId);
+    }
   }
 
   // ============================================================================
@@ -560,30 +571,54 @@ export class BlueprintFacade {
   }
 
   /**
-   * Setup aggregation refresh listener (NOT YET IMPLEMENTED)
+   * Setup aggregation refresh listener
    *
-   * This method is scaffolding for future BlueprintAggregationRefreshService integration.
-   * When implemented, it will listen for task/document/quality updates and automatically
-   * refresh blueprint data to maintain consistency across the application.
+   * Listens for changes in related resources (tasks, documents, quality checks, issues)
+   * and automatically refreshes blueprint data to maintain consistency across the application.
    *
-   * **Implementation Status**: Awaiting BlueprintAggregationRefreshService
-   * **Tracking**: See docs/COMPONENT-MAPPING-REPORT.md - "BlueprintAggregationRefreshService" (High Priority)
-   * **Integration Point**: Line 138 in constructor (currently commented out)
+   * **Implementation Status**: ✅ Implemented
+   * **Integration**: Uses BlueprintAggregationRefreshService
+   *
+   * The listener:
+   * 1. Monitors currentBlueprintId changes via effect
+   * 2. Sets up real-time subscriptions when blueprint is loaded
+   * 3. Automatically refreshes blueprint data when related resources change
+   * 4. Cleans up subscriptions when blueprint changes or component destroys
    *
    * @private
-   * @todo Implement when BlueprintAggregationRefreshService is available
-   * @see docs/COMPONENT-MAPPING-REPORT.md
+   * @see BlueprintAggregationRefreshService
    */
   private setupAggregationRefreshListener(): void {
-    // Scaffolding for future implementation
-    // Uncomment when BlueprintAggregationRefreshService is ready:
-    //
-    // const aggregationService = inject(BlueprintAggregationRefreshService);
-    // aggregationService.listen().subscribe(() => {
-    //   const blueprintId = this.currentBlueprintId();
-    //   if (blueprintId) {
-    //     this.loadBlueprintById(blueprintId);
-    //   }
-    // });
+    // Listen for refresh events
+    this.aggregationRefreshService.listen().subscribe(event => {
+      console.log('[BlueprintFacade] Aggregation refresh triggered:', event);
+      
+      // Only refresh if the event is for the current blueprint
+      const currentId = this.currentBlueprintId();
+      if (currentId && currentId === event.blueprintId) {
+        this.loadBlueprintById(event.blueprintId).catch(error => {
+          console.error('[BlueprintFacade] Failed to refresh blueprint after aggregation change:', error);
+        });
+      }
+    });
+
+    // Setup subscriptions when currentBlueprintId changes
+    effect(() => {
+      const blueprintId = this.currentBlueprintId();
+      
+      // Cleanup previous subscriptions
+      const previousBlueprints = this.aggregationRefreshService.getActiveBlueprints();
+      previousBlueprints.forEach(id => {
+        if (id !== blueprintId) {
+          this.aggregationRefreshService.cleanup(id);
+        }
+      });
+
+      // Setup new subscriptions if blueprint is set
+      if (blueprintId) {
+        console.log('[BlueprintFacade] Setting up aggregation refresh for blueprint:', blueprintId);
+        this.aggregationRefreshService.setupRealtimeSubscriptions(blueprintId);
+      }
+    });
   }
 }
