@@ -240,7 +240,8 @@ export class IssueService {
       // 建立同步紀錄
       await this.createSyncLog({
         issue_id: issueId,
-        sync_status: 'synced',
+        target_blueprint_id: issue.blueprint_id,
+        sync_type: 'update',
         synced_at: new Date().toISOString()
       });
 

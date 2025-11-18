@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model';
+import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.models';
 import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
 import { IssueService } from '@shared/services/issue/issue.service';
@@ -157,7 +157,7 @@ export class IssueFacade implements OnDestroy {
     this.lastOperation.set('loadIssuesByBlueprint');
 
     try {
-      const issues = await this.issueService.getIssuesByBlueprint(blueprintId);
+      const issues = await this.issueService.loadIssuesByBlueprint(blueprintId);
       this.issues.set(issues);
     } catch (error) {
       this.errorStateService.addError({
@@ -180,7 +180,7 @@ export class IssueFacade implements OnDestroy {
     this.lastOperation.set('loadIssuesByBranch');
 
     try {
-      const issues = await this.issueService.getIssuesByBranch(branchId);
+      const issues = await this.issueService.loadIssuesByBranch(branchId);
       this.issues.set(issues);
     } catch (error) {
       this.errorStateService.addError({
