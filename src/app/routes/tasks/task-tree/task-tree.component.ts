@@ -7,6 +7,7 @@ import { TaskTreeFacade } from './task-tree.facade';
 import { TaskTreeDragService } from './task-tree-drag.service';
 import { TaskStatusSwitcherComponent } from './task-status-switcher/task-status-switcher.component';
 import { TaskAssigneeSelectorComponent } from './task-assignee-selector/task-assignee-selector.component';
+import { ConnectionStatusComponent } from './connection-status/connection-status.component';
 import { AssignmentChangeEvent } from './task-assignment.types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -37,6 +38,8 @@ interface NzTreeNodeOptions {
  * - Phase 3.1: Interactive status management
  * - Phase 3.2: Task assignment selector
  * - Phase 3.3: Realtime subscriptions
+ * - Phase 5.1: Conflict resolution
+ * - Phase 5.2: Connection status indicator
  *
  * Features:
  * - Signal-based reactive tree structure
@@ -54,7 +57,14 @@ interface NzTreeNodeOptions {
 @Component({
   selector: 'app-task-tree',
   standalone: true,
-  imports: [SHARED_IMPORTS, CdkDrag, CdkDropList, TaskStatusSwitcherComponent, TaskAssigneeSelectorComponent],
+  imports: [
+    SHARED_IMPORTS, 
+    CdkDrag, 
+    CdkDropList, 
+    TaskStatusSwitcherComponent, 
+    TaskAssigneeSelectorComponent,
+    ConnectionStatusComponent
+  ],
   providers: [TaskTreeDragService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './task-tree.component.html',
@@ -74,6 +84,16 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   readonly loading = this.facade.loading;
   readonly error = this.facade.error;
   readonly taskStats = this.facade.taskStats;
+  
+  // Phase 5: Connection status signals
+  readonly connectionStatus = this.facade.connectionStatus;
+  readonly lastConnectionUpdate = this.facade.lastConnectionUpdate;
+  readonly conflicts = this.facade.conflicts;
+  
+  // Reconnect function for connection status component
+  readonly reconnectFn = (): void => {
+    this.facade.reconnect();
+  };
 
   // Expanded nodes tracking (for collapse/expand state)
   readonly expandedNodeIds = signal<Set<string>>(new Set());

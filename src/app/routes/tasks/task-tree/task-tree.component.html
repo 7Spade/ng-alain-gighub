@@ -1,5 +1,13 @@
 <page-header [title]="'任務樹狀視圖'">
   <ng-template #extra>
+    <!-- Phase 5: Connection Status Indicator -->
+    <app-connection-status 
+      [status]="connectionStatus()"
+      [lastUpdated]="lastConnectionUpdate()"
+      [reconnectFn]="reconnectFn"
+      style="margin-right: 16px;"
+    />
+    
     <button nz-button nzType="primary" (click)="router.navigate(['/tasks/create'])">
       <span nz-icon nzType="plus"></span>
       新建任務
