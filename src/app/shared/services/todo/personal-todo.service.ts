@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { PersonalTodo, PersonalTodoRepository, SupabaseService, TodoStatusTracking, TodoStatusTrackingRepository } from '@core';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import { PersonalTodo, PersonalTodoRepository, TodoStatusTracking, TodoStatusTrackingRepository } from '@core';
+import { RealtimeFacade } from '@core';
+import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -83,6 +84,11 @@ export interface TodoStatistics {
  * - 🟥 驗收中（in_inspection）
  * - ⚠️ 問題追蹤（issue_tracking）
  *
+ * 依賴：
+ * - PersonalTodoRepository (core/infra) - 資料存取
+ * - TodoStatusTrackingRepository (core/infra) - 狀態追蹤資料存取
+ * - RealtimeFacade (core) - Realtime 訂閱管理
+ *
  * @example
  * ```typescript
  * const todoService = inject(PersonalTodoService);
@@ -105,10 +111,10 @@ export interface TodoStatistics {
 export class PersonalTodoService {
   private personalTodoRepository = inject(PersonalTodoRepository);
   private todoStatusTrackingRepository = inject(TodoStatusTrackingRepository);
-  private supabaseService = inject(SupabaseService);
+  private realtimeFacade = inject(RealtimeFacade);
 
-  // Realtime 頻道
-  private realtimeChannel: RealtimeChannel | null = null;
+  // Realtime 訂閱 ID
+  private realtimeSubscriptionId: string | null = null;
 
   // Signals for state management
   private todosState = signal<PersonalTodo[]>([]);
@@ -294,7 +300,7 @@ export class PersonalTodoService {
       );
 
       // Realtime 會自動更新，但為了立即反應，手動更新
-      if (!this.realtimeChannel) {
+      if (!this.realtimeSubscriptionId) {
         this.todosState.update(todos => [...todos, todo]);
       }
 
