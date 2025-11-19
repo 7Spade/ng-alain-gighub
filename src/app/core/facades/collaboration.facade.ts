@@ -7,9 +7,10 @@ import type {
   NotificationInsert,
   OrganizationCollaboration
 } from '@shared';
-import { CollaborationService } from '@shared/services/collaboration/collaboration.service';
-import { NotificationService } from '@shared/services/collaboration/notification.service';
+import { NotificationService } from '@shared/services/collab/notification.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
+import { CollaborationService } from '@shared/services/org/collaboration.service';
+
 import { RealtimeFacade } from './realtime.facade';
 
 /**

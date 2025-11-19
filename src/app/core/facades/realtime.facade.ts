@@ -2,8 +2,14 @@ import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
 import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 import { ErrorStateService } from '../../shared/services/common/error-state.service';
+import type {
+  SubscriptionConfig,
+  SubscriptionInfo,
+  RealtimeCallback,
+  BroadcastCallback,
+  PresenceCallback
+} from '../infra/types/realtime.types';
 import { SupabaseService } from '../supabase/supabase.service';
-import type { SubscriptionConfig, SubscriptionInfo, RealtimeCallback, BroadcastCallback, PresenceCallback } from '../infra/types/realtime.types';
 
 /**
  * Realtime Facade
@@ -131,7 +137,10 @@ export class RealtimeFacade implements OnDestroy {
    * });
    * ```
    */
-  subscribeToTable<T extends Record<string, any> = any>(config: SubscriptionConfig, callback: (payload: RealtimePostgresChangesPayload<T>) => void): string {
+  subscribeToTable<T extends Record<string, any> = any>(
+    config: SubscriptionConfig,
+    callback: (payload: RealtimePostgresChangesPayload<T>) => void
+  ): string {
     if (!config.table) {
       throw new Error('Table name is required for table subscription');
     }

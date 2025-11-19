@@ -43,12 +43,12 @@ export class FileSizePipe implements PipeTransform {
 
   /**
    * 转换文件大小
-   * 
+   *
    * @param value 文件大小（字节）
    * @param precision 小数位数，默认 2
    * @returns 格式化后的文件大小字符串
    */
-  transform(value: number | null | undefined, precision: number = 2): string {
+  transform(value: number | null | undefined, precision = 2): string {
     if (value === null || value === undefined || isNaN(value)) {
       return '0 B';
     }

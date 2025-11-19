@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree, ActivatedRouteSnapshot } from '@angular/router';
+
 import { AuthFacade } from '../facades/auth.facade';
 import { PermissionService } from '../permissions';
 
@@ -39,10 +40,7 @@ import { PermissionService } from '../permissions';
  * @see AuthFacade
  * @see docs/27-完整架構流程圖.mermaid.md
  */
-export const branchPermissionGuard: CanActivateFn = async (
-  route: ActivatedRouteSnapshot,
-  state
-): Promise<boolean | UrlTree> => {
+export const branchPermissionGuard: CanActivateFn = async (route: ActivatedRouteSnapshot, state): Promise<boolean | UrlTree> => {
   const authFacade = inject(AuthFacade);
   const permissionService = inject(PermissionService);
   const router = inject(Router);
@@ -59,7 +57,7 @@ export const branchPermissionGuard: CanActivateFn = async (
   // 获取分支 ID 和蓝图 ID
   const branchId = route.paramMap.get('branchId');
   const blueprintId = route.paramMap.get('blueprintId');
-  
+
   if (!branchId) {
     console.warn('[BranchPermissionGuard] No branchId in route parameters');
     // 如果没有 branchId，可能是主分支，允许访问
@@ -70,21 +68,16 @@ export const branchPermissionGuard: CanActivateFn = async (
   const requiredPermission = (route.data['requiredPermission'] as string) || 'read';
 
   // 检查用户对分支的权限
-  const hasPermission = await new Promise<boolean>((resolve) => {
+  const hasPermission = await new Promise<boolean>(resolve => {
     permissionService.canAccessBlueprint(blueprintId || branchId, requiredPermission as any).subscribe({
-      next: (result) => resolve(result),
+      next: result => resolve(result),
       error: () => resolve(false)
     });
   });
 
   if (!hasPermission) {
-    console.log(
-      '[BranchPermissionGuard] User does not have permission:',
-      requiredPermission,
-      'for branch:',
-      branchId
-    );
-    
+    console.log('[BranchPermissionGuard] User does not have permission:', requiredPermission, 'for branch:', branchId);
+
     // 重定向到无权限页面
     return router.createUrlTree(['/exception/403'], {
       queryParams: {

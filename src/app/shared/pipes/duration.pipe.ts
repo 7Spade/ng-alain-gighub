@@ -48,7 +48,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class DurationPipe implements PipeTransform {
   /**
    * 转换时间长度
-   * 
+   *
    * @param value 时间值
    * @param unit 输入单位，默认 'seconds'
    * @param format 输出格式，默认 'short'
@@ -106,7 +106,7 @@ export class DurationPipe implements PipeTransform {
    */
   private formatShort(days: number, hours: number, minutes: number, seconds: number): string {
     const parts: string[] = [];
-    
+
     if (days > 0) parts.push(`${days}d`);
     if (hours > 0) parts.push(`${hours}h`);
     if (minutes > 0) parts.push(`${minutes}m`);
@@ -120,7 +120,7 @@ export class DurationPipe implements PipeTransform {
    */
   private formatLong(days: number, hours: number, minutes: number, seconds: number): string {
     const parts: string[] = [];
-    
+
     if (days > 0) parts.push(`${days} 天`);
     if (hours > 0) parts.push(`${hours} 小时`);
     if (minutes > 0) parts.push(`${minutes} 分钟`);
@@ -134,7 +134,7 @@ export class DurationPipe implements PipeTransform {
    */
   private formatCompact(days: number, hours: number, minutes: number, seconds: number): string {
     const totalHours = days * 24 + hours;
-    
+
     if (totalHours > 0) {
       return `${this.padZero(totalHours)}:${this.padZero(minutes)}:${this.padZero(seconds)}`;
     } else if (minutes > 0) {

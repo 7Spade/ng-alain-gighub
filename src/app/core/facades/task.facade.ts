@@ -1,14 +1,11 @@
 import { Injectable, inject, signal, computed, effect, OnDestroy } from '@angular/core';
-import {
-  TaskRepository,
-  TaskInsert,
-  TaskUpdate,
-  type Task
-} from '@core';
+import { TaskInsert, TaskUpdate, type Task } from '@core';
 import {
   TaskService,
   TaskAssignmentService,
   TaskListService,
+  TaskTemplateService,
+  TaskDependencyService,
   TaskStatus,
   TaskPriority,
   type TaskDetail,
@@ -18,7 +15,10 @@ import {
   type TaskAssignmentUpdate,
   type TaskList,
   type TaskListInsert,
-  type TaskListUpdate
+  type TaskListUpdate,
+  type TaskTemplate,
+  type TaskDependency,
+  type DependencyGraph
 } from '@shared';
 import { BlueprintActivityService, ErrorStateService } from '@shared';
 import { firstValueFrom } from 'rxjs';
@@ -86,9 +86,10 @@ export class TaskFacade implements OnDestroy {
   private readonly taskService = inject(TaskService);
   private readonly taskAssignmentService = inject(TaskAssignmentService);
   private readonly taskListService = inject(TaskListService);
+  private readonly taskTemplateService = inject(TaskTemplateService);
+  private readonly taskDependencyService = inject(TaskDependencyService);
   private readonly activityService = inject(BlueprintActivityService);
   private readonly errorStateService = inject(ErrorStateService);
-  private readonly taskRepository = inject(TaskRepository);
 
   // Signal state - Facade-specific state
   private readonly currentTaskIdState = signal<string | null>(null);
@@ -275,14 +276,7 @@ export class TaskFacade implements OnDestroy {
       // Log activity
       if (data.blueprint_id) {
         await this.activityService
-          .logActivity(
-            data.blueprint_id,
-            'task',
-            task.id,
-            'created',
-            [],
-            { title: task.title }
-          )
+          .logActivity(data.blueprint_id, 'task', task.id, 'created', [], { title: task.title })
           .catch(err => console.warn('[TaskFacade] Failed to log activity:', err));
       }
 
@@ -389,9 +383,7 @@ export class TaskFacade implements OnDestroy {
       const blueprintId = taskData.blueprintId || taskData.blueprint_id;
       if (blueprintId) {
         const currentTask = this.tasks().find(t => t.id === taskId);
-        const changes = currentTask
-          ? [{ field: 'status', oldValue: currentTask.status, newValue: newStatus }]
-          : [];
+        const changes = currentTask ? [{ field: 'status', oldValue: currentTask.status, newValue: newStatus }] : [];
         await this.activityService
           .logActivity(blueprintId, 'task', taskId, 'updated', changes, { status: newStatus })
           .catch(err => console.warn('[TaskFacade] Failed to log activity:', err));
@@ -653,5 +645,213 @@ export class TaskFacade implements OnDestroy {
     this.lastOperationState.set(null);
     this.clearError();
   }
-}
 
+  // ============================================================================
+  // Task Template Management
+  // ============================================================================
+
+  /**
+   * Create task from template
+   *
+   * @param templateId Template ID
+   * @param blueprintId Blueprint ID
+   * @param additionalData Additional task data
+   * @returns Promise<Task>
+   */
+  async createTaskFromTemplate(templateId: string, blueprintId: string, additionalData?: Partial<TaskInsert>): Promise<Task> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('create_task_from_template');
+
+    try {
+      // Get task data from template
+      const taskData = await this.taskTemplateService.createTaskFromTemplate(templateId, blueprintId, additionalData);
+
+      // Create task using TaskService
+      const task = await this.taskService.createTask(taskData);
+
+      // Log activity
+      try {
+        await this.activityService.logActivity(
+          blueprintId,
+          'task',
+          task.id,
+          'created',
+          [{ field: 'source', oldValue: null, newValue: 'template' }],
+          { templateId }
+        );
+      } catch (activityError) {
+        console.warn('[TaskFacade] Failed to log activity:', activityError);
+      }
+
+      return task;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '从模板创建任务失败';
+      this.errorStateService.addError({
+        category: 'BusinessLogic',
+        severity: 'error',
+        message: errorMessage,
+        details: error,
+        context: 'TaskFacade.createTaskFromTemplate'
+      });
+      console.error('[TaskFacade] Failed to create task from template:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Load templates
+   *
+   * @returns Promise<void>
+   */
+  async loadTemplates(): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_templates');
+
+    try {
+      await this.taskTemplateService.loadTemplates();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '加载任务模板失败';
+      this.errorStateService.addError({
+        category: 'BusinessLogic',
+        severity: 'error',
+        message: errorMessage,
+        details: error,
+        context: 'TaskFacade.loadTemplates'
+      });
+      console.error('[TaskFacade] Failed to load templates:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  // ============================================================================
+  // Task Dependency Management
+  // ============================================================================
+
+  /**
+   * Create dependency
+   *
+   * @param taskId Task ID
+   * @param dependsOnTaskId Depends on task ID
+   * @param dependencyType Dependency type
+   * @param lagDays Lag days
+   * @returns Promise<TaskDependency>
+   */
+  async createDependency(
+    taskId: string,
+    dependsOnTaskId: string,
+    dependencyType: 'finish_to_start' | 'start_to_start' | 'finish_to_finish' | 'start_to_finish' = 'finish_to_start',
+    lagDays = 0
+  ): Promise<TaskDependency> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('create_dependency');
+
+    try {
+      // Check for circular dependency first
+      const hasCycle = await this.taskDependencyService.checkCircularDependency(taskId, dependsOnTaskId);
+      if (hasCycle) {
+        throw new Error('创建依赖关系会导致循环依赖');
+      }
+
+      const dependency = await this.taskDependencyService.createDependency({
+        task_id: taskId,
+        depends_on_task_id: dependsOnTaskId,
+        dependency_type: dependencyType,
+        lag_days: lagDays
+      } as any);
+
+      // Get blueprint ID from task
+      const task = this.tasks().find(t => t.id === taskId);
+      if (task) {
+        const taskAny = task as any;
+        const blueprintId = taskAny.blueprint_id;
+        if (blueprintId) {
+          // Log activity
+          try {
+            await this.activityService.logActivity(blueprintId, 'task_dependency', dependency.id, 'created', [
+              { field: 'task_id', oldValue: null, newValue: taskId },
+              { field: 'depends_on_task_id', oldValue: null, newValue: dependsOnTaskId }
+            ]);
+          } catch (activityError) {
+            console.warn('[TaskFacade] Failed to log activity:', activityError);
+          }
+        }
+      }
+
+      return dependency;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '创建任务依赖失败';
+      this.errorStateService.addError({
+        category: 'BusinessLogic',
+        severity: 'error',
+        message: errorMessage,
+        details: error,
+        context: 'TaskFacade.createDependency'
+      });
+      console.error('[TaskFacade] Failed to create dependency:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Check circular dependency
+   *
+   * @param taskId Task ID
+   * @param dependsOnTaskId Depends on task ID
+   * @returns Promise<boolean>
+   */
+  async checkCircularDependency(taskId: string, dependsOnTaskId: string): Promise<boolean> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('check_circular_dependency');
+
+    try {
+      return await this.taskDependencyService.checkCircularDependency(taskId, dependsOnTaskId);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '检查循环依赖失败';
+      this.errorStateService.addError({
+        category: 'BusinessLogic',
+        severity: 'error',
+        message: errorMessage,
+        details: error,
+        context: 'TaskFacade.checkCircularDependency'
+      });
+      console.error('[TaskFacade] Failed to check circular dependency:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Get dependency graph
+   *
+   * @param blueprintId Blueprint ID
+   * @returns Promise<DependencyGraph>
+   */
+  async getDependencyGraph(blueprintId: string): Promise<DependencyGraph> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('get_dependency_graph');
+
+    try {
+      return await this.taskDependencyService.getDependencyGraph(blueprintId);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '获取依赖图失败';
+      this.errorStateService.addError({
+        category: 'BusinessLogic',
+        severity: 'error',
+        message: errorMessage,
+        details: error,
+        context: 'TaskFacade.getDependencyGraph'
+      });
+      console.error('[TaskFacade] Failed to get dependency graph:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+}

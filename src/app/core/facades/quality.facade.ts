@@ -1,22 +1,15 @@
 import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
-import {
-  InspectionRepository,
-  QualityCheckRepository,
-  type Inspection,
-  type InspectionInsert,
-  type InspectionUpdate,
-  type QualityCheckInsert,
-  type QualityCheckUpdate
-} from '@core';
+import { type Inspection, type InspectionInsert, type InspectionUpdate } from '@core';
 import {
   BlueprintActivityService,
   ErrorStateService,
   InspectionService,
   QualityCheckService,
   type InspectionDetail,
-  type QualityCheckDetail
+  type QualityCheckDetail,
+  type QualityCheckInsert,
+  type QualityCheckUpdate
 } from '@shared';
-import { firstValueFrom } from 'rxjs';
 
 /**
  * Quality Facade
@@ -78,8 +71,6 @@ export class QualityFacade implements OnDestroy {
   // Inject dependencies
   private readonly qualityCheckService = inject(QualityCheckService);
   private readonly inspectionService = inject(InspectionService);
-  private readonly qualityCheckRepository = inject(QualityCheckRepository);
-  private readonly inspectionRepository = inject(InspectionRepository);
   private readonly activityService = inject(BlueprintActivityService);
   private readonly errorStateService = inject(ErrorStateService);
 
@@ -233,15 +224,8 @@ export class QualityFacade implements OnDestroy {
     this.currentTaskIdState.set(taskId);
 
     try {
-      const qcs = await firstValueFrom(this.qualityCheckRepository.findByTaskId(taskId));
-      // Convert to QualityCheckDetail format
-      const qcDetails = await Promise.all(
-        qcs.map(async qc => {
-          const detail = await this.qualityCheckService.getById(qc.id);
-          return detail || (qc as any);
-        })
-      );
-      this.qualityChecksState.set(qcDetails.filter(qc => qc !== null) as QualityCheckDetail[]);
+      const qcDetails = await this.qualityCheckService.loadByTaskId(taskId);
+      this.qualityChecksState.set(qcDetails);
     } catch (error) {
       console.error('[QualityFacade] Failed to load quality checks:', error);
       throw error;
@@ -261,7 +245,7 @@ export class QualityFacade implements OnDestroy {
     this.lastOperationState.set('create_quality_check');
 
     try {
-      const qc = await firstValueFrom(this.qualityCheckRepository.create(data));
+      const qc = await this.qualityCheckService.create(data);
       const qcDetail = await this.qualityCheckService.getById(qc.id);
 
       if (!qcDetail) {
@@ -304,7 +288,7 @@ export class QualityFacade implements OnDestroy {
     this.lastOperationState.set('update_quality_check');
 
     try {
-      await firstValueFrom(this.qualityCheckRepository.update(id, data));
+      await this.qualityCheckService.update(id, data);
       const qcDetail = await this.qualityCheckService.getById(id);
 
       if (!qcDetail) {

@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { RealtimeFacade, SubscriptionConfig } from './realtime.facade';
 import { SupabaseService } from '@core';
 import { ErrorStateService } from '@shared/services/common';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+
+import { RealtimeFacade, SubscriptionConfig } from './realtime.facade';
 
 describe('RealtimeFacade', () => {
   let facade: RealtimeFacade;

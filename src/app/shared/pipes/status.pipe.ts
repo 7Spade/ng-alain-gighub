@@ -105,12 +105,12 @@ export class StatusPipe implements PipeTransform {
     }
   };
 
-  transform(value: string | null | undefined, type: string = 'default'): string {
+  transform(value: string | null | undefined, type = 'default'): string {
     if (!value) return '';
 
     const normalizedValue = value.toLowerCase();
     const typeMap = this.statusMap[type] || this.statusMap['default'];
-    
+
     return typeMap[normalizedValue] || value;
   }
 }

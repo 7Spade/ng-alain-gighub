@@ -86,30 +86,30 @@ export class StatusBadgeComponent {
     success: 'green',
     error: 'red',
     warning: 'orange',
-    
+
     // 蓝图状态
     planning: 'blue',
     on_hold: 'orange',
     archived: 'default',
-    
+
     // 分支状态
     merged: 'purple',
     closed: 'default',
-    
+
     // 问题状态
     open: 'red',
     resolved: 'green',
     reopened: 'orange',
-    
+
     // PR 状态
     reviewing: 'blue',
     approved: 'green',
     rejected: 'red',
-    
+
     // QC 状态
     passed: 'green',
     recheck_required: 'orange',
-    
+
     // 通知状态
     unread: 'red',
     read: 'default'
@@ -150,7 +150,7 @@ export class StatusBadgeComponent {
     if (this.color()) {
       return this.color();
     }
-    
+
     // 使用状态映射颜色
     const status = this.status().toLowerCase();
     return this.colorMap[status] || 'default';
@@ -162,12 +162,12 @@ export class StatusBadgeComponent {
     if (this.text()) {
       return this.text();
     }
-    
+
     // 使用状态文本映射
     const status = this.status().toLowerCase();
     const type = this.type();
     const textMap = this.statusTextMap[type] || this.statusTextMap['default'];
-    
+
     return textMap[status] || this.status();
   });
 

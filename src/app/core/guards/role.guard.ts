@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree, ActivatedRouteSnapshot } from '@angular/router';
+
 import { AuthFacade } from '../facades/auth.facade';
 import { PermissionService } from '../permissions';
 
@@ -31,10 +32,7 @@ import { PermissionService } from '../permissions';
  * @see AuthFacade
  * @see docs/27-完整架構流程圖.mermaid.md
  */
-export const roleGuard: CanActivateFn = async (
-  route: ActivatedRouteSnapshot,
-  state
-): Promise<boolean | UrlTree> => {
+export const roleGuard: CanActivateFn = async (route: ActivatedRouteSnapshot, state): Promise<boolean | UrlTree> => {
   const authFacade = inject(AuthFacade);
   const permissionService = inject(PermissionService);
   const router = inject(Router);
@@ -50,23 +48,23 @@ export const roleGuard: CanActivateFn = async (
 
   // 获取所需角色
   const requiredRoles = route.data['requiredRoles'] as string[] | undefined;
-  
+
   if (!requiredRoles || requiredRoles.length === 0) {
     console.warn('[RoleGuard] No required roles specified, allowing access');
     return true;
   }
 
   // 检查用户是否拥有任一所需角色
-  const hasRequiredRole = await new Promise<boolean>((resolve) => {
+  const hasRequiredRole = await new Promise<boolean>(resolve => {
     permissionService.canAny(requiredRoles.map(r => `role.${r}`)).subscribe({
-      next: (result) => resolve(result),
+      next: result => resolve(result),
       error: () => resolve(false)
     });
   });
 
   if (!hasRequiredRole) {
     console.log('[RoleGuard] User does not have required roles:', requiredRoles);
-    
+
     // 重定向到无权限页面
     return router.createUrlTree(['/exception/403']);
   }

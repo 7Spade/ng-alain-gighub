@@ -359,7 +359,7 @@ export class StorageFacade {
    * @param expiresIn Expiration time in seconds (default: 3600)
    * @returns Promise<string> Signed URL
    */
-  async createSignedUrl(bucket: string, path: string, expiresIn: number = 3600): Promise<string> {
+  async createSignedUrl(bucket: string, path: string, expiresIn = 3600): Promise<string> {
     this.lastOperationState.set('create_signed_url');
 
     try {
@@ -392,7 +392,7 @@ export class StorageFacade {
    * @param expiresIn Expiration time in seconds
    * @returns Promise<Record<string, string>> Map of path to signed URL
    */
-  async createSignedUrls(bucket: string, paths: string[], expiresIn: number = 3600): Promise<Record<string, string>> {
+  async createSignedUrls(bucket: string, paths: string[], expiresIn = 3600): Promise<Record<string, string>> {
     this.lastOperationState.set('create_signed_urls_batch');
 
     const urls: Record<string, string> = {};
@@ -439,7 +439,7 @@ export class StorageFacade {
    */
   async listFiles(
     bucket: string,
-    path: string = '',
+    path = '',
     options?: {
       limit?: number;
       offset?: number;

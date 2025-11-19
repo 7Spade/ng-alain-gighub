@@ -76,7 +76,7 @@ export enum RealtimeEventType {
 /**
  * 实时订阅回调函数类型
  */
-export type RealtimeCallback<T extends { [key: string]: any } = any> = (payload: RealtimePostgresChangesPayload<T>) => void;
+export type RealtimeCallback<T extends Record<string, any> = any> = (payload: RealtimePostgresChangesPayload<T>) => void;
 
 /**
  * 广播消息回调函数类型

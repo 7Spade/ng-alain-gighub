@@ -1,16 +1,7 @@
 import { Injectable, inject, signal, computed, effect, OnDestroy } from '@angular/core';
-import {
-  BlueprintRepository,
-  BlueprintBranchRepository,
-  BranchForkRepository,
-  type Blueprint,
-  type BlueprintInsert,
-  type BlueprintUpdate,
-  type BlueprintBranch
-} from '@core';
+import { type Blueprint, type BlueprintInsert, type BlueprintUpdate, type BlueprintBranch, BranchType } from '@core';
 import { BlueprintService, BlueprintActivityService, BranchService, type BlueprintStatus } from '@shared';
 import { BlueprintAggregationRefreshService, ErrorStateService } from '@shared';
-import { firstValueFrom } from 'rxjs';
 
 /**
  * Blueprint Facade
@@ -73,9 +64,6 @@ export class BlueprintFacade implements OnDestroy {
   private readonly blueprintService = inject(BlueprintService);
   private readonly branchService = inject(BranchService);
   private readonly activityService = inject(BlueprintActivityService);
-  private readonly blueprintRepository = inject(BlueprintRepository);
-  private readonly blueprintBranchRepository = inject(BlueprintBranchRepository);
-  private readonly branchForkRepository = inject(BranchForkRepository);
   private readonly aggregationRefreshService = inject(BlueprintAggregationRefreshService);
 
   // Signal state - Facade-specific state
@@ -374,22 +362,25 @@ export class BlueprintFacade implements OnDestroy {
    * Create new branch for organization collaboration
    *
    * @param blueprintId Blueprint ID (main branch)
-   * @param data Branch creation data
+   * @param data Branch creation data (must include forkedBy)
    * @returns Promise<BlueprintBranch>
    */
-  async createBranch(blueprintId: string, data: { org_id: string; branch_name: string; notes?: string }): Promise<BlueprintBranch> {
+  async createBranch(
+    blueprintId: string,
+    data: { org_id: string; branch_name: string; notes?: string; forkedBy: string }
+  ): Promise<BlueprintBranch> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('create_branch');
 
     try {
-      const branch = await firstValueFrom(
-        this.blueprintBranchRepository.create({
-          blueprint_id: blueprintId,
-          organization_id: data.org_id,
-          branch_name: data.branch_name,
-          notes: data.notes,
-          status: 'active'
-        })
+      // Use BranchService to create branch (which handles both branch and fork creation)
+      const branch = await this.branchService.forkBranch(
+        blueprintId,
+        data.org_id,
+        data.branch_name,
+        BranchType.CONTRACTOR, // Default branch type
+        data.forkedBy,
+        data.notes
       );
 
       // Log activity
@@ -468,15 +459,13 @@ export class BlueprintFacade implements OnDestroy {
         status: 'planning'
       });
 
-      // 2. Create fork record
+      // 2. Create fork record using BranchService
       // NOTE: This tracks the source branch, not a blueprint-to-blueprint relationship
-      const fork = await firstValueFrom(
-        this.branchForkRepository.create({
-          blueprint_id: sourceBlueprintId,
-          branch_id: sourceBranchId,
-          forked_by: forkedBy,
-          fork_reason: `Forked to create new blueprint: ${data.name}`
-        })
+      const fork = await this.branchService.createForkRecord(
+        sourceBlueprintId,
+        sourceBranchId,
+        forkedBy,
+        `Forked to create new blueprint: ${data.name}`
       );
 
       // 3. Log activity in source blueprint
@@ -590,11 +579,11 @@ export class BlueprintFacade implements OnDestroy {
    */
   private setupAggregationRefreshListener(): void {
     const refreshService = this.aggregationRefreshService;
-    
+
     // Listen for refresh events
     refreshService.listen().subscribe((event: any) => {
       console.log('[BlueprintFacade] Aggregation refresh triggered:', event);
-      
+
       // Only refresh if the event is for the current blueprint
       const currentId = this.currentBlueprintId();
       if (currentId && currentId === event.blueprintId) {
@@ -607,7 +596,7 @@ export class BlueprintFacade implements OnDestroy {
     // Setup subscriptions when currentBlueprintId changes
     effect(() => {
       const blueprintId = this.currentBlueprintId();
-      
+
       // Cleanup previous subscriptions
       const previousBlueprints: string[] = refreshService.getActiveBlueprints();
       previousBlueprints.forEach((id: string) => {

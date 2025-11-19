@@ -279,9 +279,7 @@ export class TaskTreeFacade implements OnDestroy {
         }
       } else {
         // Check if this assignee is already assigned
-        const existingAssignment = existingAssignments.find(
-          a => a.assignee_id === assigneeId && a.assignee_type === assigneeType
-        );
+        const existingAssignment = existingAssignments.find(a => a.assignee_id === assigneeId && a.assignee_type === assigneeType);
 
         if (!existingAssignment) {
           // Create new assignment

@@ -9,6 +9,7 @@ import { firstValueFrom } from 'rxjs';
 export interface ComponentCanDeactivate {
   /**
    * 检查是否有未保存的更改
+   *
    * @returns true 表示可以离开，false 表示有未保存的更改
    */
   canDeactivate: () => boolean | Promise<boolean>;
@@ -48,9 +49,7 @@ export interface ComponentCanDeactivate {
  *
  * @see docs/27-完整架構流程圖.mermaid.md
  */
-export const unsavedChangesGuard: CanDeactivateFn<ComponentCanDeactivate> = async (
-  component
-): Promise<boolean> => {
+export const unsavedChangesGuard: CanDeactivateFn<ComponentCanDeactivate> = async (component): Promise<boolean> => {
   // 如果组件没有实现 canDeactivate 方法，允许离开
   if (!component.canDeactivate) {
     return true;
@@ -58,7 +57,7 @@ export const unsavedChangesGuard: CanDeactivateFn<ComponentCanDeactivate> = asyn
 
   // 检查是否可以离开
   const canDeactivate = await component.canDeactivate();
-  
+
   if (canDeactivate) {
     return true;
   }

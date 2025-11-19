@@ -135,7 +135,7 @@ export class TaskService {
       // 自动生成 tree_path 和 tree_level
       const taskData = data as any;
       let treePath: string | null = null;
-      let treeLevel: number = 1;
+      let treeLevel = 1;
 
       if (taskData.parentTaskId || data.parent_task_id) {
         const parentTaskId = taskData.parentTaskId || data.parent_task_id;

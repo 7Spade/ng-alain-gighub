@@ -24,18 +24,18 @@ export * from '../account';
 export * from '../auth';
 export * from '../blueprint';
 export * from '../bot';
-export * from '../collaboration';
 export * from '../common';
 export * from '../document';
 export * from '../issue';
+export * from '../org';
 export * from '../permission';
 export * from '../quality';
 export * from '../system';
 export * from '../task';
 export * from '../todo';
 
-// Supabase adapter
-export * from '../supabase-adapter.service';
+// Supabase adapter (if exists)
+// export * from '../common/supabase-adapter.service';
 
 // Analytics service
 export * from './analytics.service';

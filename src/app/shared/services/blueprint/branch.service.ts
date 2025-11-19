@@ -260,6 +260,40 @@ export class BranchService {
   }
 
   /**
+   * 创建 Fork 记录
+   *
+   * @param blueprintId 蓝图 ID
+   * @param branchId 分支 ID
+   * @param forkedBy Fork 操作者 ID
+   * @param forkReason Fork 原因
+   * @returns 创建的 Fork 记录
+   */
+  async createForkRecord(blueprintId: string, branchId: string, forkedBy: string, forkReason?: string): Promise<BranchFork> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const forkData = {
+        blueprintId,
+        branchId,
+        forkedBy,
+        forkReason
+      } as any as BranchForkInsert;
+
+      const fork = await firstValueFrom(this.branchForkRepository.create(forkData));
+
+      // 更新本地状态
+      this.forksState.update(forks => [...forks, fork]);
+      return fork;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '创建 Fork 记录失败');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
    * 加载分支的 Fork 记录
    */
   async loadForksByBranchId(branchId: string): Promise<BranchFork[]> {

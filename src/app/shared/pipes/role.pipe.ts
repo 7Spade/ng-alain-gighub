@@ -70,12 +70,12 @@ export class RolePipe implements PipeTransform {
     }
   };
 
-  transform(value: string | null | undefined, type: string = 'default'): string {
+  transform(value: string | null | undefined, type = 'default'): string {
     if (!value) return '';
 
     const normalizedValue = value.toLowerCase();
     const typeMap = this.roleMap[type] || this.roleMap['default'];
-    
+
     return typeMap[normalizedValue] || value;
   }
 }

@@ -19,3 +19,6 @@ export * from './facades/realtime.facade';
 export * from './facades/storage.facade';
 export * from './facades/task.facade';
 export * from './facades/quality.facade';
+export * from './facades/bot.facade';
+export * from './facades/system.facade';
+export * from './facades/analytics.facade';

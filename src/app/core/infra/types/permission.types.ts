@@ -93,4 +93,3 @@ export const DEFAULT_PERMISSION_MATRIX: PermissionMatrix = {
   ],
   [BranchPermissionLevel.READ]: [PermissionAction.READ]
 };
-

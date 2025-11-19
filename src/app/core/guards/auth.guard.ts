@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
+
 import { AuthFacade } from '../facades/auth.facade';
 
 /**
@@ -35,7 +36,7 @@ export const authGuard: CanActivateFn = async (route, state): Promise<boolean | 
 
   if (!isAuthenticated) {
     console.log('[AuthGuard] User not authenticated, redirecting to login');
-    
+
     // 保存原始 URL，登录后可以返回
     return router.createUrlTree(['/passport/login'], {
       queryParams: { returnUrl: state.url }

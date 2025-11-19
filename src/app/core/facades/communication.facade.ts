@@ -9,6 +9,7 @@ import {
   type NotificationInsert
 } from '@shared';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
+
 import { RealtimeFacade } from './realtime.facade';
 
 /**
