@@ -172,7 +172,11 @@ bash(command: 'grep -n "pattern" /path/to/file')
 ├── .github/
 │   ├── agents/
 │   │   ├── copilot-instructions.md (完整指引)
+<<<<<<< HEAD
 │   │   └── role-config.md (角色配置)
+=======
+│   │   └── .copilot-role-config-agent.md (角色配置)
+>>>>>>> new-main
 │   └── instructions/ (模組特定)
 ├── .cursor/
 │   ├── rules/ (Cursor 規則)

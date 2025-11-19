@@ -132,89 +132,9 @@ export class TaskService {
     this.errorState.set(null);
 
     try {
-      // 自动生成 tree_path 和 tree_level
-      const taskData = data as any;
-      let treePath: string | null = null;
-      let treeLevel = 1;
-
-      if (taskData.parentTaskId || data.parent_task_id) {
-        const parentTaskId = taskData.parentTaskId || data.parent_task_id;
-        const parentTask = await firstValueFrom(this.taskRepository.findById(parentTaskId));
-
-        if (!parentTask) {
-          throw new Error(`父任务不存在: ${parentTaskId}`);
-        }
-
-        // 计算 tree_level：父任务的层级 + 1
-        const parentData = parentTask as any;
-        const parentTreeLevel = parentData.treeLevel ?? parentData.tree_level ?? 0;
-        treeLevel = parentTreeLevel + 1;
-
-        // 计算 tree_path：父路径 + '.' + 当前任务 ID（使用 ltree 格式）
-        // 注意：由于任务 ID 在创建时可能还未生成，我们需要先创建任务，然后更新路径
-        // 但为了简化，我们先使用临时路径，创建后再更新
-        const parentTreePath = parentData.treePath ?? parentData.tree_path;
-        if (parentTreePath && typeof parentTreePath === 'string') {
-          // 如果父路径存在，先创建任务，然后更新路径
-          // 这里先设置为 null，创建后再更新
-          treePath = null;
-        } else {
-          // 父任务没有路径，说明是根任务，使用父任务 ID 作为路径
-          treePath = parentTaskId;
-        }
-      }
-
-      // 创建任务（先不设置 tree_path，因为需要任务 ID）
-      const taskInsertData: TaskInsert = {
-        ...data,
-        tree_level: treeLevel,
-        tree_path: null // 先设置为 null，创建后更新
-      };
-
-      const task = await firstValueFrom(this.taskRepository.create(taskInsertData));
-
-      // 创建后更新 tree_path
-      if (treePath === null && (taskData.parentTaskId || data.parent_task_id)) {
-        const parentTaskId = taskData.parentTaskId || data.parent_task_id;
-        const parentTask = await firstValueFrom(this.taskRepository.findById(parentTaskId));
-        const parentData = parentTask as any;
-        const parentTreePath = parentData.treePath ?? parentData.tree_path;
-
-        // 构建完整的 tree_path：父路径 + '.' + 当前任务 ID
-        if (parentTreePath && typeof parentTreePath === 'string') {
-          treePath = `${parentTreePath}.${task.id}`;
-        } else {
-          treePath = `${parentTaskId}.${task.id}`;
-        }
-
-        // 更新任务的 tree_path
-        await firstValueFrom(
-          this.taskRepository.update(task.id, {
-            tree_path: treePath as any
-          })
-        );
-
-        // 更新本地任务数据
-        const updatedTask = await firstValueFrom(this.taskRepository.findById(task.id));
-        if (updatedTask) {
-          this.tasksState.update(tasks => tasks.map(t => (t.id === task.id ? updatedTask : t)));
-          return updatedTask;
-        }
-      } else if (!taskData.parentTaskId && !data.parent_task_id) {
-        // 根任务，tree_path 就是任务 ID
-        treePath = task.id;
-        await firstValueFrom(
-          this.taskRepository.update(task.id, {
-            tree_path: treePath as any
-          })
-        );
-
-        const updatedTask = await firstValueFrom(this.taskRepository.findById(task.id));
-        if (updatedTask) {
-          this.tasksState.update(tasks => tasks.map(t => (t.id === task.id ? updatedTask : t)));
-          return updatedTask;
-        }
-      }
+      // TODO: 自动生成 tree_path 和 tree_level
+      // 如果 parent_task_id 存在，需要计算路径
+      const task = await firstValueFrom(this.taskRepository.create(data));
 
       // 更新本地状态
       this.tasksState.update(tasks => [...tasks, task]);

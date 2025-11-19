@@ -353,4 +353,108 @@ export class DocumentService {
     this.selectedDocumentState.set(null);
     this.errorState.set(null);
   }
+
+  // ============================================================================
+  // Adapter Methods (Facade Compatibility Layer)
+  // These methods provide backward compatibility for facades expecting different API patterns
+  // TODO: Refactor facades to use standard load* methods and remove these adapters
+  // ============================================================================
+
+  /**
+   * Get all documents (Adapter)
+   *
+   * @deprecated Use loadByUploader() and access documents() signal instead
+   * This is an adapter method for facade compatibility
+   */
+  async getAllDocuments(): Promise<Document[]> {
+    // Load all documents for current user (would need user context)
+    return this.documents();
+  }
+
+  /**
+   * Get documents by blueprint (Adapter)
+   *
+   * @deprecated Documents don't have direct blueprint_id - use document_links
+   * This is an adapter method for facade compatibility
+   */
+  async getDocumentsByBlueprint(blueprintId: string): Promise<Document[]> {
+    // TODO: Query through document_links table
+    console.warn('getDocumentsByBlueprint: Documents use document_links for blueprint associations');
+    return [];
+  }
+
+  /**
+   * Get document by ID (Adapter)
+   *
+   * @deprecated Use loadDocumentById() instead
+   * This is an adapter method for facade compatibility
+   */
+  async getDocumentById(id: string): Promise<Document | null> {
+    const detail = await this.loadDocumentById(id);
+    return detail as unknown as Document;
+  }
+
+  /**
+   * Create document (Adapter)
+   *
+   * @deprecated Use create() instead
+   * This is an adapter method for facade compatibility
+   */
+  async createDocument(data: DocumentInsert): Promise<Document> {
+    return await this.create(data);
+  }
+
+  /**
+   * Update document (Adapter)
+   *
+   * @deprecated Use update() instead
+   * This is an adapter method for facade compatibility
+   */
+  async updateDocument(id: string, data: DocumentUpdate): Promise<Document> {
+    return await this.update(id, data);
+  }
+
+  /**
+   * Delete document (Adapter)
+   *
+   * @deprecated Use softDelete() instead
+   * This is an adapter method for facade compatibility
+   */
+  async deleteDocument(id: string): Promise<void> {
+    await this.softDelete(id);
+  }
+
+  /**
+   * Create document version (Adapter)
+   *
+   * @deprecated Use createVersion() with documentId parameter
+   * This is an adapter method for facade compatibility
+   */
+  async createDocumentVersion(documentId: string, data: Omit<DocumentVersionInsert, 'documentId'>): Promise<DocumentVersion> {
+    return await this.createVersion(documentId, data);
+  }
+
+  /**
+   * Get document versions (Adapter)
+   *
+   * @deprecated To be implemented properly in future refactoring
+   * This is a stub adapter method for facade compatibility
+   */
+  async getDocumentVersions(documentId: string): Promise<DocumentVersion[]> {
+    // TODO: Implement version retrieval when version system is ready
+    console.warn('getDocumentVersions is not yet fully implemented');
+    return [];
+  }
+
+  /**
+   * Search documents (Adapter)
+   *
+   * @deprecated To be implemented properly in future refactoring
+   * This is a stub adapter method for facade compatibility
+   */
+  async searchDocuments(query: string): Promise<Document[]> {
+    // Simple search implementation - filter documents by name
+    const searchLower = query.toLowerCase();
+    return this.documents().filter(doc => doc.file_name.toLowerCase().includes(searchLower));
+  }
 }

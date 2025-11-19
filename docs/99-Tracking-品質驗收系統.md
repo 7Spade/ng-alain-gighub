@@ -13,6 +13,33 @@
 
 ## 📊 模組資訊
 
+<<<<<<< HEAD
+=======
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：20/20 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：15/20 組件功能完成（75%）
+- ⏳ **待完成**：5 個組件功能完善（篩選、排序、批量操作、照片上傳、核准/退回）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：2/2 服務完成（100%）
+  - ✅ QualityCheckService
+  - ✅ InspectionService
+- ✅ **Models（數據模型）**：4 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：0/1 Facade 完成（0%）
+  - ⏳ QualityFacade（品質驗收 Facade，待實施）
+- ✅ **Services（核心服務）**：無（品質驗收使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：4/4 Repository 完成（100%）
+  - ✅ QualityCheckRepository
+  - ✅ QcPhotoRepository
+  - ✅ InspectionRepository
+  - ✅ InspectionPhotoRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
+>>>>>>> new-main
 ### 資料表清單
 
 1. **quality_checks** - 品質管理表（品管檢查記錄）
@@ -148,9 +175,19 @@ InspectionService[✅已完成]
 - delete 方法[✅已完成]
 - Computed signals（按狀態分類）[✅已完成]
 
+<<<<<<< HEAD
 #### Facade 层（Core）
 
 QualityFacade 實施（core/facades/quality.facade.ts）[⏳待開始]
+=======
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
+
+QualityFacade 實施（core/facades/quality.facade.ts）[⏳待開始]
+- **依賴**：QualityCheckService, InspectionService（Shared Layer）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
+>>>>>>> new-main
 QualityFacade Signals 狀態管理[⏳待開始]
 QualityFacade 品質檢查管理（createQualityCheck, updateQualityCheck, deleteQualityCheck）[⏳待開始]
 QualityFacade 驗收管理（createInspection, updateInspection, deleteInspection）[⏳待開始]
@@ -162,6 +199,23 @@ QualityFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
 QualityFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 QualityFacade[⏳待開始]
 
+<<<<<<< HEAD
+=======
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：4/4 Repository（100%）
+- ✅ QualityCheckRepository（依賴 SupabaseService）
+- ✅ QcPhotoRepository（依賴 SupabaseService）
+- ✅ InspectionRepository（依賴 SupabaseService）
+- ✅ InspectionPhotoRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
+
+>>>>>>> new-main
 #### 業務邏輯層
 
 品質檢查流程實現[⏳待開始]
@@ -202,11 +256,20 @@ RLS 權限驗證[🧊阻塞]
 - 排序功能[⏳待開始]
 - 批量操作[⏳待開始]
 
+<<<<<<< HEAD
 品管檢查詳情頁面（QualityCheckDetailComponent）[🚧進行中]
+=======
+品管檢查詳情頁面（QualityCheckDetailComponent）[✅已完成]
+>>>>>>> new-main
 - 基本詳情顯示[✅已完成]
 - 編輯功能[✅已完成]
 - 狀態更新[✅已完成]
 - 檢查項目顯示[✅已完成]
+<<<<<<< HEAD
+=======
+- Modal 組件用於快速查看[✅已完成]
+- 路由組件用於完整操作[✅已完成]
+>>>>>>> new-main
 - 照片顯示[⏳待開始]
 - 歷史記錄[⏳待開始]
 - 關聯任務顯示[⏳待開始]
@@ -376,6 +439,32 @@ API 文檔更新（品質驗收系統 API 文檔）[⏳待開始]
 - 🧊 Supabase Storage 整合（阻塞：照片上傳功能）
 - 🧊 任務系統資料串接（阻塞：依賴任務系統）
 
+<<<<<<< HEAD
+=======
+### 2025-01-15：組件架構優化
+
+- ✅ **組件架構確認**：質量檢查詳情組件 Modal 和路由組件功能不同，保留兩者
+  - Modal 組件：用於快速查看檢查詳情
+  - 路由組件：完整的質量檢查詳情頁面，支持編輯狀態、發現和建議
+- ✅ **組件整合完成**：所有組件已符合企業標準（Signals、OnPush、錯誤處理）
+
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/quality/checks/quality-check-detail.component.ts`
+     - `src/app/routes/quality/results/inspection-detail.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+>>>>>>> new-main
 ---
 
 ## 📦 應該要交付的

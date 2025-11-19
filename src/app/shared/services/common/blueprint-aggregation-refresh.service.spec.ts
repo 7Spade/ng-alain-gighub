@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { take } from 'rxjs/operators';
 
-import { BlueprintAggregationRefreshService } from './blueprint-aggregation-refresh.service';
+import { BlueprintAggregationRefreshService, RefreshReason } from './blueprint-aggregation-refresh.service';
 import { ErrorStateService } from './error-state.service';
 import { RealtimeFacade } from '../../../core/facades/realtime.facade';
 
@@ -294,12 +294,8 @@ describe('BlueprintAggregationRefreshService', () => {
       taskCallback?.({
         eventType: 'INSERT',
         new: { id: 'task-1', title: 'New Task' },
-        old: null,
-        schema: 'public',
-        table: 'tasks',
-        commit_timestamp: new Date().toISOString(),
-        errors: []
-      } as any);
+        old: null
+      });
 
       tick(1100);
 
@@ -326,12 +322,8 @@ describe('BlueprintAggregationRefreshService', () => {
       docCallback?.({
         eventType: 'UPDATE',
         new: { id: 'doc-1' },
-        old: { id: 'doc-1' },
-        schema: 'public',
-        table: 'documents',
-        commit_timestamp: new Date().toISOString(),
-        errors: []
-      } as any);
+        old: { id: 'doc-1' }
+      });
 
       tick(1100);
 
@@ -356,12 +348,8 @@ describe('BlueprintAggregationRefreshService', () => {
       qcCallback?.({
         eventType: 'DELETE',
         new: null,
-        old: { id: 'qc-1' },
-        schema: 'public',
-        table: 'quality_checks',
-        commit_timestamp: new Date().toISOString(),
-        errors: []
-      } as any);
+        old: { id: 'qc-1' }
+      });
 
       tick(1100);
 
@@ -386,12 +374,8 @@ describe('BlueprintAggregationRefreshService', () => {
       issueCallback?.({
         eventType: 'INSERT',
         new: { id: 'issue-1' },
-        old: null,
-        schema: 'public',
-        table: 'issues',
-        commit_timestamp: new Date().toISOString(),
-        errors: []
-      } as any);
+        old: null
+      });
 
       tick(1100);
 
@@ -399,3 +383,4 @@ describe('BlueprintAggregationRefreshService', () => {
     }));
   });
 });
+

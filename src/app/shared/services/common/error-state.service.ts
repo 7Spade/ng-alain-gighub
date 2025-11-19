@@ -349,3 +349,4 @@ export class ErrorStateService {
     this.errorHistoryState.update(history => history.map(e => (e.id === errorId ? { ...e, dismissed: true } : e)));
   }
 }
+

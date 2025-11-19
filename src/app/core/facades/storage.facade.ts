@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { SupabaseService } from '@core';
 import { ErrorStateService } from '@shared/services/common';
 
@@ -238,9 +238,9 @@ export class StorageFacade {
     this.lastOperationState.set('download_file');
 
     try {
-      const { data, error } = await this.supabase.client.storage.from(bucket).download(options.path, {
-        transform: options.transform
-      });
+      const { data, error } = await this.supabase.client.storage
+        .from(bucket)
+        .download(options.path, options.transform ? { transform: options.transform } : undefined);
 
       if (error) {
         throw error;
@@ -457,9 +457,9 @@ export class StorageFacade {
 
       return data.map(file => ({
         path: path ? `${path}/${file.name}` : file.name,
-        size: (file.metadata as any)?.['size'] || 0,
+        size: file.metadata?.['size'] || 0,
         lastModified: new Date(file.updated_at || file.created_at),
-        contentType: (file.metadata as any)?.['mimetype'],
+        contentType: file.metadata?.['mimetype'],
         bucket
       }));
     } catch (error) {

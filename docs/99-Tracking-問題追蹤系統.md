@@ -4,7 +4,11 @@
 > **格式**：一行一個任務[狀態]  
 > **狀態標記**：✅已完成、🚧進行中、⏳待開始、🧊阻塞
 
+<<<<<<< HEAD
 **最後更新**：2025-01-15  
+=======
+**最後更新**：2025-01-15（骨架組件改進完成）  
+>>>>>>> new-main
 **維護者**：開發團隊  
 **模組編號**：M6（模組 6）  
 **資料表數量**：4 張
@@ -13,6 +17,32 @@
 
 ## 📊 模組資訊
 
+<<<<<<< HEAD
+=======
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：12/12 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：4/12 組件功能完成（33%）
+- ⏳ **待完成**：8 個組件功能實現（問題處理中心、問題處理、問題照片、問題照片牆、問題關閉、問題關閉摘要、同步日誌）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：1/1 服務完成（100%）
+  - ✅ IssueService
+- ✅ **Models（數據模型）**：4 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：1/1 Facade 完成（100%）
+  - ✅ IssueFacade（問題追蹤 Facade，包含跨分支同步功能）
+- ✅ **Services（核心服務）**：無（問題追蹤使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：4/4 Repository 完成（100%）
+  - ✅ IssueRepository
+  - ✅ IssueAssignmentRepository
+  - ✅ IssuePhotoRepository
+  - ✅ IssueSyncLogRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
+>>>>>>> new-main
 ### 資料表清單
 
 1. **issues** - 問題主表（施工異常問題追蹤）
@@ -23,7 +53,11 @@
 ### 模組狀態
 
 - **目前狀態**：🚧 基礎架構完成，業務邏輯待實作
+<<<<<<< HEAD
 - **完成度**：約 55%（基礎層完成，業務邏輯和 UI 功能待開發）
+=======
+- **完成度**：約 65%（基礎層完成，骨架組件改進完成，業務邏輯待開發）
+>>>>>>> new-main
 - **近期里程碑**：里程碑 8（2025-04-15）
 - **主要阻塞**：需任務資料 + 即時同步策略
 
@@ -117,6 +151,7 @@ IssueService 同步功能（syncIssueToMain）[✅已完成]
 IssueService Computed signals（openIssues, criticalIssues）[✅已完成]
 更新 shared/services/issue/index.ts 導出 IssueService[✅已完成]
 
+<<<<<<< HEAD
 #### Core 層（Facade）
 
 IssueFacade 實施（core/facades/issue.facade.ts）[✅已完成]
@@ -131,6 +166,41 @@ IssueFacade 統計功能（issuesByStatus, issuesBySeverity, issueStats）[✅�
 IssueFacade 活動記錄整合（BlueprintActivityService）[✅已完成]
 IssueFacade 錯誤處理整合（ErrorStateService）[✅已完成]
 更新 core/index.ts 導出 IssueFacade[✅已完成]
+=======
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
+
+✅ **已完成**：1/1 Facade（100%）
+- ✅ IssueFacade（core/facades/issue.facade.ts）
+  - **依賴**：IssueService（Shared Layer）
+  - **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
+  - ✅ Signals 狀態管理
+  - ✅ CRUD 操作（createIssue, updateIssue, deleteIssue）
+  - ✅ 指派管理（assignIssue, unassignIssue）
+  - ✅ 標籤管理（addTag, removeTag）
+  - ✅ 跨分支同步（syncToMainBranch）
+  - ✅ 過濾功能（按狀態、優先級、嚴重程度、指派人）
+  - ✅ Computed signals（openIssues, closedIssues, criticalIssues, highPriorityIssues）
+  - ✅ 統計功能（issuesByStatus, issuesBySeverity, issueStats）
+  - ✅ 活動記錄整合（BlueprintActivityService）
+  - ✅ 錯誤處理整合（ErrorStateService）
+  - ✅ 已導出到 core/index.ts
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：4/4 Repository（100%）
+- ✅ IssueRepository（依賴 SupabaseService）
+- ✅ IssueAssignmentRepository（依賴 SupabaseService）
+- ✅ IssuePhotoRepository（依賴 SupabaseService）
+- ✅ IssueSyncLogRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
+>>>>>>> new-main
 
 #### 業務功能實現
 
@@ -168,6 +238,7 @@ RLS 權限驗證（issue_sync_logs 表）[⏳待開始]
 
 #### 功能實作（待開發）
 
+<<<<<<< HEAD
 問題列表頁面功能實作（整合 IssueFacade）[⏳待開始]
 問題創建表單頁面功能實作（問題創建表單）[⏳待開始]
 問題詳情頁面功能實作（詳情顯示、狀態管理）[⏳待開始]
@@ -175,11 +246,43 @@ RLS 權限驗證（issue_sync_logs 表）[⏳待開始]
 問題處理中心頁面功能實作（問題處理工作區）[⏳待開始]
 問題處理頁面功能實作（問題處理表單）[⏳待開始]
 問題指派頁面功能實作（指派管理）[⏳待開始]
+=======
+問題列表頁面功能實作（整合 IssueFacade）[✅已完成]
+- 添加完整的表格骨架結構（st 表格、篩選器、操作按鈕）[✅已完成]
+- 實現篩選功能（狀態、優先級、嚴重程度）[✅已完成]
+- 使用 computed 實現響應式過濾[✅已完成]
+- 符合企業標準（OnPush、Signals、類型安全）[✅已完成]
+問題創建表單頁面功能實作（問題創建表單）[✅已完成]
+- 添加完整的表單骨架結構（表單字段、驗證、提交按鈕）[✅已完成]
+- 實現表單驗證邏輯[✅已完成]
+- 符合企業標準（OnPush、Signals、類型安全）[✅已完成]
+問題詳情頁面功能實作（詳情顯示、狀態管理）[✅已完成]
+- 整合靜態組件時間線功能[✅已完成]
+- 基於問題狀態、指派記錄和同步記錄生成時間線[✅已完成]
+- 添加編輯和派送按鈕[✅已完成]
+- 改進 UI 布局（nz-descriptions、nz-timeline）[✅已完成]
+- 使用 OnPush 變更檢測策略[✅已完成]
+問題詳情靜態頁面功能實作（唯讀詳情顯示）[✅已完成]
+問題處理中心頁面功能實作（問題處理工作區）[⏳待開始]
+問題處理頁面功能實作（問題處理表單）[⏳待開始]
+問題指派頁面功能實作（指派管理）[✅已完成]
+- 添加完整的表格骨架結構（st 表格、篩選器、操作按鈕）[✅已完成]
+- 實現篩選功能（狀態、指派人）[✅已完成]
+- 使用 computed 實現響應式過濾[✅已完成]
+- 符合企業標準（OnPush、Signals、類型安全）[✅已完成]
+>>>>>>> new-main
 問題照片頁面功能實作（照片上傳、查看）[⏳待開始]
 問題照片牆頁面功能實作（照片牆展示）[⏳待開始]
 問題關閉頁面功能實作（問題關閉流程）[⏳待開始]
 問題關閉摘要頁面功能實作（關閉摘要顯示）[⏳待開始]
+<<<<<<< HEAD
 同步日誌頁面功能實作（同步記錄查詢與顯示）[🚧進行中]
+=======
+同步日誌頁面功能實作（同步記錄查詢與顯示）[✅已完成]
+- 重構為標準骨架組件格式（standalone、SHARED_IMPORTS、OnPush）[✅已完成]
+- 添加完整的 UI 骨架結構[✅已完成]
+- 符合企業標準（OnPush、Signals、類型安全）[✅已完成]
+>>>>>>> new-main
 
 ### 測試
 
@@ -233,6 +336,37 @@ API 文檔更新（問題追蹤系統 API 文檔）[⏳待開始]
 - ✅ **Facade 層實施**：完成 `IssueFacade`（跨分支同步、過濾、統計、活動記錄整合）
 - ✅ **UI 層骨架**：完成路由骨架和基本頁面結構
 
+<<<<<<< HEAD
+=======
+### 2025-01-15：問題詳情組件整合
+
+- ✅ **整合靜態組件功能**：將 `IssueDetailStaticComponent` 的時間線功能整合到 `IssueDetailComponent`
+- ✅ **動態時間線**：基於問題狀態、指派記錄和同步記錄動態生成時間線
+- ✅ **UI 改進**：使用 `nz-descriptions` 和 `nz-timeline` 改進布局，添加編輯和派送按鈕
+- ✅ **企業標準**：使用 Signals、OnPush 變更檢測、完善的錯誤處理、靜默失敗不影響主流程
+
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/issues/list/issue-list.component.ts`
+     - `src/app/routes/issues/detail/issue-detail.component.ts`
+     - `src/app/routes/issues/assignments/issue-assignments.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+3. **過濾邏輯重複**：
+   - **問題**：多個組件都有類似的 `computed` 過濾邏輯
+   - **建議**：提取共享過濾工具函數到 `shared/utils/filter.utils.ts`
+
+>>>>>>> new-main
 ### 待開發階段
 
 - ⏳ **業務功能實現**：問題追蹤流程、與任務系統同步、問題照片上傳
@@ -373,7 +507,11 @@ API 文檔更新（問題追蹤系統 API 文檔）[⏳待開始]
 - 服務層：✅ 80%（8/10 任務）
 - Facade 層：✅ 100%（12/12 任務）
 - UI 層骨架：✅ 100%（13/13 任務）
+<<<<<<< HEAD
 - UI 層功能：⏳ 0%（0/12 任務）
+=======
+- UI 層功能：🚧 8%（1/12 任務，問題詳情頁面已完成）
+>>>>>>> new-main
 - 業務邏輯：⏳ 30%（1/5 任務）
 - 權限與安全：⏳ 0%（0/4 任務）
 - 測試：⏳ 0%（0/12 任務）

@@ -13,6 +13,34 @@
 
 ## 📊 模組資訊
 
+<<<<<<< HEAD
+=======
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：23/23 組件骨架完成（100%）
+- ✅ **頁面組件功能**：23/23 組件功能完成（100%）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：4/4 服務完成（100%）
+  - ✅ AccountService
+  - ✅ TeamService
+  - ✅ OrganizationScheduleService
+  - ✅ OrganizationMemberService
+- ✅ **Models（數據模型）**：4 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：1/1 Facade 完成（100%）
+  - ✅ AccountFacade（帳戶與身份 Facade）
+- ✅ **Services（核心服務）**：無（帳戶系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：4/4 Repository 完成（100%）
+  - ✅ AccountRepository
+  - ✅ TeamRepository
+  - ✅ TeamMemberRepository
+  - ✅ OrganizationScheduleRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
+>>>>>>> new-main
 ### 資料表清單
 
 1. **accounts** - 帳戶主表（統一身份抽象，支援 User/Bot/Organization）
@@ -425,6 +453,28 @@ API 文檔更新（帳戶系統 API 文檔）[⏳待開始]
 - ✅ **系統評估與優化**：完成架構評估、違規修復、RLS 遞歸問題修復
 - ✅ **部分單元測試**：完成 AccountService 和 TeamService 單元測試
 
+<<<<<<< HEAD
+=======
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/accounts/list/account-list.component.ts`
+     - `src/app/routes/accounts/detail/account-detail.component.ts`
+     - `src/app/routes/accounts/users/user-list.component.ts`
+     - `src/app/routes/accounts/organizations/organization-list/organization-list.component.ts`
+     - `src/app/routes/accounts/bots/bot-list.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+>>>>>>> new-main
 ### 待完成階段
 
 - ⏳ **測試覆蓋率補齊**：補齊 Service 層、Repository 層、組件層測試

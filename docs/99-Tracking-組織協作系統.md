@@ -4,7 +4,41 @@
 > **格式**：一行一個任務[狀態]  
 > **狀態標記**：✅已完成、🚧進行中、⏳待開始、🧊阻塞
 
+<<<<<<< HEAD
 **最後更新**：2025-01-15  
+=======
+**最後更新**：2025-01-15
+
+---
+
+## 📜 開發歷程記錄
+
+### 2025-01-15：組件架構優化
+
+- ✅ **分支詳情組件架構確認**：Modal 和路由組件功能不同，保留兩者
+  - Modal 組件：用於快速查看分支詳情
+  - 路由組件：完整的分支詳情頁面，支持切換分支、權限管理
+- ✅ **組件整合完成**：所有組件已符合企業標準（Signals、OnPush、錯誤處理）
+
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/collaboration/list/collaboration-list.component.ts`
+     - `src/app/routes/collaboration/detail/collaboration-detail.component.ts`
+     - `src/app/routes/collaboration/invitations/invitation-list.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+---  
+>>>>>>> new-main
 **維護者**：開發團隊  
 **模組編號**：M2  
 **資料表數量**：3 張  
@@ -14,6 +48,32 @@
 
 ## 📊 模組資訊
 
+<<<<<<< HEAD
+=======
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：4/4 組件骨架完成（100%）
+- ✅ **頁面組件功能**：4/4 組件功能完成（100%）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：3/3 服務完成（100%）
+  - ✅ CollaborationService
+  - ✅ InvitationService
+  - ✅ NotificationService（整合到協作系統）
+- ✅ **Models（數據模型）**：3 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：1/1 Facade 完成（100%）
+  - ✅ CollaborationFacade（組織協作 Facade）
+- ✅ **Services（核心服務）**：無（組織協作使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：3/3 Repository 完成（100%）
+  - ✅ OrganizationCollaborationRepository
+  - ✅ CollaborationInvitationRepository
+  - ✅ CollaborationMemberRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
+>>>>>>> new-main
 ### 資料表清單
 
 1. **organization_collaborations** - 組織協作關係表（1:1 承攬關係）

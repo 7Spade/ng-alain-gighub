@@ -1,4 +1,4 @@
-import { CollaborationStatus, CollaborationType, Database, InvitationStatus } from '@core';
+import { Database, CollaborationType, CollaborationStatus, InvitationStatus } from '@core';
 
 /**
  * 重新导出协作相关枚举（从 core 层导入）
@@ -7,7 +7,7 @@ import { CollaborationStatus, CollaborationType, Database, InvitationStatus } fr
  * 这些枚举定义在 core 层，因为 Repository 层需要使用它们
  * 符合分层架构：core 不依赖 shared
  */
-export { CollaborationStatus, CollaborationType, InvitationStatus };
+export { CollaborationType, CollaborationStatus, InvitationStatus };
 
 /**
  * OrganizationCollaboration 实体类型（camelCase）
@@ -16,14 +16,6 @@ export { CollaborationStatus, CollaborationType, InvitationStatus };
 export type OrganizationCollaboration = Database['public']['Tables']['organization_collaborations']['Row'];
 export type OrganizationCollaborationInsert = Database['public']['Tables']['organization_collaborations']['Insert'];
 export type OrganizationCollaborationUpdate = Database['public']['Tables']['organization_collaborations']['Update'];
-
-/**
- * 类型别名：简写形式，用于 Facade 层
- * - CollaborationInsert: 用于创建新的协作关系
- * - CollaborationUpdate: 用于更新现有的协作关系
- */
-export type CollaborationInsert = OrganizationCollaborationInsert;
-export type CollaborationUpdate = OrganizationCollaborationUpdate;
 
 /**
  * CollaborationInvitation 实体类型（camelCase）

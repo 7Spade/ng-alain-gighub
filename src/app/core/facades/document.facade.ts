@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import type { Document, DocumentInsert, DocumentUpdate } from '@shared';
+import type { Document, DocumentInsert, DocumentUpdate } from '@shared/models/data.models';
 import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
 import { DocumentService } from '@shared/services/document/document.service';
@@ -57,15 +57,19 @@ export class DocumentFacade implements OnDestroy {
   readonly lastOperation = signal<string>('');
 
   // Computed signals
-  readonly activeDocuments = computed(() => {
-    const docs = this.documents() as any[];
-    return docs.filter(doc => !doc.permanent_delete_at);
-  });
+  /**
+   * Active documents (not soft deleted)
+   *
+   * @note Documents use permanent_delete_at field for soft delete with 30-day retention
+   */
+  readonly activeDocuments = computed(() => this.documents().filter(doc => !doc.permanent_delete_at));
 
-  readonly archivedDocuments = computed(() => {
-    const docs = this.documents() as any[];
-    return docs.filter(doc => !!doc.permanent_delete_at);
-  });
+  /**
+   * Archived documents (soft deleted)
+   *
+   * @note Documents use permanent_delete_at field for soft delete with 30-day retention
+   */
+  readonly archivedDocuments = computed(() => this.documents().filter(doc => !!doc.permanent_delete_at));
 
   readonly documentsByType = computed(() => {
     const docs = this.activeDocuments();
@@ -90,7 +94,7 @@ export class DocumentFacade implements OnDestroy {
       totalSize: active.reduce((sum, doc) => sum + (doc.file_size || 0), 0),
       byType: Object.entries(this.documentsByType()).map(([type, items]) => ({
         type,
-        count: (items as Document[]).length
+        count: items.length
       }))
     };
   });
@@ -117,9 +121,8 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('loadDocuments');
 
     try {
-      // DocumentService doesn't have getAllDocuments, use loadByUploader or other method
-      // For now, we'll use the service's documents signal
-      this.documents.set(this.documentService.documents());
+      const docs = await this.documentService.getAllDocuments();
+      this.documents.set(docs);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load documents',
@@ -141,10 +144,7 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('loadDocumentsByBlueprint');
 
     try {
-      // DocumentService doesn't have getDocumentsByBlueprint
-      // Load documents and filter by blueprint_id
-      const allDocs = this.documentService.documents();
-      const docs = (allDocs as any[]).filter((d: any) => d.blueprint_id === blueprintId);
+      const docs = await this.documentService.getDocumentsByBlueprint(blueprintId);
       this.documents.set(docs);
     } catch (error) {
       this.errorStateService.addError({
@@ -167,15 +167,16 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('loadDocumentById');
 
     try {
-      const docDetail = await this.documentService.loadDocumentById(id);
-      if (docDetail) {
-        this.selectedDocument.set(docDetail as any);
+      const doc = await this.documentService.getDocumentById(id);
+      if (!doc) {
+        throw new Error(`Document with id ${id} not found`);
+      }
+      this.selectedDocument.set(doc);
 
-        // Add to documents list if not already present
-        const current = this.documents();
-        if (!current.find(d => d.id === id)) {
-          this.documents.set([...current, docDetail as any]);
-        }
+      // Add to documents list if not already present
+      const current = this.documents();
+      if (!current.find(d => d.id === id)) {
+        this.documents.set([...current, doc]);
       }
     } catch (error) {
       this.errorStateService.addError({
@@ -198,19 +199,17 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('createDocument');
 
     try {
-      const doc = await this.documentService.create(data);
+      const doc = await this.documentService.createDocument(data);
 
       // Update state
       this.documents.set([...this.documents(), doc]);
-      this.selectedDocument.set(doc as any);
+      this.selectedDocument.set(doc);
 
-      // Log activity
-      const docData = doc as any;
-      if (docData.blueprint_id) {
-        await this.activityService
-          .logActivity(docData.blueprint_id, 'document', doc.id, 'created', [], { context: 'Document created' })
-          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Documents are linked to blueprints via document_links table for many-to-many relationships.
+       * Activity logging for documents should be done through document_links association.
+       */
 
       return doc;
     } catch (error) {
@@ -234,23 +233,20 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('updateDocument');
 
     try {
-      const doc = await this.documentService.update(id, data);
+      const doc = await this.documentService.updateDocument(id, data);
 
       // Update state
       const docs = this.documents().map(d => (d.id === id ? doc : d));
       this.documents.set(docs);
 
       if (this.selectedDocument()?.id === id) {
-        this.selectedDocument.set(doc as any);
+        this.selectedDocument.set(doc);
       }
 
-      // Log activity
-      const docData = doc as any;
-      if (docData.blueprint_id) {
-        await this.activityService
-          .logActivity(docData.blueprint_id, 'document', doc.id, 'updated', [], { context: 'Document updated' })
-          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Documents are linked to blueprints via document_links table for many-to-many relationships.
+       */
 
       return doc;
     } catch (error) {
@@ -275,22 +271,19 @@ export class DocumentFacade implements OnDestroy {
 
     try {
       const doc = this.documents().find(d => d.id === id);
-      await this.documentService.softDelete(id);
+      await this.documentService.deleteDocument(id);
 
       // Update state - reload to get soft-deleted record
-      const updatedDoc = await this.documentService.loadDocumentById(id);
-      if (updatedDoc) {
-        const docs = this.documents().map(d => (d.id === id ? (updatedDoc as any) : d));
-        this.documents.set(docs);
-      }
+      const updatedDoc = await this.documentService.getDocumentById(id);
+      const docs = this.documents()
+        .map(d => (d.id === id && updatedDoc ? updatedDoc : d))
+        .filter((d): d is Document => d !== null);
+      this.documents.set(docs);
 
-      // Log activity
-      const docData = doc as any;
-      if (docData?.blueprint_id) {
-        await this.activityService
-          .logActivity(docData.blueprint_id, 'document', id, 'deleted', [], { context: 'Document deleted' })
-          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Documents are linked to blueprints via document_links table for many-to-many relationships.
+       */
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to delete document',
@@ -310,40 +303,37 @@ export class DocumentFacade implements OnDestroy {
   async createVersion(
     documentId: string,
     versionData: {
-      file_name: string;
-      storage_path: string;
+      file_path: string;
       file_size: number;
       version_number: number;
-      change_description?: string;
-      created_by: string;
+      changes_summary?: string;
+      uploaded_by: string;
     }
   ): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('createVersion');
 
     try {
-      await this.documentService.createVersion(documentId, {
-        ...versionData,
-        document_id: documentId
-      } as any);
+      // Map facade parameters to DocumentVersionInsert structure
+      // Database uses: storage_path (not file_path), created_by (not uploaded_by), change_description (not changes_summary)
+      // Note: document_id is required but omitted from Omit type, so we need to include it
+      await this.documentService.createDocumentVersion(documentId, {
+        document_id: documentId,
+        storage_path: versionData.file_path,
+        file_name: versionData.file_path.split('/').pop() || 'unknown',
+        file_size: versionData.file_size,
+        version_number: versionData.version_number,
+        change_description: versionData.changes_summary || null,
+        created_by: versionData.uploaded_by
+      });
 
       // Reload document to get updated version list
       await this.loadDocumentById(documentId);
 
-      const doc = this.selectedDocument();
-      const docData = doc as any;
-      if (docData?.blueprint_id) {
-        await this.activityService
-          .logActivity(
-            docData.blueprint_id,
-            'document',
-            documentId,
-            'version_created',
-            [{ field: 'version', oldValue: null, newValue: versionData.version_number }],
-            { context: 'Document version created' }
-          )
-          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
-      }
+      /**
+       * NOTE: Documents don't have direct blueprint_id field.
+       * Version activity logging should be done through document_links association.
+       */
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to create document version',
@@ -365,8 +355,7 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('getVersionHistory');
 
     try {
-      const docDetail = await this.documentService.loadDocumentById(documentId);
-      return docDetail?.versions || [];
+      return await this.documentService.getDocumentVersions(documentId);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load version history',
@@ -388,13 +377,8 @@ export class DocumentFacade implements OnDestroy {
     this.lastOperation.set('searchDocuments');
 
     try {
-      // DocumentService doesn't have searchDocuments
-      // Filter documents by query in memory
-      const allDocs = this.documentService.documents();
-      const filtered = (allDocs as any[]).filter(
-        (d: any) => d.file_name?.toLowerCase().includes(query.toLowerCase()) || d.mime_type?.toLowerCase().includes(query.toLowerCase())
-      );
-      this.documents.set(filtered);
+      const docs = await this.documentService.searchDocuments(query);
+      this.documents.set(docs);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to search documents',

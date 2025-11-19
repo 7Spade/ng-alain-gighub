@@ -1,8 +1,9 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { type Account } from '@shared/models';
 import { AuthService, type SignInRequest, type SignUpRequest } from '@shared/services/auth';
 import { ErrorStateService } from '@shared/services/common';
+import type { User, Session } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -82,7 +83,7 @@ export class AuthFacade {
   readonly displayName = computed(() => {
     const user = this.user();
     if (!user) return null;
-    return (user as any).name || user.email || 'User';
+    return user.name || user.email || 'User';
   });
 
   /** User email */

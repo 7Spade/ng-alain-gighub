@@ -1,17 +1,20 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import type {
-  CollaborationInsert,
   CollaborationInvitation,
-  CollaborationUpdate,
-  Notification,
-  NotificationInsert,
-  OrganizationCollaboration
-} from '@shared';
-import { NotificationService } from '@shared/services/collab/notification.service';
+  OrganizationCollaboration,
+  OrganizationCollaborationInsert,
+  OrganizationCollaborationUpdate
+} from '@shared/models/collaboration.models';
+import type { Notification, NotificationInsert } from '@shared/models/communication.models';
+import { CollaborationService } from '@shared/services/collaboration/collaboration.service';
+import { NotificationService } from '@shared/services/collaboration/notification.service';
 import { ErrorStateService } from '@shared/services/common/error-state.service';
-import { CollaborationService } from '@shared/services/org/collaboration.service';
 
 import { RealtimeFacade } from './realtime.facade';
+
+// Type aliases for backward compatibility
+type CollaborationInsert = OrganizationCollaborationInsert;
+type CollaborationUpdate = OrganizationCollaborationUpdate;
 
 /**
  * CollaborationFacade - Enterprise collaboration and notification management facade
@@ -85,7 +88,10 @@ export class CollaborationFacade implements OnDestroy {
     const notifs = this.notifications();
     return notifs.reduce(
       (acc, notif) => {
-        const type = (notif as any).notification_type || 'unknown';
+        /**
+         * @note notification_type is the actual database field name, not 'type'
+         */
+        const type = notif.notification_type;
         if (!acc[type]) acc[type] = [];
         acc[type].push(notif);
         return acc;
@@ -175,8 +181,8 @@ export class CollaborationFacade implements OnDestroy {
     this.lastOperation.set('loadCollaborations');
 
     try {
-      await this.collaborationService.loadCollaborations();
-      this.collaborations.set(this.collaborationService.collaborations());
+      const collabs = await this.collaborationService.getAllCollaborations();
+      this.collaborations.set(collabs);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load collaborations',
@@ -198,7 +204,7 @@ export class CollaborationFacade implements OnDestroy {
     this.lastOperation.set('loadCollaborationsByBlueprint');
 
     try {
-      const collabs = await this.collaborationService.loadCollaborationsByBlueprintId(blueprintId);
+      const collabs = await this.collaborationService.getCollaborationsByBlueprint(blueprintId);
       this.collaborations.set(collabs);
     } catch (error) {
       this.errorStateService.addError({
@@ -221,11 +227,11 @@ export class CollaborationFacade implements OnDestroy {
     this.lastOperation.set('loadCollaborationById');
 
     try {
-      const collab = await this.collaborationService.loadCollaborationById(id);
-      if (collab) {
-        this.selectedCollaboration.set(collab);
+      const collab = await this.collaborationService.getCollaborationById(id);
+      this.selectedCollaboration.set(collab);
 
-        // Add to collaborations list if not already present
+      // Add to collaborations list if not already present and collab is not null
+      if (collab) {
         const current = this.collaborations();
         if (!current.find(c => c.id === id)) {
           this.collaborations.set([...current, collab]);
@@ -336,16 +342,19 @@ export class CollaborationFacade implements OnDestroy {
   /**
    * Send collaboration invitation
    *
-   * Note: This method is not yet implemented in CollaborationService.
-   * TODO: Implement invitation functionality in CollaborationService.
+   * @note Currently returns void as invitation system is not fully implemented
    */
-  async sendInvitation(collaborationId: string, invitedOrgId: string): Promise<CollaborationInvitation> {
+  async sendInvitation(collaborationId: string, invitedOrgId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('sendInvitation');
 
     try {
-      // TODO: Implement when CollaborationService has invitation methods
-      throw new Error('Invitation functionality not yet implemented');
+      await this.collaborationService.sendInvitation(collaborationId, invitedOrgId);
+
+      /**
+       * TODO: Update state when invitation system is properly implemented
+       * this.invitations.set([...this.invitations(), invitation]);
+       */
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to send invitation',
@@ -361,17 +370,17 @@ export class CollaborationFacade implements OnDestroy {
 
   /**
    * Accept invitation
-   *
-   * Note: This method is not yet implemented in CollaborationService.
-   * TODO: Implement invitation functionality in CollaborationService.
    */
   async acceptInvitation(invitationId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('acceptInvitation');
 
     try {
-      // TODO: Implement when CollaborationService has invitation methods
-      throw new Error('Invitation functionality not yet implemented');
+      await this.collaborationService.acceptInvitation(invitationId);
+
+      // Update state
+      const invitations = this.invitations().map(inv => (inv.id === invitationId ? { ...inv, status: 'accepted' as const } : inv));
+      this.invitations.set(invitations);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to accept invitation',
@@ -387,17 +396,17 @@ export class CollaborationFacade implements OnDestroy {
 
   /**
    * Reject invitation
-   *
-   * Note: This method is not yet implemented in CollaborationService.
-   * TODO: Implement invitation functionality in CollaborationService.
    */
   async rejectInvitation(invitationId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('rejectInvitation');
 
     try {
-      // TODO: Implement when CollaborationService has invitation methods
-      throw new Error('Invitation functionality not yet implemented');
+      await this.collaborationService.rejectInvitation(invitationId);
+
+      // Update state
+      const invitations = this.invitations().map(inv => (inv.id === invitationId ? { ...inv, status: 'rejected' as const } : inv));
+      this.invitations.set(invitations);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to reject invitation',
@@ -419,8 +428,8 @@ export class CollaborationFacade implements OnDestroy {
     this.lastOperation.set('loadNotifications');
 
     try {
-      await this.notificationService.loadByUser(userId);
-      this.notifications.set(this.notificationService.notifications());
+      const notifs = await this.notificationService.getNotificationsByUser(userId);
+      this.notifications.set(notifs);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load notifications',
@@ -442,7 +451,7 @@ export class CollaborationFacade implements OnDestroy {
     this.lastOperation.set('createNotification');
 
     try {
-      const notif = await this.notificationService.create(data);
+      const notif = await this.notificationService.createNotification(data);
 
       // Update state (real-time will also add it, but this ensures immediate update)
       this.notifications.set([notif, ...this.notifications()]);
@@ -469,10 +478,10 @@ export class CollaborationFacade implements OnDestroy {
     this.lastOperation.set('markAsRead');
 
     try {
-      const updated = await this.notificationService.markAsRead(notificationId);
+      await this.notificationService.markAsRead(notificationId);
 
-      // Update state
-      const notifs = this.notifications().map(n => (n.id === notificationId ? updated : n));
+      // Update state - read_at is string (ISO format) from database
+      const notifs = this.notifications().map(n => (n.id === notificationId ? { ...n, read_at: new Date().toISOString() } : n));
       this.notifications.set(notifs);
     } catch (error) {
       this.errorStateService.addError({
@@ -490,15 +499,19 @@ export class CollaborationFacade implements OnDestroy {
   /**
    * Mark all notifications as read
    */
-  async markAllAsRead(userId: string): Promise<void> {
+  async markAllAsRead(): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('markAllAsRead');
 
     try {
       await this.notificationService.markAllAsRead();
 
-      // Update state - reload from service
-      this.notifications.set(this.notificationService.notifications());
+      // Update state - read_at is string (ISO format) from database
+      const notifs = this.notifications().map(n => ({
+        ...n,
+        read_at: n.read_at || new Date().toISOString()
+      }));
+      this.notifications.set(notifs);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to mark all notifications as read',
@@ -520,7 +533,7 @@ export class CollaborationFacade implements OnDestroy {
     this.lastOperation.set('deleteNotification');
 
     try {
-      await this.notificationService.delete(notificationId);
+      await this.notificationService.deleteNotification(notificationId);
 
       // Update state
       this.notifications.set(this.notifications().filter(n => n.id !== notificationId));
@@ -539,17 +552,13 @@ export class CollaborationFacade implements OnDestroy {
 
   /**
    * Clear all notifications for user
-   *
-   * Note: This deletes all notifications. Use with caution.
    */
-  async clearAllNotifications(userId: string): Promise<void> {
+  async clearAllNotifications(): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('clearAllNotifications');
 
     try {
-      // Delete all notifications one by one
-      const notifs = this.notifications();
-      await Promise.all(notifs.map(n => this.notificationService.delete(n.id)));
+      await this.notificationService.clearAllNotifications();
 
       // Update state
       this.notifications.set([]);

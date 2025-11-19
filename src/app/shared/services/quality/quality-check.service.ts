@@ -157,50 +157,6 @@ export class QualityCheckService {
   }
 
   /**
-   * 根據任務 ID 載入品質檢查列表
-   */
-  async loadByTaskId(taskId: string): Promise<QualityCheckDetail[]> {
-    this.loadingState.set(true);
-    this.errorState.set(null);
-
-    try {
-      const dbChecks = await firstValueFrom(this.qualityCheckRepository.findByTaskId(taskId));
-
-      // 轉換為 QualityCheckDetail 格式
-      const qualityCheckDetails = await Promise.all(
-        dbChecks.map(async dbCheck => {
-          const qualityCheck = this.mapToQualityCheck(dbCheck);
-          return {
-            id: qualityCheck.id,
-            taskId: qualityCheck.taskId,
-            stagingId: qualityCheck.stagingId,
-            inspectorId: qualityCheck.inspectorId,
-            checkType: qualityCheck.checkType,
-            status: qualityCheck.status,
-            checkItems: qualityCheck.checkItems,
-            findings: qualityCheck.findings,
-            recommendations: qualityCheck.recommendations,
-            checkedAt: qualityCheck.checkedAt,
-            completedAt: qualityCheck.completedAt,
-            // TODO: 載入關聯的 task 和 inspector 資料
-            task: undefined,
-            inspector: undefined,
-            photos: undefined
-          } as QualityCheckDetail;
-        })
-      );
-
-      return qualityCheckDetails;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '載入任務品質檢查失敗';
-      this.errorState.set(errorMessage);
-      throw error;
-    } finally {
-      this.loadingState.set(false);
-    }
-  }
-
-  /**
    * 刪除品質檢查
    */
   async delete(id: string): Promise<void> {
