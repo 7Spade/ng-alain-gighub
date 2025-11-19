@@ -107,7 +107,7 @@ export class BranchPermissionComponent implements OnInit {
   filterPermission = signal<string | null>(null);
   filterBranch = signal<string | null>(null);
   permissions = signal<BranchPermissionItem[]>([]);
-  branches = signal<{ id: string; name: string }[]>([]);
+  branches = signal<Array<{ id: string; name: string }>>([]);
 
   // Computed filtered permissions
   filteredPermissions = computed(() => {

@@ -41,7 +41,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         </div>
 
         <!-- 主视图区域 -->
-        <div style="flex: 1; border: 1px solid #d9d9d9; border-radius: 4px; padding: 16px; position: relative; overflow: auto; min-height: 600px;">
+        <div
+          style="flex: 1; border: 1px solid #d9d9d9; border-radius: 4px; padding: 16px; position: relative; overflow: auto; min-height: 600px;"
+        >
           @if (loading()) {
             <div style="text-align: center; padding: 100px;">
               <nz-spin nzSize="large"></nz-spin>
@@ -59,10 +61,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         <nz-list [nzDataSource]="annotations()" [nzRenderItem]="item">
           <ng-template #item let-item>
             <nz-list-item>
-              <nz-list-item-meta
-                [nzTitle]="item.author"
-                [nzDescription]="item.content"
-              >
+              <nz-list-item-meta [nzTitle]="item.author" [nzDescription]="item.content">
                 <ng-template #nzAvatar>
                   <nz-avatar nzIcon="user"></nz-avatar>
                 </ng-template>

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -61,12 +61,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         <nz-form-item>
           <nz-form-label>附件</nz-form-label>
           <nz-form-control>
-            <nz-upload
-              nzType="drag"
-              [nzMultiple]="true"
-              [nzFileList]="fileList()"
-              (nzFileListChange)="fileList.set($event)"
-            >
+            <nz-upload nzType="drag" [nzMultiple]="true" [nzFileList]="fileList()" (nzFileListChange)="fileList.set($event)">
               <p class="ant-upload-drag-icon">
                 <span nz-icon nzType="inbox"></span>
               </p>

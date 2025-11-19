@@ -47,12 +47,7 @@ interface FolderItem {
       </div>
 
       <!-- 文件列表 -->
-      <nz-table
-        #table
-        [nzData]="items()"
-        [nzLoading]="loading()"
-        [nzShowPagination]="false"
-      >
+      <nz-table #table [nzData]="items()" [nzLoading]="loading()" [nzShowPagination]="false">
         <thead>
           <tr>
             <th>名称</th>
@@ -82,8 +77,7 @@ interface FolderItem {
                 <button nz-button nzType="link" nzSize="small" nzDanger (click)="deleteItem(item.id)">删除</button>
               </td>
             </tr>
-          }
-          @empty {
+          } @empty {
             <tr>
               <td [attr.colspan]="5" style="text-align: center; padding: 40px;">
                 <nz-empty nzNotFoundContent="当前文件夹为空"></nz-empty>
@@ -139,5 +133,4 @@ export class DocumentBrowserComponent implements OnInit {
     // TODO: 实现删除逻辑
     this.message.info('删除功能开发中');
   }
-
 }

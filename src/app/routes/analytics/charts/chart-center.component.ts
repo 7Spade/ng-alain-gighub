@@ -39,8 +39,7 @@ interface ChartItem {
               </div>
             </nz-card>
           </div>
-        }
-        @empty {
+        } @empty {
           <div nz-col [nzSpan]="24">
             <nz-empty nzNotFoundContent="暂无图表，点击添加图表按钮创建"></nz-empty>
           </div>

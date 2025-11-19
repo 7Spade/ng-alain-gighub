@@ -128,7 +128,7 @@ export class BotExecutionComponent implements OnInit {
   filterStatus = signal<string | null>(null);
   dateRange = signal<[Date, Date] | null>(null);
   executions = signal<BotExecutionItem[]>([]);
-  bots = signal<{ id: string; name: string }[]>([]);
+  bots = signal<Array<{ id: string; name: string }>>([]);
 
   // Computed filtered executions
   filteredExecutions = computed(() => {

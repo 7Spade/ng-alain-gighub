@@ -48,12 +48,8 @@ interface BranchReportItem {
                   <strong>进度：</strong>
                   <nz-progress [nzPercent]="report.progress" [nzShowInfo]="true"></nz-progress>
                 </div>
-                <div style="margin-bottom: 8px;">
-                  <strong>任务：</strong>{{ report.completedCount }}/{{ report.taskCount }}
-                </div>
-                <div>
-                  <strong>问题：</strong>{{ report.resolvedCount }}/{{ report.issueCount }}
-                </div>
+                <div style="margin-bottom: 8px;"> <strong>任务：</strong>{{ report.completedCount }}/{{ report.taskCount }} </div>
+                <div> <strong>问题：</strong>{{ report.resolvedCount }}/{{ report.issueCount }} </div>
               </nz-card>
             </div>
           }

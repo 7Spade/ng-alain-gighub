@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -12,9 +12,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   template: `
     <page-header [title]="'文档元数据'">
       <ng-template #extra>
-        <button nz-button nzType="default" (click)="cancel()" style="margin-right: 8px;">
-          取消
-        </button>
+        <button nz-button nzType="default" (click)="cancel()" style="margin-right: 8px;"> 取消 </button>
         <button nz-button nzType="primary" (click)="save()" [nzLoading]="saving()">
           <span nz-icon nzType="save"></span>
           保存
@@ -74,12 +72,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         <nz-form-item>
           <nz-form-label>标签</nz-form-label>
           <nz-form-control>
-            <nz-select
-              formControlName="tags"
-              nzMode="tags"
-              nzPlaceHolder="输入标签后按回车添加"
-              style="width: 100%;"
-            ></nz-select>
+            <nz-select formControlName="tags" nzMode="tags" nzPlaceHolder="输入标签后按回车添加" style="width: 100%;"></nz-select>
           </nz-form-control>
         </nz-form-item>
 

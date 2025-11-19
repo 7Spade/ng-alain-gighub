@@ -33,9 +33,7 @@ interface ReportMetric {
         @for (metric of metrics(); track metric.label) {
           <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
             <nz-card [nzBordered]="true" style="text-align: center;">
-              <div style="font-size: 20px; font-weight: bold;">
-                {{ metric.value }}{{ metric.unit }}
-              </div>
+              <div style="font-size: 20px; font-weight: bold;"> {{ metric.value }}{{ metric.unit }} </div>
               <div style="margin-top: 8px; color: #666;">{{ metric.label }}</div>
             </nz-card>
           </div>

@@ -54,7 +54,13 @@ interface DocumentListItem {
         <nz-form-item style="margin-bottom: 0;">
           <nz-form-label>搜索</nz-form-label>
           <nz-form-control>
-            <input nz-input [ngModel]="searchKeyword()" (ngModelChange)="searchKeyword.set($event)" placeholder="搜索文档名称" style="width: 250px;" />
+            <input
+              nz-input
+              [ngModel]="searchKeyword()"
+              (ngModelChange)="searchKeyword.set($event)"
+              placeholder="搜索文档名称"
+              style="width: 250px;"
+            />
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -169,7 +175,6 @@ export class DocumentListComponent implements OnInit {
   onTableChange(): void {
     // 处理表格变化事件（分页、排序等）
   }
-
 
   viewDetail(id: string): void {
     this.router.navigate(['/documents', id]);
