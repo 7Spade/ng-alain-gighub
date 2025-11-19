@@ -359,4 +359,51 @@ export class NotificationService {
     this.subscriptionsState.set([]);
     this.errorState.set(null);
   }
+
+  // ============================================================================
+  // Adapter Methods (Facade Compatibility Layer)
+  // These methods provide backward compatibility for facades expecting different API patterns
+  // TODO: Refactor facades to use standard load* methods and remove these adapters
+  // ============================================================================
+
+  /**
+   * Get notifications by user (Adapter)
+   *
+   * @deprecated Use loadNotificationsByUserId() and access notifications() signal instead
+   * This is an adapter method for facade compatibility
+   */
+  async getNotificationsByUser(userId: string): Promise<Notification[]> {
+    await this.loadByUser(userId);
+    return this.notifications();
+  }
+
+  /**
+   * Create notification (Adapter)
+   *
+   * @deprecated Use create() instead
+   * This is an adapter method for facade compatibility
+   */
+  async createNotification(data: NotificationInsert): Promise<Notification> {
+    return await this.create(data);
+  }
+
+  /**
+   * Delete notification (Adapter)
+   *
+   * @deprecated Use delete() instead
+   * This is an adapter method for facade compatibility
+   */
+  async deleteNotification(id: string): Promise<void> {
+    await this.delete(id);
+  }
+
+  /**
+   * Clear all notifications (Adapter)
+   *
+   * @deprecated Use markAllAsRead() instead
+   * This is an adapter method for facade compatibility
+   */
+  async clearAllNotifications(): Promise<void> {
+    await this.markAllAsRead();
+  }
 }
