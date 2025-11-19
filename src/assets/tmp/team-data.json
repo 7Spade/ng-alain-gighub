@@ -17,6 +17,27 @@
           "link": "/explore"
         }
       ]
+    },
+    {
+      "text": "Development",
+      "i18n": "menu.development",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Account System",
+          "i18n": "menu.development.account",
+          "icon": "anticon-user",
+          "children": [
+            {
+              "text": "Team Members",
+              "link": "/org/teams/:id/members",
+              "i18n": "menu.development.account.teamMembers",
+              "externalLink": true
+            }
+          ]
+        }
+      ]
     }
   ]
 }

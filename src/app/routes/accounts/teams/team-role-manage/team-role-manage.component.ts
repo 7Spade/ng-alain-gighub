@@ -1,17 +1,19 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TeamMember, TeamMemberRepository } from '@core';
 import { AccountService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
 
-import { TeamMemberAddComponent } from '../team-member/team-member-add.component';
-import { TeamMemberDeleteComponent, TeamMemberDeleteData } from '../team-member/team-member-delete.component';
-import { TeamRoleEditComponent } from '../team-role/team-role-edit.component';
-
 /**
- * 团队成员和角色管理组件
- * 职责：显示成员列表、添加成员、编辑角色、移除成员
+ * 团队成员显示组件（只读）
+ *
+ * 职责：在团队详情页中显示团队成员信息（只读）
+ * 完整的管理功能请前往 /org/teams/:id/members
+ *
+ * 遵循职责边界：
+ * - routes/accounts：账户管理视角，成员信息只读显示
+ * - routes/org：组织上下文视角，提供完整的成员管理功能
  */
 @Component({
   selector: 'app-team-role-manage',
@@ -20,22 +22,28 @@ import { TeamRoleEditComponent } from '../team-role/team-role-edit.component';
   template: `
     <nz-card nzTitle="团队成员" [nzExtra]="cardExtra" style="margin-bottom: 16px;">
       <ng-template #cardExtra>
-        <button nz-button nzType="primary" nzSize="small" (click)="addMember()">
-          <span nz-icon nzType="plus"></span>
-          添加成员
+        <button nz-button nzType="primary" nzSize="small" (click)="goToTeamManagement()">
+          <span nz-icon nzType="setting"></span>
+          前往团队管理
         </button>
       </ng-template>
 
       @if (loading()) {
         <nz-spin nzSimple [nzSize]="'large'" style="display: block; padding: 50px; text-align: center;"></nz-spin>
       } @else if (members().length > 0) {
+        <nz-alert
+          nzType="info"
+          nzMessage="提示"
+          nzDescription="此处仅显示成员信息。如需添加、编辑或删除成员，请点击右上角「前往团队管理」按钮。"
+          nzShowIcon
+          style="margin-bottom: 16px;"
+        ></nz-alert>
         <nz-table [nzData]="members()" [nzShowPagination]="false" [nzSize]="'small'">
           <thead>
             <tr>
               <th>账户名称</th>
               <th>角色</th>
               <th>加入时间</th>
-              <th>操作</th>
             </tr>
           </thead>
           <tbody>
@@ -53,25 +61,23 @@ import { TeamRoleEditComponent } from '../team-role/team-role-edit.component';
                   }
                 </td>
                 <td>{{ member.joined_at | date: 'yyyy-MM-dd' }}</td>
-                <td>
-                  <button nz-button nzType="link" nzSize="small" (click)="editRole(member)">编辑角色</button>
-                  <button nz-button nzType="link" nzDanger nzSize="small" (click)="removeMember(member)">移除</button>
-                </td>
               </tr>
             }
           </tbody>
         </nz-table>
       } @else {
-        <nz-empty nzNotFoundContent="暂无成员"></nz-empty>
+        <nz-empty nzNotFoundContent="暂无成员">
+          <button nz-button nzType="primary" (click)="goToTeamManagement()">前往团队管理添加成员</button>
+        </nz-empty>
       }
     </nz-card>
   `
 })
 export class TeamRoleManageComponent implements OnInit {
-  private teamMemberRepository = inject(TeamMemberRepository);
-  private accountService = inject(AccountService);
-  private message = inject(NzMessageService);
-  private modal = inject(NzModalService);
+  private readonly teamMemberRepository = inject(TeamMemberRepository);
+  private readonly accountService = inject(AccountService);
+  private readonly message = inject(NzMessageService);
+  private readonly router = inject(Router);
 
   readonly teamId = input.required<string>();
   readonly members = signal<TeamMember[]>([]);
@@ -88,7 +94,7 @@ export class TeamRoleManageComponent implements OnInit {
   }
 
   /**
-   * 加载团队成员列表
+   * 加载团队成员列表（只读显示）
    */
   async loadMembers(): Promise<void> {
     this.loading.set(true);
@@ -104,68 +110,10 @@ export class TeamRoleManageComponent implements OnInit {
   }
 
   /**
-   * 添加成员
+   * 前往团队管理页面（完整功能）
    */
-  addMember(): void {
-    const modalRef = this.modal.create({
-      nzTitle: '添加团队成员',
-      nzContent: TeamMemberAddComponent,
-      nzData: {
-        teamId: this.teamId()
-      },
-      nzWidth: 600,
-      nzFooter: null
-    });
-
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        this.loadMembers();
-      }
-    });
-  }
-
-  /**
-   * 编辑角色
-   */
-  editRole(member: TeamMember): void {
-    const modalRef = this.modal.create({
-      nzTitle: '编辑成员角色',
-      nzContent: TeamRoleEditComponent,
-      nzData: {
-        member
-      },
-      nzWidth: 500,
-      nzFooter: null
-    });
-
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        this.loadMembers();
-      }
-    });
-  }
-
-  /**
-   * 移除成员
-   */
-  removeMember(member: TeamMember): void {
-    const accountName = this.getAccountName(member.account_id);
-    const modalRef = this.modal.create({
-      nzTitle: '移除团队成员',
-      nzContent: TeamMemberDeleteComponent,
-      nzData: {
-        memberId: member.id,
-        accountName
-      } as TeamMemberDeleteData,
-      nzWidth: 500,
-      nzFooter: null
-    });
-
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        this.loadMembers();
-      }
-    });
+  goToTeamManagement(): void {
+    this.router.navigate(['/org/teams', this.teamId(), 'members']);
   }
 
   /**

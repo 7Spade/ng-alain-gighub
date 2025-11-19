@@ -1,19 +1,17 @@
 import { Component, OnInit, inject, input } from '@angular/core';
-import { OrganizationMember } from '@core';
+import { Router } from '@angular/router';
 import { AccountService, OrganizationMemberService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-
-import { OrganizationMemberAddComponent } from '../organization-member/organization-member-add.component';
-import {
-  OrganizationMemberDeleteComponent,
-  OrganizationMemberDeleteData
-} from '../organization-member/organization-member-delete.component';
-import { OrganizationRoleEditComponent } from '../organization-role/organization-role-edit.component';
 
 /**
- * 组织成员和角色管理组件
- * 职责：显示成员列表、添加成员、编辑角色、移除成员
+ * 组织成员显示组件（只读）
+ *
+ * 职责：在账户详情页中显示组织成员信息（只读）
+ * 完整的管理功能请前往 /org/:id/members
+ *
+ * 遵循职责边界：
+ * - routes/accounts：账户管理视角，成员信息只读显示
+ * - routes/org：组织上下文视角，提供完整的成员管理功能
  */
 @Component({
   selector: 'app-organization-role-manage',
@@ -22,9 +20,9 @@ import { OrganizationRoleEditComponent } from '../organization-role/organization
   template: `
     <nz-card nzTitle="组织成员" [nzExtra]="cardExtra" style="margin-bottom: 16px;">
       <ng-template #cardExtra>
-        <button nz-button nzType="primary" nzSize="small" (click)="addMember()">
-          <span nz-icon nzType="plus"></span>
-          添加成员
+        <button nz-button nzType="primary" nzSize="small" (click)="goToOrganizationManagement()">
+          <span nz-icon nzType="setting"></span>
+          前往组织管理
         </button>
       </ng-template>
 
@@ -39,13 +37,19 @@ import { OrganizationRoleEditComponent } from '../organization-role/organization
           style="margin: 16px;"
         ></nz-alert>
       } @else if (organizationMemberService.members().length > 0) {
+        <nz-alert
+          nzType="info"
+          nzMessage="提示"
+          nzDescription="此处仅显示成员信息。如需添加、编辑或删除成员，请点击右上角「前往组织管理」按钮。"
+          nzShowIcon
+          style="margin-bottom: 16px;"
+        ></nz-alert>
         <nz-table [nzData]="organizationMemberService.members()" [nzShowPagination]="false" [nzSize]="'small'">
           <thead>
             <tr>
               <th>账户名称</th>
               <th>角色</th>
               <th>加入时间</th>
-              <th>操作</th>
             </tr>
           </thead>
           <tbody>
@@ -66,24 +70,22 @@ import { OrganizationRoleEditComponent } from '../organization-role/organization
                   }
                 </td>
                 <td>{{ member.joined_at | date: 'yyyy-MM-dd' }}</td>
-                <td>
-                  <button nz-button nzType="link" nzSize="small" (click)="editRole(member)">编辑角色</button>
-                  <button nz-button nzType="link" nzDanger nzSize="small" (click)="removeMember(member)">移除</button>
-                </td>
               </tr>
             }
           </tbody>
         </nz-table>
       } @else {
-        <nz-empty nzNotFoundContent="暂无成员"></nz-empty>
+        <nz-empty nzNotFoundContent="暂无成员">
+          <button nz-button nzType="primary" (click)="goToOrganizationManagement()">前往组织管理添加成员</button>
+        </nz-empty>
       }
     </nz-card>
   `
 })
 export class OrganizationRoleManageComponent implements OnInit {
-  private accountService = inject(AccountService);
-  private message = inject(NzMessageService);
-  private modal = inject(NzModalService);
+  private readonly accountService = inject(AccountService);
+  private readonly message = inject(NzMessageService);
+  private readonly router = inject(Router);
   readonly organizationMemberService = inject(OrganizationMemberService);
 
   readonly organizationId = input.required<string>();
@@ -103,7 +105,7 @@ export class OrganizationRoleManageComponent implements OnInit {
   }
 
   /**
-   * 加载组织成员列表
+   * 加载组织成员列表（只读显示）
    */
   async loadMembers(): Promise<void> {
     try {
@@ -115,68 +117,10 @@ export class OrganizationRoleManageComponent implements OnInit {
   }
 
   /**
-   * 添加成员
+   * 前往组织管理页面（完整功能）
    */
-  addMember(): void {
-    const modalRef = this.modal.create({
-      nzTitle: '添加组织成员',
-      nzContent: OrganizationMemberAddComponent,
-      nzData: {
-        organizationId: this.organizationId()
-      },
-      nzWidth: 600,
-      nzFooter: null
-    });
-
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        this.loadMembers();
-      }
-    });
-  }
-
-  /**
-   * 编辑角色
-   */
-  editRole(member: OrganizationMember): void {
-    const modalRef = this.modal.create({
-      nzTitle: '编辑成员角色',
-      nzContent: OrganizationRoleEditComponent,
-      nzData: {
-        member
-      },
-      nzWidth: 500,
-      nzFooter: null
-    });
-
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        this.loadMembers();
-      }
-    });
-  }
-
-  /**
-   * 移除成员
-   */
-  removeMember(member: OrganizationMember): void {
-    const accountName = this.getAccountName(member.account_id);
-    const modalRef = this.modal.create({
-      nzTitle: '移除组织成员',
-      nzContent: OrganizationMemberDeleteComponent,
-      nzData: {
-        memberId: member.id,
-        accountName
-      } as OrganizationMemberDeleteData,
-      nzWidth: 500,
-      nzFooter: null
-    });
-
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        this.loadMembers();
-      }
-    });
+  goToOrganizationManagement(): void {
+    this.router.navigate(['/org', this.organizationId(), 'members']);
   }
 
   /**

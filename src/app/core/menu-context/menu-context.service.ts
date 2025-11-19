@@ -106,7 +106,9 @@ export class MenuContextService {
     this.currentContextType.set('organization');
     this.currentContextId.set(organizationId);
     this.menuService.clear();
-    this.menuService.add(this.organizationMenuData);
+    // 处理菜单链接中的动态 ID 替换
+    const processedMenu = this.processMenuLinks(this.organizationMenuData, organizationId);
+    this.menuService.add(processedMenu);
     this.menuService.resume();
   }
 
@@ -117,7 +119,9 @@ export class MenuContextService {
     this.currentContextType.set('team');
     this.currentContextId.set(teamId);
     this.menuService.clear();
-    this.menuService.add(this.teamMenuData);
+    // 处理菜单链接中的动态 ID 替换
+    const processedMenu = this.processMenuLinks(this.teamMenuData, teamId);
+    this.menuService.add(processedMenu);
     this.menuService.resume();
   }
 
@@ -154,6 +158,33 @@ export class MenuContextService {
       default:
         return this.appMenuData;
     }
+  }
+
+  /**
+   * 处理菜单链接，替换动态 ID 占位符
+   *
+   * @param menu 菜单数据
+   * @param id 要替换的 ID（组织ID或团队ID）
+   * @returns 处理后的菜单数据
+   */
+  private processMenuLinks(menu: NzSafeAny[], id: string): NzSafeAny[] {
+    if (!id) return menu;
+
+    return menu.map(item => {
+      const processed: NzSafeAny = { ...item };
+
+      // 处理链接中的 :id 占位符
+      if (processed.link && typeof processed.link === 'string') {
+        processed.link = processed.link.replace(/:id/g, id);
+      }
+
+      // 递归处理子菜单
+      if (processed.children && Array.isArray(processed.children)) {
+        processed.children = this.processMenuLinks(processed.children, id);
+      }
+
+      return processed;
+    });
   }
 
   /**

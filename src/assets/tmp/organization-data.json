@@ -61,6 +61,12 @@
               "i18n": "menu.development.account.organizations"
             },
             {
+              "text": "Organization Members",
+              "link": "/org/:id/members",
+              "i18n": "menu.development.account.organizationMembers",
+              "externalLink": true
+            },
+            {
               "text": "Bot Management",
               "link": "/accounts/bots",
               "i18n": "menu.development.account.bots"
