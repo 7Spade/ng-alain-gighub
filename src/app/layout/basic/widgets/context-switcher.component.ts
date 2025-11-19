@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
-import { MenuContextService, WorkspaceContextService } from '@core';
+import { WorkspaceContextService } from '@core';
 import { SettingsService } from '@delon/theme';
 import { AccountService, SHARED_IMPORTS } from '@shared';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -21,14 +21,19 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
       nz-dropdown
       nzPlacement="bottomRight"
       [nzDropdownMenu]="contextMenu"
+      [nzDisabled]="switching()"
     >
-      <i nz-icon [nzType]="contextIcon()" class="mr-sm"></i>
+      @if (switching()) {
+        <i nz-icon nzType="loading" class="mr-sm"></i>
+      } @else {
+        <i nz-icon [nzType]="contextIcon()" class="mr-sm"></i>
+      }
       <span>{{ contextLabel() }}</span>
     </div>
     <nz-dropdown-menu #contextMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
         <!-- 应用菜单 -->
-        <div nz-menu-item (click)="switchToApp()" [class.ant-menu-item-selected]="menuContextService.contextType() === 'app'">
+        <div nz-menu-item (click)="switchToApp()" [class.ant-menu-item-selected]="workspaceContext.contextType() === 'app'">
           <i nz-icon nzType="appstore" class="mr-sm"></i>
           <span>应用菜单</span>
         </div>
@@ -42,9 +47,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                 <li
                   nz-menu-item
                   (click)="switchToUser(account.id)"
-                  [class.ant-menu-item-selected]="
-                    menuContextService.contextType() === 'user' && menuContextService.contextId() === account.id
-                  "
+                  [class.ant-menu-item-selected]="workspaceContext.contextType() === 'user' && workspaceContext.contextId() === account.id"
                 >
                   <i nz-icon nzType="user" class="mr-sm"></i>
                   <span>{{ account.name }}</span>
@@ -63,7 +66,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                   nz-menu-item
                   (click)="switchToOrganization(account.id)"
                   [class.ant-menu-item-selected]="
-                    menuContextService.contextType() === 'organization' && menuContextService.contextId() === account.id
+                    workspaceContext.contextType() === 'organization' && workspaceContext.contextId() === account.id
                   "
                 >
                   <i nz-icon nzType="team" class="mr-sm"></i>
@@ -87,7 +90,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                           nz-menu-item
                           (click)="switchToTeam(team.id)"
                           [class.ant-menu-item-selected]="
-                            menuContextService.contextType() === 'team' && menuContextService.contextId() === team.id
+                            workspaceContext.contextType() === 'team' && workspaceContext.contextId() === team.id
                           "
                         >
                           <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
@@ -115,7 +118,6 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderContextSwitcherComponent implements OnInit {
-  readonly menuContextService = inject(MenuContextService);
   readonly accountService = inject(AccountService);
   readonly workspaceContext = inject(WorkspaceContextService);
   readonly settings = inject(SettingsService);
@@ -127,6 +129,7 @@ export class HeaderContextSwitcherComponent implements OnInit {
   readonly teamsByOrganization = this.workspaceContext.teamsByOrganization;
   readonly contextLabel = this.workspaceContext.contextLabel;
   readonly contextIcon = this.workspaceContext.contextIcon;
+  readonly switching = this.workspaceContext.switching;
 
   /**
    * 切换到应用菜单
@@ -158,5 +161,6 @@ export class HeaderContextSwitcherComponent implements OnInit {
 
   ngOnInit(): void {
     // WorkspaceContextService 会自动加载数据，无需手动调用
+    // 此方法保留以满足 OnInit 接口要求
   }
 }

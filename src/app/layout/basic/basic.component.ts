@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { MenuContextService, WorkspaceContextService } from '@core';
+import { WorkspaceContextService } from '@core';
 import { I18nPipe, SettingsService, User } from '@delon/theme';
 import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
 import { SettingDrawerModule } from '@delon/theme/setting-drawer';
@@ -93,24 +93,41 @@ import { HeaderUserComponent } from './widgets/user.component';
           <ul nz-menu>
             <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
-            @if (menuContextService.contextType() !== 'user' && currentUserAccountId()) {
+            @if (workspaceContext.contextType() !== 'user' && currentUserAccountId()) {
               <li nz-menu-divider></li>
-              <li nz-menu-item (click)="switchToUser()">
-                <i nz-icon nzType="user" class="mr-sm"></i>
+              <li nz-menu-item (click)="switchToUser()" [nzDisabled]="workspaceContext.switching()">
+                @if (workspaceContext.switching()) {
+                  <i nz-icon nzType="loading" class="mr-sm"></i>
+                } @else {
+                  <i nz-icon nzType="user" class="mr-sm"></i>
+                }
                 <span>{{ currentUserAccount()?.name || '個人視角' }}</span>
               </li>
             }
             @if (allOrganizations().length > 0) {
               <li nz-menu-divider></li>
               @for (org of allOrganizations(); track org.id) {
-                <li nz-menu-item (click)="switchToOrganization(org.id)">
-                  <i nz-icon nzType="team" class="mr-sm"></i>
+                <li nz-menu-item (click)="switchToOrganization(org.id)" [nzDisabled]="workspaceContext.switching()">
+                  @if (workspaceContext.switching()) {
+                    <i nz-icon nzType="loading" class="mr-sm"></i>
+                  } @else {
+                    <i nz-icon nzType="team" class="mr-sm"></i>
+                  }
                   <span>{{ org.name }}</span>
                 </li>
                 @if (teamsByOrganization().has(org.id) && teamsByOrganization().get(org.id)!.length > 0) {
                   @for (team of teamsByOrganization().get(org.id)!; track team.id) {
-                    <li nz-menu-item (click)="switchToTeam(team.id)" style="padding-left: 32px;">
-                      <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
+                    <li
+                      nz-menu-item
+                      (click)="switchToTeam(team.id)"
+                      [nzDisabled]="workspaceContext.switching()"
+                      style="padding-left: 32px;"
+                    >
+                      @if (workspaceContext.switching()) {
+                        <i nz-icon nzType="loading" class="mr-sm"></i>
+                      } @else {
+                        <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
+                      }
                       <span>{{ team.name }}</span>
                     </li>
                   }
@@ -156,7 +173,6 @@ import { HeaderUserComponent } from './widgets/user.component';
 export class LayoutBasicComponent implements OnInit {
   private readonly settings = inject(SettingsService);
   private readonly accountService = inject(AccountService);
-  readonly menuContextService = inject(MenuContextService);
   readonly workspaceContext = inject(WorkspaceContextService);
 
   // 使用 WorkspaceContextService 的 signals
@@ -178,6 +194,7 @@ export class LayoutBasicComponent implements OnInit {
 
   ngOnInit(): void {
     // WorkspaceContextService 会自动加载数据，无需手动调用
+    // 此方法保留以满足 OnInit 接口要求
   }
 
   /**

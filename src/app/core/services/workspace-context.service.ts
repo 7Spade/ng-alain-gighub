@@ -1,8 +1,8 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { MenuService } from '@delon/theme';
 import { Account, AccountService, Team, TeamService } from '@shared';
-
-import { MenuContextService } from '../menu-context/menu-context.service';
+import { NzSafeAny } from 'ng-zorro-antd/core/types';
 
 /**
  * Workspace Context Service
@@ -14,9 +14,10 @@ import { MenuContextService } from '../menu-context/menu-context.service';
  * 1. 统一管理上下文状态（app/user/organization/team）
  * 2. 自动加载和缓存用户可访问的组织/团队列表
  * 3. 提供上下文切换的统一接口
- * 4. 与 MenuContextService 和 AccountService 协调工作
- * 5. 持久化当前上下文到 localStorage
- * 6. 提供 computed signals 供组件使用
+ * 4. 统一管理菜单切换（整合了 MenuContextService 的功能）
+ * 5. 与 AccountService 协调工作
+ * 6. 持久化当前上下文到 localStorage
+ * 7. 提供 computed signals 供组件使用
  *
  * @example
  * ```typescript
@@ -39,8 +40,14 @@ import { MenuContextService } from '../menu-context/menu-context.service';
 export class WorkspaceContextService {
   private readonly accountService = inject(AccountService);
   private readonly teamService = inject(TeamService);
-  private readonly menuContextService = inject(MenuContextService);
+  private readonly menuService = inject(MenuService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
+
+  // 菜单数据缓存
+  private userMenuData: NzSafeAny[] = [];
+  private organizationMenuData: NzSafeAny[] = [];
+  private teamMenuData: NzSafeAny[] = [];
+  private appMenuData: NzSafeAny[] = [];
 
   // 上下文类型状态
   private contextTypeState = signal<'app' | 'user' | 'organization' | 'team'>('app');
@@ -62,6 +69,9 @@ export class WorkspaceContextService {
   // 错误状态
   private errorState = signal<string | null>(null);
 
+  // 切换中状态（防止重复切换）
+  private switchingState = signal<boolean>(false);
+
   // 暴露只读信号
   readonly contextType = this.contextTypeState.asReadonly();
   readonly contextId = this.contextIdState.asReadonly();
@@ -73,6 +83,7 @@ export class WorkspaceContextService {
   readonly userTeams = this.userTeamsState.asReadonly();
   readonly loadingTeams = this.loadingTeamsState.asReadonly();
   readonly error = this.errorState.asReadonly();
+  readonly switching = this.switchingState.asReadonly();
 
   // Computed signals
   /**
@@ -287,14 +298,62 @@ export class WorkspaceContextService {
   }
 
   /**
+   * 初始化菜单数据
+   * 在 StartupService 中调用，保存不同账户类型的菜单数据
+   */
+  initializeMenuData(data: {
+    appMenu?: NzSafeAny[];
+    userMenu?: NzSafeAny[];
+    organizationMenu?: NzSafeAny[];
+    teamMenu?: NzSafeAny[];
+  }): void {
+    if (data.appMenu) {
+      this.appMenuData = data.appMenu;
+    }
+    if (data.userMenu) {
+      this.userMenuData = data.userMenu;
+    }
+    if (data.organizationMenu) {
+      this.organizationMenuData = data.organizationMenu;
+    }
+    if (data.teamMenu) {
+      this.teamMenuData = data.teamMenu;
+    }
+
+    // 默认使用应用菜单
+    this.switchToApp();
+  }
+
+  /**
    * 切换到应用菜单（默认菜单）
    */
   switchToApp(): void {
-    this.contextTypeState.set('app');
-    this.contextIdState.set(null);
-    this.menuContextService.switchToApp();
-    // 清空选中的账户
-    this.accountService.selectAccount(null);
+    // 防止重复切换
+    if (this.switchingState()) {
+      return;
+    }
+
+    // 如果已经是应用菜单，直接返回
+    if (this.contextTypeState() === 'app' && this.contextIdState() === null) {
+      return;
+    }
+
+    this.switchingState.set(true);
+
+    try {
+      // 先更新状态，再更新菜单和账户
+      this.contextTypeState.set('app');
+      this.contextIdState.set(null);
+
+      // 同步更新菜单和账户
+      this.updateMenu('app', null);
+      this.accountService.selectAccount(null);
+    } finally {
+      // 使用 setTimeout 确保状态更新完成后再重置切换状态
+      setTimeout(() => {
+        this.switchingState.set(false);
+      }, 0);
+    }
   }
 
   /**
@@ -303,20 +362,45 @@ export class WorkspaceContextService {
    * @param userId 用户账户 ID（可选，如果不提供则使用当前用户账户）
    */
   switchToUser(userId?: string): void {
+    // 防止重复切换
+    if (this.switchingState()) {
+      return;
+    }
+
     const targetUserId = userId || this.currentUserAccountId();
     if (!targetUserId) {
       console.warn('Cannot switch to user: no user account ID available');
       return;
     }
 
-    this.contextTypeState.set('user');
-    this.contextIdState.set(targetUserId);
-    this.menuContextService.switchToUser(targetUserId);
+    // 如果已经是该用户，直接返回
+    if (this.contextTypeState() === 'user' && this.contextIdState() === targetUserId) {
+      return;
+    }
 
-    // 同时更新 AccountService 的选中账户
-    const account = this.accountService.userAccounts().find(a => a.id === targetUserId);
-    if (account) {
+    this.switchingState.set(true);
+
+    try {
+      // 先查找账户
+      const account = this.accountService.userAccounts().find(a => a.id === targetUserId);
+      if (!account) {
+        console.warn(`Cannot switch to user: account ${targetUserId} not found`);
+        this.switchingState.set(false);
+        return;
+      }
+
+      // 先更新状态，再更新菜单和账户
+      this.contextTypeState.set('user');
+      this.contextIdState.set(targetUserId);
+
+      // 同步更新菜单和账户
+      this.updateMenu('user', targetUserId);
       this.accountService.selectAccount(account);
+    } finally {
+      // 使用 setTimeout 确保状态更新完成后再重置切换状态
+      setTimeout(() => {
+        this.switchingState.set(false);
+      }, 0);
     }
   }
 
@@ -326,6 +410,16 @@ export class WorkspaceContextService {
    * @param organizationId 组织账户 ID
    */
   switchToOrganization(organizationId: string): void {
+    // 防止重复切换
+    if (this.switchingState()) {
+      return;
+    }
+
+    // 如果已经是该组织，直接返回
+    if (this.contextTypeState() === 'organization' && this.contextIdState() === organizationId) {
+      return;
+    }
+
     // 验证组织是否存在
     const organization = this.allOrganizations().find(org => org.id === organizationId);
     if (!organization) {
@@ -333,12 +427,22 @@ export class WorkspaceContextService {
       return;
     }
 
-    this.contextTypeState.set('organization');
-    this.contextIdState.set(organizationId);
-    this.menuContextService.switchToOrganization(organizationId);
+    this.switchingState.set(true);
 
-    // 同时更新 AccountService 的选中账户
-    this.accountService.selectAccount(organization);
+    try {
+      // 先更新状态，再更新菜单和账户
+      this.contextTypeState.set('organization');
+      this.contextIdState.set(organizationId);
+
+      // 同步更新菜单和账户
+      this.updateMenu('organization', organizationId);
+      this.accountService.selectAccount(organization);
+    } finally {
+      // 使用 setTimeout 确保状态更新完成后再重置切换状态
+      setTimeout(() => {
+        this.switchingState.set(false);
+      }, 0);
+    }
   }
 
   /**
@@ -347,6 +451,16 @@ export class WorkspaceContextService {
    * @param teamId 团队 ID
    */
   switchToTeam(teamId: string): void {
+    // 防止重复切换
+    if (this.switchingState()) {
+      return;
+    }
+
+    // 如果已经是该团队，直接返回
+    if (this.contextTypeState() === 'team' && this.contextIdState() === teamId) {
+      return;
+    }
+
     // 验证团队是否存在
     const team = this.userTeams().find(t => t.id === teamId);
     if (!team) {
@@ -354,10 +468,22 @@ export class WorkspaceContextService {
       return;
     }
 
-    this.contextTypeState.set('team');
-    this.contextIdState.set(teamId);
-    this.menuContextService.switchToTeam(teamId);
-    // 注意：Team 不是 Account，所以不需要调用 selectAccount
+    this.switchingState.set(true);
+
+    try {
+      // 先更新状态，再更新菜单
+      this.contextTypeState.set('team');
+      this.contextIdState.set(teamId);
+
+      // 同步更新菜单
+      this.updateMenu('team', teamId);
+      // 注意：Team 不是 Account，所以不需要调用 selectAccount
+    } finally {
+      // 使用 setTimeout 确保状态更新完成后再重置切换状态
+      setTimeout(() => {
+        this.switchingState.set(false);
+      }, 0);
+    }
   }
 
   /**
@@ -421,6 +547,87 @@ export class WorkspaceContextService {
     const token = this.tokenService.get();
     if (token?.['user']?.['id']) {
       await this.loadUserWorkspace(token['user']['id']);
+    }
+  }
+
+  /**
+   * 更新菜单
+   *
+   * @param type 上下文类型
+   * @param id 上下文 ID（可选）
+   */
+  private updateMenu(type: 'app' | 'user' | 'organization' | 'team', id: string | null): void {
+    this.menuService.clear();
+
+    let menuData: NzSafeAny[] = [];
+
+    switch (type) {
+      case 'app':
+        menuData = this.appMenuData;
+        break;
+      case 'user':
+        menuData = this.userMenuData;
+        break;
+      case 'organization':
+        if (id) {
+          menuData = this.processMenuLinks(this.organizationMenuData, id);
+        } else {
+          menuData = this.organizationMenuData;
+        }
+        break;
+      case 'team':
+        if (id) {
+          menuData = this.processMenuLinks(this.teamMenuData, id);
+        } else {
+          menuData = this.teamMenuData;
+        }
+        break;
+    }
+
+    this.menuService.add(menuData);
+    this.menuService.resume();
+  }
+
+  /**
+   * 处理菜单链接，替换动态 ID 占位符
+   *
+   * @param menu 菜单数据
+   * @param id 要替换的 ID（组织ID或团队ID）
+   * @returns 处理后的菜单数据
+   */
+  private processMenuLinks(menu: NzSafeAny[], id: string): NzSafeAny[] {
+    if (!id) return menu;
+
+    return menu.map(item => {
+      const processed: NzSafeAny = { ...item };
+
+      // 处理链接中的 :id 占位符
+      if (processed.link && typeof processed.link === 'string') {
+        processed.link = processed.link.replace(/:id/g, id);
+      }
+
+      // 递归处理子菜单
+      if (processed.children && Array.isArray(processed.children)) {
+        processed.children = this.processMenuLinks(processed.children, id);
+      }
+
+      return processed;
+    });
+  }
+
+  /**
+   * 获取当前菜单数据
+   */
+  getCurrentMenuData(): NzSafeAny[] {
+    switch (this.contextTypeState()) {
+      case 'user':
+        return this.userMenuData;
+      case 'organization':
+        return this.organizationMenuData;
+      case 'team':
+        return this.teamMenuData;
+      default:
+        return this.appMenuData;
     }
   }
 }

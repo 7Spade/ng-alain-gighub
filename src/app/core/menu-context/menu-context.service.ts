@@ -6,17 +6,22 @@ import { NzSafeAny } from 'ng-zorro-antd/core/types';
 /**
  * 菜单上下文服务
  *
+ * @deprecated 此服务已被 WorkspaceContextService 整合，请使用 WorkspaceContextService 替代
+ * 此服务保留仅用于向后兼容，新代码请使用 WorkspaceContextService
+ *
  * 管理不同账户类型（个人/组织/团队）的菜单切换
  * 监听账户切换事件，自动更新菜单
  *
  * @example
  * ```typescript
+ * // ❌ 已弃用：请使用 WorkspaceContextService
  * const menuContextService = inject(MenuContextService);
  *
- * // 切换菜单上下文
- * await menuContextService.switchToUser();
- * await menuContextService.switchToOrganization(orgId);
- * await menuContextService.switchToTeam(teamId);
+ * // ✅ 推荐：使用 WorkspaceContextService
+ * const workspaceContext = inject(WorkspaceContextService);
+ * workspaceContext.switchToUser();
+ * workspaceContext.switchToOrganization(orgId);
+ * workspaceContext.switchToTeam(teamId);
  * ```
  */
 @Injectable({
@@ -40,11 +45,19 @@ export class MenuContextService {
   readonly contextType = this.currentContextType.asReadonly();
   readonly contextId = this.currentContextId.asReadonly();
 
+  // 标记是否正在由 WorkspaceContextService 控制切换
+  private isWorkspaceControlled = false;
+
   constructor() {
     // 监听账户切换，自动更新菜单
     // 注意：WorkspaceContextService 会统一管理上下文切换，这里的 effect 作为备用机制
     // 当直接通过 AccountService.selectAccount() 切换账户时，会自动更新菜单
     effect(() => {
+      // 如果正在由 WorkspaceContextService 控制，跳过自动更新
+      if (this.isWorkspaceControlled) {
+        return;
+      }
+
       const selectedAccount = this.accountService.selectedAccount();
       if (selectedAccount) {
         // 检查当前上下文是否已经匹配，避免重复更新
@@ -92,48 +105,80 @@ export class MenuContextService {
    * 切换到应用菜单（默认菜单）
    */
   switchToApp(): void {
-    this.currentContextType.set('app');
-    this.currentContextId.set(null);
-    this.menuService.clear();
-    this.menuService.add(this.appMenuData);
-    this.menuService.resume();
+    this.isWorkspaceControlled = true;
+    try {
+      this.currentContextType.set('app');
+      this.currentContextId.set(null);
+      this.menuService.clear();
+      this.menuService.add(this.appMenuData);
+      this.menuService.resume();
+    } finally {
+      // 延迟重置，确保状态更新完成
+      setTimeout(() => {
+        this.isWorkspaceControlled = false;
+      }, 0);
+    }
   }
 
   /**
    * 切换到个人用户菜单
    */
   switchToUser(userId?: string): void {
-    this.currentContextType.set('user');
-    this.currentContextId.set(userId || null);
-    this.menuService.clear();
-    this.menuService.add(this.userMenuData);
-    this.menuService.resume();
+    this.isWorkspaceControlled = true;
+    try {
+      this.currentContextType.set('user');
+      this.currentContextId.set(userId || null);
+      this.menuService.clear();
+      this.menuService.add(this.userMenuData);
+      this.menuService.resume();
+    } finally {
+      // 延迟重置，确保状态更新完成
+      setTimeout(() => {
+        this.isWorkspaceControlled = false;
+      }, 0);
+    }
   }
 
   /**
    * 切换到组织菜单
    */
   switchToOrganization(organizationId: string): void {
-    this.currentContextType.set('organization');
-    this.currentContextId.set(organizationId);
-    this.menuService.clear();
-    // 处理菜单链接中的动态 ID 替换
-    const processedMenu = this.processMenuLinks(this.organizationMenuData, organizationId);
-    this.menuService.add(processedMenu);
-    this.menuService.resume();
+    this.isWorkspaceControlled = true;
+    try {
+      this.currentContextType.set('organization');
+      this.currentContextId.set(organizationId);
+      this.menuService.clear();
+      // 处理菜单链接中的动态 ID 替换
+      const processedMenu = this.processMenuLinks(this.organizationMenuData, organizationId);
+      this.menuService.add(processedMenu);
+      this.menuService.resume();
+    } finally {
+      // 延迟重置，确保状态更新完成
+      setTimeout(() => {
+        this.isWorkspaceControlled = false;
+      }, 0);
+    }
   }
 
   /**
    * 切换到团队菜单
    */
   switchToTeam(teamId: string): void {
-    this.currentContextType.set('team');
-    this.currentContextId.set(teamId);
-    this.menuService.clear();
-    // 处理菜单链接中的动态 ID 替换
-    const processedMenu = this.processMenuLinks(this.teamMenuData, teamId);
-    this.menuService.add(processedMenu);
-    this.menuService.resume();
+    this.isWorkspaceControlled = true;
+    try {
+      this.currentContextType.set('team');
+      this.currentContextId.set(teamId);
+      this.menuService.clear();
+      // 处理菜单链接中的动态 ID 替换
+      const processedMenu = this.processMenuLinks(this.teamMenuData, teamId);
+      this.menuService.add(processedMenu);
+      this.menuService.resume();
+    } finally {
+      // 延迟重置，确保状态更新完成
+      setTimeout(() => {
+        this.isWorkspaceControlled = false;
+      }, 0);
+    }
   }
 
   /**
