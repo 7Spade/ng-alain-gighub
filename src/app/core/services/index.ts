@@ -4,7 +4,7 @@
  * 提供核心層的業務服務：
  * - branch-context.service: 分支上下文服務
  * - error-state.service: 錯誤狀態管理服務（統一錯誤處理）
- * - workspace-context.service: 工作區上下文服務（全局工作區上下文管理器）
+ * - workspace-menu.service: 工作區菜單服務（菜單管理）
  *
  * @module core/services
  */
@@ -18,4 +18,4 @@ export type {
   AppError as ErrorStateError,
   ErrorSeverity as ErrorStateSeverity
 } from './error-state.service';
-export * from './workspace-context.service';
+export * from './workspace-menu.service';

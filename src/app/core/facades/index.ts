@@ -12,3 +12,4 @@ export * from './realtime.facade';
 export * from './storage.facade';
 export * from './system.facade';
 export * from './task.facade';
+export * from './workspace-context.facade';

@@ -7,10 +7,10 @@ import { ALAIN_I18N_TOKEN, MenuService, SettingsService, TitleService } from '@d
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { Observable, catchError, firstValueFrom, from, map, of, switchMap, zip } from 'rxjs';
 
+import { WorkspaceContextFacade } from '../facades/workspace-context.facade';
 import { I18NService } from '../i18n/i18n.service';
 import { AccountRepository } from '../infra/repositories/account.repository';
 import { PermissionService } from '../permissions/permission.service';
-import { WorkspaceContextService } from '../services/workspace-context.service';
 import { SupabaseSessionAdapterService } from '../supabase';
 
 /**
@@ -39,7 +39,7 @@ export function provideStartup(): Array<Provider | EnvironmentProviders> {
 @Injectable()
 export class StartupService {
   private menuService = inject(MenuService);
-  private workspaceContextService = inject(WorkspaceContextService);
+  private workspaceContextFacade = inject(WorkspaceContextFacade);
   private settingService = inject(SettingsService);
   private aclService = inject(ACLService);
   private titleService = inject(TitleService);
@@ -137,8 +137,8 @@ export class StartupService {
                     this.aclService.setFull(true);
                   }
 
-                  // 初始化工作区上下文服务，保存不同账户类型的菜单数据
-                  this.workspaceContextService.initializeMenuData({
+                  // 初始化工作区上下文门面，保存不同账户类型的菜单数据
+                  this.workspaceContextFacade.initializeMenuData({
                     appMenu: appData.menu || [],
                     userMenu: userData.menu || [],
                     organizationMenu: organizationData.menu || [],

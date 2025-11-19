@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { WorkspaceContextService } from '@core';
+import { WorkspaceContextFacade } from '@core';
 import { I18nPipe, SettingsService, User } from '@delon/theme';
 import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
 import { SettingDrawerModule } from '@delon/theme/setting-drawer';
@@ -173,9 +173,9 @@ import { HeaderUserComponent } from './widgets/user.component';
 export class LayoutBasicComponent implements OnInit {
   private readonly settings = inject(SettingsService);
   private readonly accountService = inject(AccountService);
-  readonly workspaceContext = inject(WorkspaceContextService);
+  readonly workspaceContext = inject(WorkspaceContextFacade);
 
-  // 使用 WorkspaceContextService 的 signals
+  // 使用 WorkspaceContextFacade 的 signals
   readonly allOrganizations = this.workspaceContext.allOrganizations;
   readonly teamsByOrganization = this.workspaceContext.teamsByOrganization;
   readonly currentUserAccountId = this.workspaceContext.currentUserAccountId;
@@ -193,7 +193,7 @@ export class LayoutBasicComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // WorkspaceContextService 会自动加载数据，无需手动调用
+    // WorkspaceContextFacade 会自动加载数据，无需手动调用
     // 此方法保留以满足 OnInit 接口要求
   }
 

@@ -38,3 +38,4 @@ export * from './quality';
 export * from './system';
 export * from './task';
 export * from './todo';
+export * from './workspace-context';

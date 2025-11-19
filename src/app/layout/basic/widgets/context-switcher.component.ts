@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
-import { WorkspaceContextService } from '@core';
+import { WorkspaceContextFacade } from '@core';
 import { SettingsService } from '@delon/theme';
 import { AccountService, SHARED_IMPORTS } from '@shared';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -119,10 +119,10 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 })
 export class HeaderContextSwitcherComponent implements OnInit {
   readonly accountService = inject(AccountService);
-  readonly workspaceContext = inject(WorkspaceContextService);
+  readonly workspaceContext = inject(WorkspaceContextFacade);
   readonly settings = inject(SettingsService);
 
-  // 使用 WorkspaceContextService 的 signals
+  // 使用 WorkspaceContextFacade 的 signals
   readonly userAccounts = computed(() => this.accountService.userAccounts());
   readonly organizationAccounts = this.workspaceContext.allOrganizations;
   readonly userTeams = this.workspaceContext.userTeams;
@@ -160,7 +160,7 @@ export class HeaderContextSwitcherComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // WorkspaceContextService 会自动加载数据，无需手动调用
+    // WorkspaceContextFacade 会自动加载数据，无需手动调用
     // 此方法保留以满足 OnInit 接口要求
   }
 }
