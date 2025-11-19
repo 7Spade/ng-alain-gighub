@@ -1,8 +1,6 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { BlueprintActivityService, ErrorStateService, IssueService } from '@shared';
 import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.models';
-import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
-import { IssueService } from '@shared/services/issue/issue.service';
 
 /**
  * IssueFacade - Enterprise issue tracking facade

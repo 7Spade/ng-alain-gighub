@@ -1,6 +1,6 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { SupabaseService } from '@core';
-import { ErrorStateService } from '@shared/services/common';
+import { ErrorStateService } from '@shared';
 
 /**
  * Upload Options

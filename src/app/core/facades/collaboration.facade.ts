@@ -1,6 +1,5 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import { NotificationService } from '@app/shared/services/collab/notification.service';
-import { CollaborationService } from '@app/shared/services/org/collaboration.service';
+import { CollaborationService, ErrorStateService, NotificationService } from '@shared';
 import type {
   CollaborationInvitation,
   OrganizationCollaboration,
@@ -8,7 +7,6 @@ import type {
   OrganizationCollaborationUpdate
 } from '@shared/models/collaboration.models';
 import type { Notification, NotificationInsert } from '@shared/models/communication.models';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
 
 import { RealtimeFacade } from './realtime.facade';
 

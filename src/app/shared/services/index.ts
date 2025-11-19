@@ -7,11 +7,11 @@
  * - auth: 认证服务
  * - blueprint: 蓝图服务
  * - bot: 机器人服务
- * - collaboration: 协作服务（含 comment, notification, collaboration, invitation）
+ * - collab: 协作基础服务（含 comment, notification）
  * - common: 通用基础服务（error state, aggregation refresh, analytics cache, progress tracking, supabase adapter）
  * - document: 文件管理服务
  * - issue: 问题追踪服务
- * - org: 组织服务（当前为空，服务已迁移至 collaboration 模块）
+ * - org: 组织协作服务（含 collaboration, invitation，并重新导出 collab 服务）
  * - permission: 权限服务
  * - quality: 品质验收服务（含 quality check, inspection）
  * - system: 系统管理服务（含 setting, feature flag）
