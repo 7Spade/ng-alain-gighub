@@ -97,7 +97,7 @@ import { HeaderUserComponent } from './widgets/user.component';
               <li nz-menu-divider></li>
               <li nz-menu-item (click)="switchToUser()">
                 <i nz-icon nzType="user" class="mr-sm"></i>
-                <span>回到個人視角</span>
+                <span>{{ currentUserAccount()?.name || '個人視角' }}</span>
               </li>
             }
             @if (allOrganizations().length > 0) {
@@ -163,6 +163,7 @@ export class LayoutBasicComponent implements OnInit {
   readonly allOrganizations = this.workspaceContext.allOrganizations;
   readonly teamsByOrganization = this.workspaceContext.teamsByOrganization;
   readonly currentUserAccountId = this.workspaceContext.currentUserAccountId;
+  readonly currentUserAccount = this.workspaceContext.currentUserAccount;
 
   options: LayoutDefaultOptions = {
     logoExpanded: `./assets/logo-full.svg`,
