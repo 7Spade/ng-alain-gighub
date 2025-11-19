@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { MenuContextService, Team } from '@core';
+import { MenuContextService, Team, ContextService } from '@core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { SettingsService } from '@delon/theme';
 import { AccountService, SHARED_IMPORTS } from '@shared';
@@ -10,7 +10,9 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 /**
  * 账户上下文切换器组件
  *
- * 允许用户在个人、组织、团队之间切换，自动更新菜单
+ * 允许用户在个人、组织、团队之间切换
+ * 使用全局 ContextService 管理上下文狀態，自動同步菜單、ACL、ReuseTab
+ * 支援階層式導航：組織 → 團隊
  */
 @Component({
   selector: 'header-context-switcher',
@@ -28,86 +30,60 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     </div>
     <nz-dropdown-menu #contextMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
-        <!-- 应用菜单 -->
-        <div nz-menu-item (click)="switchToApp()" [class.ant-menu-item-selected]="menuContextService.contextType() === 'app'">
-          <i nz-icon nzType="appstore" class="mr-sm"></i>
-          <span>应用菜单</span>
+        <!-- 个人视角 -->
+        <div
+          nz-menu-item
+          (click)="switchToPersonal()"
+          [class.ant-menu-item-selected]="contextService.isPersonal()"
+        >
+          <i nz-icon nzType="user" class="mr-sm"></i>
+          <span>個人視角</span>
         </div>
         <li nz-menu-divider></li>
 
-        <!-- 个人账户菜单 -->
-        @if (userAccounts().length > 0) {
-          <div nz-submenu nzTitle="个人账户" nzIcon="user">
-            <ul nz-menu>
-              @for (account of userAccounts(); track account.id) {
-                <li
-                  nz-menu-item
-                  (click)="switchToUser(account.id)"
-                  [class.ant-menu-item-selected]="
-                    menuContextService.contextType() === 'user' && menuContextService.contextId() === account.id
-                  "
-                >
-                  <i nz-icon nzType="user" class="mr-sm"></i>
-                  <span>{{ account.name }}</span>
-                </li>
-              }
-            </ul>
-          </div>
-        }
-
-        <!-- 组织账户菜单 -->
+        <!-- 组织列表（包含其下的团队） -->
         @if (organizationAccounts().length > 0) {
-          <div nz-submenu nzTitle="组织账户" nzIcon="team">
-            <ul nz-menu>
-              @for (account of organizationAccounts(); track account.id) {
+          @for (org of organizationAccounts(); track org.id) {
+            <div nz-submenu [nzTitle]="org.name" nzIcon="team">
+              <ul nz-menu>
+                <!-- 组织本身 -->
                 <li
                   nz-menu-item
-                  (click)="switchToOrganization(account.id)"
+                  (click)="switchToOrganization(org.id, org.name)"
                   [class.ant-menu-item-selected]="
-                    menuContextService.contextType() === 'organization' && menuContextService.contextId() === account.id
+                    contextService.isOrganization() && contextService.contextId() === org.id
                   "
                 >
                   <i nz-icon nzType="team" class="mr-sm"></i>
-                  <span>{{ account.name }}</span>
+                  <span>{{ org.name }}（組織）</span>
                 </li>
-              }
-            </ul>
-          </div>
-        }
 
-        <!-- 团队账户菜单 -->
-        @if (userTeams().length > 0) {
-          <div nz-submenu nzTitle="团队账户" nzIcon="usergroup-add">
-            <ul nz-menu>
-              @for (org of organizationAccounts(); track org.id) {
+                <!-- 该组织下的团队列表 -->
                 @if (teamsByOrganization().has(org.id) && teamsByOrganization().get(org.id)!.length > 0) {
-                  <li nz-submenu [nzTitle]="org.name" nzIcon="team">
-                    <ul nz-menu>
-                      @for (team of teamsByOrganization().get(org.id)!; track team.id) {
-                        <li
-                          nz-menu-item
-                          (click)="switchToTeam(team.id)"
-                          [class.ant-menu-item-selected]="
-                            menuContextService.contextType() === 'team' && menuContextService.contextId() === team.id
-                          "
-                        >
-                          <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
-                          <span>{{ team.name }}</span>
-                        </li>
-                      }
-                    </ul>
-                  </li>
+                  <li nz-menu-divider></li>
+                  @for (team of teamsByOrganization().get(org.id)!; track team.id) {
+                    <li
+                      nz-menu-item
+                      (click)="switchToTeam(team.id, team.name, org.id)"
+                      [class.ant-menu-item-selected]="
+                        contextService.isTeam() && contextService.contextId() === team.id
+                      "
+                    >
+                      <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
+                      <span>{{ team.name }}（團隊）</span>
+                    </li>
+                  }
                 }
-              }
-            </ul>
-          </div>
+              </ul>
+            </div>
+          }
         }
 
-        <!-- 如果没有账户，显示提示 -->
-        @if (userAccounts().length === 0 && organizationAccounts().length === 0 && userTeams().length === 0) {
+        <!-- 如果没有组织，显示提示 -->
+        @if (organizationAccounts().length === 0) {
           <li nz-menu-item nzDisabled>
             <i nz-icon nzType="info-circle" class="mr-sm"></i>
-            <span>暂无可用账户</span>
+            <span>暂无可用组织</span>
           </li>
         }
       </div>
@@ -117,6 +93,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 })
 export class HeaderContextSwitcherComponent implements OnInit {
   readonly menuContextService = inject(MenuContextService);
+  readonly contextService = inject(ContextService);
   readonly accountService = inject(AccountService);
   readonly settings = inject(SettingsService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
@@ -150,39 +127,38 @@ export class HeaderContextSwitcherComponent implements OnInit {
     return teamsMap;
   });
 
-  // 当前上下文标签和图标
+  // 当前上下文标签和图标（基於 ContextService）
   readonly contextLabel = computed(() => {
-    const type = this.menuContextService.contextType();
-    const id = this.menuContextService.contextId();
+    const context = this.contextService.context();
 
-    switch (type) {
-      case 'user':
-        if (id) {
-          const account = this.userAccounts().find(a => a.id === id);
-          return account?.name || '个人账户';
-        }
-        return '个人账户';
+    if (context.name) {
+      return context.name;
+    }
+
+    switch (context.type) {
+      case 'personal':
+        return '個人視角';
       case 'organization':
-        if (id) {
-          const account = this.organizationAccounts().find(a => a.id === id);
-          return account?.name || '组织账户';
+        if (context.id) {
+          const account = this.organizationAccounts().find(a => a.id === context.id);
+          return account?.name || '組織';
         }
-        return '组织账户';
+        return '組織';
       case 'team':
-        if (id) {
-          const team = this.userTeams().find(t => t.id === id);
-          return team?.name || '团队';
+        if (context.id) {
+          const team = this.userTeams().find(t => t.id === context.id);
+          return team?.name || '團隊';
         }
-        return '团队';
+        return '團隊';
       default:
-        return '应用菜单';
+        return '應用選單';
     }
   });
 
   readonly contextIcon = computed(() => {
-    const type = this.menuContextService.contextType();
-    switch (type) {
-      case 'user':
+    const context = this.contextService.context();
+    switch (context.type) {
+      case 'personal':
         return 'user';
       case 'organization':
         return 'team';
@@ -194,30 +170,18 @@ export class HeaderContextSwitcherComponent implements OnInit {
   });
 
   /**
-   * 切换到应用菜单
+   * 切換到個人視角
    */
-  switchToApp(): void {
-    this.menuContextService.switchToApp();
+  switchToPersonal(): void {
+    this.contextService.switchToPersonal();
   }
 
   /**
-   * 切换到个人用户菜单
+   * 切換到組織視角
    */
-  switchToUser(userId: string): void {
-    this.menuContextService.switchToUser(userId);
-    // 同时更新 AccountService 的选中账户
-    const account = this.userAccounts().find(a => a.id === userId);
-    if (account) {
-      this.accountService.selectAccount(account);
-    }
-  }
-
-  /**
-   * 切换到组织菜单
-   */
-  switchToOrganization(organizationId: string): void {
-    this.menuContextService.switchToOrganization(organizationId);
-    // 同时更新 AccountService 的选中账户
+  switchToOrganization(organizationId: string, name?: string): void {
+    this.contextService.switchToOrganization(organizationId, name);
+    // 同時更新 AccountService 的選中帳戶
     const account = this.organizationAccounts().find(a => a.id === organizationId);
     if (account) {
       this.accountService.selectAccount(account);
@@ -225,11 +189,11 @@ export class HeaderContextSwitcherComponent implements OnInit {
   }
 
   /**
-   * 切换到团队菜单
+   * 切換到團隊視角
    */
-  switchToTeam(teamId: string): void {
-    this.menuContextService.switchToTeam(teamId);
-    // 注意：Team 不是 Account，所以不需要调用 selectAccount
+  switchToTeam(teamId: string, name?: string, organizationId?: string): void {
+    this.contextService.switchToTeam(teamId, name, organizationId);
+    // 注意：Team 不是 Account，所以不需要調用 selectAccount
   }
 
   ngOnInit(): void {

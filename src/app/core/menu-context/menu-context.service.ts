@@ -2,6 +2,7 @@ import { Injectable, effect, inject, signal } from '@angular/core';
 import { MenuService } from '@delon/theme';
 import { AccountService, AccountType } from '@shared';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
+import { ContextService } from '../services/context.service';
 
 /**
  * 菜单上下文服务
@@ -25,6 +26,7 @@ import { NzSafeAny } from 'ng-zorro-antd/core/types';
 export class MenuContextService {
   private readonly menuService = inject(MenuService);
   private readonly accountService = inject(AccountService);
+  private readonly contextService = inject(ContextService);
 
   // 菜单数据缓存
   private userMenuData: NzSafeAny[] = [];
@@ -72,6 +74,13 @@ export class MenuContextService {
     if (data.teamMenu) {
       this.teamMenuData = data.teamMenu;
     }
+
+    // 同時初始化 ContextService 的菜單資料
+    this.contextService.initializeMenuData({
+      personalMenu: this.userMenuData,
+      organizationMenu: this.organizationMenuData,
+      teamMenu: this.teamMenuData
+    });
 
     // 默认使用应用菜单
     this.switchToApp();

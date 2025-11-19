@@ -4,6 +4,7 @@
  * 提供核心層的業務服務：
  * - branch-context.service: 分支上下文服務
  * - error-state.service: 錯誤狀態管理服務（統一錯誤處理）
+ * - context.service: 全局上下文服務（個人/組織/團隊切換）
  *
  * @module core/services
  */
@@ -17,3 +18,5 @@ export type {
   AppError as ErrorStateError,
   ErrorSeverity as ErrorStateSeverity
 } from './error-state.service';
+export * from './context.service';
+export * from './context.model';
