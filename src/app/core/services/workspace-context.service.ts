@@ -14,7 +14,7 @@ import { NzSafeAny } from 'ng-zorro-antd/core/types';
  * 1. 统一管理上下文状态（app/user/organization/team）
  * 2. 自动加载和缓存用户可访问的组织/团队列表
  * 3. 提供上下文切换的统一接口
- * 4. 统一管理菜单切换（整合了 MenuContextService 的功能）
+ * 4. 统一管理菜单切换
  * 5. 与 AccountService 协调工作
  * 6. 持久化当前上下文到 localStorage
  * 7. 提供 computed signals 供组件使用
