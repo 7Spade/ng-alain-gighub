@@ -202,37 +202,35 @@ export class PersonalTodoService {
    * @param accountId 帳號 ID
    */
   async subscribeToUpdates(accountId: string): Promise<void> {
-    // 先取消舊的訂閱
+    // 記錄當前帳號 ID
+    this.currentAccountIdState.set(accountId);
+
+    // 取消舊訂閱
     await this.unsubscribeFromUpdates();
 
     // 載入初始數據
     await this.loadTodos(accountId);
 
-    // 建立 Realtime 頻道
-    this.realtimeChannel = this.supabaseService.client
-      .channel(`personal_todos:${accountId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'personal_todos',
-          filter: `account_id=eq.${accountId}`
-        },
-        payload => {
-          this.handleRealtimeEvent(payload);
-        }
-      )
-      .subscribe();
+    // 建立 Realtime 訂閱（透過 RealtimeFacade）
+    this.realtimeSubscriptionId = this.realtimeFacade.subscribeToTable<PersonalTodo>(
+      {
+        table: 'personal_todos',
+        filter: `account_id=eq.${accountId}`,
+        events: ['*'] // 監聽所有事件（INSERT, UPDATE, DELETE）
+      },
+      payload => {
+        this.handleRealtimeEvent(payload);
+      }
+    );
   }
 
   /**
    * 取消訂閱 Realtime 更新
    */
   async unsubscribeFromUpdates(): Promise<void> {
-    if (this.realtimeChannel) {
-      await this.supabaseService.client.removeChannel(this.realtimeChannel);
-      this.realtimeChannel = null;
+    if (this.realtimeSubscriptionId) {
+      this.realtimeFacade.unsubscribe(this.realtimeSubscriptionId);
+      this.realtimeSubscriptionId = null;
     }
   }
 
@@ -355,7 +353,7 @@ export class PersonalTodoService {
       );
 
       // Realtime 會自動更新，但為了立即反應，手動更新
-      if (!this.realtimeChannel) {
+      if (!this.realtimeSubscriptionId) {
         this.todosState.update(todos => todos.map(t => (t.id === todoId ? todo : t)));
       }
 
@@ -392,7 +390,7 @@ export class PersonalTodoService {
       await firstValueFrom(this.personalTodoRepository.delete(todoId));
 
       // Realtime 會自動更新，但為了立即反應，手動更新
-      if (!this.realtimeChannel) {
+      if (!this.realtimeSubscriptionId) {
         this.todosState.update(todos => todos.filter(t => t.id !== todoId));
       }
     } catch (error) {
