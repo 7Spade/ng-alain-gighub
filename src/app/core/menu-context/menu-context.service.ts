@@ -42,10 +42,21 @@ export class MenuContextService {
 
   constructor() {
     // 监听账户切换，自动更新菜单
+    // 注意：WorkspaceContextService 会统一管理上下文切换，这里的 effect 作为备用机制
+    // 当直接通过 AccountService.selectAccount() 切换账户时，会自动更新菜单
     effect(() => {
       const selectedAccount = this.accountService.selectedAccount();
       if (selectedAccount) {
-        this.updateMenuByAccount(selectedAccount);
+        // 检查当前上下文是否已经匹配，避免重复更新
+        const accountType = selectedAccount.type as AccountType;
+        const shouldUpdate =
+          (accountType === AccountType.USER && this.currentContextType() !== 'user') ||
+          (accountType === AccountType.ORGANIZATION && this.currentContextType() !== 'organization') ||
+          (accountType !== AccountType.USER && accountType !== AccountType.ORGANIZATION && this.currentContextType() !== 'app');
+
+        if (shouldUpdate) {
+          this.updateMenuByAccount(selectedAccount);
+        }
       }
     });
   }

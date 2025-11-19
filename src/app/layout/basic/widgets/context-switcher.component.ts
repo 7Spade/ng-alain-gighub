@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { MenuContextService, Team } from '@core';
-import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { MenuContextService, WorkspaceContextService } from '@core';
 import { SettingsService } from '@delon/theme';
 import { AccountService, SHARED_IMPORTS } from '@shared';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -118,152 +117,46 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 export class HeaderContextSwitcherComponent implements OnInit {
   readonly menuContextService = inject(MenuContextService);
   readonly accountService = inject(AccountService);
+  readonly workspaceContext = inject(WorkspaceContextService);
   readonly settings = inject(SettingsService);
-  private readonly tokenService = inject(DA_SERVICE_TOKEN);
 
-  // Computed signals
+  // 使用 WorkspaceContextService 的 signals
   readonly userAccounts = computed(() => this.accountService.userAccounts());
-  readonly organizationAccounts = computed(() => this.accountService.organizationAccounts());
-
-  // 团队列表状态
-  readonly userTeams = signal<Team[]>([]);
-
-  // 按组织分组的团队列表
-  readonly teamsByOrganization = computed(() => {
-    const teams = this.userTeams();
-    const orgs = this.organizationAccounts();
-    const teamsMap = new Map<string, Team[]>();
-
-    // 初始化所有组织的团队列表
-    orgs.forEach(org => {
-      teamsMap.set(org.id, []);
-    });
-
-    // 按组织分组团队
-    teams.forEach(team => {
-      const orgId = (team as any).organization_id || (team as any).organizationId;
-      if (orgId && teamsMap.has(orgId)) {
-        teamsMap.get(orgId)!.push(team);
-      }
-    });
-
-    return teamsMap;
-  });
-
-  // 当前上下文标签和图标
-  readonly contextLabel = computed(() => {
-    const type = this.menuContextService.contextType();
-    const id = this.menuContextService.contextId();
-
-    switch (type) {
-      case 'user':
-        if (id) {
-          const account = this.userAccounts().find(a => a.id === id);
-          return account?.name || '个人账户';
-        }
-        return '个人账户';
-      case 'organization':
-        if (id) {
-          const account = this.organizationAccounts().find(a => a.id === id);
-          return account?.name || '组织账户';
-        }
-        return '组织账户';
-      case 'team':
-        if (id) {
-          const team = this.userTeams().find(t => t.id === id);
-          return team?.name || '团队';
-        }
-        return '团队';
-      default:
-        return '应用菜单';
-    }
-  });
-
-  readonly contextIcon = computed(() => {
-    const type = this.menuContextService.contextType();
-    switch (type) {
-      case 'user':
-        return 'user';
-      case 'organization':
-        return 'team';
-      case 'team':
-        return 'usergroup-add';
-      default:
-        return 'appstore';
-    }
-  });
+  readonly organizationAccounts = this.workspaceContext.allOrganizations;
+  readonly userTeams = this.workspaceContext.userTeams;
+  readonly teamsByOrganization = this.workspaceContext.teamsByOrganization;
+  readonly contextLabel = this.workspaceContext.contextLabel;
+  readonly contextIcon = this.workspaceContext.contextIcon;
 
   /**
    * 切换到应用菜单
    */
   switchToApp(): void {
-    this.menuContextService.switchToApp();
+    this.workspaceContext.switchToApp();
   }
 
   /**
    * 切换到个人用户菜单
    */
   switchToUser(userId: string): void {
-    this.menuContextService.switchToUser(userId);
-    // 同时更新 AccountService 的选中账户
-    const account = this.userAccounts().find(a => a.id === userId);
-    if (account) {
-      this.accountService.selectAccount(account);
-    }
+    this.workspaceContext.switchToUser(userId);
   }
 
   /**
    * 切换到组织菜单
    */
   switchToOrganization(organizationId: string): void {
-    this.menuContextService.switchToOrganization(organizationId);
-    // 同时更新 AccountService 的选中账户
-    const account = this.organizationAccounts().find(a => a.id === organizationId);
-    if (account) {
-      this.accountService.selectAccount(account);
-    }
+    this.workspaceContext.switchToOrganization(organizationId);
   }
 
   /**
    * 切换到团队菜单
    */
   switchToTeam(teamId: string): void {
-    this.menuContextService.switchToTeam(teamId);
-    // 注意：Team 不是 Account，所以不需要调用 selectAccount
+    this.workspaceContext.switchToTeam(teamId);
   }
 
   ngOnInit(): void {
-    // 监听用户登录状态，自动加载团队列表
-    effect(() => {
-      const token = this.tokenService.get();
-      if (token?.['user']?.['id']) {
-        this.loadUserTeams(token['user']['id']);
-      }
-    });
-
-    // 如果已有 token，立即加载团队列表
-    const token = this.tokenService.get();
-    if (token?.['user']?.['id']) {
-      this.loadUserTeams(token['user']['id']);
-    }
-  }
-
-  /**
-   * 加载用户的团队列表
-   */
-  private async loadUserTeams(authUserId: string): Promise<void> {
-    try {
-      // 1. 获取用户账户信息
-      const userAccount = await this.accountService.findByAuthUserId(authUserId);
-      if (!userAccount) {
-        return;
-      }
-
-      // 2. 加载团队列表
-      const teams = await this.accountService.getUserTeams(userAccount.id);
-      this.userTeams.set(teams);
-    } catch (error) {
-      console.error('加载用户团队列表失败:', error);
-    }
+    // WorkspaceContextService 会自动加载数据，无需手动调用
   }
 }

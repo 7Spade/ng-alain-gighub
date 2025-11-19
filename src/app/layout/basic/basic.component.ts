@@ -1,12 +1,11 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { MenuContextService, Team } from '@core';
-import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { MenuContextService, WorkspaceContextService } from '@core';
 import { I18nPipe, SettingsService, User } from '@delon/theme';
 import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
 import { SettingDrawerModule } from '@delon/theme/setting-drawer';
 import { ThemeBtnComponent } from '@delon/theme/theme-btn';
-import { Account, AccountService } from '@shared';
+import { AccountService } from '@shared';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -158,54 +157,12 @@ export class LayoutBasicComponent implements OnInit {
   private readonly settings = inject(SettingsService);
   private readonly accountService = inject(AccountService);
   readonly menuContextService = inject(MenuContextService);
-  private readonly tokenService = inject(DA_SERVICE_TOKEN);
+  readonly workspaceContext = inject(WorkspaceContextService);
 
-  // 组织列表状态
-  readonly createdOrganizations = signal<Account[]>([]);
-  readonly joinedOrganizations = signal<Account[]>([]);
-  readonly loadingOrganizations = signal<boolean>(false);
-
-  // 团队列表状态
-  readonly userTeams = signal<Team[]>([]);
-  readonly loadingTeams = signal<boolean>(false);
-
-  // 当前用户账户ID
-  readonly currentUserAccountId = signal<string | null>(null);
-
-  // 合并所有组织（去重）
-  readonly allOrganizations = computed(() => {
-    const all = [...this.createdOrganizations(), ...this.joinedOrganizations()];
-    // 根据 ID 去重
-    const uniqueMap = new Map<string, Account>();
-    all.forEach(org => {
-      if (!uniqueMap.has(org.id)) {
-        uniqueMap.set(org.id, org);
-      }
-    });
-    return Array.from(uniqueMap.values());
-  });
-
-  // 按组织分组的团队列表
-  readonly teamsByOrganization = computed(() => {
-    const teams = this.userTeams();
-    const orgs = this.allOrganizations();
-    const teamsMap = new Map<string, Team[]>();
-
-    // 初始化所有组织的团队列表
-    orgs.forEach(org => {
-      teamsMap.set(org.id, []);
-    });
-
-    // 按组织分组团队
-    teams.forEach(team => {
-      const orgId = (team as any).organization_id || (team as any).organizationId;
-      if (orgId && teamsMap.has(orgId)) {
-        teamsMap.get(orgId)!.push(team);
-      }
-    });
-
-    return teamsMap;
-  });
+  // 使用 WorkspaceContextService 的 signals
+  readonly allOrganizations = this.workspaceContext.allOrganizations;
+  readonly teamsByOrganization = this.workspaceContext.teamsByOrganization;
+  readonly currentUserAccountId = this.workspaceContext.currentUserAccountId;
 
   options: LayoutDefaultOptions = {
     logoExpanded: `./assets/logo-full.svg`,
@@ -218,91 +175,28 @@ export class LayoutBasicComponent implements OnInit {
     return this.settings.user;
   }
 
-  constructor() {
-    // 监听用户登录状态，自动加载组织列表
-    effect(() => {
-      const token = this.tokenService.get();
-      if (token?.['user']?.['id']) {
-        this.loadUserOrganizations(token['user']['id']);
-      }
-    });
-  }
-
   ngOnInit(): void {
-    // 如果已有 token，立即加载组织列表
-    const token = this.tokenService.get();
-    if (token?.['user']?.['id']) {
-      this.loadUserOrganizations(token['user']['id']);
-    }
-  }
-
-  /**
-   * 加载用户的组织列表和团队列表
-   */
-  private async loadUserOrganizations(authUserId: string): Promise<void> {
-    this.loadingOrganizations.set(true);
-    this.loadingTeams.set(true);
-
-    try {
-      // 1. 获取用户账户信息
-      const userAccount = await this.accountService.findByAuthUserId(authUserId);
-      if (!userAccount) {
-        this.loadingOrganizations.set(false);
-        this.loadingTeams.set(false);
-        return;
-      }
-
-      // 2. 并行加载建立的组织、加入的组织和团队列表
-      const [createdOrgs, joinedOrgs, teams] = await Promise.all([
-        this.accountService.getUserCreatedOrganizations(authUserId),
-        this.accountService.getUserJoinedOrganizations(userAccount.id),
-        this.accountService.getUserTeams(userAccount.id)
-      ]);
-
-      this.createdOrganizations.set(createdOrgs);
-      this.joinedOrganizations.set(joinedOrgs);
-      this.userTeams.set(teams);
-      this.currentUserAccountId.set(userAccount.id);
-    } catch (error) {
-      console.error('加载用户组织列表和团队列表失败:', error);
-    } finally {
-      this.loadingOrganizations.set(false);
-      this.loadingTeams.set(false);
-    }
+    // WorkspaceContextService 会自动加载数据，无需手动调用
   }
 
   /**
    * 切换到组织菜单
    */
   switchToOrganization(organizationId: string): void {
-    this.menuContextService.switchToOrganization(organizationId);
-    // 同时更新 AccountService 的选中账户
-    const account = this.allOrganizations().find(org => org.id === organizationId);
-    if (account) {
-      this.accountService.selectAccount(account);
-    }
+    this.workspaceContext.switchToOrganization(organizationId);
   }
 
   /**
    * 切换到团队菜单
    */
   switchToTeam(teamId: string): void {
-    this.menuContextService.switchToTeam(teamId);
-    // 注意：Team 不是 Account，所以不需要调用 selectAccount
+    this.workspaceContext.switchToTeam(teamId);
   }
 
   /**
    * 切换到用户视角
    */
   switchToUser(): void {
-    const userAccountId = this.currentUserAccountId();
-    if (userAccountId) {
-      this.menuContextService.switchToUser(userAccountId);
-      // 同时更新 AccountService 的选中账户
-      const userAccount = this.accountService.userAccounts().find(a => a.id === userAccountId);
-      if (userAccount) {
-        this.accountService.selectAccount(userAccount);
-      }
-    }
+    this.workspaceContext.switchToUser();
   }
 }
