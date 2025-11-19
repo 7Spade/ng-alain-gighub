@@ -31,11 +31,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     <nz-dropdown-menu #contextMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
         <!-- 个人视角 -->
-        <div
-          nz-menu-item
-          (click)="switchToPersonal()"
-          [class.ant-menu-item-selected]="contextService.isPersonal()"
-        >
+        <div nz-menu-item (click)="switchToPersonal()" [class.ant-menu-item-selected]="contextService.isPersonal()">
           <i nz-icon nzType="user" class="mr-sm"></i>
           <span>個人視角</span>
         </div>
@@ -50,9 +46,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                 <li
                   nz-menu-item
                   (click)="switchToOrganization(org.id, org.name)"
-                  [class.ant-menu-item-selected]="
-                    contextService.isOrganization() && contextService.contextId() === org.id
-                  "
+                  [class.ant-menu-item-selected]="contextService.isOrganization() && contextService.contextId() === org.id"
                 >
                   <i nz-icon nzType="team" class="mr-sm"></i>
                   <span>{{ org.name }}（組織）</span>
@@ -65,9 +59,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                     <li
                       nz-menu-item
                       (click)="switchToTeam(team.id, team.name, org.id)"
-                      [class.ant-menu-item-selected]="
-                        contextService.isTeam() && contextService.contextId() === team.id
-                      "
+                      [class.ant-menu-item-selected]="contextService.isTeam() && contextService.contextId() === team.id"
                     >
                       <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
                       <span>{{ team.name }}（團隊）</span>
@@ -118,6 +110,7 @@ export class HeaderContextSwitcherComponent implements OnInit {
 
     // 按组织分组团队
     teams.forEach(team => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const orgId = (team as any).organization_id || (team as any).organizationId;
       if (orgId && teamsMap.has(orgId)) {
         teamsMap.get(orgId)!.push(team);

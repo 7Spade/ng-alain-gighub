@@ -1,11 +1,12 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { AppContext, AppContextType } from './context.model';
+import { ReuseTabService } from '@delon/abc/reuse-tab';
+import { ACLService } from '@delon/acl';
 import { CacheService } from '@delon/cache';
 import { MenuService } from '@delon/theme';
-import { ACLService } from '@delon/acl';
-import { ReuseTabService } from '@delon/abc/reuse-tab';
-import { PERSONAL_MENUS, ORG_MENUS, TEAM_MENUS } from './context-menus';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
+
+import { PERSONAL_MENUS, ORG_MENUS, TEAM_MENUS } from './context-menus';
+import type { AppContext } from './context.model';
 
 /**
  * Context Service

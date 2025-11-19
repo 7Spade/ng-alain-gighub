@@ -20,5 +20,5 @@ export interface AppContext {
   /** 上下文名稱（用於顯示） */
   name?: string;
   /** 額外的上下文資料 */
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
