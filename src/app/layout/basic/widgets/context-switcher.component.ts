@@ -233,8 +233,8 @@ export class HeaderContextSwitcherComponent implements OnInit {
   switchToTeam(teamId: string): void {
     // 查找團隊所屬的組織
     const team = this.userTeams().find(t => t.id === teamId);
-    const organizationId = team ? ((team as any).organization_id || (team as any).organizationId) : null;
-    
+    const organizationId = team ? (team as any).organization_id || (team as any).organizationId : null;
+
     if (organizationId) {
       this.workspaceContextService.switchToTeam(teamId, organizationId);
     } else {

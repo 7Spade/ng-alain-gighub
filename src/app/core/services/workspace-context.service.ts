@@ -4,12 +4,10 @@ import { ReuseTabService } from '@delon/abc/reuse-tab';
 import { ACLService } from '@delon/acl';
 import { CacheService } from '@delon/cache';
 import { MenuService } from '@delon/theme';
-import { Account, AccountType } from '@shared';
-import { NzSafeAny } from 'ng-zorro-antd/core/types';
+import { Account, AccountType, BlueprintBranch } from '@shared';
 
-import { MenuContextService } from '../menu-context/menu-context.service';
 import { BranchContextService } from './branch-context.service';
-import { BlueprintBranch } from '@shared';
+import { MenuContextService } from '../menu-context/menu-context.service';
 
 /**
  * 工作空間上下文類型
@@ -131,7 +129,7 @@ export class WorkspaceContextService {
    */
   async initialize(): Promise<void> {
     try {
-      const cached = this.cacheService.get<WorkspaceContextState>(this.CACHE_KEY);
+      const cached = this.cacheService.getNone<WorkspaceContextState>(this.CACHE_KEY);
       if (cached) {
         // 恢復上下文狀態（但不立即執行切換，等待 UI 組件觸發）
         this.contextState.set(cached);
@@ -167,7 +165,7 @@ export class WorkspaceContextService {
   /**
    * 切換到個人用戶菜單
    */
-  switchToUser(userId: string, clearTabs: boolean = true): void {
+  switchToUser(userId: string, clearTabs = true): void {
     this.updateContext({
       type: 'user',
       id: userId,
@@ -191,7 +189,7 @@ export class WorkspaceContextService {
   /**
    * 切換到組織菜單
    */
-  switchToOrganization(organizationId: string, clearTabs: boolean = true): void {
+  switchToOrganization(organizationId: string, clearTabs = true): void {
     this.updateContext({
       type: 'organization',
       id: organizationId,
@@ -215,7 +213,7 @@ export class WorkspaceContextService {
   /**
    * 切換到團隊菜單
    */
-  switchToTeam(teamId: string, organizationId: string, clearTabs: boolean = true): void {
+  switchToTeam(teamId: string, organizationId: string, clearTabs = true): void {
     this.updateContext({
       type: 'team',
       id: teamId,
@@ -239,7 +237,7 @@ export class WorkspaceContextService {
   /**
    * 根據 Account 對象自動切換上下文
    */
-  switchByAccount(account: Account, clearTabs: boolean = true): void {
+  switchByAccount(account: Account, clearTabs = true): void {
     const accountType = account.type as AccountType;
     switch (accountType) {
       case AccountType.USER:
@@ -302,7 +300,8 @@ export class WorkspaceContextService {
    */
   async syncPermissions(roles: string[] | string): Promise<void> {
     try {
-      this.aclService.setRole(roles);
+      const roleArray = Array.isArray(roles) ? roles : [roles];
+      this.aclService.setRole(roleArray);
     } catch (error) {
       console.error('[WorkspaceContextService] Failed to sync permissions:', error);
     }

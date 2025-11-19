@@ -1,6 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { PersonalTodo, PersonalTodoRepository, TodoStatusTracking, TodoStatusTrackingRepository } from '@core';
-import { RealtimeFacade } from '@core';
+import { PersonalTodo, PersonalTodoRepository, TodoStatusTracking, TodoStatusTrackingRepository, RealtimeFacade } from '@core';
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 

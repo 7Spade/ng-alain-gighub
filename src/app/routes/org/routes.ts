@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 
 import { OrgMembersComponent } from './members/members.component';
-import { OrgTeamsComponent } from './teams/teams.component';
 import { OrgTeamMembersComponent } from './teams/members/members.component';
+import { OrgTeamsComponent } from './teams/teams.component';
 
 /**
  * 组织管理路由配置

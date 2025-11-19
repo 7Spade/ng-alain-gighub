@@ -11,8 +11,8 @@ import { I18NService } from '../i18n/i18n.service';
 import { AccountRepository } from '../infra/repositories/account.repository';
 import { MenuContextService } from '../menu-context/menu-context.service';
 import { PermissionService } from '../permissions/permission.service';
-import { SupabaseSessionAdapterService } from '../supabase';
 import { WorkspaceContextService } from '../services/workspace-context.service';
+import { SupabaseSessionAdapterService } from '../supabase';
 
 /**
  * Used for application startup

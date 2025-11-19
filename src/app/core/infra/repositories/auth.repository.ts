@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
+import { AuthError, AuthResponse, AuthTokenResponsePassword, Session, User } from '@supabase/supabase-js';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthError, AuthResponse, AuthTokenResponsePassword, Session, User } from '@supabase/supabase-js';
 
 import { SupabaseService } from '../../supabase/supabase.service';
 
@@ -181,9 +181,7 @@ export class AuthRepository {
    * @returns Observable<{ error: AuthError | null }>
    */
   resetPasswordForEmail(email: string): Observable<{ error: AuthError | null }> {
-    return from(
-      this.supabaseService.client.auth.resetPasswordForEmail(email)
-    ).pipe(
+    return from(this.supabaseService.client.auth.resetPasswordForEmail(email)).pipe(
       map(response => ({
         error: response.error
       }))
@@ -196,11 +194,7 @@ export class AuthRepository {
    * @param attributes 用戶屬性
    * @returns Observable<AuthRepositoryResponse>
    */
-  updateUser(attributes: {
-    email?: string;
-    password?: string;
-    data?: Record<string, any>;
-  }): Observable<AuthRepositoryResponse> {
+  updateUser(attributes: { email?: string; password?: string; data?: Record<string, any> }): Observable<AuthRepositoryResponse> {
     return from(this.supabaseService.client.auth.updateUser(attributes)).pipe(
       map(response => {
         const user = response.data?.user ?? null;
