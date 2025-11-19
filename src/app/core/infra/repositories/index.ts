@@ -38,6 +38,7 @@ export * from './organization-schedule.repository';
 export * from './personal-todo.repository';
 // 只導出 Repository 類，不導出類型（避免與 @core/permissions 衝突）
 export * from './analytics-cache.repository';
+export * from './auth.repository';
 export { PermissionRepository } from './permission.repository';
 export type { PermissionInsert, PermissionUpdate } from './permission.repository';
 export * from './progress-tracking.repository';
