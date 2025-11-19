@@ -1,9 +1,9 @@
-import { Injectable, inject, OnDestroy } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { inject, Injectable, OnDestroy } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+import { RealtimeFacade } from '../../../core/facades/realtime.facade';
 import { ErrorStateService } from './error-state.service';
-import { RealtimeFacade, SubscriptionConfig } from '../../../core/facades/realtime.facade';
 
 /**
  * Refresh Reason

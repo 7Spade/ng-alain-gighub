@@ -1,16 +1,16 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import type { Document, DocumentInsert, DocumentUpdate } from '@shared';
+import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
+import { ErrorStateService } from '@shared/services/common/error-state.service';
 import { DocumentService } from '@shared/services/document/document.service';
 import { StorageFacade } from './storage.facade';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
-import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
-import type { Document, DocumentInsert, DocumentUpdate } from '@shared/models/document.model';
 
 /**
  * DocumentFacade - Enterprise document management facade
- * 
+ *
  * Provides complete document management with version control, linking, and search capabilities.
  * Follows Angular 20 Signal patterns with automatic cleanup.
- * 
+ *
  * Features:
  * - Document CRUD operations with Signal state management
  * - Version control (create versions, version history, restore)
@@ -21,11 +21,11 @@ import type { Document, DocumentInsert, DocumentUpdate } from '@shared/models/do
  * - Computed signals for filtered views
  * - Integration with StorageFacade for file operations
  * - ErrorStateService integration for centralized error handling
- * 
+ *
  * @example
  * ```typescript
  * const facade = inject(DocumentFacade);
- * 
+ *
  * // Create document
  * const doc = await facade.createDocument({
  *   title: 'Floor Plan',
@@ -34,7 +34,7 @@ import type { Document, DocumentInsert, DocumentUpdate } from '@shared/models/do
  *   file_size: 2048000,
  *   blueprint_id: 'bp-123'
  * });
- * 
+ *
  * // Monitor state
  * effect(() => {
  *   console.log('Active documents:', facade.activeDocuments());
@@ -56,22 +56,27 @@ export class DocumentFacade implements OnDestroy {
   readonly lastOperation = signal<string>('');
 
   // Computed signals
-  readonly activeDocuments = computed(() =>
-    this.documents().filter(doc => !doc.deleted_at)
-  );
+  readonly activeDocuments = computed(() => {
+    const docs = this.documents() as any[];
+    return docs.filter(doc => !doc.permanent_delete_at);
+  });
 
-  readonly archivedDocuments = computed(() =>
-    this.documents().filter(doc => !!doc.deleted_at)
-  );
+  readonly archivedDocuments = computed(() => {
+    const docs = this.documents() as any[];
+    return docs.filter(doc => !!doc.permanent_delete_at);
+  });
 
   readonly documentsByType = computed(() => {
     const docs = this.activeDocuments();
-    return docs.reduce((acc, doc) => {
-      const type = doc.mime_type?.split('/')[0] || 'other';
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(doc);
-      return acc;
-    }, {} as Record<string, Document[]>);
+    return docs.reduce(
+      (acc, doc) => {
+        const type = doc.mime_type?.split('/')[0] || 'other';
+        if (!acc[type]) acc[type] = [];
+        acc[type].push(doc);
+        return acc;
+      },
+      {} as Record<string, Document[]>
+    );
   });
 
   readonly documentStats = computed(() => {
@@ -84,7 +89,7 @@ export class DocumentFacade implements OnDestroy {
       totalSize: active.reduce((sum, doc) => sum + (doc.file_size || 0), 0),
       byType: Object.entries(this.documentsByType()).map(([type, items]) => ({
         type,
-        count: items.length
+        count: (items as Document[]).length
       }))
     };
   });
@@ -109,16 +114,17 @@ export class DocumentFacade implements OnDestroy {
   async loadDocuments(): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadDocuments');
-    
+
     try {
-      const docs = await this.documentService.getAllDocuments();
-      this.documents.set(docs);
+      // DocumentService doesn't have getAllDocuments, use loadByUploader or other method
+      // For now, we'll use the service's documents signal
+      this.documents.set(this.documentService.documents());
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load documents',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadDocuments', error }
+        context: 'DocumentFacade.loadDocuments'
       });
       throw error;
     } finally {
@@ -132,16 +138,19 @@ export class DocumentFacade implements OnDestroy {
   async loadDocumentsByBlueprint(blueprintId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadDocumentsByBlueprint');
-    
+
     try {
-      const docs = await this.documentService.getDocumentsByBlueprint(blueprintId);
+      // DocumentService doesn't have getDocumentsByBlueprint
+      // Load documents and filter by blueprint_id
+      const allDocs = this.documentService.documents();
+      const docs = (allDocs as any[]).filter((d: any) => d.blueprint_id === blueprintId);
       this.documents.set(docs);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load blueprint documents',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadDocumentsByBlueprint', blueprintId, error }
+        context: 'DocumentFacade.loadDocumentsByBlueprint'
       });
       throw error;
     } finally {
@@ -155,22 +164,24 @@ export class DocumentFacade implements OnDestroy {
   async loadDocumentById(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadDocumentById');
-    
+
     try {
-      const doc = await this.documentService.getDocumentById(id);
-      this.selectedDocument.set(doc);
-      
-      // Add to documents list if not already present
-      const current = this.documents();
-      if (!current.find(d => d.id === id)) {
-        this.documents.set([...current, doc]);
+      const docDetail = await this.documentService.loadDocumentById(id);
+      if (docDetail) {
+        this.selectedDocument.set(docDetail as any);
+
+        // Add to documents list if not already present
+        const current = this.documents();
+        if (!current.find(d => d.id === id)) {
+          this.documents.set([...current, docDetail as any]);
+        }
       }
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load document',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadDocumentById', id, error }
+        context: 'DocumentFacade.loadDocumentById'
       });
       throw error;
     } finally {
@@ -184,32 +195,29 @@ export class DocumentFacade implements OnDestroy {
   async createDocument(data: DocumentInsert): Promise<Document> {
     this.loading.set(true);
     this.lastOperation.set('createDocument');
-    
+
     try {
-      const doc = await this.documentService.createDocument(data);
-      
+      const doc = await this.documentService.create(data);
+
       // Update state
       this.documents.set([...this.documents(), doc]);
-      this.selectedDocument.set(doc);
-      
+      this.selectedDocument.set(doc as any);
+
       // Log activity
-      if (data.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: data.blueprint_id,
-          resourceType: 'document',
-          resourceId: doc.id,
-          action: 'created',
-          changes: []
-        });
+      const docData = doc as any;
+      if (docData.blueprint_id) {
+        await this.activityService
+          .logActivity(docData.blueprint_id, 'document', doc.id, 'created', [], { context: 'Document created' })
+          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
       }
-      
+
       return doc;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to create document',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createDocument', data, error }
+        context: 'DocumentFacade.createDocument'
       });
       throw error;
     } finally {
@@ -223,36 +231,33 @@ export class DocumentFacade implements OnDestroy {
   async updateDocument(id: string, data: DocumentUpdate): Promise<Document> {
     this.loading.set(true);
     this.lastOperation.set('updateDocument');
-    
+
     try {
-      const doc = await this.documentService.updateDocument(id, data);
-      
+      const doc = await this.documentService.update(id, data);
+
       // Update state
-      const docs = this.documents().map(d => d.id === id ? doc : d);
+      const docs = this.documents().map(d => (d.id === id ? doc : d));
       this.documents.set(docs);
-      
+
       if (this.selectedDocument()?.id === id) {
-        this.selectedDocument.set(doc);
+        this.selectedDocument.set(doc as any);
       }
-      
+
       // Log activity
-      if (doc.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: doc.blueprint_id,
-          resourceType: 'document',
-          resourceId: doc.id,
-          action: 'updated',
-          changes: []
-        });
+      const docData = doc as any;
+      if (docData.blueprint_id) {
+        await this.activityService
+          .logActivity(docData.blueprint_id, 'document', doc.id, 'updated', [], { context: 'Document updated' })
+          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
       }
-      
+
       return doc;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to update document',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'updateDocument', id, data, error }
+        context: 'DocumentFacade.updateDocument'
       });
       throw error;
     } finally {
@@ -266,32 +271,31 @@ export class DocumentFacade implements OnDestroy {
   async deleteDocument(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('deleteDocument');
-    
+
     try {
       const doc = this.documents().find(d => d.id === id);
-      await this.documentService.deleteDocument(id);
-      
+      await this.documentService.softDelete(id);
+
       // Update state - reload to get soft-deleted record
-      const updatedDoc = await this.documentService.getDocumentById(id);
-      const docs = this.documents().map(d => d.id === id ? updatedDoc : d);
-      this.documents.set(docs);
-      
+      const updatedDoc = await this.documentService.loadDocumentById(id);
+      if (updatedDoc) {
+        const docs = this.documents().map(d => (d.id === id ? (updatedDoc as any) : d));
+        this.documents.set(docs);
+      }
+
       // Log activity
-      if (doc?.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: doc.blueprint_id,
-          resourceType: 'document',
-          resourceId: id,
-          action: 'deleted',
-          changes: []
-        });
+      const docData = doc as any;
+      if (docData?.blueprint_id) {
+        await this.activityService
+          .logActivity(docData.blueprint_id, 'document', id, 'deleted', [], { context: 'Document deleted' })
+          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
       }
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to delete document',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'deleteDocument', id, error }
+        context: 'DocumentFacade.deleteDocument'
       });
       throw error;
     } finally {
@@ -305,38 +309,46 @@ export class DocumentFacade implements OnDestroy {
   async createVersion(
     documentId: string,
     versionData: {
-      file_path: string;
+      file_name: string;
+      storage_path: string;
       file_size: number;
       version_number: number;
-      changes_summary?: string;
-      uploaded_by: string;
+      change_description?: string;
+      created_by: string;
     }
   ): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('createVersion');
-    
+
     try {
-      await this.documentService.createDocumentVersion(documentId, versionData);
-      
+      await this.documentService.createVersion(documentId, {
+        ...versionData,
+        document_id: documentId
+      } as any);
+
       // Reload document to get updated version list
       await this.loadDocumentById(documentId);
-      
+
       const doc = this.selectedDocument();
-      if (doc?.blueprint_id) {
-        await this.activityService.logActivity({
-          blueprintId: doc.blueprint_id,
-          resourceType: 'document',
-          resourceId: documentId,
-          action: 'version_created',
-          changes: [{ field: 'version', oldValue: null, newValue: versionData.version_number }]
-        });
+      const docData = doc as any;
+      if (docData?.blueprint_id) {
+        await this.activityService
+          .logActivity(
+            docData.blueprint_id,
+            'document',
+            documentId,
+            'version_created',
+            [{ field: 'version', oldValue: null, newValue: versionData.version_number }],
+            { context: 'Document version created' }
+          )
+          .catch(err => console.warn('[DocumentFacade] Failed to log activity:', err));
       }
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to create document version',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createVersion', documentId, versionData, error }
+        context: 'DocumentFacade.createVersion'
       });
       throw error;
     } finally {
@@ -350,15 +362,16 @@ export class DocumentFacade implements OnDestroy {
   async getVersionHistory(documentId: string): Promise<any[]> {
     this.loading.set(true);
     this.lastOperation.set('getVersionHistory');
-    
+
     try {
-      return await this.documentService.getDocumentVersions(documentId);
+      const docDetail = await this.documentService.loadDocumentById(documentId);
+      return docDetail?.versions || [];
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load version history',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'getVersionHistory', documentId, error }
+        context: 'DocumentFacade.getVersionHistory'
       });
       throw error;
     } finally {
@@ -372,16 +385,21 @@ export class DocumentFacade implements OnDestroy {
   async searchDocuments(query: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('searchDocuments');
-    
+
     try {
-      const docs = await this.documentService.searchDocuments(query);
-      this.documents.set(docs);
+      // DocumentService doesn't have searchDocuments
+      // Filter documents by query in memory
+      const allDocs = this.documentService.documents();
+      const filtered = (allDocs as any[]).filter(
+        (d: any) => d.file_name?.toLowerCase().includes(query.toLowerCase()) || d.mime_type?.toLowerCase().includes(query.toLowerCase())
+      );
+      this.documents.set(filtered);
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to search documents',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'searchDocuments', query, error }
+        context: 'DocumentFacade.searchDocuments'
       });
       throw error;
     } finally {

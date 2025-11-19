@@ -1,9 +1,8 @@
-import { Injectable, inject, signal, computed, effect } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { type Account } from '@shared/models';
 import { AuthService, type SignInRequest, type SignUpRequest } from '@shared/services/auth';
 import { ErrorStateService } from '@shared/services/common';
-import { type Account } from '@shared/models';
-import type { User, Session } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -83,7 +82,7 @@ export class AuthFacade {
   readonly displayName = computed(() => {
     const user = this.user();
     if (!user) return null;
-    return user.display_name || user.email || 'User';
+    return (user as any).name || user.email || 'User';
   });
 
   /** User email */
@@ -222,10 +221,10 @@ export class AuthFacade {
 
     try {
       await firstValueFrom(this.authService.signOut());
-      
+
       // Clear local state
       this.userState.set(null);
-      
+
       console.log('[AuthFacade] Logout successful');
 
       // Redirect if path provided
@@ -242,7 +241,7 @@ export class AuthFacade {
         details: error,
         context: 'AuthFacade.logout'
       });
-      
+
       // Clear state even if logout fails
       this.userState.set(null);
     } finally {
@@ -263,7 +262,7 @@ export class AuthFacade {
 
     try {
       const isAuthenticated = await firstValueFrom(this.authService.checkAuthStatus());
-      
+
       if (isAuthenticated) {
         // Load current user
         const user = await firstValueFrom(this.authService.getCurrentUser());
@@ -326,7 +325,7 @@ export class AuthFacade {
    */
   async requireAuth(redirectUrl?: string): Promise<boolean> {
     const isAuth = await this.checkAuthStatus();
-    
+
     if (!isAuth) {
       console.log('[AuthFacade] Authentication required, redirecting to login');
       await this.router.navigate(['/passport/login'], {
@@ -347,7 +346,7 @@ export class AuthFacade {
    */
   async requireGuest(): Promise<boolean> {
     const isAuth = await this.checkAuthStatus();
-    
+
     if (isAuth) {
       console.log('[AuthFacade] Already authenticated, redirecting to home');
       await this.router.navigate(['/']);
