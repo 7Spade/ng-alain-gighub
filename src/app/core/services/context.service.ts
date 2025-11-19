@@ -73,11 +73,12 @@ export class ContextService {
   private teamMenuData: NzSafeAny[] = [];
 
   constructor() {
-    // Init: load from cache
+    // Init: load from cache (but don't apply yet - menu data not loaded)
     const cached = this.cache.getNone(this.CACHE_KEY) as AppContext | null;
     if (cached) {
       this._context.set(cached);
-      this.applyContext(cached);
+      // Note: Don't call applyContext here! Menu data hasn't been loaded yet.
+      // It will be applied after initializeMenuData() is called in StartupService
     }
   }
 
@@ -110,6 +111,11 @@ export class ContextService {
     if (data.teamMenu) {
       this.teamMenuData = data.teamMenu;
     }
+
+    // Now that menu data is loaded, apply the current context
+    // This handles the case where context was restored from cache in constructor
+    const currentContext = this._context();
+    this.applyContext(currentContext);
   }
 
   /**
