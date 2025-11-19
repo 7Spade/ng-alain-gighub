@@ -1,0 +1,38 @@
+---
+description: API design and Repository pattern standards
+globs: ["src/app/core/**/*.ts", "src/app/shared/**/*.ts", "src/app/routes/**/*.ts"]
+alwaysApply: false
+---
+
+# API Design Standards
+
+> **Related Rules**: See [Error Handling](./error-handling.mdc), [Security Standards](./security.mdc), [Type Safety](./typescript.mdc), [MCP Tools](./mcp-tools.mdc)
+
+## Repository Pattern
+
+- Use Repository pattern to encapsulate data access logic
+- Unified response format and error handling (see [Error Handling Standards](./error-handling.mdc))
+- Use TypeScript types to define API interfaces (see [Type Safety](./typescript.mdc))
+
+## API Functionality Requirements
+
+- Support pagination, sorting, filtering query parameters
+- Implement request caching and retry mechanisms
+- Provide unified error handling mechanism
+
+## Permission Verification
+
+- Branch-related APIs need permission verification (owner/collaborating organization/viewer)
+- PR-related APIs need to implement review and merge logic
+- Permission verification must be verified at both database layer (RLS) and application layer (see [Security Standards](./security.mdc))
+
+## Database Operations
+
+- All database operations must go through Supabase MCP tools (see [MCP Tools](./mcp-tools.mdc))
+- Enable Supabase RLS (Row Level Security) checks
+- Use Repository pattern to encapsulate data access logic
+
+## Reference Documentation
+
+- [Routes Module Standards](./routes-specific.mdc)
+- [Core Module Standards](./core-specific.mdc)

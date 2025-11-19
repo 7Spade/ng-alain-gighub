@@ -1,0 +1,39 @@
+---
+description: Security standards and best practices
+globs: ["**/*.ts", "**/*.tsx", "**/*.json"]
+alwaysApply: true
+---
+
+# Security Standards
+
+> **Related Rules**: See [API Design](./api-design.mdc), [Error Handling](./error-handling.mdc), [MCP Tools](./mcp-tools.mdc), [Dependency Management](./dependency-management.mdc)
+
+## Database Security
+
+- All database operations must go through Supabase MCP tools (see [MCP Tools](./mcp-tools.mdc))
+- Enable Supabase RLS (Row Level Security) checks
+- Branch permissions must be verified at both database layer (RLS) and application layer
+- API layer permission verification see [API Design Standards](./api-design.mdc)
+
+## Sensitive Data Handling
+
+- Sensitive data not stored or transmitted on frontend
+- Use environment variables to manage API Keys and sensitive configuration
+- Do not hard-code sensitive information in code
+
+## Permission Verification
+
+- PR merge operations must verify owner permissions
+- Staging area rollback operations must verify submitter identity
+- All permission verification must be implemented at service layer
+
+## Security Checks
+
+- Regularly check dependencies for security vulnerabilities (see [Dependency Management](./dependency-management.mdc))
+- Use `yarn audit` to check security vulnerabilities
+- Refer to `docs/41-安全檢查清單.md` for security checks
+
+## Reference Documentation
+
+- [Security Checklist](../../docs/41-安全檢查清單.md)
+- [Core Module Standards](./core-specific.mdc)

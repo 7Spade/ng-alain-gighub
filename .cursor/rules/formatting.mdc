@@ -1,0 +1,61 @@
+---
+description: Prettier code formatting standards
+globs: ["**/*.ts", "**/*.html", "**/*.json", "**/*.md"]
+alwaysApply: true
+---
+
+# Prettier Code Formatting Standards
+
+> **Related Rules**: See [Linting](./linting.mdc), [Git Workflow](./git-workflow.mdc)
+
+## Basic Principles
+
+- All code must be formatted using Prettier
+- Must ensure code is formatted before commit
+- Use unified formatting configuration to ensure team consistency
+- Prettier configuration takes precedence over editor settings
+
+## Execution Methods
+
+```bash
+# Check formatting (usually through ESLint integration)
+yarn lint
+
+# Manual formatting (if Prettier CLI is configured)
+npx prettier --write "src/**/*.{ts,html,json}"
+```
+
+## Configuration Requirements
+
+- Use `eslint-config-prettier` to disable ESLint rules that conflict with Prettier (see [Linting](./linting.mdc))
+- Use `eslint-plugin-prettier` to run Prettier as an ESLint rule
+- Ensure `.prettierrc.js` or `.prettierrc` configuration file exists
+
+## Formatting Rules
+
+- Use 2-space indentation (typically)
+- Use single quotes (typically)
+- Trailing commas (ES5+)
+- Line width limit (typically 80 or 100 characters)
+- Semicolon usage (according to project configuration)
+
+## Editor Integration
+
+- Configure editor to auto-format on save
+- Use Prettier extension plugins
+- Ensure editor uses Prettier configuration from project root
+
+## Git Hooks Integration
+
+- Auto-format before commit through `lint-staged` (see [Git Workflow](./git-workflow.mdc))
+- Ensure committed code is formatted
+
+## Important Notes
+
+- Prettier only handles formatting, not code quality
+- Use with ESLint, ESLint handles code quality checks (see [Linting](./linting.mdc))
+- Don't manually adjust code formatted by Prettier
+
+## Reference Documentation
+
+- [Prettier Official Documentation](https://prettier.io/)

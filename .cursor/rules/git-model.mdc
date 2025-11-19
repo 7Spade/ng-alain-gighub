@@ -1,0 +1,34 @@
+---
+description: Git-like branching model and version control standards
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Git-like Branching Model Standards
+
+> **Related Rules**: See [Architecture Standards](./architecture.mdc), [Git Workflow](./git-workflow.mdc), [Security Standards](./security.mdc)
+
+## Prohibition of Violating Branch Model
+
+- Prohibit collaborating organizations from modifying task structure (only assignment fields can be filled)
+- Prohibit bypassing PR mechanism to directly update main branch data
+- Prohibit modifying data in branches that does not belong to assignment fields
+
+## Version Control Standards
+
+- Use Semantic Versioning
+- Commit messages follow Conventional Commits format (see [Git Workflow](./git-workflow.mdc))
+- Major changes need to update CHANGELOG.md
+- Branch naming follows standards (feature/, fix/, refactor/)
+- Run lint and type-check before commit (see [Linting](./linting.mdc), [Type Safety](./typescript.mdc))
+
+## Branch Permissions
+
+- Branch permissions must be verified at both database layer (RLS) and application layer (see [Security Standards](./security.mdc))
+- PR merge operations must verify owner permissions
+- Staging area rollback operations must verify submitter identity
+
+## Reference Documentation
+
+- [Complete Architecture Flowchart](../../docs/27-完整架構流程圖.mermaid.md) ⭐⭐⭐⭐⭐
+- [Architecture Review Report](../../docs/28-架構審查報告.md) ⭐⭐⭐⭐⭐

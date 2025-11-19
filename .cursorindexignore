@@ -1,0 +1,143 @@
+# Cursor IDE Index Ignore File
+# This file excludes files and directories from Cursor's AI indexing to improve performance.
+# Uses the same syntax as .gitignore
+
+# ============================================================================
+# Node modules and dependencies
+# ============================================================================
+node_modules/
+
+# ============================================================================
+# Build outputs
+# ============================================================================
+public/
+dist/
+tmp/
+out-tsc/
+bazel-out/
+delon-builds/
+
+# ============================================================================
+# Angular cache and build artifacts
+# ============================================================================
+.angular/cache
+.angular/
+*.map
+
+# ============================================================================
+# Test coverage and test artifacts
+# ============================================================================
+coverage/
+*.spec.ts.snap
+karma-*.log
+jasmine-*.log
+
+# ============================================================================
+# Yarn cache and build files (Yarn 4.9.2 PnP)
+# ============================================================================
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ============================================================================
+# Logs
+# ============================================================================
+*.log
+npm-debug.log*
+yarn-error.log
+yarn-debug.log*
+testem.log
+libpeerconnection.log
+
+# ============================================================================
+# Lock files (usually not needed for indexing)
+# ============================================================================
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# ============================================================================
+# IDE and editor files
+# ============================================================================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# System files
+# ============================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================================
+# Cache files
+# ============================================================================
+.eslintcache
+.sass-cache/
+connect.lock
+.stylelintcache
+
+# ============================================================================
+# Temporary files
+# ============================================================================
+*.tmp
+*.temp
+
+# ============================================================================
+# E2E test artifacts
+# ============================================================================
+e2e/
+e2e/screenshots/
+e2e/videos/
+
+# ============================================================================
+# Tool output files
+# ============================================================================
+# Repomix output files
+repomix-output.*
+*.repomix.*
+
+# Source map explorer reports
+source-map-explorer-report.*
+
+# Husky files (git hooks)
+.husky/
+.husky/_/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# ============================================================================
+# Documentation (exclude only oversized or generated files)
+# ============================================================================
+# Exclude archived documentation
+docs/ArchivedDocuments/
+
+# Exclude large generated codebase files (796KB, 23K+ lines)
+docs/fyi-codebase.md
+
+# Exclude large component index directories (200KB+)
+docs/DELON-Index/
+docs/NG-ZORRO-Index/
+
+# Note: Core documentation IS indexed for AI agent access
+# This includes:
+# - Architecture docs (27-完整架構流程圖, 28-架構審查報告, etc.)
+# - Development guides (00-開發作業指引, SHARED_IMPORTS, etc.)
+# - Database schema (30-0-完整SQL表結構定義)
+# - FAQ and best practices
+
+# ============================================================================
+# Project scripts and templates (allow for agent access)
+# ============================================================================
+# Scripts are now indexed to help agents understand build/deployment
+# _cli-tpl/ remains excluded as it's template files
+_cli-tpl/

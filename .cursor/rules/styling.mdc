@@ -1,0 +1,63 @@
+---
+description: Stylelint and Less styling standards
+globs: ["**/*.less", "**/*.css", "**/*.scss"]
+alwaysApply: true
+---
+
+# Stylelint and Less Styling Standards
+
+> **Related Rules**: See [Theme Customization](./theming.mdc), [Git Workflow](./git-workflow.mdc)
+
+## Basic Principles
+
+- All Less files must pass Stylelint checks
+- Use Less as CSS preprocessor
+- Follow BEM naming convention (if applicable)
+- Keep style code clean and maintainable
+
+## Execution Methods
+
+```bash
+# Check all style files
+yarn lint:style
+
+# Check specific files
+npx stylelint 'src/**/*.less'
+```
+
+## Configuration Requirements
+
+- Use `stylelint-config-standard` as base configuration
+- Use `stylelint-config-clean-order` to standardize property order
+- Use `stylelint-declaration-block-no-ignored-properties` to detect invalid properties
+
+## Less Usage Standards
+
+- Use variables to define colors, fonts, spacing, etc.
+- Use nesting to keep style hierarchy clear
+- Use Mixins to reuse style code
+- Avoid excessive nesting (recommended max 3 levels)
+
+## Style Organization
+
+- Organize style properties in logical order
+- Use property order standardized by `stylelint-config-clean-order`
+- Group related style properties
+
+## ng-alain Theme Integration
+
+- Use ng-alain theme variables
+- Follow ng-alain theme customization standards (see [Theme Customization Standards](./theming.mdc))
+- Refer to theme-related documentation in `docs/`
+
+## Git Hooks Integration
+
+- Automatically check styles before commit through `lint-staged` (see [Git Workflow](./git-workflow.mdc))
+- Only check modified style files
+
+## Reference Documentation
+
+- [Stylelint Official Documentation](https://stylelint.io/)
+- [Less Official Documentation](https://lesscss.org/)
+- [ng-alain Theme Documentation](https://ng-alain.com/theme)
+- [Theme Customization Standards](./theming.mdc)

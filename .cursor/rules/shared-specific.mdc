@@ -1,0 +1,39 @@
+---
+description: Shared module specific standards
+globs: ["src/app/shared/**/*.ts", "src/app/shared/**/*.html"]
+alwaysApply: true
+---
+
+# Shared Module Specific Standards
+
+> **Related Rules**: See [Shared Module Priority](./shared-imports.mdc), [Architecture Standards](./architecture.mdc), [Code Quality](./code-quality.mdc)
+
+## SHARED_IMPORTS Priority Usage
+
+- All shared components must be exported through SHARED_IMPORTS
+- See [SHARED_IMPORTS Usage Guide](../../docs/45-SHARED_IMPORTS-使用指南.md)
+- Ensure all reusable components are included in SHARED_IMPORTS
+
+## Reusable Component Design
+
+- Components must be generic and reusable
+- Use OnPush change detection
+- Use Signals for state management
+- Standalone components only
+
+## Utility Functions and Shared Services
+
+- Place utility functions in `shared/utils/`
+- Place shared services in `shared/services/`
+- Ensure proper exports in index files
+
+## Dependency Rules
+
+- ONLY import from `shared/` - no imports from `routes/`, `layout/`, or `core/`
+- This prevents circular dependencies
+- Shared module must be self-contained
+
+## Reference Documentation
+
+- [SHARED_IMPORTS Usage Guide](../../docs/45-SHARED_IMPORTS-使用指南.md) ⭐ Must Read
+- [Architecture Standards](./architecture.mdc)

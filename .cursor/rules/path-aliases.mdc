@@ -1,0 +1,171 @@
+---
+description: Path alias usage standards
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# Path Alias Usage Standards
+
+> **Related Rules**: See [Type Safety](./typescript.mdc), [Architecture Standards](./architecture.mdc), [Shared Module Priority](./shared-imports.mdc)
+
+## Basic Principles
+
+- **Path aliases do not support deep paths**, can only import from root export files
+- Prioritize using path aliases (`@core`, `@shared`) over relative paths
+- Ensure all required types and classes are exported from root export files
+- Prohibit using deep path aliases like `@core/infra/types` or `@shared/services/account`
+
+## Path Alias Configuration
+
+Project configured path aliases (`tsconfig.json`):
+
+```json
+{
+  "paths": {
+    "@shared": ["src/app/shared/index"],
+    "@core": ["src/app/core/index"],
+    "@env/*": ["src/environments/*"],
+    "@_mock": ["_mock/index"]
+  }
+}
+```
+
+## Correct Usage
+
+### ✅ Correct: Import from root exports
+
+```typescript
+// ✅ Correct: Import from @core root export
+import { Database, TeamMemberRole, AccountRepository } from '@core';
+
+// ✅ Correct: Import from @shared root export
+import { AccountService, Account, AccountType, AccountStatus } from '@shared';
+
+// ✅ Correct: Import SHARED_IMPORTS from @shared
+import { SHARED_IMPORTS } from '@shared';
+```
+
+### ❌ Wrong: Using deep path aliases
+
+```typescript
+// ❌ Wrong: Deep path aliases not supported
+import { Database } from '@core/infra/types/database.types';
+import { AccountRepository } from '@core/infra/repositories/account.repository';
+import { AccountService } from '@shared/services/account';
+import { Account } from '@shared/models/account';
+```
+
+## Cross-Layer Dependency Handling
+
+### Core layer should not depend on Shared layer
+
+When core layer needs to use types defined in shared layer:
+
+1. **Preferred solution**: Move type definitions to core layer
+2. **Temporary solution**: Use relative path imports (need TODO comment)
+
+```typescript
+// ❌ Wrong: core layer using path alias to depend on shared layer
+import { AccountType, AccountStatus } from '@shared/models/account';
+
+// ✅ Correct: Use relative path (temporary solution)
+// Note: core layer should not depend on shared layer, using relative path import
+// TODO: Consider moving AccountType and AccountStatus to core layer
+import { AccountType, AccountStatus } from '../../../../shared/models/account/types';
+```
+
+## Export Structure Requirements
+
+### Core Module Export Structure
+
+Ensure `src/app/core/index.ts` exports all required types and classes:
+
+```typescript
+// src/app/core/index.ts
+export * from './i18n/i18n.service';
+export * from './net/index';
+export * from './startup/startup.service';
+export * from './start-page.guard';
+export * from './supabase';
+export * from './permissions';
+export * from './infra'; // Export all infra module content
+```
+
+### Shared Module Export Structure
+
+Ensure `src/app/shared/index.ts` exports all required types and classes:
+
+```typescript
+// src/app/shared/index.ts
+export * from './utils/yuan';
+export * from './models'; // Export all models
+export * from './services'; // Export all services
+export * from './shared-imports';
+export * from './json-schema/index';
+export * from './st-widget/index';
+export * from './cell-widget/index';
+```
+
+## Submodule Export Requirements
+
+### Ensure Submodules Export Correctly
+
+Each submodule's `index.ts` must correctly export all content:
+
+```typescript
+// src/app/core/infra/index.ts
+export * from './repositories'; // Export all repositories
+export * from './types'; // Export all types
+export * from './errors'; // Export all error handling
+export * from './utils'; // Export all utility functions
+
+// src/app/shared/services/index.ts
+export * from './account'; // Export all account-related services
+
+// src/app/shared/models/index.ts
+export * from './account'; // Export all account-related models
+```
+
+## Common Issues
+
+### Issue 1: Cannot find exported type
+
+**Cause**: Type not exported from root export file
+
+**Solution**:
+1. Check if type is exported in submodule's `index.ts`
+2. Check if submodule is exported in root `index.ts`
+3. Ensure export chain is complete: `specific file` → `submodule index.ts` → `root index.ts`
+
+### Issue 2: TypeScript compilation error
+
+**Cause**: Used deep path alias
+
+**Solution**:
+1. Change to import from root export: `@core` or `@shared`
+2. If type not exported, add to corresponding `index.ts` file
+
+### Issue 3: Circular dependency
+
+**Cause**: Modules importing each other
+
+**Solution**:
+1. Check architecture design, ensure dependency direction is correct: `routes` → `shared` → `core`
+2. Move shared types to core layer
+3. Use relative path imports (temporary solution)
+
+## Checklist
+
+Before committing code, ensure:
+
+- [ ] All imports use path aliases (`@core`, `@shared`) or relative paths
+- [ ] No deep path aliases used (like `@core/infra/types`)
+- [ ] All required types and classes exported from root export files
+- [ ] Core layer not using path aliases to depend on shared layer
+- [ ] Export chain complete and correct
+
+## Reference Documentation
+
+- [TypeScript Path Mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping)
+- [Architecture Standards](./architecture.mdc)
+- [Type Safety Standards](./typescript.mdc)

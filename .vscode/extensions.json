@@ -1,0 +1,26 @@
+{
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
+  "recommendations": [
+    // ng-alain 開發套件
+    "cipchk.ng-alain-extension-pack",
+    
+    // GitHub Copilot（必備）
+    "github.copilot",
+    "github.copilot-chat",
+    
+    // Angular 開發
+    "angular.ng-template",
+    
+    // 程式碼品質
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "stylelint.vscode-stylelint",
+    
+    // Git 工具
+    "eamodio.gitlens",
+    
+    // Markdown 支援（編輯 Agent 檔案）
+    "yzhang.markdown-all-in-one"
+  ],
+  "unwantedRecommendations": []
+}

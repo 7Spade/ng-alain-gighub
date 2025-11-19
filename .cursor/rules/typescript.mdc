@@ -1,0 +1,47 @@
+---
+description: TypeScript type safety and best practices standards
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# TypeScript Type Safety Standards
+
+> **Related Rules**: See [Code Quality](./code-quality.mdc), [API Design](./api-design.mdc), [Architecture Standards](./architecture.mdc), [Path Aliases Standards](./path-aliases.mdc)
+
+## Type Safety Principles
+
+- Use strict mode with explicit type annotations
+- Enable all strict compilation options: `strict`, `strictNullChecks`, `strictFunctionTypes`, `strictBindCallApply`, `strictPropertyInitialization`
+- Avoid using `any`, prefer specific types or `unknown`
+- Use type inference and type guards to ensure type safety
+- Use `readonly` modifier to protect immutable data
+- Regularly run `yarn type-check` to verify type consistency
+
+## Type Matching Validation
+
+- Confirm type matching before passing parameters, ensure correct property paths for nested object access
+- API signature validation: Verify method signatures before calling service methods, ensure parameter count and types match exactly
+- Property path validation: Confirm correct paths before accessing nested properties, refer to model definitions and avoid assumptions
+- Explicit type annotations: Prohibit implicit `any` types, all function parameters must have explicit types
+
+## Type Definition Consistency
+
+- Ensure type definitions are consistent with actual usage
+- When using `extends`, ensure parent types contain required properties
+- Use generic constraints (`T extends {}`) to ensure type safety
+- Use `readonly` modifier to protect immutable properties
+- Import cleanup: Check and remove unused imports before commit, use ESLint rules for automatic detection (see [Linting](./linting.mdc))
+- Path alias usage: Prohibit deep path aliases, only import from root export files (see [Path Aliases Standards](./path-aliases.mdc))
+- Avoid deprecated features in strict mode such as `with` statements and old-style octal literals
+
+## Model Definition Alignment with Database
+
+- TypeScript models should precisely reflect database structure
+- Model definitions for 51 tables must be consistent with `docs/30-0-完整SQL表結構定義.md`
+- Use Supabase MCP tools to generate TypeScript type definitions (see [MCP Tools](./mcp-tools.mdc))
+
+## Reference Documentation
+
+- [TypeScript Official Documentation](https://www.typescriptlang.org/docs/)
+- [Project Architecture Documentation](../../docs/27-完整架構流程圖.mermaid.md)
+- [Database Table Structure Definition](../../docs/30-0-完整SQL表結構定義.md)

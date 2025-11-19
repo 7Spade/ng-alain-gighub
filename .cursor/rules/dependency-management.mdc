@@ -1,0 +1,36 @@
+---
+description: Yarn dependency management standards
+globs: ["package.json", "yarn.lock"]
+alwaysApply: true
+---
+
+# Yarn Dependency Management Standards
+
+> **Related Rules**: See [Security Standards](./security.mdc), [Build and Deployment](./build-deploy.mdc)
+
+## Yarn Usage Standards
+
+- Use Yarn as package manager
+- Always commit `yarn.lock`
+- Use `yarn install` not `npm install`
+- Use `yarn add` to add dependencies
+- Use `yarn upgrade` to update dependencies
+
+## Version Management
+
+- Use semantic versioning
+- Lock major versions for critical dependencies
+- Regularly update dependencies
+- Test after dependency updates
+
+## Security Checks
+
+- Run `yarn audit` regularly
+- Fix security vulnerabilities immediately
+- Use `yarn audit fix` when available
+- Monitor dependency security advisories
+
+## Reference Documentation
+
+- [Yarn Official Documentation](https://yarnpkg.com/)
+- [Semantic Versioning](https://semver.org/)

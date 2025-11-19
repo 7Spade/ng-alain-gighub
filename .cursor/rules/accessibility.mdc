@@ -1,0 +1,32 @@
+---
+description: Accessibility standards (WCAG 2.1 AA)
+globs: ["**/*.html", "**/*.ts"]
+alwaysApply: true
+---
+
+# Accessibility Standards
+
+> **Related Rules**: See [Theme Customization](./theming.mdc), [Layout Module Standards](./layout-specific.mdc)
+
+## ARIA Labels
+
+- All interactive elements need appropriate ARIA labels
+- Form validation errors need clear prompts
+- Use semantic HTML elements
+
+## Keyboard Navigation
+
+- Keyboard navigation support (Tab, Enter, Esc, etc.)
+- All interactive functions must be operable via keyboard
+- Ensure correct focus management
+
+## Visual Design
+
+- Color contrast meets WCAG 2.1 AA standards (see [Theme Customization Standards](./theming.mdc))
+- Images provide alternative text (alt text)
+- Do not use color as the only means of conveying information
+
+## Reference Documentation
+
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Angular Accessibility Guide](https://angular.dev/guide/accessibility)

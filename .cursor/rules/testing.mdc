@@ -1,0 +1,85 @@
+---
+description: Testing standards and coverage requirements
+globs: ["**/*.spec.ts", "**/*.test.ts", "e2e/**/*.ts"]
+alwaysApply: false
+---
+
+# Testing Standards
+
+> **Related Rules**: See [Code Quality](./code-quality.mdc), [Error Handling](./error-handling.mdc), [Architecture Standards](./architecture.mdc)
+
+## Coverage Requirements
+
+- Each service requires at least 80% code coverage
+- Critical business logic requires 100% coverage (Git-like branching model, PR mechanism, staging area, issue sync, etc.)
+- Regularly run `yarn test-coverage` to verify coverage
+
+## Test Types
+
+- Use Angular Testing Utilities for component testing
+- Use Karma + Jasmine for unit testing
+- E2E tests cover critical user flows (blueprint creation, Fork, PR, task execution, etc.)
+
+## Karma + Jasmine Configuration
+
+### Running Tests
+
+```bash
+# Development mode (watch mode)
+yarn test
+
+# Single run with coverage report
+yarn test-coverage
+
+# E2E tests
+yarn e2e
+```
+
+### Test File Structure
+
+- Test file naming: `*.spec.ts`
+- Test files placed in same directory as source files
+- Use `describe` and `it` to organize test cases
+
+### Jasmine Syntax
+
+- Use `describe` to organize test suites
+- Use `it` to define test cases
+- Use `beforeEach` and `afterEach` for setup and cleanup
+- Use `expect` for assertions
+
+### Angular Testing Utilities
+
+- Use `TestBed` to configure test environment
+- Use `ComponentFixture` to access component instance
+- Use `DebugElement` to query DOM elements
+- Use `async` and `fakeAsync` to handle asynchronous operations
+
+### Test Coverage
+
+- Use `karma-coverage` to generate coverage reports
+- Coverage reports output to `coverage/` directory
+- Regularly check coverage reports to identify untested code
+
+## Business Logic Test Focus
+
+- Branch permission control (see [Security Standards](./security.mdc))
+- PR review and merge process (see [Git-like Branching Model](./git-model.mdc))
+- 48-hour staging area rollback mechanism
+- Cross-branch issue sync
+- Todo center five-status aggregation
+
+## Testing Best Practices
+
+- Write readable test case names
+- Each test case tests only one functionality
+- Use Mocks and Spies to isolate dependencies
+- Test boundary conditions and error cases (see [Error Handling Standards](./error-handling.mdc))
+- Keep tests independent, not dependent on execution order
+
+## Reference Documentation
+
+- [Testing Guide](../../docs/38-測試指南.md)
+- [Jasmine Documentation](https://jasmine.github.io/)
+- [Karma Documentation](https://karma-runner.github.io/)
+- [Angular Testing Documentation](https://angular.dev/guide/testing)

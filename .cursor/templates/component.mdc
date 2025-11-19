@@ -1,0 +1,107 @@
+---
+description: Angular Standalone Component template
+globs: ["src/app/**/*.component.ts"]
+alwaysApply: false
+---
+
+# Angular Standalone Component Template
+
+## Component Structure
+
+```typescript
+import { Component, signal, computed, inject, input, output, viewChild, resource, ChangeDetectionStrategy } from '@angular/core';
+import { SHARED_IMPORTS } from '@shared/shared-imports';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [SHARED_IMPORTS],
+  templateUrl: './example.component.html',
+  styleUrls: ['./example.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class ExampleComponent {
+  // Use inject() for dependency injection
+  private readonly service = inject(ExampleService);
+  
+  // Use input() instead of @Input()
+  readonly title = input<string>('Default Title');
+  readonly count = input.required<number>();
+  
+  // Use output() instead of @Output()
+  readonly itemClick = output<Item>();
+  
+  // Use viewChild() instead of @ViewChild()
+  readonly headerElement = viewChild<ElementRef>('header');
+  
+  // Use signal() to create reactive state
+  private readonly state = signal<StateType>(initialValue);
+  
+  // Use computed() to create derived state
+  readonly derivedState = computed(() => {
+    return this.state().someProperty;
+  });
+
+  // Use resource() to fetch async data (automatically tracks userId Signal)
+  readonly userId = signal('current-user-id');
+  readonly userResource = resource({
+    params: () => ({ id: this.userId() }),
+    loader: ({ params }) => this.service.fetchProfile(params.id)
+  });
+
+  readonly profile = computed(() => this.userResource.value());
+
+  refreshProfile(): void {
+    this.userResource.reload();
+  }
+}
+```
+
+## Template Structure
+
+```html
+@if (condition()) {
+  <div>Content</div>
+}
+
+@for (item of items(); track item.id) {
+  <div>{{ item.name }}</div>
+} @empty {
+  <div>No items found</div>
+}
+
+@switch (status()) {
+  @case ('active') {
+    <span>Active</span>
+  }
+  @default {
+    <span>Inactive</span>
+  }
+}
+
+<!-- When calling Signals in templates, parentheses must be used -->
+<div>{{ mySignal() }}</div>
+
+@defer (on viewport) {
+  <article-comments [userId]="userId()" />
+} @placeholder (minimum 1s) {
+  <p aria-live="polite">Loading comments soon…</p>
+} @loading (minimum 1s; after 500ms) {
+  <p aria-busy="true">Fetching comments…</p>
+} @error {
+  <p role="alert">Unable to load comments</p>
+}
+```
+
+## Important Notes
+
+- Must use `SHARED_IMPORTS`
+- Must use `OnPush` change detection strategy
+- Prefer Signal Inputs (`input()`) over `@Input()` decorator
+- Prefer Signal Outputs (`output()`) over `@Output()` decorator
+- Prefer Signal Queries (`viewChild()`, `contentChild()`) over decorators
+- Use modern control flow syntax (@if, @for, @switch, @empty)
+- When calling Signals in templates, parentheses must be used: `{{ mySignal() }}`
+- Use `@defer` + `@placeholder/@loading/@error` combination to defer non-critical content while maintaining UX, utilize `minimum`, `after`
+- If Router has View Transitions enabled, CSS animations should support `prefers-reduced-motion` and use `skipTransition()` when appropriate
+- Use `readonly` modifier to protect immutable properties

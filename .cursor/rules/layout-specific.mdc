@@ -1,0 +1,35 @@
+---
+description: Layout module specific standards
+globs: ["src/app/layout/**/*.ts", "src/app/layout/**/*.html"]
+alwaysApply: true
+---
+
+# Layout Module Specific Standards
+
+> **Related Rules**: See [Architecture Standards](./architecture.mdc), [Accessibility Standards](./accessibility.mdc), [Theming](./theming.mdc)
+
+## Responsive Design
+
+- Support multiple screen sizes
+- Use responsive breakpoints
+- Test on different devices
+- Mobile-first approach
+
+## Layout State Management
+
+- Use Signals for layout state
+- Manage sidebar collapse/expand
+- Handle navigation state
+- Theme switching support
+
+## Navigation Structure
+
+- Clear navigation hierarchy
+- Keyboard navigation support (see [Accessibility](./accessibility.mdc))
+- Breadcrumb navigation
+- Active route highlighting
+
+## Reference Documentation
+
+- [Architecture Standards](./architecture.mdc)
+- [Accessibility Standards](./accessibility.mdc)
