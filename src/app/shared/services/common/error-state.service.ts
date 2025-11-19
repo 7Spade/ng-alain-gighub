@@ -187,9 +187,7 @@ export class ErrorStateService {
     this.clearAutoDismissTimer(errorId);
 
     // Mark as dismissed
-    this.errorsState.update(errors =>
-      errors.map(e => (e.id === errorId ? { ...e, dismissed: true } : e))
-    );
+    this.errorsState.update(errors => errors.map(e => (e.id === errorId ? { ...e, dismissed: true } : e)));
 
     // Update history
     this.updateHistoryDismissed(errorId);
@@ -351,3 +349,4 @@ export class ErrorStateService {
     this.errorHistoryState.update(history => history.map(e => (e.id === errorId ? { ...e, dismissed: true } : e)));
   }
 }
+

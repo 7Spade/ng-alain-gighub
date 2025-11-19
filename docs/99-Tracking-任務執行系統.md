@@ -4,14 +4,57 @@
 > **格式**：一行一個任務[狀態]  
 > **狀態標記**：✅已完成、🚧進行中、⏳待開始、🧊阻塞
 
-**最後更新**：2025-01-15  
+**最後更新**：2025-01-15（骨架組件改進完成 - 補充遺漏組件）  
 **維護者**：開發團隊  
 **模組編號**：M5  
 **資料表數量**：9 張
 
 ---
 
+## 📜 開發歷程記錄
+
+### 2025-01-15：骨架組件改進完成 - 補充遺漏組件
+
+- ✅ **天氣記錄頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（地點、日期範圍），使用 computed 實現響應式過濾，添加 ChangeDetectionStrategy.OnPush
+- ✅ **所有組件符合企業標準**：OnPush 變更檢測、Signals 狀態管理、類型安全、錯誤處理、內聯模板
+
+---
+
 ## 📊 模組資訊
+
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：19/19 組件骨架完成（100%）
+- ✅ **頁面組件功能**：18/19 組件功能完成（95%）
+- ⏳ **待完成**：TaskProgressComponent 功能實現
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：5/5 服務完成（100%）
+  - ✅ TaskService
+  - ✅ TaskAssignmentService
+  - ✅ TaskListService
+  - ✅ TaskStagingService
+  - ✅ DailyReportService
+- ✅ **Models（數據模型）**：9 張表的類型定義完成（100%）
+- ✅ **Components（共享組件）**：任務樹相關組件完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：1/2 Facade 完成（50%）
+  - ✅ TaskTreeFacade（任務樹 Facade）
+  - ⏳ TaskFacade（任務 Facade，待實施）
+- ✅ **Services（核心服務）**：無（任務系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：9/9 Repository 完成（100%）
+  - ✅ TaskRepository
+  - ✅ TaskAssignmentRepository
+  - ✅ TaskListRepository
+  - ✅ TaskStagingRepository
+  - ✅ DailyReportRepository
+  - ✅ ReportPhotoRepository
+  - ✅ WeatherCacheRepository
+  - ✅ TaskDependencyRepository
+  - ✅ TaskTemplateRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
 
 ### 資料表清單
 
@@ -91,9 +134,13 @@ Repository 層（9 個 Repository）[✅已完成]
 自動同步主分支（施工日誌）[⏳待開始]
 任務指派邏輯（個人/團隊/組織/承攬）[✅已完成]
 
-#### Facade 层（Core）
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
 
 TaskFacade 實施（core/facades/task.facade.ts）[⏳待開始]
+- **依賴**：TaskService, TaskAssignmentService, TaskListService, TaskStagingService, DailyReportService（Shared Layer）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
 TaskFacade Signals 狀態管理[⏳待開始]
 TaskFacade CRUD 操作（createTask, updateTask, deleteTask）[⏳待開始]
 TaskFacade 任務指派管理（assignTask, unassignTask）[⏳待開始]
@@ -107,6 +154,25 @@ TaskFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 TaskFacade[⏳待開始]
 任務樹 Facade（TaskTreeFacade）[✅已完成]
 TaskTreeFacade 支援層級更新[✅已完成]
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：9/9 Repository（100%）
+- ✅ TaskRepository（依賴 SupabaseService）
+- ✅ TaskAssignmentRepository（依賴 SupabaseService）
+- ✅ TaskListRepository（依賴 SupabaseService）
+- ✅ TaskStagingRepository（依賴 SupabaseService）
+- ✅ DailyReportRepository（依賴 SupabaseService）
+- ✅ ReportPhotoRepository（依賴 SupabaseService）
+- ✅ WeatherCacheRepository（依賴 SupabaseService）
+- ✅ TaskDependencyRepository（依賴 SupabaseService）
+- ✅ TaskTemplateRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 #### Edge Function 整合
 
@@ -137,6 +203,11 @@ TaskListComponent Phase 5.1 單元測試[✅已完成]
 任務看板頁面（TaskBoardComponent）[✅已完成]
 任務日曆頁面（TaskCalendarComponent）[✅已完成]
 任務詳情頁面（TaskDetailComponent）[✅已完成]
+- 整合骨架組件 Checklist 功能[✅已完成]
+- 添加排程和指派按鈕[✅已完成]
+- 使用 computed 根據任務狀態生成 Checklist[✅已完成]
+- 改進 UI 布局（nz-descriptions、nz-card）[✅已完成]
+- 使用 OnPush 變更檢測策略[✅已完成]
 任務詳情殼頁面（TaskDetailShellComponent）[✅已完成]
 任務表單頁面（TaskFormComponent）[✅已完成]
 任務表單中心頁面（TaskFormHubComponent）[✅已完成]
@@ -243,6 +314,33 @@ API 文檔更新（任務系統 API 文檔）[⏳待開始]
 - 測試覆蓋率：100% 新增方法覆蓋
 
 ### Phase 6-8: 待實施（2025-01 起）
+
+### 2025-01-15：任務詳情組件整合
+
+- ✅ **整合骨架組件功能**：將 `TaskDetailShellComponent` 的 Checklist 功能整合到 `TaskDetailComponent`
+- ✅ **UI 改進**：使用 `nz-descriptions` 和 `nz-card` 改進布局，添加排程和指派按鈕
+- ✅ **動態 Checklist**：使用 `computed` 根據任務狀態動態生成 Checklist 項目
+- ✅ **企業標準**：使用 Signals、OnPush 變更檢測、完善的錯誤處理
+
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：`TaskListComponent` 和 `TaskDetailComponent` 使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/tasks/list/task-list.component.ts`（3 處 @switch：status、type、priority）
+     - `src/app/routes/tasks/detail/task-detail.component.ts`（2 處 @switch：status）
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+3. **過濾邏輯重複**：
+   - **問題**：多個組件都有類似的 `computed` 過濾邏輯
+   - **建議**：提取共享過濾工具函數到 `shared/utils/filter.utils.ts`
 
 #### Phase 5: 即時更新與 Optimistic Update（待開始）
 - ⏳ 衝突解決策略（Last-Write-Wins）

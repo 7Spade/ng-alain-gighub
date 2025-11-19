@@ -4,14 +4,52 @@
 > **格式**：一行一個任務[狀態]  
 > **狀態標記**：✅已完成、🚧進行中、⏳待開始、🧊阻塞
 
-**最後更新**：2025-01-15  
+**最後更新**：2025-01-15（骨架組件改進完成 - 補充遺漏組件）  
 **維護者**：開發團隊  
 **模組編號**：M11  
 **資料表數量**：2 張
 
 ---
 
+## 📜 開發歷程記錄
+
+### 2025-01-15：骨架組件改進完成 - 補充遺漏組件
+
+- ✅ **備份管理頁面改進**：將外部模板改為內聯模板，添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（類型、狀態），使用 computed 實現響應式過濾，使用 FileSizePipe 格式化文件大小，添加 ChangeDetectionStrategy.OnPush 和 SHARED_IMPORTS
+- ✅ **系統活動日誌頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（操作類型、資源類型、日期範圍），使用 computed 實現響應式過濾
+- ✅ **天氣 API 配置頁面改進**：添加完整的表單骨架結構（表單字段、驗證邏輯、提交按鈕），實現表單驗證
+- ✅ **分支權限管理頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（權限級別、分支），使用 computed 實現響應式過濾
+- ✅ **權限矩陣頁面改進**：添加完整的矩陣表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（模組），使用 computed 實現響應式過濾
+- ✅ **權限分配頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（狀態、資源類型），使用 computed 實現響應式過濾
+- ✅ **角色管理頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（類型），使用 computed 實現響應式過濾
+- ✅ **功能開關頁面改進**：添加完整的開關列表骨架結構（st 表格、篩選器、操作按鈕、開關組件），實現篩選功能（啟用狀態），使用 computed 實現響應式過濾，使用 nz-switch 和 nz-progress 組件
+- ✅ **所有組件符合企業標準**：OnPush 變更檢測、Signals 狀態管理、類型安全、錯誤處理、內聯模板
+
+---
+
 ## 📊 模組資訊
+
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：11/11 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：5/11 組件功能完成（45%）
+- ⏳ **待完成**：6 個組件功能實現（功能開關、角色管理、權限分配、權限矩陣、分支權限、天氣 API、系統活動日誌）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：2/2 服務完成（100%）
+  - ✅ SettingService
+  - ✅ FeatureFlagService
+- ✅ **Models（數據模型）**：2 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：0/1 Facade 完成（0%）
+  - ⏳ SystemFacade（系統管理 Facade，待實施）
+- ✅ **Services（核心服務）**：無（系統管理使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：2/2 Repository 完成（100%）
+  - ✅ SettingRepository
+  - ✅ FeatureFlagRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
 
 ### 資料表清單
 
@@ -84,9 +122,13 @@ Repository 層（2 個 Repository）[✅已完成]
 功能開關管理（灰度發布）[⏳待開始]
 A/B 測試支援[⏳待開始]
 
-#### Facade 层（Core）
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
 
 SystemFacade 實施（core/facades/system.facade.ts）[⏳待開始]
+- **依賴**：SettingService, FeatureFlagService（Shared Layer）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
 SystemFacade Signals 狀態管理[⏳待開始]
 SystemFacade 系統設定管理（getSetting, setSetting, updateSetting）[⏳待開始]
 SystemFacade 功能開關管理（getFeatureFlag, setFeatureFlag, enableFeature, disableFeature）[⏳待開始]
@@ -98,6 +140,18 @@ SystemFacade 統計功能（featureUsageStats, abTestStats）[⏳待開始]
 SystemFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
 SystemFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 SystemFacade[⏳待開始]
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：2/2 Repository（100%）
+- ✅ SettingRepository（依賴 SupabaseService）
+- ✅ FeatureFlagRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 #### 權限與安全
 
@@ -160,6 +214,18 @@ API 文檔更新（系統管理 API 文檔）[⏳待開始]
 - ✅ 全局設置頁面（GlobalSettingsComponent）[🚧進行中]
 - ✅ 系統設置主頁面（SystemSettingsComponent）[🚧進行中]（骨架實現）
 - ✅ 備份頁面（BackupComponent）[🚧進行中]
+
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
+
+2. **接口定義分散**：
+   - **問題**：組件內部定義了接口
+   - **建議**：將通用接口提取到 `shared/models/system.models.ts`
 
 ### Phase 3: 功能完善（待開始）
 

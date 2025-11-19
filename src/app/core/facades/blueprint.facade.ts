@@ -590,11 +590,11 @@ export class BlueprintFacade implements OnDestroy {
    */
   private setupAggregationRefreshListener(): void {
     const refreshService = this.aggregationRefreshService;
-    
+
     // Listen for refresh events
     refreshService.listen().subscribe((event: any) => {
       console.log('[BlueprintFacade] Aggregation refresh triggered:', event);
-      
+
       // Only refresh if the event is for the current blueprint
       const currentId = this.currentBlueprintId();
       if (currentId && currentId === event.blueprintId) {
@@ -607,7 +607,7 @@ export class BlueprintFacade implements OnDestroy {
     // Setup subscriptions when currentBlueprintId changes
     effect(() => {
       const blueprintId = this.currentBlueprintId();
-      
+
       // Cleanup previous subscriptions
       const previousBlueprints: string[] = refreshService.getActiveBlueprints();
       previousBlueprints.forEach((id: string) => {

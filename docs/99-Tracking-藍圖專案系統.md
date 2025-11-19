@@ -13,6 +13,33 @@
 
 ## 📊 模組資訊
 
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：14/14 組件骨架完成（100%）
+- 🚧 **頁面組件功能**：11/14 組件功能完成（79%）
+- ⏳ **待完成**：3 個組件功能實現（BlueprintForkLandingComponent, BlueprintReviewWorkspaceComponent, BranchManagementComponent 部分功能）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：4/4 服務完成（100%）
+  - ✅ BlueprintService
+  - ✅ BranchService
+  - ✅ PullRequestService
+  - ✅ BlueprintActivityService
+- ✅ **Models（數據模型）**：5 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ✅ **Facades（門面層）**：1/1 Facade 完成（100%）
+  - ✅ BlueprintFacade（藍圖專案 Facade）
+- ✅ **Services（核心服務）**：無（藍圖系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：5/5 Repository 完成（100%）
+  - ✅ BlueprintRepository
+  - ✅ BlueprintBranchRepository
+  - ✅ BranchForkRepository
+  - ✅ PullRequestRepository
+  - ✅ BlueprintConfigRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
+
 ### 資料表清單
 
 1. **blueprints** - 藍圖主表（主分支，擁有者組織控制任務結構）
@@ -133,10 +160,13 @@ BranchDataIsolationService（分支數據隔離）[✅已完成]
 藍圖詳情頁面（BlueprintDetailComponent）[✅已完成]
 藍圖詳情殼頁面（BlueprintDetailShellComponent）[✅已完成]
 藍圖主分支頁面（BlueprintMainBranchComponent）[✅已完成]
-藍圖設置頁面（BlueprintSettingsComponent）[⏳待開始]
-  - 目前狀態：骨架頁面，僅顯示「功能開發中」提示
-  - 待實現：配置管理 UI、工作日曆設定、通知規則設定
-藍圖設置殼頁面（BlueprintSettingsShellComponent）[⏳待開始]
+藍圖設置頁面（BlueprintSettingsComponent）[✅已完成]
+  - 整合骨架組件表單模板（基本資訊、權限策略、自動化任務）[✅已完成]
+  - 連接真實 BlueprintService 和配置數據[✅已完成]
+  - 添加表單驗證和保存功能[✅已完成]
+  - 保留預設審核人列表[✅已完成]
+  - 使用 OnPush 變更檢測策略[✅已完成]
+藍圖設置殼頁面（BlueprintSettingsShellComponent）[✅已完成]
 
 #### 分支管理
 
@@ -238,6 +268,37 @@ API 文檔更新（藍圖系統 API 文檔）[⏳待開始]
 | **權限控制** | 90% | ✅ 基本完整 |
 
 ---
+
+## 📜 開發歷程記錄
+
+### 2025-01-15：藍圖設置組件整合
+
+- ✅ **整合骨架組件功能**：將 `BlueprintSettingsShellComponent` 的表單模板整合到 `BlueprintSettingsComponent`
+- ✅ **表單功能**：實現基本資訊、權限策略、自動化任務三個標籤頁的表單
+- ✅ **數據連接**：連接真實的 BlueprintService 和 BlueprintConfig 數據
+- ✅ **UI 改進**：使用 `nz-tabset`、`nz-form` 改進布局，添加快速儲存和版本查看按鈕
+- ✅ **企業標準**：使用 Signals、OnPush 變更檢測、表單驗證、完善的錯誤處理
+
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **@switch 狀態渲染改進**：
+   - **問題**：多個組件使用 `@switch` 渲染狀態標籤
+   - **影響**：狀態值變更需要多處修改，違反 DRY 原則
+   - **建議**：逐步替換為 `StatusPipe`（需要更多測試）
+   - **涉及文件**：
+     - `src/app/routes/blueprints/list/blueprint-list.component.ts`
+     - `src/app/routes/blueprints/detail/blueprint-detail.component.ts`
+     - `src/app/routes/blueprints/branches/branch-management.component.ts`
+     - `src/app/routes/blueprints/branches/branch-detail.component.ts`
+     - `src/app/routes/blueprints/pull-requests/pull-request-list.component.ts`
+     - `src/app/routes/blueprints/pull-requests/pull-request-detail.component.ts`
+     - `src/app/routes/blueprints/pull-requests/pull-request-merge.component.ts`
+
+2. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
 
 ## 🚧 進行中的任務詳情
 
@@ -463,7 +524,7 @@ Edge Function 調用服務創建（Supabase Edge Function 客戶端封裝）[⏳
 - Service 層：🚧 80%（4/5 任務）
 - Git-like 分支模型：🚧 80%（4/5 任務）
 - 權限與安全：✅ 100%（3/3 任務）
-- 頁面組件：🚧 70%（10/14 任務）
+- 頁面組件：🚧 79%（11/14 任務，藍圖設置頁面已完成）
 - 測試：⏳ 0%（0/8 任務）
 - 文檔：🚧 33%（1/3 任務）
 

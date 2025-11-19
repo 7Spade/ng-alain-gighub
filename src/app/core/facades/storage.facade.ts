@@ -238,7 +238,9 @@ export class StorageFacade {
     this.lastOperationState.set('download_file');
 
     try {
-      const { data, error } = await this.supabase.client.storage.from(bucket).download(options.path, options.transform);
+      const { data, error } = await this.supabase.client.storage
+        .from(bucket)
+        .download(options.path, options.transform ? { transform: options.transform } : undefined);
 
       if (error) {
         throw error;
@@ -357,7 +359,7 @@ export class StorageFacade {
    * @param expiresIn Expiration time in seconds (default: 3600)
    * @returns Promise<string> Signed URL
    */
-  async createSignedUrl(bucket: string, path: string, expiresIn: number = 3600): Promise<string> {
+  async createSignedUrl(bucket: string, path: string, expiresIn = 3600): Promise<string> {
     this.lastOperationState.set('create_signed_url');
 
     try {
@@ -390,7 +392,7 @@ export class StorageFacade {
    * @param expiresIn Expiration time in seconds
    * @returns Promise<Record<string, string>> Map of path to signed URL
    */
-  async createSignedUrls(bucket: string, paths: string[], expiresIn: number = 3600): Promise<Record<string, string>> {
+  async createSignedUrls(bucket: string, paths: string[], expiresIn = 3600): Promise<Record<string, string>> {
     this.lastOperationState.set('create_signed_urls_batch');
 
     const urls: Record<string, string> = {};
@@ -437,7 +439,7 @@ export class StorageFacade {
    */
   async listFiles(
     bucket: string,
-    path: string = '',
+    path = '',
     options?: {
       limit?: number;
       offset?: number;
@@ -455,9 +457,9 @@ export class StorageFacade {
 
       return data.map(file => ({
         path: path ? `${path}/${file.name}` : file.name,
-        size: file.metadata?.size || 0,
+        size: file.metadata?.['size'] || 0,
         lastModified: new Date(file.updated_at || file.created_at),
-        contentType: file.metadata?.mimetype,
+        contentType: file.metadata?.['mimetype'],
         bucket
       }));
     } catch (error) {

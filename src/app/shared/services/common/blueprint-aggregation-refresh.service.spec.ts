@@ -1,8 +1,9 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { BlueprintAggregationRefreshService, RefreshReason } from './blueprint-aggregation-refresh.service';
-import { RealtimeFacade } from '../../../core/facades/realtime.facade';
-import { ErrorStateService } from './error-state.service';
 import { take } from 'rxjs/operators';
+
+import { BlueprintAggregationRefreshService, RefreshReason } from './blueprint-aggregation-refresh.service';
+import { ErrorStateService } from './error-state.service';
+import { RealtimeFacade } from '../../../core/facades/realtime.facade';
 
 describe('BlueprintAggregationRefreshService', () => {
   let service: BlueprintAggregationRefreshService;
@@ -78,10 +79,7 @@ describe('BlueprintAggregationRefreshService', () => {
       });
 
       expect(mockRealtimeFacade.subscribeToTable).toHaveBeenCalledTimes(1);
-      expect(mockRealtimeFacade.subscribeToTable).toHaveBeenCalledWith(
-        jasmine.objectContaining({ table: 'tasks' }),
-        jasmine.any(Function)
-      );
+      expect(mockRealtimeFacade.subscribeToTable).toHaveBeenCalledWith(jasmine.objectContaining({ table: 'tasks' }), jasmine.any(Function));
     });
 
     it('should track active blueprints', () => {
@@ -125,9 +123,12 @@ describe('BlueprintAggregationRefreshService', () => {
     it('should emit refresh events', fakeAsync(() => {
       let receivedEvent: any = null;
 
-      service.listen().pipe(take(1)).subscribe(event => {
-        receivedEvent = event;
-      });
+      service
+        .listen()
+        .pipe(take(1))
+        .subscribe(event => {
+          receivedEvent = event;
+        });
 
       service.triggerRefresh('blueprint-123', 'manual');
 
@@ -198,9 +199,12 @@ describe('BlueprintAggregationRefreshService', () => {
     it('should manually trigger refresh', fakeAsync(() => {
       let receivedEvent: any = null;
 
-      service.listen().pipe(take(1)).subscribe(event => {
-        receivedEvent = event;
-      });
+      service
+        .listen()
+        .pipe(take(1))
+        .subscribe(event => {
+          receivedEvent = event;
+        });
 
       service.triggerRefresh('blueprint-456', 'manual', { source: 'user-action' });
 
@@ -273,9 +277,12 @@ describe('BlueprintAggregationRefreshService', () => {
     it('should emit task change events', fakeAsync(() => {
       let receivedEvent: any = null;
 
-      service.listen().pipe(take(1)).subscribe(event => {
-        receivedEvent = event;
-      });
+      service
+        .listen()
+        .pipe(take(1))
+        .subscribe(event => {
+          receivedEvent = event;
+        });
 
       service.setupRealtimeSubscriptions('blueprint-123');
 
@@ -300,9 +307,12 @@ describe('BlueprintAggregationRefreshService', () => {
     it('should emit document change events', fakeAsync(() => {
       let receivedEvent: any = null;
 
-      service.listen().pipe(take(1)).subscribe(event => {
-        receivedEvent = event;
-      });
+      service
+        .listen()
+        .pipe(take(1))
+        .subscribe(event => {
+          receivedEvent = event;
+        });
 
       service.setupRealtimeSubscriptions('blueprint-123');
 
@@ -323,15 +333,16 @@ describe('BlueprintAggregationRefreshService', () => {
     it('should emit quality check change events', fakeAsync(() => {
       let receivedEvent: any = null;
 
-      service.listen().pipe(take(1)).subscribe(event => {
-        receivedEvent = event;
-      });
+      service
+        .listen()
+        .pipe(take(1))
+        .subscribe(event => {
+          receivedEvent = event;
+        });
 
       service.setupRealtimeSubscriptions('blueprint-123');
 
-      const qcCall = mockRealtimeFacade.subscribeToTable.calls
-        .all()
-        .find(call => call.args[0].table === 'quality_checks');
+      const qcCall = mockRealtimeFacade.subscribeToTable.calls.all().find(call => call.args[0].table === 'quality_checks');
       const qcCallback = qcCall?.args[1];
 
       qcCallback?.({
@@ -348,9 +359,12 @@ describe('BlueprintAggregationRefreshService', () => {
     it('should emit issue change events', fakeAsync(() => {
       let receivedEvent: any = null;
 
-      service.listen().pipe(take(1)).subscribe(event => {
-        receivedEvent = event;
-      });
+      service
+        .listen()
+        .pipe(take(1))
+        .subscribe(event => {
+          receivedEvent = event;
+        });
 
       service.setupRealtimeSubscriptions('blueprint-123');
 
@@ -369,3 +383,4 @@ describe('BlueprintAggregationRefreshService', () => {
     }));
   });
 });
+

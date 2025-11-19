@@ -1,15 +1,15 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import { IssueService } from '@shared/services/issue/issue.service';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
+import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.models';
 import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
-import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model';
+import { ErrorStateService } from '@shared/services/common/error-state.service';
+import { IssueService } from '@shared/services/issue/issue.service';
 
 /**
  * IssueFacade - Enterprise issue tracking facade
- * 
+ *
  * Provides complete issue management with cross-branch synchronization.
  * Follows Angular 20 Signal patterns with automatic cleanup.
- * 
+ *
  * Features:
  * - Issue CRUD operations with Signal state management
  * - Priority and severity management
@@ -20,11 +20,11 @@ import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model
  * - Computed signals for filtered views and statistics
  * - Activity logging via BlueprintActivityService
  * - ErrorStateService integration for centralized error handling
- * 
+ *
  * @example
  * ```typescript
  * const facade = inject(IssueFacade);
- * 
+ *
  * // Create issue
  * const issue = await facade.createIssue({
  *   title: 'Concrete crack detected',
@@ -34,13 +34,13 @@ import type { Issue, IssueInsert, IssueUpdate } from '@shared/models/issue.model
  *   blueprint_id: 'bp-123',
  *   branch_id: 'branch-456'
  * });
- * 
+ *
  * // Assign issue
  * await facade.assignIssue(issue.id, userId, 'user');
- * 
+ *
  * // Sync to main
  * await facade.syncToMainBranch(issue.id);
- * 
+ *
  * // Monitor state
  * effect(() => {
  *   console.log('Open issues:', facade.openIssues());
@@ -61,21 +61,13 @@ export class IssueFacade implements OnDestroy {
   readonly lastOperation = signal<string>('');
 
   // Computed signals
-  readonly openIssues = computed(() =>
-    this.issues().filter(issue => issue.status === 'open')
-  );
+  readonly openIssues = computed(() => this.issues().filter(issue => issue.status === 'open'));
 
-  readonly closedIssues = computed(() =>
-    this.issues().filter(issue => issue.status === 'closed')
-  );
+  readonly closedIssues = computed(() => this.issues().filter(issue => issue.status === 'closed'));
 
-  readonly criticalIssues = computed(() =>
-    this.issues().filter(issue => issue.severity === 'critical' && issue.status === 'open')
-  );
+  readonly criticalIssues = computed(() => this.issues().filter(issue => issue.severity === 'critical' && issue.status === 'open'));
 
-  readonly highPriorityIssues = computed(() =>
-    this.issues().filter(issue => issue.priority === 'high' && issue.status === 'open')
-  );
+  readonly highPriorityIssues = computed(() => this.issues().filter(issue => issue.priority === 'high' && issue.status === 'open'));
 
   readonly issuesByStatus = computed(() => {
     const issues = this.issues();
@@ -102,7 +94,7 @@ export class IssueFacade implements OnDestroy {
     const open = this.openIssues();
     const critical = this.criticalIssues();
     const highPriority = this.highPriorityIssues();
-    
+
     return {
       total: issues.length,
       open: open.length,
@@ -140,7 +132,7 @@ export class IssueFacade implements OnDestroy {
   async loadIssues(): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssues');
-    
+
     try {
       const issues = await this.issueService.getAllIssues();
       this.issues.set(issues);
@@ -149,7 +141,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to load issues',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssues', error }
+        context: 'IssueFacade.loadIssues'
       });
       throw error;
     } finally {
@@ -163,16 +155,18 @@ export class IssueFacade implements OnDestroy {
   async loadIssuesByBlueprint(blueprintId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssuesByBlueprint');
-    
+
     try {
-      const issues = await this.issueService.getIssuesByBlueprint(blueprintId);
-      this.issues.set(issues);
+      // Service method returns void, state is managed via Signals
+      await this.issueService.loadIssuesByBlueprint(blueprintId);
+      // Get data from service state
+      this.issues.set(this.issueService.issues());
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load blueprint issues',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssuesByBlueprint', blueprintId, error }
+        context: `IssueFacade.loadIssuesByBlueprint: ${blueprintId}`
       });
       throw error;
     } finally {
@@ -186,16 +180,18 @@ export class IssueFacade implements OnDestroy {
   async loadIssuesByBranch(branchId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssuesByBranch');
-    
+
     try {
-      const issues = await this.issueService.getIssuesByBranch(branchId);
-      this.issues.set(issues);
+      // Service method returns void, state is managed via Signals
+      await this.issueService.loadIssuesByBranch(branchId);
+      // Get data from service state
+      this.issues.set(this.issueService.issues());
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to load branch issues',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssuesByBranch', branchId, error }
+        context: `IssueFacade.loadIssuesByBranch: ${branchId}`
       });
       throw error;
     } finally {
@@ -209,11 +205,11 @@ export class IssueFacade implements OnDestroy {
   async loadIssueById(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('loadIssueById');
-    
+
     try {
       const issue = await this.issueService.getIssueById(id);
       this.selectedIssue.set(issue);
-      
+
       // Add to issues list if not already present
       const current = this.issues();
       if (!current.find(i => i.id === id)) {
@@ -224,7 +220,7 @@ export class IssueFacade implements OnDestroy {
         message: 'Failed to load issue',
         category: 'Network',
         severity: 'error',
-        context: { operation: 'loadIssueById', id, error }
+        context: `IssueFacade.loadIssueById: ${id}`
       });
       throw error;
     } finally {
@@ -238,30 +234,24 @@ export class IssueFacade implements OnDestroy {
   async createIssue(data: IssueInsert): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('createIssue');
-    
+
     try {
       const issue = await this.issueService.createIssue(data);
-      
+
       // Update state
       this.issues.set([...this.issues(), issue]);
       this.selectedIssue.set(issue);
-      
+
       // Log activity
-      await this.activityService.logActivity({
-        blueprintId: data.blueprint_id,
-        resourceType: 'issue',
-        resourceId: issue.id,
-        action: 'created',
-        changes: []
-      });
-      
+      await this.activityService.logActivity(data.blueprint_id, 'issue', issue.id, 'created', []);
+
       return issue;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to create issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'createIssue', data, error }
+        context: 'IssueFacade.createIssue'
       });
       throw error;
     } finally {
@@ -275,35 +265,29 @@ export class IssueFacade implements OnDestroy {
   async updateIssue(id: string, data: IssueUpdate): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('updateIssue');
-    
+
     try {
       const oldIssue = this.issues().find(i => i.id === id);
       const issue = await this.issueService.updateIssue(id, data);
-      
+
       // Update state
-      const issues = this.issues().map(i => i.id === id ? issue : i);
+      const issues = this.issues().map(i => (i.id === id ? issue : i));
       this.issues.set(issues);
-      
+
       if (this.selectedIssue()?.id === id) {
         this.selectedIssue.set(issue);
       }
-      
+
       // Log activity
-      await this.activityService.logActivity({
-        blueprintId: issue.blueprint_id,
-        resourceType: 'issue',
-        resourceId: issue.id,
-        action: 'updated',
-        changes: []
-      });
-      
+      await this.activityService.logActivity(issue.blueprint_id, 'issue', issue.id, 'updated', []);
+
       return issue;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to update issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'updateIssue', id, data, error }
+        context: `IssueFacade.updateIssue: ${id}`
       });
       throw error;
     } finally {
@@ -317,34 +301,28 @@ export class IssueFacade implements OnDestroy {
   async deleteIssue(id: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('deleteIssue');
-    
+
     try {
       const issue = this.issues().find(i => i.id === id);
       await this.issueService.deleteIssue(id);
-      
+
       // Update state
       this.issues.set(this.issues().filter(i => i.id !== id));
-      
+
       if (this.selectedIssue()?.id === id) {
         this.selectedIssue.set(null);
       }
-      
+
       // Log activity
       if (issue) {
-        await this.activityService.logActivity({
-          blueprintId: issue.blueprint_id,
-          resourceType: 'issue',
-          resourceId: id,
-          action: 'deleted',
-          changes: []
-        });
+        await this.activityService.logActivity(issue.blueprint_id, 'issue', id, 'deleted', []);
       }
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to delete issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'deleteIssue', id, error }
+        context: `IssueFacade.deleteIssue: ${id}`
       });
       throw error;
     } finally {
@@ -355,41 +333,43 @@ export class IssueFacade implements OnDestroy {
   /**
    * Assign issue to user/team/organization
    */
-  async assignIssue(
-    issueId: string,
-    assigneeId: string,
-    assigneeType: 'user' | 'team' | 'organization'
-  ): Promise<Issue> {
+  async assignIssue(issueId: string, assigneeId: string, assigneeType: 'user' | 'team' | 'organization'): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('assignIssue');
-    
+
     try {
-      const issue = await this.issueService.assignIssue(issueId, assigneeId, assigneeType);
-      
-      // Update state
-      const issues = this.issues().map(i => i.id === issueId ? issue : i);
-      this.issues.set(issues);
-      
-      if (this.selectedIssue()?.id === issueId) {
-        this.selectedIssue.set(issue);
+      // Get the issue first to access blueprint_id
+      const currentIssue = this.issues().find(i => i.id === issueId);
+      if (!currentIssue) {
+        throw new Error('Issue not found');
       }
-      
-      // Log activity
-      await this.activityService.logActivity({
-        blueprintId: issue.blueprint_id,
-        resourceType: 'issue',
-        resourceId: issueId,
-        action: 'assigned',
-        changes: [{ field: 'assignee', oldValue: null, newValue: assigneeId }]
-      });
-      
-      return issue;
+
+      const assignment = await this.issueService.assignIssueToUser(issueId, assigneeId, assigneeType);
+
+      // Reload the issue to get updated state
+      await this.loadIssueById(issueId);
+      const issue = this.selectedIssue();
+
+      if (issue) {
+        // Update state
+        const issues = this.issues().map(i => (i.id === issueId ? issue : i));
+        this.issues.set(issues);
+
+        // Log activity
+        await this.activityService.logActivity(currentIssue.blueprint_id, 'issue', issueId, 'assigned', [
+          { field: 'assignee', oldValue: null, newValue: assigneeId }
+        ]);
+
+        return issue;
+      }
+
+      throw new Error('Failed to reload issue after assignment');
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to assign issue',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'assignIssue', issueId, assigneeId, assigneeType, error }
+        context: `IssueFacade.assignIssue: ${issueId}`
       });
       throw error;
     } finally {
@@ -399,31 +379,33 @@ export class IssueFacade implements OnDestroy {
 
   /**
    * Add tag to issue
+   *
+   * @deprecated Tags feature not implemented in database. Issue table does not have tags field.
+   * This method is kept for future implementation.
    */
   async addTag(issueId: string, tag: string): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('addTag');
-    
+
     try {
       const issue = this.issues().find(i => i.id === issueId);
       if (!issue) throw new Error('Issue not found');
-      
-      const currentTags = issue.tags || [];
-      if (currentTags.includes(tag)) {
-        return issue; // Tag already exists
-      }
-      
-      const updatedIssue = await this.updateIssue(issueId, {
-        tags: [...currentTags, tag]
-      });
-      
-      return updatedIssue;
+
+      // Tags feature not implemented in database
+      // TODO: Implement tags table or add tags field to issues table
+      throw new Error('Tags feature not implemented. Database does not support tags field.');
+
+      // Placeholder for future implementation
+      // const updatedIssue = await this.updateIssue(issueId, {
+      //   tags: [...currentTags, tag]
+      // });
+      // return updatedIssue;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to add tag',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'addTag', issueId, tag, error }
+        context: `IssueFacade.addTag: ${issueId}`
       });
       throw error;
     } finally {
@@ -433,27 +415,34 @@ export class IssueFacade implements OnDestroy {
 
   /**
    * Remove tag from issue
+   *
+   * @deprecated Tags feature not implemented in database. Issue table does not have tags field.
+   * This method is kept for future implementation.
    */
   async removeTag(issueId: string, tag: string): Promise<Issue> {
     this.loading.set(true);
     this.lastOperation.set('removeTag');
-    
+
     try {
       const issue = this.issues().find(i => i.id === issueId);
       if (!issue) throw new Error('Issue not found');
-      
-      const currentTags = issue.tags || [];
-      const updatedIssue = await this.updateIssue(issueId, {
-        tags: currentTags.filter(t => t !== tag)
-      });
-      
-      return updatedIssue;
+
+      // Tags feature not implemented in database
+      // TODO: Implement tags table or add tags field to issues table
+      throw new Error('Tags feature not implemented. Database does not support tags field.');
+
+      // Placeholder for future implementation
+      // const currentTags = issue.tags || [];
+      // const updatedIssue = await this.updateIssue(issueId, {
+      //   tags: currentTags.filter((t: string) => t !== tag)
+      // });
+      // return updatedIssue;
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to remove tag',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'removeTag', issueId, tag, error }
+        context: `IssueFacade.removeTag: ${issueId}`
       });
       throw error;
     } finally {
@@ -467,29 +456,23 @@ export class IssueFacade implements OnDestroy {
   async syncToMainBranch(issueId: string): Promise<void> {
     this.loading.set(true);
     this.lastOperation.set('syncToMainBranch');
-    
+
     try {
       await this.issueService.syncIssueToMain(issueId);
-      
+
       // Reload issue to get updated sync status
       await this.loadIssueById(issueId);
-      
+
       const issue = this.selectedIssue();
       if (issue) {
-        await this.activityService.logActivity({
-          blueprintId: issue.blueprint_id,
-          resourceType: 'issue',
-          resourceId: issueId,
-          action: 'synced_to_main',
-          changes: []
-        });
+        await this.activityService.logActivity(issue.blueprint_id, 'issue', issueId, 'synced_to_main', []);
       }
     } catch (error) {
       this.errorStateService.addError({
         message: 'Failed to sync issue to main branch',
         category: 'BusinessLogic',
         severity: 'error',
-        context: { operation: 'syncToMainBranch', issueId, error }
+        context: `IssueFacade.syncToMainBranch: ${issueId}`
       });
       throw error;
     } finally {
@@ -500,11 +483,11 @@ export class IssueFacade implements OnDestroy {
   /**
    * Close issue
    */
-  async closeIssue(issueId: string, resolution?: string): Promise<Issue> {
+  async closeIssue(issueId: string, resolutionNote?: string): Promise<Issue> {
     return this.updateIssue(issueId, {
       status: 'closed',
-      resolution,
-      resolved_at: new Date()
+      resolution_note: resolutionNote || null,
+      resolved_at: new Date().toISOString()
     });
   }
 
@@ -514,7 +497,7 @@ export class IssueFacade implements OnDestroy {
   async reopenIssue(issueId: string): Promise<Issue> {
     return this.updateIssue(issueId, {
       status: 'open',
-      resolution: null,
+      resolution_note: null,
       resolved_at: null
     });
   }
@@ -558,8 +541,16 @@ export class IssueFacade implements OnDestroy {
 
   /**
    * Filter issues by assignee
+   *
+   * @deprecated Issues table does not have assigned_to field. Assignment is managed via issue_assignments table.
+   * Use IssueService.getIssueAssignments() or query issue_assignments table directly.
    */
   filterByAssignee(assigneeId: string): Issue[] {
-    return this.issues().filter(issue => issue.assigned_to === assigneeId);
+    // Issues table does not have assigned_to field
+    // Assignment is managed via issue_assignments table (many-to-many relationship)
+    // TODO: Implement proper filtering using issue_assignments table
+    // For now, return empty array as placeholder
+    console.warn('filterByAssignee: Issues table does not have assigned_to field. Use issue_assignments table instead.');
+    return [];
   }
 }

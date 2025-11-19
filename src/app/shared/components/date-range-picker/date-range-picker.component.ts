@@ -40,28 +40,13 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
       @if (showQuickSelect()) {
         <div class="quick-select">
           <div class="button-group">
-            <button
-              nz-button
-              nzSize="small"
-              [nzType]="selectedQuick() === 'today' ? 'primary' : 'default'"
-              (click)="selectQuick('today')"
-            >
+            <button nz-button nzSize="small" [nzType]="selectedQuick() === 'today' ? 'primary' : 'default'" (click)="selectQuick('today')">
               今天
             </button>
-            <button
-              nz-button
-              nzSize="small"
-              [nzType]="selectedQuick() === 'week' ? 'primary' : 'default'"
-              (click)="selectQuick('week')"
-            >
+            <button nz-button nzSize="small" [nzType]="selectedQuick() === 'week' ? 'primary' : 'default'" (click)="selectQuick('week')">
               本周
             </button>
-            <button
-              nz-button
-              nzSize="small"
-              [nzType]="selectedQuick() === 'month' ? 'primary' : 'default'"
-              (click)="selectQuick('month')"
-            >
+            <button nz-button nzSize="small" [nzType]="selectedQuick() === 'month' ? 'primary' : 'default'" (click)="selectQuick('month')">
               本月
             </button>
             <button
@@ -72,12 +57,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
             >
               本季
             </button>
-            <button
-              nz-button
-              nzSize="small"
-              [nzType]="selectedQuick() === 'year' ? 'primary' : 'default'"
-              (click)="selectQuick('year')"
-            >
+            <button nz-button nzSize="small" [nzType]="selectedQuick() === 'year' ? 'primary' : 'default'" (click)="selectQuick('year')">
               今年
             </button>
           </div>
@@ -163,7 +143,7 @@ export class DateRangePickerComponent {
   handleRangeChange(dates: [Date, Date] | null): void {
     this.dateRangeState.set(dates);
     this.selectedQuick.set(null); // 清除快速选择状态
-    
+
     if (dates) {
       this.rangeChange.emit([dates[0], dates[1]]);
     } else {
@@ -184,30 +164,30 @@ export class DateRangePickerComponent {
         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
         break;
-      
+
       case 'week':
         const dayOfWeek = now.getDay();
         const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 周一为第一天
         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
         endDate = now;
         break;
-      
+
       case 'month':
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         endDate = now;
         break;
-      
+
       case 'quarter':
         const quarter = Math.floor(now.getMonth() / 3);
         startDate = new Date(now.getFullYear(), quarter * 3, 1);
         endDate = now;
         break;
-      
+
       case 'year':
         startDate = new Date(now.getFullYear(), 0, 1);
         endDate = now;
         break;
-      
+
       default:
         return;
     }

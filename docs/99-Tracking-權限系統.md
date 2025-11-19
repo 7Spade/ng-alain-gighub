@@ -4,7 +4,7 @@
 > **格式**：一行一個任務[狀態]  
 > **狀態標記**：✅已完成、🚧進行中、⏳待開始、🧊阻塞
 
-**最後更新**：2025-01-15  
+**最後更新**：2025-01-15（骨架組件改進完成 - 補充遺漏組件）  
 **維護者**：開發團隊  
 **模組編號**：M3  
 **資料表數量**：5 張  
@@ -38,6 +38,33 @@
 - **權限同步**：自動同步到 @delon/acl ACLService
 
 ---
+
+## 📊 模組資訊
+
+### 架構層級完成情況
+
+#### Routes Layer（業務層）
+- ✅ **頁面組件骨架**：4/4 組件骨架完成（100%）
+- ✅ **頁面組件功能**：4/4 組件功能完成（100%）
+
+#### Shared Layer（共享層）
+- ✅ **Services（業務服務）**：3/3 服務完成（100%）
+  - ✅ PermissionService
+  - ✅ RoleService
+  - ✅ BranchPermissionService
+- ✅ **Models（數據模型）**：5 張表的類型定義完成（100%）
+
+#### Core Layer（基礎設施層）
+- ⏳ **Facades（門面層）**：0/1 Facade 完成（0%）
+  - ⏳ PermissionFacade（權限 Facade，待實施）
+- ✅ **Services（核心服務）**：無（權限系統使用 Shared Services）
+- ✅ **Repositories（數據訪問層）**：5/5 Repository 完成（100%）
+  - ✅ PermissionRepository
+  - ✅ RoleRepository
+  - ✅ RolePermissionRepository
+  - ✅ BranchPermissionRepository
+  - ✅ UserRoleRepository
+- ✅ **SupabaseService（數據庫客戶端）**：已完成（基礎設施）
 
 ## 📅 進度管理
 
@@ -127,9 +154,13 @@ RoleService 檢查用戶角色[✅已完成]
 分支權限級別管理（OWNER/ADMIN/WRITE/READ）[✅已完成]
 分支權限檢查（canPerformAction）[✅已完成]
 
-#### Facade 层（Core）
+#### Core Layer - Facades（門面層）
+
+**依賴關係**：Facades → Services → Repositories → SupabaseService
 
 PermissionFacade 實施（core/facades/permission.facade.ts）[⏳待開始]
+- **依賴**：PermissionService, RoleService, BranchPermissionService（Shared Layer）
+- **依賴**：BlueprintActivityService, ErrorStateService（Shared Layer）
 PermissionFacade Signals 狀態管理[⏳待開始]
 PermissionFacade 權限檢查管理（can, canAny, canAll, canAccessBlueprint）[⏳待開始]
 PermissionFacade 角色管理（getRoles, getUserRoles, hasRole）[⏳待開始]
@@ -141,6 +172,21 @@ PermissionFacade 統計功能（permissionStats, roleStats）[⏳待開始]
 PermissionFacade 活動記錄整合（BlueprintActivityService）[⏳待開始]
 PermissionFacade 錯誤處理整合（ErrorStateService）[⏳待開始]
 更新 core/index.ts 導出 PermissionFacade[⏳待開始]
+
+#### Core Layer - Repositories（數據訪問層）
+
+**依賴關係**：Repositories → SupabaseService → Supabase
+
+✅ **已完成**：5/5 Repository（100%）
+- ✅ PermissionRepository（依賴 SupabaseService）
+- ✅ RoleRepository（依賴 SupabaseService）
+- ✅ RolePermissionRepository（依賴 SupabaseService）
+- ✅ BranchPermissionRepository（依賴 SupabaseService）
+- ✅ UserRoleRepository（依賴 SupabaseService）
+
+#### Core Layer - SupabaseService（數據庫客戶端）
+
+✅ **已完成**：SupabaseService 基礎設施已完成（core/infra/supabase.service.ts）
 
 ### Repository 層
 
@@ -247,6 +293,22 @@ RLS 策略開發指南（已存在，需與權限系統整合）[✅已完成]
 - ✅ **分支權限管理**：實現分支權限級別管理（OWNER/ADMIN/WRITE/READ）
 - ✅ **RLS 策略文檔更新**：完成 RLS 策略文檔
 - 🚧 **PermissionGuardComponent 完善**：權限檢查邏輯待完善
+
+### 2025-01-15：骨架組件改進完成 - 補充遺漏組件
+
+- ✅ **分支權限管理頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（權限級別、分支），使用 computed 實現響應式過濾
+- ✅ **權限分配頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（狀態、資源類型），使用 computed 實現響應式過濾，支持權限申請和審批流程
+- ✅ **角色管理頁面改進**：添加完整的表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（類型），使用 computed 實現響應式過濾，系統角色不可編輯和刪除
+- ✅ **權限矩陣頁面改進**：添加完整的矩陣表格骨架結構（st 表格、篩選器、操作按鈕），實現篩選功能（模組），使用 computed 實現響應式過濾，支持權限標籤顯示和導出功能
+- ✅ **所有組件符合企業標準**：OnPush 變更檢測、Signals 狀態管理、類型安全、錯誤處理、內聯模板
+
+### 2025-01-15：代碼審查改進建議
+
+#### ⚠️ 代碼質量改進
+
+1. **內聯樣式改進**：
+   - **問題**：組件中大量使用 `style="..."` 內聯樣式
+   - **建議**：將內聯樣式提取到組件的 `styles` 數組中
 
 ### 待完成階段
 

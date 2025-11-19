@@ -266,4 +266,74 @@ export class CollaborationService {
     this.selectedCollaborationState.set(null);
     this.errorState.set(null);
   }
+
+  // ============================================================================
+  // Adapter Methods (Facade Compatibility Layer)
+  // These methods provide backward compatibility for facades expecting different API patterns
+  // TODO: Refactor facades to use standard load* methods and remove these adapters
+  // ============================================================================
+
+  /**
+   * Get all collaborations (Adapter)
+   *
+   * @deprecated Use loadCollaborations() and access collaborations() signal instead
+   * This is an adapter method for facade compatibility
+   */
+  async getAllCollaborations(): Promise<OrganizationCollaboration[]> {
+    await this.loadCollaborations();
+    return this.collaborations();
+  }
+
+  /**
+   * Get collaborations by blueprint (Adapter)
+   *
+   * @deprecated Use loadCollaborationsByBlueprintId() instead
+   * This is an adapter method for facade compatibility
+   */
+  async getCollaborationsByBlueprint(blueprintId: string): Promise<OrganizationCollaboration[]> {
+    return await this.loadCollaborationsByBlueprintId(blueprintId);
+  }
+
+  /**
+   * Get collaboration by ID (Adapter)
+   *
+   * @deprecated Use loadCollaborationById() instead
+   * This is an adapter method for facade compatibility
+   */
+  async getCollaborationById(id: string): Promise<OrganizationCollaboration | null> {
+    return await this.loadCollaborationById(id);
+  }
+
+  /**
+   * Send invitation (Adapter)
+   *
+   * @deprecated To be implemented properly in future refactoring
+   * This is a stub adapter method for facade compatibility
+   */
+  async sendInvitation(collaborationId: string, invitedOrgId: string): Promise<void> {
+    // TODO: Implement invitation logic when invitation system is ready
+    console.warn('sendInvitation is not yet implemented');
+  }
+
+  /**
+   * Accept invitation (Adapter)
+   *
+   * @deprecated To be implemented properly in future refactoring
+   * This is a stub adapter method for facade compatibility
+   */
+  async acceptInvitation(invitationId: string): Promise<void> {
+    // TODO: Implement invitation acceptance logic
+    console.warn('acceptInvitation is not yet implemented');
+  }
+
+  /**
+   * Reject invitation (Adapter)
+   *
+   * @deprecated To be implemented properly in future refactoring
+   * This is a stub adapter method for facade compatibility
+   */
+  async rejectInvitation(invitationId: string): Promise<void> {
+    // TODO: Implement invitation rejection logic
+    console.warn('rejectInvitation is not yet implemented');
+  }
 }
