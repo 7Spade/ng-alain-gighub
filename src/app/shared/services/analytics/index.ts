@@ -20,22 +20,22 @@
  */
 
 // 按模块导出
-export * from './account';
-export * from './auth';
-export * from './collaboration';
-export * from './blueprint';
-export * from './task';
-export * from './quality';
-export * from './todo';
-export * from './permission';
-export * from './issue';
-export * from './document';
-export * from './bot';
-export * from './system';
-export * from './common';
+export * from '../account';
+export * from '../auth';
+export * from '../blueprint';
+export * from '../bot';
+export * from '../collaboration';
+export * from '../common';
+export * from '../document';
+export * from '../issue';
+export * from '../permission';
+export * from '../quality';
+export * from '../system';
+export * from '../task';
+export * from '../todo';
 
 // Supabase adapter
-export * from './supabase-adapter.service';
+export * from '../supabase-adapter.service';
 
 // Analytics service
 export * from './analytics.service';
