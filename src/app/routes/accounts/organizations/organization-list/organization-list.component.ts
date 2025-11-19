@@ -4,6 +4,9 @@ import { AppError } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { Account, AccountService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+
+import { OrganizationDeleteComponent, OrganizationDeleteData } from '../organization-delete/organization-delete.component';
 
 @Component({
   selector: 'app-organization-list',
@@ -49,6 +52,7 @@ export class OrganizationListComponent implements OnInit {
   accountService = inject(AccountService);
   router = inject(Router);
   message = inject(NzMessageService);
+  modal = inject(NzModalService);
 
   organizations = this.accountService.organizationAccounts;
   loading = this.accountService.loading;
@@ -114,7 +118,8 @@ export class OrganizationListComponent implements OnInit {
     }
   }
 
-  onTableChange(event: any): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onTableChange(_event: unknown): void {
     // 处理表格变化事件（分页、排序等）
   }
 
@@ -136,28 +141,24 @@ export class OrganizationListComponent implements OnInit {
   }
 
   async delete(id: string): Promise<void> {
-    try {
-      await this.accountService.deleteAccount(id);
-      this.message.success('删除成功');
-      await this.loadOrganizations();
-    } catch (error) {
-      // 显示详细的错误信息
-      let errorMessage = '删除失败';
+    const organization = this.organizations().find(org => org.id === id);
+    const organizationName = organization?.name || id;
 
-      if (error instanceof Error) {
-        const appError = error as AppError;
-        if (appError.type && appError.severity) {
-          errorMessage = appError.message || errorMessage;
-          if (appError.details) {
-            errorMessage += `: ${appError.details}`;
-          }
-        } else {
-          errorMessage = error.message || errorMessage;
-        }
+    const modalRef = this.modal.create({
+      nzTitle: '刪除組織',
+      nzContent: OrganizationDeleteComponent,
+      nzData: {
+        organizationId: id,
+        organizationName
+      } as OrganizationDeleteData,
+      nzWidth: 600,
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe(result => {
+      if (result) {
+        this.loadOrganizations();
       }
-
-      console.error('删除失败:', error);
-      this.message.error(errorMessage, { nzDuration: 5000 });
-    }
+    });
   }
 }

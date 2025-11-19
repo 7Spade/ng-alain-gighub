@@ -1,22 +1,44 @@
 {
-  "app": {
-    "name": "NG-ALAIN",
-    "description": "Ng-zorro admin panel front-end framework"
-  },
-  "menu": [
+  "teams": [
     {
-      "text": "Formal",
-      "i18n": "menu.formal",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
-        {
-          "text": "Explore",
-          "i18n": "menu.formal.explore",
-          "icon": "anticon-search",
-          "link": "/explore"
-        }
-      ]
+      "id": "team-001",
+      "organization_id": "org-001",
+      "name": "前端開發團隊",
+      "description": "負責前端應用程式開發與維護",
+      "created_at": "2024-01-20T10:00:00.000Z",
+      "updated_at": "2024-01-20T10:00:00.000Z"
+    },
+    {
+      "id": "team-002",
+      "organization_id": "org-001",
+      "name": "後端開發團隊",
+      "description": "負責後端 API 開發與系統架構",
+      "created_at": "2024-01-20T10:30:00.000Z",
+      "updated_at": "2024-01-20T10:30:00.000Z"
+    },
+    {
+      "id": "team-003",
+      "organization_id": "org-002",
+      "name": "數位行銷團隊",
+      "description": "負責線上行銷活動策劃與執行",
+      "created_at": "2024-02-15T09:00:00.000Z",
+      "updated_at": "2024-02-15T09:00:00.000Z"
+    },
+    {
+      "id": "team-004",
+      "organization_id": "org-002",
+      "name": "內容創作團隊",
+      "description": "負責文案撰寫、影片製作與社群經營",
+      "created_at": "2024-02-15T09:30:00.000Z",
+      "updated_at": "2024-02-15T09:30:00.000Z"
+    },
+    {
+      "id": "team-005",
+      "organization_id": "org-004",
+      "name": "AI 研究團隊",
+      "description": "負責機器學習模型研發與實驗",
+      "created_at": "2024-03-25T11:00:00.000Z",
+      "updated_at": "2024-03-25T11:00:00.000Z"
     }
   ]
 }

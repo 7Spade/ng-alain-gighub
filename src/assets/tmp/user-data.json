@@ -1,23 +1,84 @@
 {
-  "app": {
-    "name": "NG-ALAIN",
-    "description": "Ng-zorro admin panel front-end framework"
-  },
-  "menu": [
+  "users": [
     {
-      "text": "Formal",
-      "i18n": "menu.formal",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
-        {
-          "text": "Explore",
-          "i18n": "menu.formal.explore",
-          "icon": "anticon-search",
-          "link": "/explore"
-        }
-      ]
+      "id": "user-001",
+      "type": "User",
+      "name": "張小明",
+      "email": "ming.zhang@example.com",
+      "status": "active",
+      "avatar_url": null,
+      "created_at": "2024-01-10T08:00:00.000Z",
+      "updated_at": "2024-01-10T08:00:00.000Z"
+    },
+    {
+      "id": "user-002",
+      "type": "User",
+      "name": "李美華",
+      "email": "meihua.li@example.com",
+      "status": "active",
+      "avatar_url": null,
+      "created_at": "2024-01-12T09:00:00.000Z",
+      "updated_at": "2024-01-12T09:00:00.000Z"
+    },
+    {
+      "id": "user-003",
+      "type": "User",
+      "name": "王大偉",
+      "email": "dawei.wang@example.com",
+      "status": "active",
+      "avatar_url": null,
+      "created_at": "2024-01-15T10:00:00.000Z",
+      "updated_at": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "user-004",
+      "type": "User",
+      "name": "陳雅婷",
+      "email": "yating.chen@example.com",
+      "status": "inactive",
+      "avatar_url": null,
+      "created_at": "2024-02-01T11:00:00.000Z",
+      "updated_at": "2024-02-01T11:00:00.000Z"
+    },
+    {
+      "id": "user-005",
+      "type": "User",
+      "name": "林志明",
+      "email": "zhiming.lin@example.com",
+      "status": "active",
+      "avatar_url": null,
+      "created_at": "2024-02-10T12:00:00.000Z",
+      "updated_at": "2024-02-10T12:00:00.000Z"
+    },
+    {
+      "id": "user-006",
+      "type": "User",
+      "name": "黃淑芬",
+      "email": "shufen.huang@example.com",
+      "status": "active",
+      "avatar_url": null,
+      "created_at": "2024-02-15T13:00:00.000Z",
+      "updated_at": "2024-02-15T13:00:00.000Z"
+    },
+    {
+      "id": "user-007",
+      "type": "User",
+      "name": "吳建國",
+      "email": "jianguo.wu@example.com",
+      "status": "suspended",
+      "avatar_url": null,
+      "created_at": "2024-03-01T14:00:00.000Z",
+      "updated_at": "2024-03-01T14:00:00.000Z"
+    },
+    {
+      "id": "user-008",
+      "type": "User",
+      "name": "鄭筱涵",
+      "email": "xiaohan.zheng@example.com",
+      "status": "active",
+      "avatar_url": null,
+      "created_at": "2024-03-10T15:00:00.000Z",
+      "updated_at": "2024-03-10T15:00:00.000Z"
     }
   ]
 }
-
