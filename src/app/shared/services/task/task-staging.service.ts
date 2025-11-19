@@ -317,4 +317,34 @@ export class TaskStagingService {
   clearError(): void {
     this.errorState.set(null);
   }
+
+  /**
+   * 載入藍圖的所有暫存記錄
+   *
+   * @param blueprintId 藍圖 ID
+   * @returns Promise<void>
+   */
+  async loadStagingByBlueprint(blueprintId: string): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const stagingItems = await firstValueFrom(this.taskStagingRepository.findByBlueprintId(blueprintId));
+
+      // 過濾出可撤回的記錄（48 小時內）
+      const now = new Date();
+      const withdrawable = stagingItems.filter(record => {
+        if (!record.expires_at || !record.can_withdraw) return false;
+        const expiresAt = new Date(record.expires_at);
+        return expiresAt > now;
+      });
+
+      this.stagingItemsState.set(withdrawable);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '載入暫存區數據失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
 }

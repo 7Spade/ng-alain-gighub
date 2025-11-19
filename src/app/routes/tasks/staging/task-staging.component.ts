@@ -1,10 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { TaskStagingRepository } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, TaskService, Task, TaskStaging, BlueprintService } from '@shared';
+import { SHARED_IMPORTS, TaskService, TaskStagingService, Task, TaskStaging, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-task-staging',
@@ -60,13 +58,15 @@ import { firstValueFrom } from 'rxjs';
 export class TaskStagingComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
-  private readonly taskStagingRepository = inject(TaskStagingRepository);
+  private readonly taskStagingService = inject(TaskStagingService);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
-  readonly loading = signal<boolean>(false);
-  readonly stagingRecords = signal<TaskStaging[]>([]);
+
+  // 使用 TaskStagingService 的 loading 和 stagingItems
+  readonly loading = this.taskStagingService.loading;
+  readonly stagingRecords = this.taskStagingService.stagingItems;
 
   readonly stagingTasks = computed(() => {
     const records = this.stagingRecords();
@@ -125,30 +125,14 @@ export class TaskStagingComponent implements OnInit {
     const blueprintId = this.selectedBlueprintId();
     if (!blueprintId) return;
 
-    this.loading.set(true);
     try {
-      // 先加载任务列表
+      // 先加載任務列表
       await this.taskService.loadTasksByBlueprint(blueprintId);
 
-      // 然后加载所有任务的暂存记录
-      const tasks = this.taskService.tasks();
-      const stagingPromises = tasks.map(task => firstValueFrom(this.taskStagingRepository.findByTaskId(task.id)));
-      const stagingArrays = await Promise.all(stagingPromises);
-      const allStaging = stagingArrays.flat();
-
-      // 过滤出可撤回的记录（48小时内）
-      const now = new Date();
-      const withdrawable = allStaging.filter(record => {
-        if (!record.expires_at || !record.can_withdraw) return false;
-        const expiresAt = new Date(record.expires_at);
-        return expiresAt > now;
-      });
-
-      this.stagingRecords.set(withdrawable);
+      // 然後使用 TaskStagingService 加載暫存記錄
+      await this.taskStagingService.loadStagingByBlueprint(blueprintId);
     } catch (error) {
-      this.message.error('加载暂存区数据失败');
-    } finally {
-      this.loading.set(false);
+      this.message.error('加載暫存區數據失敗');
     }
   }
 
@@ -157,45 +141,36 @@ export class TaskStagingComponent implements OnInit {
   }
 
   async withdraw(record: any): Promise<void> {
-    if (!record.can_withdraw) {
-      this.message.warning('该任务已不可撤回');
-      return;
-    }
-
-    // 检查是否在48小时内
-    const now = new Date();
-    const expiresAt = new Date(record.expires_at);
-    if (expiresAt <= now) {
-      this.message.warning('撤回时间已过（超过48小时）');
+    // 檢查是否可撤回（透過 Service）
+    const canWithdrawResult = await this.taskStagingService.canWithdraw(record.id);
+    if (!canWithdrawResult) {
+      this.message.warning('該任務已不可撤回或超過48小時');
       return;
     }
 
     try {
-      // 更新暂存记录状态
-      await firstValueFrom(
-        this.taskStagingRepository.update(record.id, {
-          can_withdraw: false,
-          confirmed_at: new Date().toISOString()
-        })
-      );
+      // TODO: 獲取當前用戶 ID（應該從 AuthService 獲取）
+      const currentUserId = record.submitted_by; // 臨時使用提交者 ID
 
-      // 更新任务状态，将任务从 staging 恢复到之前的状态
-      // 这里简化处理，实际应该记录任务之前的状态
+      // 使用 TaskStagingService 撤回暫存
+      await this.taskStagingService.withdrawStaging(record.id, currentUserId);
+
+      // 更新任務狀態，將任務從 staging 恢復到之前的狀態
       const task = this.taskService.tasks().find(t => t.id === record.task_id);
       if (task) {
-        // 假设撤回后任务回到 assigned 状态
+        // 假設撤回後任務回到 assigned 狀態
         await this.taskService.updateTask(record.task_id, {
           status: 'assigned'
         });
       }
 
-      this.message.success('任务已成功撤回');
+      this.message.success('任務已成功撤回');
 
       // 刷新列表
       await this.onBlueprintChange();
     } catch (error: any) {
-      console.error('撤回任务失败:', error);
-      this.message.error(error.message || '撤回失败，请重试');
+      console.error('撤回任務失敗:', error);
+      this.message.error(error.message || '撤回失敗，請重試');
     }
   }
 }
