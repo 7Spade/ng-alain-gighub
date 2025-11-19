@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TeamMemberInsert, TeamMemberRepository, TeamMemberRole } from '@core';
-import { AccountService, SHARED_IMPORTS } from '@shared';
+import { OrganizationMember, TeamMemberInsert, TeamMemberRepository, TeamMemberRole } from '@core';
+import { AccountService, OrganizationMemberService, SHARED_IMPORTS, TeamMemberService, TeamService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { firstValueFrom } from 'rxjs';
@@ -24,15 +24,13 @@ export interface TeamMemberAddData {
       <nz-form-item>
         <nz-form-label [nzSpan]="6" nzRequired>选择成员</nz-form-label>
         <nz-form-control [nzSpan]="18" [nzErrorTip]="'请选择成员'">
-          <nz-select
-            formControlName="accountId"
-            nzPlaceHolder="请选择用户账户"
-            nzShowSearch
-            [nzLoading]="accountService.loading()"
-            style="width: 100%;"
-          >
-            @for (user of accountService.userAccounts(); track user.id) {
-              <nz-option [nzValue]="user.id" [nzLabel]="user.name || user.id"></nz-option>
+          <nz-select formControlName="accountId" nzPlaceHolder="请选择组织成员" nzShowSearch [nzLoading]="loading()" style="width: 100%;">
+            @if (availableMembers().length === 0) {
+              <nz-option [nzDisabled]="true" [nzLabel]="loading() ? '加载中...' : '暂无可用成员'"></nz-option>
+            } @else {
+              @for (member of availableMembers(); track member.account_id) {
+                <nz-option [nzValue]="member.account_id" [nzLabel]="getAccountName(member.account_id)"></nz-option>
+              }
             }
           </nz-select>
         </nz-form-control>
@@ -41,7 +39,7 @@ export interface TeamMemberAddData {
       <nz-alert
         nzType="info"
         nzMessage="提示"
-        nzDescription="添加成员后，该用户将能够访问团队相关的资源和数据。新成员默认角色为普通成员，可在成员列表中修改角色。"
+        nzDescription="只能从组织成员中选择。添加成员后，该用户将能够访问团队相关的资源和数据。新成员默认角色为普通成员，可在成员列表中修改角色。"
         nzShowIcon
         style="margin-bottom: 16px;"
       ></nz-alert>
@@ -63,21 +61,80 @@ export class TeamMemberAddComponent implements OnInit {
   private teamMemberRepository = inject(TeamMemberRepository);
   private modalRef = inject(NzModalRef);
   private message = inject(NzMessageService);
+  private readonly teamService = inject(TeamService);
+  private readonly organizationMemberService = inject(OrganizationMemberService);
+  private readonly teamMemberService = inject(TeamMemberService);
   readonly accountService = inject(AccountService);
 
   readonly data: TeamMemberAddData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
+  readonly loading = signal(false);
+
+  // 组织成员列表（Signal）
+  private organizationMembersState = signal<OrganizationMember[]>([]);
+  // 当前团队成员列表（Signal）
+  private currentTeamMembersState = signal<string[]>([]); // 存储 account_id 列表
 
   form = new FormGroup({
     accountId: new FormControl('', { nonNullable: true, validators: [Validators.required] })
   });
 
+  /**
+   * 可选择的成员列表（组织成员 - 当前团队成员）
+   */
+  readonly availableMembers = computed(() => {
+    const orgMembers = this.organizationMembersState();
+    const teamMemberIds = new Set(this.currentTeamMembersState());
+    return orgMembers.filter(member => !teamMemberIds.has(member.account_id));
+  });
+
   async ngOnInit(): Promise<void> {
+    this.loading.set(true);
     try {
-      await this.accountService.loadAccounts();
+      // 1. 加载团队信息，获取 organization_id
+      const team = await this.teamService.loadTeamById(this.data.teamId);
+      if (!team) {
+        this.message.error('团队不存在');
+        this.modalRef.close(false);
+        return;
+      }
+
+      // 2. 加载组织成员列表
+      // BaseRepository 会自动转换为 camelCase，但为了兼容性，同时检查两种格式
+      const teamData = team as { organizationId?: string; organization_id?: string };
+      const organizationId = teamData.organizationId || teamData.organization_id;
+      if (!organizationId) {
+        this.message.error('无法获取组织ID');
+        this.modalRef.close(false);
+        return;
+      }
+      const orgMembers = await this.organizationMemberService.loadMembersByOrganizationId(organizationId);
+      this.organizationMembersState.set(orgMembers);
+
+      // 3. 加载当前团队成员列表（用于过滤）
+      const teamMembers = await this.teamMemberService.loadMembersByTeamId(this.data.teamId);
+      const teamMemberAccountIds = teamMembers.map(m => m.account_id);
+      this.currentTeamMembersState.set(teamMemberAccountIds);
+
+      // 4. 加载账户列表以便显示账户名称
+      if (this.accountService.accounts().length === 0) {
+        await this.accountService.loadAccounts();
+      }
     } catch (error) {
-      this.message.error('加载用户列表失败');
+      const errorMessage = error instanceof Error ? error.message : '加载成员列表失败';
+      this.message.error(errorMessage);
+    } finally {
+      this.loading.set(false);
     }
+  }
+
+  /**
+   * 获取账户名称
+   */
+  getAccountName(accountId: string): string {
+    const accounts = this.accountService.accounts();
+    const account = accounts.find(a => a.id === accountId);
+    return account?.name || accountId;
   }
 
   async submit(): Promise<void> {

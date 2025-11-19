@@ -67,6 +67,12 @@
               "externalLink": true
             },
             {
+              "text": "Team Management",
+              "link": "/org/:id/teams",
+              "i18n": "menu.development.account.organizationTeams",
+              "externalLink": true
+            },
+            {
               "text": "Bot Management",
               "link": "/accounts/bots",
               "i18n": "menu.development.account.bots"
