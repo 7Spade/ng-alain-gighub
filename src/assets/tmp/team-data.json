@@ -1,4 +1,6 @@
 {
+  "id": "default-team",
+  "organizationId": "default-org",
   "app": {
     "name": "NG-ALAIN",
     "description": "Ng-zorro admin panel front-end framework"

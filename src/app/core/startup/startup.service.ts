@@ -12,6 +12,7 @@ import { AccountRepository } from '../infra/repositories/account.repository';
 import { MenuContextService } from '../menu-context/menu-context.service';
 import { PermissionService } from '../permissions/permission.service';
 import { SupabaseSessionAdapterService } from '../supabase';
+import { WorkspaceContextService } from '../services/workspace-context.service';
 
 /**
  * Used for application startup
@@ -40,6 +41,7 @@ export function provideStartup(): Array<Provider | EnvironmentProviders> {
 export class StartupService {
   private menuService = inject(MenuService);
   private menuContextService = inject(MenuContextService);
+  private workspaceContextService = inject(WorkspaceContextService);
   private settingService = inject(SettingsService);
   private aclService = inject(ACLService);
   private titleService = inject(TitleService);
@@ -144,6 +146,14 @@ export class StartupService {
                     organizationMenu: organizationData.menu || [],
                     teamMenu: teamData.menu || []
                   });
+
+                  // 初始化工作空間上下文服務（從 Cache 恢復狀態）
+                  // 使用 Promise.resolve() 包裝以避免阻塞後續流程
+                  Promise.resolve()
+                    .then(() => this.workspaceContextService.initialize())
+                    .catch(err => {
+                      console.warn('[StartupService] Failed to initialize workspace context:', err);
+                    });
 
                   // 设置页面标题的后缀
                   this.titleService.default = '';

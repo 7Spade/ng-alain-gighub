@@ -1,4 +1,5 @@
 {
+  "id": "default-user",
   "app": {
     "name": "NG-ALAIN",
     "description": "Ng-zorro admin panel front-end framework"

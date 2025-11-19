@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { MenuContextService, Team } from '@core';
+import { MenuContextService, Team, WorkspaceContextService } from '@core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { SettingsService } from '@delon/theme';
 import { AccountService, SHARED_IMPORTS } from '@shared';
@@ -11,6 +11,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
  * 账户上下文切换器组件
  *
  * 允许用户在个人、组织、团队之间切换，自动更新菜单
+ * 使用 WorkspaceContextService 實現全局上下文管理
  */
 @Component({
   selector: 'header-context-switcher',
@@ -29,7 +30,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     <nz-dropdown-menu #contextMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
         <!-- 应用菜单 -->
-        <div nz-menu-item (click)="switchToApp()" [class.ant-menu-item-selected]="menuContextService.contextType() === 'app'">
+        <div nz-menu-item (click)="switchToApp()" [class.ant-menu-item-selected]="workspaceContextService.contextType() === 'app'">
           <i nz-icon nzType="appstore" class="mr-sm"></i>
           <span>应用菜单</span>
         </div>
@@ -44,7 +45,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                   nz-menu-item
                   (click)="switchToUser(account.id)"
                   [class.ant-menu-item-selected]="
-                    menuContextService.contextType() === 'user' && menuContextService.contextId() === account.id
+                    workspaceContextService.contextType() === 'user' && workspaceContextService.contextId() === account.id
                   "
                 >
                   <i nz-icon nzType="user" class="mr-sm"></i>
@@ -64,7 +65,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                   nz-menu-item
                   (click)="switchToOrganization(account.id)"
                   [class.ant-menu-item-selected]="
-                    menuContextService.contextType() === 'organization' && menuContextService.contextId() === account.id
+                    workspaceContextService.contextType() === 'organization' && workspaceContextService.contextId() === account.id
                   "
                 >
                   <i nz-icon nzType="team" class="mr-sm"></i>
@@ -88,7 +89,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                           nz-menu-item
                           (click)="switchToTeam(team.id)"
                           [class.ant-menu-item-selected]="
-                            menuContextService.contextType() === 'team' && menuContextService.contextId() === team.id
+                            workspaceContextService.contextType() === 'team' && workspaceContextService.contextId() === team.id
                           "
                         >
                           <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
@@ -117,6 +118,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 })
 export class HeaderContextSwitcherComponent implements OnInit {
   readonly menuContextService = inject(MenuContextService);
+  readonly workspaceContextService = inject(WorkspaceContextService);
   readonly accountService = inject(AccountService);
   readonly settings = inject(SettingsService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
@@ -150,10 +152,10 @@ export class HeaderContextSwitcherComponent implements OnInit {
     return teamsMap;
   });
 
-  // 当前上下文标签和图标
+  // 当前上下文标签和图标（使用 WorkspaceContextService）
   readonly contextLabel = computed(() => {
-    const type = this.menuContextService.contextType();
-    const id = this.menuContextService.contextId();
+    const type = this.workspaceContextService.contextType();
+    const id = this.workspaceContextService.contextId();
 
     switch (type) {
       case 'user':
@@ -180,7 +182,7 @@ export class HeaderContextSwitcherComponent implements OnInit {
   });
 
   readonly contextIcon = computed(() => {
-    const type = this.menuContextService.contextType();
+    const type = this.workspaceContextService.contextType();
     switch (type) {
       case 'user':
         return 'user';
@@ -197,14 +199,14 @@ export class HeaderContextSwitcherComponent implements OnInit {
    * 切换到应用菜单
    */
   switchToApp(): void {
-    this.menuContextService.switchToApp();
+    this.workspaceContextService.switchToApp();
   }
 
   /**
    * 切换到个人用户菜单
    */
   switchToUser(userId: string): void {
-    this.menuContextService.switchToUser(userId);
+    this.workspaceContextService.switchToUser(userId);
     // 同时更新 AccountService 的选中账户
     const account = this.userAccounts().find(a => a.id === userId);
     if (account) {
@@ -216,7 +218,7 @@ export class HeaderContextSwitcherComponent implements OnInit {
    * 切换到组织菜单
    */
   switchToOrganization(organizationId: string): void {
-    this.menuContextService.switchToOrganization(organizationId);
+    this.workspaceContextService.switchToOrganization(organizationId);
     // 同时更新 AccountService 的选中账户
     const account = this.organizationAccounts().find(a => a.id === organizationId);
     if (account) {
@@ -226,9 +228,19 @@ export class HeaderContextSwitcherComponent implements OnInit {
 
   /**
    * 切换到团队菜单
+   * 需要知道团队所屬的組織 ID
    */
   switchToTeam(teamId: string): void {
-    this.menuContextService.switchToTeam(teamId);
+    // 查找團隊所屬的組織
+    const team = this.userTeams().find(t => t.id === teamId);
+    const organizationId = team ? ((team as any).organization_id || (team as any).organizationId) : null;
+    
+    if (organizationId) {
+      this.workspaceContextService.switchToTeam(teamId, organizationId);
+    } else {
+      console.warn('[HeaderContextSwitcherComponent] Team organization ID not found, using menuContextService');
+      this.menuContextService.switchToTeam(teamId);
+    }
     // 注意：Team 不是 Account，所以不需要调用 selectAccount
   }
 
