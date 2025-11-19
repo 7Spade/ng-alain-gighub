@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS, TaskService, TaskInsert, TaskUpdate, TaskType, TaskStatus, TaskPriority, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { AuthFacade } from '@core';
 
 @Component({
   selector: 'app-task-form',
@@ -128,6 +129,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class TaskFormComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
+  readonly authFacade = inject(AuthFacade);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
@@ -209,6 +211,13 @@ export class TaskFormComponent implements OnInit {
       return;
     }
 
+    // 檢查用戶是否已登入
+    const currentUserId = this.authFacade.userId();
+    if (!currentUserId) {
+      this.message.error('請先登入');
+      return;
+    }
+
     const formValue = this.form.value;
     const taskData: TaskInsert | TaskUpdate = {
       blueprint_id: formValue.blueprintId,
@@ -221,6 +230,11 @@ export class TaskFormComponent implements OnInit {
       planned_end_date: formValue.plannedEndDate ? formValue.plannedEndDate.toISOString() : null,
       progress_percentage: formValue.progressPercentage || 0
     };
+
+    // 只在創建任務時添加 created_by
+    if (!this.isEdit()) {
+      (taskData as TaskInsert).created_by = currentUserId;
+    }
 
     try {
       if (this.isEdit()) {
