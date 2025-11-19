@@ -12,4 +12,4 @@ RxJS 僅用於 multi-stream event、websocket、long polling。
 
 禁止在 component map/switchMap → 直接在 service。
 
-API response → repository → domain model → facade → UI。
+API response → repository → model → service → facade → UI。
