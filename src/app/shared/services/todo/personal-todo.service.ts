@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { PersonalTodo, PersonalTodoRepository, SupabaseService, TodoStatusTracking, TodoStatusTrackingRepository } from '@core';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import { PersonalTodo, PersonalTodoRepository, TodoStatusTracking, TodoStatusTrackingRepository } from '@core';
+import { RealtimeFacade } from '@core';
+import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -83,6 +84,11 @@ export interface TodoStatistics {
  * - 🟥 驗收中（in_inspection）
  * - ⚠️ 問題追蹤（issue_tracking）
  *
+ * 依賴：
+ * - PersonalTodoRepository (core/infra) - 資料存取
+ * - TodoStatusTrackingRepository (core/infra) - 狀態追蹤資料存取
+ * - RealtimeFacade (core) - Realtime 訂閱管理
+ *
  * @example
  * ```typescript
  * const todoService = inject(PersonalTodoService);
@@ -105,10 +111,10 @@ export interface TodoStatistics {
 export class PersonalTodoService {
   private personalTodoRepository = inject(PersonalTodoRepository);
   private todoStatusTrackingRepository = inject(TodoStatusTrackingRepository);
-  private supabaseService = inject(SupabaseService);
+  private realtimeFacade = inject(RealtimeFacade);
 
-  // Realtime 頻道
-  private realtimeChannel: RealtimeChannel | null = null;
+  // Realtime 訂閱 ID
+  private realtimeSubscriptionId: string | null = null;
 
   // Signals for state management
   private todosState = signal<PersonalTodo[]>([]);
@@ -196,37 +202,35 @@ export class PersonalTodoService {
    * @param accountId 帳號 ID
    */
   async subscribeToUpdates(accountId: string): Promise<void> {
-    // 先取消舊的訂閱
+    // 記錄當前帳號 ID
+    this.currentAccountIdState.set(accountId);
+
+    // 取消舊訂閱
     await this.unsubscribeFromUpdates();
 
     // 載入初始數據
     await this.loadTodos(accountId);
 
-    // 建立 Realtime 頻道
-    this.realtimeChannel = this.supabaseService.client
-      .channel(`personal_todos:${accountId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'personal_todos',
-          filter: `account_id=eq.${accountId}`
-        },
-        payload => {
-          this.handleRealtimeEvent(payload);
-        }
-      )
-      .subscribe();
+    // 建立 Realtime 訂閱（透過 RealtimeFacade）
+    this.realtimeSubscriptionId = this.realtimeFacade.subscribeToTable<PersonalTodo>(
+      {
+        table: 'personal_todos',
+        filter: `account_id=eq.${accountId}`,
+        events: ['*'] // 監聽所有事件（INSERT, UPDATE, DELETE）
+      },
+      payload => {
+        this.handleRealtimeEvent(payload);
+      }
+    );
   }
 
   /**
    * 取消訂閱 Realtime 更新
    */
   async unsubscribeFromUpdates(): Promise<void> {
-    if (this.realtimeChannel) {
-      await this.supabaseService.client.removeChannel(this.realtimeChannel);
-      this.realtimeChannel = null;
+    if (this.realtimeSubscriptionId) {
+      this.realtimeFacade.unsubscribe(this.realtimeSubscriptionId);
+      this.realtimeSubscriptionId = null;
     }
   }
 
@@ -294,7 +298,7 @@ export class PersonalTodoService {
       );
 
       // Realtime 會自動更新，但為了立即反應，手動更新
-      if (!this.realtimeChannel) {
+      if (!this.realtimeSubscriptionId) {
         this.todosState.update(todos => [...todos, todo]);
       }
 
@@ -349,7 +353,7 @@ export class PersonalTodoService {
       );
 
       // Realtime 會自動更新，但為了立即反應，手動更新
-      if (!this.realtimeChannel) {
+      if (!this.realtimeSubscriptionId) {
         this.todosState.update(todos => todos.map(t => (t.id === todoId ? todo : t)));
       }
 
@@ -386,7 +390,7 @@ export class PersonalTodoService {
       await firstValueFrom(this.personalTodoRepository.delete(todoId));
 
       // Realtime 會自動更新，但為了立即反應，手動更新
-      if (!this.realtimeChannel) {
+      if (!this.realtimeSubscriptionId) {
         this.todosState.update(todos => todos.filter(t => t.id !== todoId));
       }
     } catch (error) {

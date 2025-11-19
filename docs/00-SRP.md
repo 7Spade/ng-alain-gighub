@@ -1,16 +1,20 @@
-Component：只處理 UI → 單一職責
+# SRP (Single Responsibility Principle) 規範
 
-Service：只處理邏輯 → 單一職責
+## 核心原則
 
-Repository：只處理 API/資料存取 → 單一職責
+**Component**：只處理 UI → 單一職責
 
-Pipe：只處理轉換 → 單一職責
+**Service**：只處理邏輯 → 單一職責
 
-Directive：只處理 DOM 行為 → 單一職責
+**Repository**：只處理 API/資料存取 → 單一職責
 
-Facade：只處理狀態與 UI 溝通 → 單一職責
+**Pipe**：只處理轉換 → 單一職責
 
-企業級 Angular 最常見規範包含：
+**Directive**：只處理 DOM 行為 → 單一職責
+
+**Facade**：只處理狀態與 UI 溝通 → 單一職責
+
+## 企業級 Angular 規範
 
 👉 Component 禁止放業務邏輯
 

@@ -43,6 +43,23 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
   }
 
   /**
+   * 根據藍圖 ID 查詢暫存記錄（透過 JOIN tasks 表）
+   *
+   * 注意：此方法需要在 BaseRepository 支援 JOIN，或使用 RPC
+   * 目前簡化為透過所有記錄過濾
+   *
+   * @param blueprintId 藍圖 ID
+   * @param options 查詢選項
+   * @returns Observable<TaskStaging[]>
+   */
+  findByBlueprintId(blueprintId: string, options?: QueryOptions): Observable<TaskStaging[]> {
+    // TODO: 實現更高效的查詢（使用 JOIN 或 RPC）
+    // 目前簡化為返回所有記錄，由 Service 層過濾
+    // 或者在 Supabase 創建一個 View 或 Function 來處理
+    return this.findAll(options);
+  }
+
+  /**
    * 根据提交者 ID 查询暂存记录
    *
    * @param submittedBy 提交者 ID

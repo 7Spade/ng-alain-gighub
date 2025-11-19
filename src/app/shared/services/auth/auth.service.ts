@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AccountRepository, SupabaseService, SupabaseSessionAdapterService } from '@core';
-import { Observable, from, of, throwError } from 'rxjs';
+import { AccountRepository, AuthRepository, SupabaseSessionAdapterService } from '@core';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { AuthStateService } from './auth.state';
@@ -17,9 +17,9 @@ import { Account } from '../../models';
  * 3. 用户信息管理
  *
  * 依赖：
- * - SupabaseService (core) - 基础设施
+ * - AuthRepository (core/infra) - 认证数据访问
  * - SupabaseSessionAdapterService (core) - Session 适配器
- * - AccountRepository (core) - 数据访问
+ * - AccountRepository (core/infra) - 账户数据访问
  * - AuthStateService (shared) - 状态管理
  *
  * @example
@@ -37,7 +37,7 @@ import { Account } from '../../models';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly supabaseService = inject(SupabaseService);
+  private readonly authRepository = inject(AuthRepository);
   private readonly sessionAdapter = inject(SupabaseSessionAdapterService);
   private readonly accountRepository = inject(AccountRepository);
   private readonly authState = inject(AuthStateService);
@@ -53,24 +53,19 @@ export class AuthService {
     this.authState.setLoading(true);
     this.authState.setError(null);
 
-    return from(
-      this.supabaseService.client.auth.signInWithPassword({
-        email: request.email,
-        password: request.password
-      })
-    ).pipe(
-      switchMap(({ data, error }) => {
-        if (error) {
+    return this.authRepository.signIn(request).pipe(
+      switchMap(response => {
+        if (response.error) {
           this.authState.setLoading(false);
-          this.authState.setError(error.message);
+          this.authState.setError(response.error.message);
           return of({
             success: false,
-            error,
+            error: response.error,
             user: null
           } as AuthResult);
         }
 
-        if (!data.session) {
+        if (!response.session) {
           this.authState.setLoading(false);
           this.authState.setError('登录失败：未返回 Session');
           return of({
@@ -81,10 +76,10 @@ export class AuthService {
         }
 
         // 同步 Session 到 TokenService
-        this.sessionAdapter.syncSessionToTokenService(data.session);
+        this.sessionAdapter.syncSessionToTokenService(response.session);
 
         // 加载用户账户信息
-        return this.loadUserAccount(data.session.user.id).pipe(
+        return this.loadUserAccount(response.session.user.id).pipe(
           map(account => {
             this.authState.setLoading(false);
             if (account) {
@@ -136,33 +131,25 @@ export class AuthService {
     this.authState.setLoading(true);
     this.authState.setError(null);
 
-    return from(
-      this.supabaseService.client.auth.signUp({
-        email: request.email,
-        password: request.password,
-        options: {
-          data: request.metadata
-        }
-      })
-    ).pipe(
-      switchMap(({ data, error }) => {
-        if (error) {
+    return this.authRepository.signUp(request).pipe(
+      switchMap(response => {
+        if (response.error) {
           this.authState.setLoading(false);
-          this.authState.setError(error.message);
+          this.authState.setError(response.error.message);
           return of({
             success: false,
-            error,
+            error: response.error,
             user: null
           } as AuthResult);
         }
 
         // Supabase 注册可能返回 session（email 验证关闭）或 null（email 验证开启）
-        if (data.session && data.user) {
+        if (response.session && response.user) {
           // 同步 Session 到 TokenService
-          this.sessionAdapter.syncSessionToTokenService(data.session);
+          this.sessionAdapter.syncSessionToTokenService(response.session);
 
           // 加载用户账户信息（如果已创建）
-          return this.loadUserAccount(data.user.id).pipe(
+          return this.loadUserAccount(response.user.id).pipe(
             map(account => {
               this.authState.setLoading(false);
               if (account) {
@@ -221,9 +208,12 @@ export class AuthService {
   signOut(): Observable<void> {
     this.authState.setLoading(true);
 
-    return from(this.supabaseService.client.auth.signOut()).pipe(
-      tap(() => {
-        // 清除认证状态
+    return this.authRepository.signOut().pipe(
+      tap(response => {
+        if (response.error) {
+          this.authState.setError(response.error.message || '登出失败');
+        }
+        // 清除认证状态（即使登出失败也清除本地状态）
         this.authState.clear();
         // 清除 TokenService
         this.sessionAdapter.clearTokenService();
