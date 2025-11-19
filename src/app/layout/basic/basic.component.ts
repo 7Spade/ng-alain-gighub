@@ -94,29 +94,49 @@ import { HeaderUserComponent } from './widgets/user.component';
           <ul nz-menu>
             <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
-            @if (menuContextService.contextType() !== 'user' && currentUserAccountId()) {
+            <!-- 切換上下文區域 -->
+            @if (currentUserAccountId()) {
               <li nz-menu-divider></li>
-              <li nz-menu-item (click)="switchToUser()">
-                <i nz-icon nzType="user" class="mr-sm"></i>
-                <span>回到個人視角</span>
-              </li>
-            }
-            @if (allOrganizations().length > 0) {
-              <li nz-menu-divider></li>
-              @for (org of allOrganizations(); track org.id) {
-                <li nz-menu-item (click)="switchToOrganization(org.id)">
-                  <i nz-icon nzType="team" class="mr-sm"></i>
-                  <span>{{ org.name }}</span>
-                </li>
-                @if (teamsByOrganization().has(org.id) && teamsByOrganization().get(org.id)!.length > 0) {
-                  @for (team of teamsByOrganization().get(org.id)!; track team.id) {
-                    <li nz-menu-item (click)="switchToTeam(team.id)" style="padding-left: 32px;">
-                      <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
-                      <span>{{ team.name }}</span>
-                    </li>
+              <li nz-submenu nzTitle="切換上下文" nzIcon="swap">
+                <ul nz-menu>
+                  <!-- 個人視角 -->
+                  <li nz-menu-item (click)="switchToUser()" [class.ant-menu-item-selected]="menuContextService.contextType() === 'user'">
+                    <i nz-icon nzType="user" class="mr-sm"></i>
+                    <span>個人視角</span>
+                  </li>
+                  <!-- 組織與團隊 -->
+                  @if (allOrganizations().length > 0) {
+                    @for (org of allOrganizations(); track org.id) {
+                      <li
+                        nz-menu-item
+                        (click)="switchToOrganization(org.id)"
+                        [class.ant-menu-item-selected]="
+                          menuContextService.contextType() === 'organization' && menuContextService.contextId() === org.id
+                        "
+                      >
+                        <i nz-icon nzType="team" class="mr-sm"></i>
+                        <span>{{ org.name }}</span>
+                      </li>
+                      <!-- 組織下的團隊 -->
+                      @if (teamsByOrganization().has(org.id) && teamsByOrganization().get(org.id)!.length > 0) {
+                        @for (team of teamsByOrganization().get(org.id)!; track team.id) {
+                          <li
+                            nz-menu-item
+                            (click)="switchToTeam(team.id)"
+                            style="padding-left: 32px;"
+                            [class.ant-menu-item-selected]="
+                              menuContextService.contextType() === 'team' && menuContextService.contextId() === team.id
+                            "
+                          >
+                            <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
+                            <span>{{ team.name }}</span>
+                          </li>
+                        }
+                      }
+                    }
                   }
-                }
-              }
+                </ul>
+              </li>
             }
           </ul>
         </nz-dropdown-menu>
