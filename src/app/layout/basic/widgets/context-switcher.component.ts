@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { MenuContextService, Team, ContextService } from '@core';
+import { ContextService, Team } from '@core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { SettingsService } from '@delon/theme';
 import { AccountService, SHARED_IMPORTS } from '@shared';
@@ -31,7 +31,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     <nz-dropdown-menu #contextMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
         <!-- 个人视角 -->
-        <div nz-menu-item (click)="switchToPersonal()" [class.ant-menu-item-selected]="contextService.isPersonal()">
+        <div nz-menu-item (click)="switchToUser()" [class.ant-menu-item-selected]="contextService.isPersonal()">
           <i nz-icon nzType="user" class="mr-sm"></i>
           <span>個人視角</span>
         </div>
@@ -84,7 +84,6 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderContextSwitcherComponent implements OnInit {
-  readonly menuContextService = inject(MenuContextService);
   readonly contextService = inject(ContextService);
   readonly accountService = inject(AccountService);
   readonly settings = inject(SettingsService);
@@ -165,8 +164,8 @@ export class HeaderContextSwitcherComponent implements OnInit {
   /**
    * 切換到個人視角
    */
-  switchToPersonal(): void {
-    this.contextService.switchToPersonal();
+  switchToUser(): void {
+    this.contextService.switchToUser();
   }
 
   /**

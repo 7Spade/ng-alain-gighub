@@ -9,8 +9,8 @@ import { Observable, catchError, firstValueFrom, from, map, of, switchMap, zip }
 
 import { I18NService } from '../i18n/i18n.service';
 import { AccountRepository } from '../infra/repositories/account.repository';
-import { MenuContextService } from '../menu-context/menu-context.service';
 import { PermissionService } from '../permissions/permission.service';
+import { ContextService } from '../services/context.service';
 import { SupabaseSessionAdapterService } from '../supabase';
 
 /**
@@ -39,7 +39,7 @@ export function provideStartup(): Array<Provider | EnvironmentProviders> {
 @Injectable()
 export class StartupService {
   private menuService = inject(MenuService);
-  private menuContextService = inject(MenuContextService);
+  private contextService = inject(ContextService);
   private settingService = inject(SettingsService);
   private aclService = inject(ACLService);
   private titleService = inject(TitleService);
@@ -118,6 +118,7 @@ export class StartupService {
                   if (userAccount) {
                     // 从 Supabase 账户表加载用户信息
                     // 注意：BaseRepository 会自动将 snake_case 转换为 camelCase
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const account = userAccount as any;
                     this.settingService.setUser({
                       name: account.name || 'User',
@@ -137,8 +138,8 @@ export class StartupService {
                     this.aclService.setFull(true);
                   }
 
-                  // 初始化菜单上下文服务，保存不同账户类型的菜单数据
-                  this.menuContextService.initializeMenuData({
+                  // 初始化上下文服務，保存不同账户类型的菜单数据
+                  this.contextService.initializeMenuData({
                     appMenu: appData.menu || [],
                     userMenu: userData.menu || [],
                     organizationMenu: organizationData.menu || [],

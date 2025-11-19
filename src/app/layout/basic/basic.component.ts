@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { MenuContextService, Team } from '@core';
+import { ContextService, Team } from '@core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { I18nPipe, SettingsService, User } from '@delon/theme';
 import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
@@ -94,7 +94,7 @@ import { HeaderUserComponent } from './widgets/user.component';
           <ul nz-menu>
             <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
-            @if (menuContextService.contextType() !== 'user' && currentUserAccountId()) {
+            @if (contextService.contextType() !== 'personal' && currentUserAccountId()) {
               <li nz-menu-divider></li>
               <li nz-menu-item (click)="switchToUser()">
                 <i nz-icon nzType="user" class="mr-sm"></i>
@@ -157,7 +157,7 @@ import { HeaderUserComponent } from './widgets/user.component';
 export class LayoutBasicComponent implements OnInit {
   private readonly settings = inject(SettingsService);
   private readonly accountService = inject(AccountService);
-  readonly menuContextService = inject(MenuContextService);
+  readonly contextService = inject(ContextService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
 
   // 组织列表状态
@@ -198,6 +198,7 @@ export class LayoutBasicComponent implements OnInit {
 
     // 按组织分组团队
     teams.forEach(team => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const orgId = (team as any).organization_id || (team as any).organizationId;
       if (orgId && teamsMap.has(orgId)) {
         teamsMap.get(orgId)!.push(team);
@@ -275,9 +276,9 @@ export class LayoutBasicComponent implements OnInit {
    * 切换到组织菜单
    */
   switchToOrganization(organizationId: string): void {
-    this.menuContextService.switchToOrganization(organizationId);
-    // 同时更新 AccountService 的选中账户
     const account = this.allOrganizations().find(org => org.id === organizationId);
+    this.contextService.switchToOrganization(organizationId, account?.name);
+    // 同时更新 AccountService 的选中账户
     if (account) {
       this.accountService.selectAccount(account);
     }
@@ -287,7 +288,10 @@ export class LayoutBasicComponent implements OnInit {
    * 切换到团队菜单
    */
   switchToTeam(teamId: string): void {
-    this.menuContextService.switchToTeam(teamId);
+    const team = this.userTeams().find(t => t.id === teamId);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const organizationId = team ? (team as any).organization_id || (team as any).organizationId : undefined;
+    this.contextService.switchToTeam(teamId, team?.name, organizationId);
     // 注意：Team 不是 Account，所以不需要调用 selectAccount
   }
 
@@ -297,7 +301,7 @@ export class LayoutBasicComponent implements OnInit {
   switchToUser(): void {
     const userAccountId = this.currentUserAccountId();
     if (userAccountId) {
-      this.menuContextService.switchToUser(userAccountId);
+      this.contextService.switchToUser(userAccountId);
       // 同时更新 AccountService 的选中账户
       const userAccount = this.accountService.userAccounts().find(a => a.id === userAccountId);
       if (userAccount) {

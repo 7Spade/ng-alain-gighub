@@ -7,7 +7,7 @@
 /**
  * 上下文類型
  */
-export type AppContextType = 'personal' | 'organization' | 'team';
+export type AppContextType = 'personal' | 'organization' | 'team' | 'app';
 
 /**
  * 應用上下文介面

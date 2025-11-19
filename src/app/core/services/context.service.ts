@@ -11,7 +11,7 @@ import type { AppContext } from './context.model';
 /**
  * Context Service
  *
- * 全局上下文服務，管理應用的上下文狀態（個人/組織/團隊）
+ * 全局上下文服務，管理應用的上下文狀態（個人/組織/團隊/應用）
  * 負責協調 Menu、ACL、ReuseTab 等服務的狀態同步
  *
  * 使用 Signals 進行狀態管理，提供響應式的上下文切換
@@ -20,14 +20,17 @@ import type { AppContext } from './context.model';
  * ```typescript
  * const contextService = inject(ContextService);
  *
+ * // 切換到應用菜單
+ * contextService.switchToApp();
+ *
  * // 切換到個人上下文
- * contextService.setContext({ type: 'personal' });
+ * contextService.switchToUser('user-123');
  *
  * // 切換到組織上下文
- * contextService.setContext({ type: 'organization', id: 'org-123', name: '123組織' });
+ * contextService.switchToOrganization('org-123', '123組織');
  *
  * // 切換到團隊上下文
- * contextService.setContext({ type: 'team', id: 'team-456', name: '456團隊' });
+ * contextService.switchToTeam('team-456', '456團隊');
  *
  * // 訂閱上下文變化
  * effect(() => {
@@ -61,8 +64,10 @@ export class ContextService {
   readonly isPersonal = computed(() => this._context().type === 'personal');
   readonly isOrganization = computed(() => this._context().type === 'organization');
   readonly isTeam = computed(() => this._context().type === 'team');
+  readonly isApp = computed(() => this._context().type === 'app');
 
-  // 菜單資料快取（從 MenuContextService 載入）
+  // 菜單資料快取
+  private appMenuData: NzSafeAny[] = [];
   private personalMenuData: NzSafeAny[] = [];
   private organizationMenuData: NzSafeAny[] = [];
   private teamMenuData: NzSafeAny[] = [];
@@ -85,11 +90,19 @@ export class ContextService {
 
   /**
    * 初始化菜單資料
-   * 由 MenuContextService 或 StartupService 調用
+   * 由 StartupService 調用
    */
-  initializeMenuData(data: { personalMenu?: NzSafeAny[]; organizationMenu?: NzSafeAny[]; teamMenu?: NzSafeAny[] }): void {
-    if (data.personalMenu) {
-      this.personalMenuData = data.personalMenu;
+  initializeMenuData(data: {
+    appMenu?: NzSafeAny[];
+    userMenu?: NzSafeAny[];
+    organizationMenu?: NzSafeAny[];
+    teamMenu?: NzSafeAny[];
+  }): void {
+    if (data.appMenu) {
+      this.appMenuData = data.appMenu;
+    }
+    if (data.userMenu) {
+      this.personalMenuData = data.userMenu;
     }
     if (data.organizationMenu) {
       this.organizationMenuData = data.organizationMenu;
@@ -115,11 +128,22 @@ export class ContextService {
   }
 
   /**
-   * 切換到個人上下文
+   * 切換到應用菜單
    */
-  switchToPersonal(): void {
+  switchToApp(): void {
+    this.setContext({
+      type: 'app',
+      name: '應用菜單'
+    });
+  }
+
+  /**
+   * 切換到個人用戶上下文
+   */
+  switchToUser(userId?: string): void {
     this.setContext({
       type: 'personal',
+      id: userId,
       name: '個人'
     });
   }
@@ -175,6 +199,12 @@ export class ContextService {
     this.menuService.clear();
 
     switch (ctx.type) {
+      case 'app':
+        if (this.appMenuData.length > 0) {
+          this.menuService.add(this.appMenuData);
+        }
+        break;
+
       case 'personal':
         if (this.personalMenuData.length > 0) {
           this.menuService.add(this.personalMenuData);
@@ -239,8 +269,9 @@ export class ContextService {
    */
   private applyACL(ctx: AppContext): void {
     switch (ctx.type) {
+      case 'app':
       case 'personal':
-        // 個人模式：全權限（開發階段）
+        // 應用模式和個人模式：全權限（開發階段）
         // TODO: 實際生產環境應該根據用戶角色設定權限
         this.acl.setFull(true);
         break;
@@ -260,9 +291,27 @@ export class ContextService {
   }
 
   /**
+   * 獲取當前菜單資料
+   */
+  getCurrentMenuData(): NzSafeAny[] {
+    switch (this.contextType()) {
+      case 'app':
+        return this.appMenuData;
+      case 'personal':
+        return this.personalMenuData;
+      case 'organization':
+        return this.organizationMenuData;
+      case 'team':
+        return this.teamMenuData;
+      default:
+        return this.appMenuData;
+    }
+  }
+
+  /**
    * 清除上下文（回到個人模式）
    */
   clear(): void {
-    this.switchToPersonal();
+    this.switchToUser();
   }
 }
