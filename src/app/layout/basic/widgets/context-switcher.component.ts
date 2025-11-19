@@ -245,25 +245,25 @@ export class HeaderContextSwitcherComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // 监听用户登录状态，自动加载团队列表
+    // 监听用户登录状态，自动加载账户和团队列表
     effect(() => {
       const token = this.tokenService.get();
       if (token?.['user']?.['id']) {
-        this.loadUserTeams(token['user']['id']);
+        this.loadUserData(token['user']['id']);
       }
     });
 
-    // 如果已有 token，立即加载团队列表
+    // 如果已有 token，立即加载账户和团队列表
     const token = this.tokenService.get();
     if (token?.['user']?.['id']) {
-      this.loadUserTeams(token['user']['id']);
+      this.loadUserData(token['user']['id']);
     }
   }
 
   /**
-   * 加载用户的团队列表
+   * 加载用户数据（账户和团队）
    */
-  private async loadUserTeams(authUserId: string): Promise<void> {
+  private async loadUserData(authUserId: string): Promise<void> {
     try {
       // 1. 获取用户账户信息
       const userAccount = await this.accountService.findByAuthUserId(authUserId);
@@ -271,8 +271,58 @@ export class HeaderContextSwitcherComponent implements OnInit {
         return;
       }
 
-      // 2. 加载团队列表
-      const teams = await this.accountService.getUserTeams(userAccount.id);
+      // 2. 加载所有账户（包括用户创建的组织和加入的组织）
+      await this.loadUserAccounts(authUserId, userAccount.id);
+
+      // 3. 加载团队列表
+      await this.loadUserTeams(userAccount.id);
+    } catch (error) {
+      console.error('加载用户数据失败:', error);
+    }
+  }
+
+  /**
+   * 加载用户的账户列表（包括组织）
+   */
+  private async loadUserAccounts(authUserId: string, userAccountId: string): Promise<void> {
+    try {
+      // 1. 加载用户创建的组织
+      const createdOrgs = await this.accountService.getUserCreatedOrganizations(authUserId);
+
+      // 2. 加载用户加入的组织
+      const joinedOrgs = await this.accountService.getUserJoinedOrganizations(userAccountId);
+
+      // 3. 合并组织列表（去重）
+      const allOrgs = [...createdOrgs];
+      const createdOrgIds = new Set(createdOrgs.map(org => org.id));
+      joinedOrgs.forEach(org => {
+        if (!createdOrgIds.has(org.id)) {
+          allOrgs.push(org);
+        }
+      });
+
+      // 4. 更新 AccountService 的状态
+      // 注意：这里需要手动更新 accountsState，因为 AccountService 没有提供批量更新方法
+      // 我们可以通过调用 loadAccountsByIds 来触发状态更新
+      if (allOrgs.length > 0) {
+        const orgIds = allOrgs.map(org => org.id);
+        await this.accountService.loadAccountsByIds(orgIds);
+      }
+
+      // 5. 加载当前用户账户（确保 userAccounts 有数据）
+      await this.accountService.loadAccountById(userAccountId);
+    } catch (error) {
+      console.error('加载用户账户列表失败:', error);
+    }
+  }
+
+  /**
+   * 加载用户的团队列表
+   */
+  private async loadUserTeams(userAccountId: string): Promise<void> {
+    try {
+      // 加载团队列表
+      const teams = await this.accountService.getUserTeams(userAccountId);
       this.userTeams.set(teams);
     } catch (error) {
       console.error('加载用户团队列表失败:', error);
