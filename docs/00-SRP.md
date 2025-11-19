@@ -24,160 +24,149 @@
 
 👉 Facade 不能做 API mapping 或 UI 轉換
 
-## 正確的依賴鏈
+2. 封裝與界限（Clear Boundaries / Encapsulation）
 
-```
-Component → Facade/Service → Repository → SupabaseService → Supabase
-```
+必須明確隔離：
 
-## 實際案例（2025-11-19 重構）
+UI
 
-本專案已完成核心 SRP 重構，以下是實際案例：
+Domain（商業邏輯）
 
-### 案例 1：AuthService 重構
+Infrastructure（API、持久層）
 
-**之前（違規）**：
-```typescript
-// ❌ Service 直接使用 SupabaseService.client
-export class AuthService {
-  private readonly supabaseService = inject(SupabaseService);
-  
-  signIn(email: string, password: string) {
-    return from(this.supabaseService.client.auth.signInWithPassword({
-      email, password
-    }));
-  }
-}
-```
+State
 
-**之後（符合 SRP）**：
-```typescript
-// ✅ Service 透過 Repository
-export class AuthService {
-  private readonly authRepository = inject(AuthRepository);
-  
-  signIn(request: SignInRequest): Observable<AuthResult> {
-    return this.authRepository.signIn(request).pipe(
-      switchMap(response => {
-        // 只處理業務邏輯：Session 同步、帳戶載入
-        if (response.error) {
-          this.authState.setError(response.error.message);
-          return of({ success: false, error: response.error });
-        }
-        this.sessionAdapter.syncSessionToTokenService(response.session);
-        return this.loadUserAccount(response.session.user.id);
-      })
-    );
-  }
-}
+Shared（跨 domain 的純工具）
 
-// ✅ Repository 只處理 API 調用
-@Injectable({ providedIn: 'root' })
-export class AuthRepository {
-  private readonly supabaseService = inject(SupabaseService);
-  
-  signIn(request: SignInRequest): Observable<AuthRepositoryResponse> {
-    return from(
-      this.supabaseService.client.auth.signInWithPassword({
-        email: request.email,
-        password: request.password
-      })
-    ).pipe(
-      map(response => ({
-        session: response.data.session,
-        user: response.data.user,
-        error: response.error
-      }))
-    );
-  }
-}
-```
+👉 目的是避免跨層依賴、耦合與難以維護。
+👉 這是 DDD（企業級架構）最重要的原則之一。
 
-### 案例 2：PersonalTodoService 重構
+3. 可組合性（Composability）
 
-**之前（違規）**：
-```typescript
-// ❌ Service 直接管理 Realtime 頻道
-export class PersonalTodoService {
-  private supabaseService = inject(SupabaseService);
-  private realtimeChannel: RealtimeChannel | null = null;
-  
-  async subscribeToUpdates(accountId: string): Promise<void> {
-    this.realtimeChannel = this.supabaseService.client
-      .channel(`personal_todos:${accountId}`)
-      .on('postgres_changes', { ... }, callback)
-      .subscribe();
-  }
-}
-```
+企業級架構要求功能可以自由組合，拆解後仍能運作：
 
-**之後（符合 SRP）**：
-```typescript
-// ✅ Service 透過 RealtimeFacade
-export class PersonalTodoService {
-  private realtimeFacade = inject(RealtimeFacade);
-  private realtimeSubscriptionId: string | null = null;
-  
-  async subscribeToUpdates(accountId: string): Promise<void> {
-    // 只處理業務邏輯：載入資料、設置訂閱
-    await this.loadTodos(accountId);
-    
-    this.realtimeSubscriptionId = this.realtimeFacade.subscribeToTable<PersonalTodo>(
-      {
-        table: 'personal_todos',
-        filter: `account_id=eq.${accountId}`,
-        events: ['*']
-      },
-      payload => this.handleRealtimeEvent(payload)
-    );
-  }
-}
-```
+UI 小組件
 
-### 案例 3：TaskStagingComponent 重構
+小的 domain service
 
-**之前（違規）**：
-```typescript
-// ❌ Component 直接使用 Repository
-export class TaskStagingComponent {
-  private readonly taskStagingRepository = inject(TaskStagingRepository);
-  
-  async onBlueprintChange(): Promise<void> {
-    const tasks = this.taskService.tasks();
-    const stagingPromises = tasks.map(task => 
-      firstValueFrom(this.taskStagingRepository.findByTaskId(task.id))
-    );
-    const stagingArrays = await Promise.all(stagingPromises);
-    // ... 複雜的業務邏輯處理
-  }
-}
-```
+小的 repo
 
-**之後（符合 SRP）**：
-```typescript
-// ✅ Component 透過 Service
-export class TaskStagingComponent {
-  private readonly taskStagingService = inject(TaskStagingService);
-  
-  // 使用 Service 的 signals
-  readonly loading = this.taskStagingService.loading;
-  readonly stagingRecords = this.taskStagingService.stagingItems;
-  
-  async onBlueprintChange(): Promise<void> {
-    // 只處理 UI 邏輯：載入資料
-    await this.taskService.loadTasksByBlueprint(blueprintId);
-    await this.taskStagingService.loadStagingByBlueprint(blueprintId);
-  }
-}
-```
+小的 directives
 
-## 參考文檔
+pure utils
 
-- [SRP 重構完成報告](./SRP-重構完成報告.md) - 詳細的重構記錄和企業標準審查
-- [SRP 檢查清單](./SRP-檢查清單.md) - 開發時的快速參考指南
-- [開發工作流程](./28-開發工作流程.md) - 完整的開發流程規範
+composable signals
 
----
+👉 React、Angular Signals、Vue Composition API 都朝這個方向。
 
-**最後更新**：2025-11-19  
-**狀態**：✅ 核心重構已完成，符合企業標準
+4. 一致性（Consistency）
+
+一致性是企業級規範最重要的原則之一：
+
+一致的程式碼風格
+
+一致的 API 格式
+
+一致的命名
+
+一致的 component 架構
+
+一致的 error handling
+
+一致的 UX 行為
+
+👉 一致性比「聰明」更重要。
+
+5. 明確的依賴方向（Dependency Direction / Stability）
+
+企業級規範要求：
+
+Domain 不依賴 UI
+
+Facade 不依賴 repository
+
+Shared 永不依賴 domain
+
+Feature 不依賴其他 feature
+
+👉 方向錯誤會把全部 domain 黏在一起，造成「蜘蛛網架構」，會毀掉專案。
+
+6. 低耦合、高內聚（Low Coupling & High Cohesion）
+
+High Cohesion：功能相近的邏輯放在一起
+
+Low Coupling：不同領域彼此弱依賴
+
+這是限制草率依賴與避免複雜度失控的核心原則。
+
+7. 可測試性（Testability）
+
+企業級要求：
+
+小而乾淨的 function
+
+低耦合 → 易 mock
+
+SRP → 易測試
+
+分層 → UI 與邏輯可分開測試
+
+👉 架構沒有為「測試」設計，就不是企業級架構。
+
+8. 可維護性（Maintainability）
+
+包括：
+
+嚴格型別
+
+嚴格 lint
+
+嚴格架構規範
+
+可閱讀的檔案結構
+
+避免 fat component / fat service
+
+低複雜度的 code
+
+👉 你今天能維護，三年後，你的同事也要能維護。
+
+9. 可替換性（Replaceability / Abstraction）
+
+企業級架構要能：
+
+替換後端（API）
+
+替換 Auth provider（ex: Supabase → Cognito）
+
+替換 UI Library
+
+替換 domain rule
+
+替換 repository
+
+👉 這是為什麼 Angular 20 的 inject() + injectFn + Repository layer 很重要。
+
+10. 漸進式演進（Incremental / Evolvable Architecture）
+
+企業級不允許「一次性重建」。
+
+所以架構必須：
+
+可部分重構
+
+可逐步遷移
+
+可無痛引入新功能
+
+可平行存在新舊流程
+
+例如：
+
+NgModule → Standalone（可分階段）
+
+RxJS → Signals（可逐步）
+
+CSR → SSR Hydration（可漸進）
+
+👉 若不能漸進演進，它就不叫企業級架構。
