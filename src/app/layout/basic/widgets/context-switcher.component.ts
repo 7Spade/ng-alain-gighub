@@ -55,11 +55,12 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
           </div>
         }
 
-        <!-- 组织账户菜单 -->
+        <!-- 组织与团队菜单（层级显示） -->
         @if (organizationAccounts().length > 0) {
-          <div nz-submenu nzTitle="组织账户" nzIcon="team">
+          <div nz-submenu nzTitle="组织与团队" nzIcon="team">
             <ul nz-menu>
               @for (account of organizationAccounts(); track account.id) {
+                <!-- 组织项目 -->
                 <li
                   nz-menu-item
                   (click)="switchToOrganization(account.id)"
@@ -70,33 +71,21 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                   <i nz-icon nzType="team" class="mr-sm"></i>
                   <span>{{ account.name }}</span>
                 </li>
-              }
-            </ul>
-          </div>
-        }
-
-        <!-- 团队账户菜单 -->
-        @if (userTeams().length > 0) {
-          <div nz-submenu nzTitle="团队账户" nzIcon="usergroup-add">
-            <ul nz-menu>
-              @for (org of organizationAccounts(); track org.id) {
-                @if (teamsByOrganization().has(org.id) && teamsByOrganization().get(org.id)!.length > 0) {
-                  <li nz-submenu [nzTitle]="org.name" nzIcon="team">
-                    <ul nz-menu>
-                      @for (team of teamsByOrganization().get(org.id)!; track team.id) {
-                        <li
-                          nz-menu-item
-                          (click)="switchToTeam(team.id)"
-                          [class.ant-menu-item-selected]="
-                            menuContextService.contextType() === 'team' && menuContextService.contextId() === team.id
-                          "
-                        >
-                          <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
-                          <span>{{ team.name }}</span>
-                        </li>
-                      }
-                    </ul>
-                  </li>
+                <!-- 该组织下的团队（带缩进显示） -->
+                @if (teamsByOrganization().has(account.id) && teamsByOrganization().get(account.id)!.length > 0) {
+                  @for (team of teamsByOrganization().get(account.id)!; track team.id) {
+                    <li
+                      nz-menu-item
+                      (click)="switchToTeam(team.id)"
+                      [class.ant-menu-item-selected]="
+                        menuContextService.contextType() === 'team' && menuContextService.contextId() === team.id
+                      "
+                      style="padding-left: 48px;"
+                    >
+                      <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
+                      <span>{{ team.name }}</span>
+                    </li>
+                  }
                 }
               }
             </ul>
@@ -104,7 +93,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
         }
 
         <!-- 如果没有账户，显示提示 -->
-        @if (userAccounts().length === 0 && organizationAccounts().length === 0 && userTeams().length === 0) {
+        @if (userAccounts().length === 0 && organizationAccounts().length === 0) {
           <li nz-menu-item nzDisabled>
             <i nz-icon nzType="info-circle" class="mr-sm"></i>
             <span>暂无可用账户</span>
