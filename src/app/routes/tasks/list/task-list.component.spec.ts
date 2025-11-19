@@ -37,7 +37,13 @@ describe('TaskListComponent', () => {
     owner_id: 'owner-1',
     status: 'active',
     created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-01-01T00:00:00Z'
+    updated_at: '2024-01-01T00:00:00Z',
+    budget: null,
+    end_date: null,
+    location: null,
+    metadata: null,
+    project_code: null,
+    start_date: null
   } as Blueprint;
 
   const mockTask: Task = {
@@ -71,35 +77,43 @@ describe('TaskListComponent', () => {
   const mockAccount: Account = {
     id: 'user-1',
     email: 'test@example.com',
-    username: 'testuser'
+    name: 'testuser',
+    type: 'user',
+    auth_user_id: null,
+    avatar_url: null,
+    created_at: null,
+    metadata: null,
+    status: null,
+    updated_at: null
   } as Account;
 
   beforeEach(async () => {
     // Create spies with signal support
-    const taskServiceSpy = jasmine.createSpyObj('TaskService', [
-      'loadTasksByBlueprint',
-      'deleteTask',
-      'updateTaskStatus',
-      'getAllowedNextStatuses',
-      'getRecommendedNextStatus'
-    ]);
-    taskServiceSpy.tasks = signal([mockTask]);
-    taskServiceSpy.loading = signal(false);
-    taskServiceSpy.stagingTasks = signal([]);
+    const taskServiceSpy = jasmine.createSpyObj(
+      'TaskService',
+      ['loadTasksByBlueprint', 'deleteTask', 'updateTaskStatus', 'getAllowedNextStatuses', 'getRecommendedNextStatus'],
+      {
+        tasks: signal([mockTask]),
+        loading: signal(false),
+        stagingTasks: signal([])
+      }
+    );
 
-    const blueprintServiceSpy = jasmine.createSpyObj('BlueprintService', ['loadBlueprints']);
-    blueprintServiceSpy.blueprints = signal([mockBlueprint]);
+    const blueprintServiceSpy = jasmine.createSpyObj('BlueprintService', ['loadBlueprints'], {
+      blueprints: signal([mockBlueprint])
+    });
 
-    const taskStagingServiceSpy = jasmine.createSpyObj('TaskStagingService', [
-      'loadStagingByTaskId',
-      'canWithdraw',
-      'withdrawStaging',
-      'confirmStaging'
-    ]);
-    taskStagingServiceSpy.stagingItems = signal([]);
+    const taskStagingServiceSpy = jasmine.createSpyObj(
+      'TaskStagingService',
+      ['loadStagingByTaskId', 'canWithdraw', 'withdrawStaging', 'confirmStaging'],
+      {
+        stagingItems: signal([])
+      }
+    );
 
-    const authStateSpy = jasmine.createSpyObj('AuthStateService', []);
-    authStateSpy.user = signal(mockAccount);
+    const authStateSpy = jasmine.createSpyObj('AuthStateService', [], {
+      user: signal(mockAccount)
+    });
 
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const messageSpy = jasmine.createSpyObj('NzMessageService', ['success', 'error']);
@@ -159,7 +173,7 @@ describe('TaskListComponent', () => {
   describe('Blueprint Selection', () => {
     it('should load tasks when blueprint is selected', async () => {
       mockTaskService.loadTasksByBlueprint.and.returnValue(Promise.resolve());
-      mockTaskService.stagingTasks = signal([]);
+      Object.defineProperty(mockTaskService, 'stagingTasks', { value: signal([]), writable: true, configurable: true });
 
       component.selectedBlueprintId.set('blueprint-1');
       await component.onBlueprintChange();
@@ -169,8 +183,8 @@ describe('TaskListComponent', () => {
 
     it('should load staging info and allowed statuses after blueprint change', async () => {
       mockTaskService.loadTasksByBlueprint.and.returnValue(Promise.resolve());
-      mockTaskService.stagingTasks = signal([]);
-      mockTaskService.tasks = signal([mockTask]);
+      Object.defineProperty(mockTaskService, 'stagingTasks', { value: signal([]), writable: true, configurable: true });
+      Object.defineProperty(mockTaskService, 'tasks', { value: signal([mockTask]), writable: true, configurable: true });
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([TaskStatus.ASSIGNED]));
 
       component.selectedBlueprintId.set('blueprint-1');
@@ -191,9 +205,13 @@ describe('TaskListComponent', () => {
 
   describe('Staging Information', () => {
     it('should load staging info for staging tasks', async () => {
-      mockTaskService.stagingTasks = signal([mockStagingTask]);
+      Object.defineProperty(mockTaskService, 'stagingTasks', { value: signal([mockStagingTask]), writable: true, configurable: true });
       mockTaskStagingService.loadStagingByTaskId.and.returnValue(Promise.resolve());
-      mockTaskStagingService.stagingItems = signal([mockTaskStaging]);
+      Object.defineProperty(mockTaskStagingService, 'stagingItems', {
+        value: signal([mockTaskStaging]),
+        writable: true,
+        configurable: true
+      });
       mockTaskStagingService.canWithdraw.and.returnValue(Promise.resolve(true));
 
       await component.loadStagingInfo();
@@ -211,9 +229,9 @@ describe('TaskListComponent', () => {
       const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
       const staging = { ...mockTaskStaging, expires_at: futureDate.toISOString() };
 
-      mockTaskService.stagingTasks = signal([mockStagingTask]);
+      Object.defineProperty(mockTaskService, 'stagingTasks', { value: signal([mockStagingTask]), writable: true, configurable: true });
       mockTaskStagingService.loadStagingByTaskId.and.returnValue(Promise.resolve());
-      mockTaskStagingService.stagingItems = signal([staging]);
+      Object.defineProperty(mockTaskStagingService, 'stagingItems', { value: signal([staging]), writable: true, configurable: true });
       mockTaskStagingService.canWithdraw.and.returnValue(Promise.resolve(true));
 
       await component.loadStagingInfo();
@@ -226,7 +244,7 @@ describe('TaskListComponent', () => {
 
   describe('Allowed Statuses', () => {
     it('should load allowed next statuses for all tasks', async () => {
-      mockTaskService.tasks = signal([mockTask]);
+      Object.defineProperty(mockTaskService, 'tasks', { value: signal([mockTask]), writable: true, configurable: true });
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([TaskStatus.ASSIGNED, TaskStatus.IN_PROGRESS]));
 
       await component.loadAllowedStatuses();
@@ -238,7 +256,7 @@ describe('TaskListComponent', () => {
     });
 
     it('should handle errors gracefully when loading allowed statuses', async () => {
-      mockTaskService.tasks = signal([mockTask]);
+      Object.defineProperty(mockTaskService, 'tasks', { value: signal([mockTask]), writable: true, configurable: true });
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.reject(new Error('Failed')));
 
       await component.loadAllowedStatuses();
@@ -252,8 +270,8 @@ describe('TaskListComponent', () => {
     it('should change task status successfully', async () => {
       const updatedTask = { ...mockTask, status: 'assigned' as TaskStatus };
       mockTaskService.updateTaskStatus.and.returnValue(Promise.resolve(updatedTask));
-      mockTaskService.stagingTasks = signal([]);
-      mockTaskService.tasks = signal([updatedTask]);
+      Object.defineProperty(mockTaskService, 'stagingTasks', { value: signal([]), writable: true, configurable: true });
+      Object.defineProperty(mockTaskService, 'tasks', { value: signal([updatedTask]), writable: true, configurable: true });
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([]));
 
       await component.changeTaskStatus('task-1', TaskStatus.ASSIGNED);
@@ -272,8 +290,8 @@ describe('TaskListComponent', () => {
 
     it('should reload staging info after status change', async () => {
       mockTaskService.updateTaskStatus.and.returnValue(Promise.resolve(mockTask));
-      mockTaskService.stagingTasks = signal([]);
-      mockTaskService.tasks = signal([mockTask]);
+      Object.defineProperty(mockTaskService, 'stagingTasks', { value: signal([]), writable: true, configurable: true });
+      Object.defineProperty(mockTaskService, 'tasks', { value: signal([mockTask]), writable: true, configurable: true });
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([]));
 
       spyOn(component, 'loadStagingInfo').and.returnValue(Promise.resolve());
@@ -300,8 +318,8 @@ describe('TaskListComponent', () => {
     it('should withdraw staging successfully', async () => {
       mockTaskStagingService.withdrawStaging.and.returnValue(Promise.resolve(mockTaskStaging));
       mockTaskService.loadTasksByBlueprint.and.returnValue(Promise.resolve());
-      mockTaskService.stagingTasks = signal([]);
-      mockTaskService.tasks = signal([mockTask]);
+      Object.defineProperty(mockTaskService, 'stagingTasks', { value: signal([]), writable: true, configurable: true });
+      Object.defineProperty(mockTaskService, 'tasks', { value: signal([mockTask]), writable: true, configurable: true });
       mockTaskService.getAllowedNextStatuses.and.returnValue(Promise.resolve([]));
 
       component.selectedBlueprintId.set('blueprint-1');
@@ -320,7 +338,7 @@ describe('TaskListComponent', () => {
     });
 
     it('should show error if user is not logged in', async () => {
-      mockAuthState.user = signal(null);
+      Object.defineProperty(mockAuthState, 'user', { value: signal(null), writable: true, configurable: true });
 
       await component.withdrawStaging('task-2');
 
@@ -345,7 +363,7 @@ describe('TaskListComponent', () => {
         { ...mockTask, id: '3', status: 'staging' as TaskStatus, priority: 'urgent' as TaskPriority, task_type: 'phase' as TaskType },
         { ...mockTask, id: '4', status: 'completed' as TaskStatus, priority: 'medium' as TaskPriority, task_type: 'subtask' as TaskType }
       ];
-      mockTaskService.tasks = signal(tasks);
+      Object.defineProperty(mockTaskService, 'tasks', { value: signal(tasks), writable: true, configurable: true });
     });
 
     it('should filter tasks by status', () => {

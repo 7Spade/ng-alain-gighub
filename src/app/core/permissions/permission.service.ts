@@ -243,15 +243,15 @@ export class PermissionService {
 
         // 检查用户角色权限
         return from(
-          this.supabaseService.client.from('user_roles').select('roles(code)').eq('account_id', userId).eq('blueprint_id', blueprintId)
+          this.supabaseService.client.from('user_roles').select('roles(name)').eq('account_id', userId).eq('blueprint_id', blueprintId)
         ).pipe(
           map(({ data: userRoles }) => {
             if (!userRoles || userRoles.length === 0) {
               return false;
             }
 
-            // 根据角色代码判断权限
-            const roleCodes = userRoles.map(ur => (ur.roles as any).code);
+            // 根据角色名称判断权限（使用 name 字段作为角色代码，因为数据库中 roles 表没有 code 字段）
+            const roleCodes = userRoles.map(ur => (ur.roles as any)?.name).filter(Boolean);
 
             switch (action) {
               case 'read':
@@ -392,17 +392,15 @@ export class PermissionService {
    * @returns Promise<void>
    */
   async syncRolesFromDatabase(userId: string): Promise<void> {
-    const { data: userRoles, error } = await this.supabaseService.client
-      .from('user_roles')
-      .select('roles(code, name)')
-      .eq('account_id', userId);
+    const { data: userRoles, error } = await this.supabaseService.client.from('user_roles').select('roles(name)').eq('account_id', userId);
 
     if (error) {
       throw new Error(`Failed to sync roles: ${error.message}`);
     }
 
     if (userRoles && userRoles.length > 0) {
-      const roles = userRoles.map(ur => (ur.roles as any).code);
+      // 使用 name 字段作为角色代码（数据库中 roles 表没有 code 字段）
+      const roles = userRoles.map(ur => (ur.roles as any)?.name).filter(Boolean);
       this.aclService.set({ role: roles });
     }
   }

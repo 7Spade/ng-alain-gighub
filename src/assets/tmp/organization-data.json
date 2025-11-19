@@ -5,17 +5,16 @@
   },
   "menu": [
     {
-      "text": "Main Navigation",
-      "i18n": "menu.main",
+      "text": "Formal",
+      "i18n": "menu.formal",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "Shortcut Menu",
-          "i18n": "menu.shortcut",
-          "icon": "anticon-rocket",
-          "shortcutRoot": true,
-          "children": []
+          "text": "Explore",
+          "i18n": "menu.formal.explore",
+          "icon": "anticon-search",
+          "link": "/explore"
         }
       ]
     },
@@ -178,8 +177,13 @@
               "i18n": "menu.development.task.calendar"
             },
             {
+              "text": "Task List",
+              "link": "/tasks/list",
+              "i18n": "menu.development.task.list"
+            },
+            {
               "text": "Task Tree View",
-              "link": "/tasks",
+              "link": "/tasks/tree",
               "i18n": "menu.development.task.tree"
             },
             {

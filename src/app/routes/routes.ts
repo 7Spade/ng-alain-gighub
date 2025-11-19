@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
-import { startPageGuard } from '@core';
-import { authSimpleCanActivate, authSimpleCanActivateChild } from '@delon/auth';
+import { authGuard, startPageGuard } from '@core';
 
 import { LayoutBasicComponent, LayoutBlankComponent } from '../layout';
 
@@ -8,8 +7,8 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutBasicComponent,
-    canActivate: [startPageGuard, authSimpleCanActivate],
-    canActivateChild: [authSimpleCanActivateChild],
+    canActivate: [startPageGuard, authGuard],
+    canActivateChild: [authGuard],
     data: {},
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -65,6 +64,10 @@ export const routes: Routes = [
       {
         path: 'communication',
         loadChildren: () => import('./communication/routes').then(m => m.COMMUNICATION_ROUTES)
+      },
+      {
+        path: 'explore',
+        loadChildren: () => import('./explore/routes').then(m => m.EXPLORE_ROUTES)
       }
     ]
   },
@@ -74,8 +77,8 @@ export const routes: Routes = [
     component: LayoutBlankComponent,
     children: [{ path: '', loadChildren: () => import('./data-v/routes').then(m => m.routes) }]
   },
-  // passport
-  { path: '', loadChildren: () => import('./passport/routes').then(m => m.routes) },
+  // passport - 必须在根路径配置之后，避免路径冲突
+  { path: 'passport', loadChildren: () => import('./passport/routes').then(m => m.routes) },
   { path: 'exception', loadChildren: () => import('./exception/routes').then(m => m.routes) },
   { path: '**', redirectTo: 'exception/404' }
 ];

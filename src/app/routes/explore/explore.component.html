@@ -1,0 +1,114 @@
+<page-header [title]="'探索'"></page-header>
+
+<nz-card class="explore-card">
+  <!-- 搜索栏位：放在卡片顶部，更明显 -->
+  <div class="search-section">
+    <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="searchButtonTpl" class="search-input-group">
+      <ng-template #searchButtonTpl>
+        <button nz-button nzType="primary" nzSize="large" nzSearch [nzLoading]="exploreService.loading()" (click)="onSearch()">
+          <span nz-icon nzType="search"></span>
+          搜索
+        </button>
+      </ng-template>
+      <input
+        type="text"
+        nz-input
+        nzSize="large"
+        [(ngModel)]="searchInputValue"
+        (ngModelChange)="onSearchInputChange($event)"
+        (keyup.enter)="onSearch()"
+        placeholder="搜索用户、组织、蓝图..."
+        class="search-input"
+      />
+    </nz-input-group>
+  </div>
+
+  <!-- 分类筛选 -->
+  <nz-radio-group [ngModel]="selectedType()" (ngModelChange)="onTypeChange($event)" class="type-filter">
+    <label nz-radio-button [nzValue]="SearchType.ALL">全部</label>
+    <label nz-radio-button [nzValue]="SearchType.USERS">用户</label>
+    <label nz-radio-button [nzValue]="SearchType.ORGANIZATIONS">组织</label>
+    <label nz-radio-button [nzValue]="SearchType.BLUEPRINTS">蓝图</label>
+  </nz-radio-group>
+
+  <!-- 错误提示 -->
+  @if (exploreService.error()) {
+    <nz-alert [nzMessage]="exploreService.error()" nzType="error" class="error-alert"></nz-alert>
+  }
+
+  <!-- 加载状态 -->
+  @if (exploreService.loading() && !exploreService.searchResults()) {
+    <div class="loading-container">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+  } @else if (exploreService.searchResults(); as results) {
+    @if (exploreService.hasResults()) {
+      <!-- 用户结果 -->
+      @if ((selectedType() === SearchType.ALL || selectedType() === SearchType.USERS) && results.users.length > 0) {
+        <nz-divider nzText="用户" nzOrientation="left" class="result-divider"></nz-divider>
+        <div nz-row [nzGutter]="16" class="result-grid">
+          @for (user of results.users; track user.id) {
+            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" class="result-item">
+              <nz-card [nzHoverable]="true" (click)="navigateToAccount(user.id)" class="result-card">
+                <nz-card-meta [nzTitle]="user.name" [nzDescription]="user.email || '无邮箱'">
+                  <ng-template #nzAvatar>
+                    <nz-avatar [nzSrc]="getAvatarUrl(user)" [nzText]="user.name[0]"></nz-avatar>
+                  </ng-template>
+                </nz-card-meta>
+              </nz-card>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- 组织结果 -->
+      @if ((selectedType() === SearchType.ALL || selectedType() === SearchType.ORGANIZATIONS) && results.organizations.length > 0) {
+        <nz-divider nzText="组织" nzOrientation="left" class="result-divider"></nz-divider>
+        <div nz-row [nzGutter]="16" class="result-grid">
+          @for (org of results.organizations; track org.id) {
+            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" class="result-item">
+              <nz-card [nzHoverable]="true" (click)="navigateToAccount(org.id)" class="result-card">
+                <nz-card-meta [nzTitle]="org.name" [nzDescription]="org.email || '无邮箱'">
+                  <ng-template #nzAvatar>
+                    <nz-avatar [nzSrc]="getAvatarUrl(org)" [nzText]="org.name[0]"></nz-avatar>
+                  </ng-template>
+                </nz-card-meta>
+              </nz-card>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- 蓝图结果 -->
+      @if ((selectedType() === SearchType.ALL || selectedType() === SearchType.BLUEPRINTS) && results.blueprints.length > 0) {
+        <nz-divider nzText="蓝图" nzOrientation="left" class="result-divider"></nz-divider>
+        <div nz-row [nzGutter]="16" class="result-grid">
+          @for (blueprint of results.blueprints; track blueprint.id) {
+            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" class="result-item">
+              <nz-card [nzHoverable]="true" (click)="navigateToBlueprint(blueprint.id)" class="result-card">
+                <nz-card-meta [nzTitle]="blueprint.name" [nzDescription]="getBlueprintDescription(blueprint)"></nz-card-meta>
+              </nz-card>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- 分页 -->
+      @if (results.totalPages > 1) {
+        <div class="pagination-container">
+          <nz-pagination
+            [nzPageIndex]="currentPage()"
+            [nzPageSize]="pageSize"
+            [nzTotal]="results.total.all"
+            (nzPageIndexChange)="onPageChange($event)"
+          ></nz-pagination>
+        </div>
+      }
+    } @else {
+      <nz-empty [nzNotFoundContent]="'未找到相关结果'"></nz-empty>
+    }
+  } @else if (!exploreService.loading()) {
+    <nz-empty [nzNotFoundContent]="'请输入搜索关键词'"></nz-empty>
+  }
+</nz-card>
+

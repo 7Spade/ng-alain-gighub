@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
+import { Database } from '../types/common';
+import { BranchPermissionLevel } from '../types/permission';
 
 /**
  * BranchPermission 实体类型（camelCase）
@@ -19,20 +20,6 @@ type BranchPermissionUpdate = Database['public']['Tables']['branch_permissions']
  */
 export type BranchPermission = BranchPermissionRow;
 export type { BranchPermissionInsert, BranchPermissionUpdate };
-
-/**
- * 分支權限級別枚舉
- */
-export enum BranchPermissionLevel {
-  /** 擁有者：全權控制 */
-  OWNER = 'owner',
-  /** 管理員：管理權限 */
-  ADMIN = 'admin',
-  /** 寫入：可以修改承攬欄位 */
-  WRITE = 'write',
-  /** 讀取：唯讀 */
-  READ = 'read'
-}
 
 /**
  * BranchPermission Repository

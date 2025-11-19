@@ -1,12 +1,11 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { MenuContextService } from '@core';
+import { MenuContextService, Team } from '@core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { I18nPipe, SettingsService, User } from '@delon/theme';
 import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
 import { SettingDrawerModule } from '@delon/theme/setting-drawer';
 import { ThemeBtnComponent } from '@delon/theme/theme-btn';
-import { environment } from '@env/environment';
 import { Account, AccountService } from '@shared';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -84,7 +83,7 @@ import { HeaderUserComponent } from './widgets/user.component';
         <header-user />
       </layout-default-header-item>
       <ng-template #asideUserTpl>
-        <div nz-dropdown nzTrigger="click" [nzDropdownMenu]="userMenu" class="alain-default__aside-user">
+        <div nz-dropdown nzTrigger="click" nzPlacement="topLeft" [nzDropdownMenu]="userMenu" class="alain-default__aside-user">
           <nz-avatar class="alain-default__aside-user-avatar" [nzSrc]="user.avatar" />
           <div class="alain-default__aside-user-info">
             <strong>{{ user.name }}</strong>
@@ -95,6 +94,13 @@ import { HeaderUserComponent } from './widgets/user.component';
           <ul nz-menu>
             <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
+            @if (menuContextService.contextType() !== 'user' && currentUserAccountId()) {
+              <li nz-menu-divider></li>
+              <li nz-menu-item (click)="switchToUser()">
+                <i nz-icon nzType="user" class="mr-sm"></i>
+                <span>回到個人視角</span>
+              </li>
+            }
             @if (allOrganizations().length > 0) {
               <li nz-menu-divider></li>
               @for (org of allOrganizations(); track org.id) {
@@ -102,6 +108,14 @@ import { HeaderUserComponent } from './widgets/user.component';
                   <i nz-icon nzType="team" class="mr-sm"></i>
                   <span>{{ org.name }}</span>
                 </li>
+                @if (teamsByOrganization().has(org.id) && teamsByOrganization().get(org.id)!.length > 0) {
+                  @for (team of teamsByOrganization().get(org.id)!; track team.id) {
+                    <li nz-menu-item (click)="switchToTeam(team.id)" style="padding-left: 32px;">
+                      <i nz-icon nzType="usergroup-add" class="mr-sm"></i>
+                      <span>{{ team.name }}</span>
+                    </li>
+                  }
+                }
               }
             }
           </ul>
@@ -143,13 +157,20 @@ import { HeaderUserComponent } from './widgets/user.component';
 export class LayoutBasicComponent implements OnInit {
   private readonly settings = inject(SettingsService);
   private readonly accountService = inject(AccountService);
-  private readonly menuContextService = inject(MenuContextService);
+  readonly menuContextService = inject(MenuContextService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
 
   // 组织列表状态
   readonly createdOrganizations = signal<Account[]>([]);
   readonly joinedOrganizations = signal<Account[]>([]);
   readonly loadingOrganizations = signal<boolean>(false);
+
+  // 团队列表状态
+  readonly userTeams = signal<Team[]>([]);
+  readonly loadingTeams = signal<boolean>(false);
+
+  // 当前用户账户ID
+  readonly currentUserAccountId = signal<string | null>(null);
 
   // 合并所有组织（去重）
   readonly allOrganizations = computed(() => {
@@ -162,6 +183,28 @@ export class LayoutBasicComponent implements OnInit {
       }
     });
     return Array.from(uniqueMap.values());
+  });
+
+  // 按组织分组的团队列表
+  readonly teamsByOrganization = computed(() => {
+    const teams = this.userTeams();
+    const orgs = this.allOrganizations();
+    const teamsMap = new Map<string, Team[]>();
+
+    // 初始化所有组织的团队列表
+    orgs.forEach(org => {
+      teamsMap.set(org.id, []);
+    });
+
+    // 按组织分组团队
+    teams.forEach(team => {
+      const orgId = (team as any).organization_id || (team as any).organizationId;
+      if (orgId && teamsMap.has(orgId)) {
+        teamsMap.get(orgId)!.push(team);
+      }
+    });
+
+    return teamsMap;
   });
 
   options: LayoutDefaultOptions = {
@@ -194,31 +237,37 @@ export class LayoutBasicComponent implements OnInit {
   }
 
   /**
-   * 加载用户的组织列表
+   * 加载用户的组织列表和团队列表
    */
   private async loadUserOrganizations(authUserId: string): Promise<void> {
     this.loadingOrganizations.set(true);
+    this.loadingTeams.set(true);
 
     try {
       // 1. 获取用户账户信息
       const userAccount = await this.accountService.findByAuthUserId(authUserId);
       if (!userAccount) {
         this.loadingOrganizations.set(false);
+        this.loadingTeams.set(false);
         return;
       }
 
-      // 2. 并行加载建立的组织和加入的组织
-      const [createdOrgs, joinedOrgs] = await Promise.all([
+      // 2. 并行加载建立的组织、加入的组织和团队列表
+      const [createdOrgs, joinedOrgs, teams] = await Promise.all([
         this.accountService.getUserCreatedOrganizations(authUserId),
-        this.accountService.getUserJoinedOrganizations(userAccount.id)
+        this.accountService.getUserJoinedOrganizations(userAccount.id),
+        this.accountService.getUserTeams(userAccount.id)
       ]);
 
       this.createdOrganizations.set(createdOrgs);
       this.joinedOrganizations.set(joinedOrgs);
+      this.userTeams.set(teams);
+      this.currentUserAccountId.set(userAccount.id);
     } catch (error) {
-      console.error('加载用户组织列表失败:', error);
+      console.error('加载用户组织列表和团队列表失败:', error);
     } finally {
       this.loadingOrganizations.set(false);
+      this.loadingTeams.set(false);
     }
   }
 
@@ -231,6 +280,29 @@ export class LayoutBasicComponent implements OnInit {
     const account = this.allOrganizations().find(org => org.id === organizationId);
     if (account) {
       this.accountService.selectAccount(account);
+    }
+  }
+
+  /**
+   * 切换到团队菜单
+   */
+  switchToTeam(teamId: string): void {
+    this.menuContextService.switchToTeam(teamId);
+    // 注意：Team 不是 Account，所以不需要调用 selectAccount
+  }
+
+  /**
+   * 切换到用户视角
+   */
+  switchToUser(): void {
+    const userAccountId = this.currentUserAccountId();
+    if (userAccountId) {
+      this.menuContextService.switchToUser(userAccountId);
+      // 同时更新 AccountService 的选中账户
+      const userAccount = this.accountService.userAccounts().find(a => a.id === userAccountId);
+      if (userAccount) {
+        this.accountService.selectAccount(userAccount);
+      }
     }
   }
 }

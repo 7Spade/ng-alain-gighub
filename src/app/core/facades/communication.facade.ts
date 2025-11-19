@@ -8,9 +8,9 @@ import {
   type Notification,
   type NotificationInsert
 } from '@shared';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
 
 import { RealtimeFacade } from './realtime.facade';
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Communication Facade

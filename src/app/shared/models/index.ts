@@ -24,6 +24,8 @@ export * from './bot.models';
 export * from './collaboration.models';
 export * from './communication.models';
 export * from './data.models';
+export * from './explore.models';
+export type { AccountWithAvatar, BlueprintWithDescription } from './explore.models';
 export * from './issue.models';
 export * from './permission.models';
 export * from './quality.models';

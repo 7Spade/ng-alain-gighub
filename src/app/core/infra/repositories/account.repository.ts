@@ -2,11 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import { BaseRepository, QueryOptions } from './base.repository';
 import { SupabaseService } from '../../supabase/supabase.service';
-import { AccountStatus, AccountType } from '../types/account.types';
-import { Database } from '../types/database.types';
+import { AccountStatus, AccountType } from '../types/account';
+import { Database } from '../types/common';
 import { toCamelCaseData } from '../utils/transformers';
+import { BaseRepository, QueryOptions } from './base.repository';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -164,6 +164,44 @@ export class AccountRepository extends BaseRepository<Account, AccountInsert, Ac
    */
   findActive(options?: QueryOptions): Observable<Account[]> {
     return this.findByStatus(AccountStatus.ACTIVE, options);
+  }
+
+  /**
+   * 搜索账户（支持模糊查询）
+   * 使用 SECURITY DEFINER 函数绕过 RLS 限制，允许搜索所有活跃的账户
+   *
+   * @param query 搜索关键词
+   * @param type 账户类型（可选）
+   * @param options 查询选项
+   * @returns Observable<Account[]>
+   */
+  search(query: string, type?: AccountType, options?: QueryOptions): Observable<Account[]> {
+    // 允许空查询，函数内部会处理（返回所有匹配类型的账户）
+    const trimmedQuery = query?.trim() || '';
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 20;
+    const orderBy = options?.orderBy || 'name';
+    const orderDirection = options?.orderDirection || 'asc';
+
+    // 使用 SECURITY DEFINER 函数搜索账户，绕过 RLS 限制
+    return from(
+      this.supabaseService.client.rpc('search_accounts_for_explore', {
+        p_query: trimmedQuery,
+        p_type: type || null,
+        p_page: page,
+        p_page_size: pageSize,
+        p_order_by: orderBy === 'createdAt' ? 'created_at' : 'name',
+        p_order_direction: orderDirection
+      })
+    ).pipe(
+      map((response: { data: any[] | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '搜索账户失败');
+        }
+        // 使用转换工具函数将 snake_case 转换为 camelCase
+        return (response.data || []).map(item => toCamelCaseData<Account>(item));
+      })
+    );
   }
 
   /**

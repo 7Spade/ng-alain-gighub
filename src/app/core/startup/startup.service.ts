@@ -5,7 +5,7 @@ import { ACLService } from '@delon/acl';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { ALAIN_I18N_TOKEN, MenuService, SettingsService, TitleService } from '@delon/theme';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
-import { Observable, catchError, from, map, of, switchMap, zip } from 'rxjs';
+import { Observable, catchError, firstValueFrom, from, map, of, switchMap, zip } from 'rxjs';
 
 import { I18NService } from '../i18n/i18n.service';
 import { AccountRepository } from '../infra/repositories/account.repository';
@@ -16,16 +16,22 @@ import { SupabaseSessionAdapterService } from '../supabase';
 /**
  * Used for application startup
  * Generally used to get the basic data of the application, like: Menu Data, User Data, etc.
+ *
+ * 修复执行顺序问题：将 Observable 转换为 Promise，确保 Angular 等待 StartupService 完成
+ * 这样可以确保路由守卫在 restoreSession() 完成之后执行
  */
 export function provideStartup(): Array<Provider | EnvironmentProviders> {
   return [
     StartupService,
     provideAppInitializer(() => {
-      const initializerFn = (
-        (startupService: StartupService) => () =>
-          startupService.load()
-      )(inject(StartupService));
-      return initializerFn();
+      const startupService = inject(StartupService);
+      // 将 Observable 转换为 Promise，确保 Angular 等待它完成
+      // 这样可以确保路由守卫在 restoreSession() 完成之后执行
+      return firstValueFrom(startupService.load()).catch(() => {
+        // 即使失败也继续启动，避免阻塞应用启动
+        console.warn('[StartupService] Failed to load startup data, continuing anyway');
+        return undefined;
+      });
     })
   ];
 }
@@ -79,7 +85,7 @@ export class StartupService {
             // this.httpClient.get('/app', { context: new HttpContext().set(ALLOW_ANONYMOUS, this.tokenService.get()?.token ? false : true) })
             return zip(
               this.i18n.loadLangData(defaultLang),
-              this.httpClient.get<NzSafeAny>('./assets/tmp/app-data.json'),
+              this.httpClient.get<NzSafeAny>('./assets/tmp/user-data.json'),
               this.httpClient.get<NzSafeAny>('./assets/tmp/user-data.json').pipe(catchError(() => of({ menu: [] }))),
               this.httpClient.get<NzSafeAny>('./assets/tmp/organization-data.json').pipe(catchError(() => of({ menu: [] }))),
               this.httpClient.get<NzSafeAny>('./assets/tmp/team-data.json').pipe(catchError(() => of({ menu: [] }))),
@@ -103,22 +109,26 @@ export class StartupService {
                   // setting language data
                   this.i18n.use(defaultLang, langData);
 
-                  // 应用信息：包括站点名、描述、年份（从 app-data.json 加载）
+                  // 应用信息：包括站点名、描述、年份（从 user-data.json 加载）
                   this.settingService.setApp(appData.app);
 
-                  // 用户信息：优先从 Supabase 加载，如果不存在则使用 JSON 文件中的默认值
+                  // 用户信息：从 Supabase Auth 加载
+                  // 注意：如果用户未登录，路由守卫会拦截，不会到达这里
+                  // 如果 userAccount 为 null，说明数据库查询失败或用户账户不存在，应该记录警告
                   if (userAccount) {
                     // 从 Supabase 账户表加载用户信息
                     // 注意：BaseRepository 会自动将 snake_case 转换为 camelCase
                     const account = userAccount as any;
                     this.settingService.setUser({
-                      name: account.name || appData.user.name,
-                      avatar: account.avatarUrl || account.avatar_url || appData.user.avatar,
-                      email: account.email || appData.user.email
+                      name: account.name || 'User',
+                      avatar: account.avatarUrl || account.avatar_url || '',
+                      email: account.email || ''
                     });
                   } else {
-                    // 如果未登录或账户不存在，使用 JSON 文件中的默认值
-                    this.settingService.setUser(appData.user);
+                    // 如果 userAccount 为 null，说明有问题（数据库查询失败或用户账户不存在）
+                    // 记录警告，但不设置用户信息（路由守卫会处理未登录情况）
+                    console.warn('[StartupService] User account not found, user may not be logged in or account does not exist');
+                    // 不设置用户信息，让路由守卫处理未登录情况
                   }
 
                   // ACL：如果用户已登录，权限已通过 PermissionService 同步

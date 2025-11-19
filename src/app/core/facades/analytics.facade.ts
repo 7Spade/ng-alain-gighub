@@ -1,5 +1,5 @@
 import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
-import { ProgressTrackingService, AnalyticsCacheService, BlueprintActivityService, ErrorStateService } from '@shared';
+import { ProgressTrackingService, AnalyticsCacheService, BlueprintActivityService } from '@shared';
 import type {
   ProgressTracking,
   ProgressTrackingInsert,
@@ -10,6 +10,8 @@ import type {
   ActivityLogFilters
 } from '@shared';
 import { AnalyticsService } from '@shared/services/analytics/analytics.service';
+
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Chart Data

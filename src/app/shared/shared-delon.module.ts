@@ -1,29 +1,47 @@
 // ========== @delon/abc 組件模組 ==========
 // 文本超出省略顯示 — https://ng-alain.com/components/ellipsis
+import { AutoFocusModule } from '@delon/abc/auto-focus';
 import { CellModule } from '@delon/abc/cell';
 import { CountDownModule } from '@delon/abc/count-down';
+import { DatePickerModule } from '@delon/abc/date-picker';
 import { DownFileDirective } from '@delon/abc/down-file';
 import { EllipsisComponent } from '@delon/abc/ellipsis';
 // 頁面底部操作工具欄 — https://ng-alain.com/components/footer-toolbar
+import { ErrorCollectModule } from '@delon/abc/error-collect';
 import { ExceptionModule } from '@delon/abc/exception';
 import { FooterToolbarModule } from '@delon/abc/footer-toolbar';
 // 內容區全屏/填充切換 — https://ng-alain.com/components/full-content
 import { FullContentModule } from '@delon/abc/full-content';
 // 頁面標題區（麵包屑、操作區） — https://ng-alain.com/components/page-header
 import { GlobalFooterModule } from '@delon/abc/global-footer';
+import { HotkeyModule } from '@delon/abc/hotkey';
+import { LoadingModule } from '@delon/abc/loading';
+import { MediaModule } from '@delon/abc/media';
 import { NoticeIconModule } from '@delon/abc/notice-icon';
 import { OnboardingModule } from '@delon/abc/onboarding';
 import { PageHeaderModule } from '@delon/abc/page-header';
 // SE：簡潔表單佈局（快速排版表單項） — https://ng-alain.com/components/se
+import { PdfModule } from '@delon/abc/pdf';
 import { QuickMenuModule } from '@delon/abc/quick-menu';
 import { ReuseTabModule } from '@delon/abc/reuse-tab';
 import { SEModule } from '@delon/abc/se';
 // ST：Smart Table 智能表格 — https://ng-alain.com/components/st
+import { SGModule } from '@delon/abc/sg';
 import { STModule } from '@delon/abc/st';
 // SV：簡單視圖，用於鍵值描述展示 — https://ng-alain.com/components/sv
 import { SVModule } from '@delon/abc/sv';
 // Tag 多選與展開/收起選擇器 — https://ng-alain.com/components/tag-select
 import { TagSelectComponent } from '@delon/abc/tag-select';
+// 自動聚焦指令 — https://ng-alain.com/components/auto-focus
+// 日期選擇器 — https://ng-alain.com/components/date-picker
+// 錯誤收集組件 — https://ng-alain.com/components/error-collect
+// 快捷鍵指令 — https://ng-alain.com/components/hotkey
+// 加載組件 — https://ng-alain.com/components/loading
+// 媒體組件 — https://ng-alain.com/components/media
+// 簡單網格組件 — https://ng-alain.com/components/sg
+// Excel 導出指令 — https://ng-alain.com/components/xlsx
+import { XlsxModule } from '@delon/abc/xlsx';
+// PDF 查看器組件 — https://ng-alain.com/components/pdf
 // ReuseTab 標籤頁（路由快取） — https://ng-alain.com/components/reuse-tab
 // 引導式操作 — https://ng-alain.com/components/onboarding
 // 快捷菜單 — https://ng-alain.com/components/quick-menu
@@ -35,6 +53,7 @@ import { TagSelectComponent } from '@delon/abc/tag-select';
 // ACL 訪問控制指令（顯示/隱藏/條件） — https://ng-alain.com/acl
 import { ACLDirective, ACLIfDirective } from '@delon/acl';
 // 動態表單（基於 JSON Schema 的表單生成與驗證） — https://ng-alain.com/form
+// ========== @delon/util 管道模組 ==========
 // 金額/貨幣格式化管道 — https://ng-alain.com/util
 // 圖表組件 — https://ng-alain.com/docs/chart
 // 注意：@delon/chart 必須從子模組導入，而非從 @delon/chart 直接導入
@@ -69,18 +88,32 @@ import { TrendModule } from '@delon/chart/trend';
 // 水波圖 — https://ng-alain.com/chart/water-wave
 import { G2WaterWaveModule } from '@delon/chart/water-wave';
 import { DelonFormModule } from '@delon/form';
+import { HTMLPipe, KeysPipe, URLPipe, YNPipe } from '@delon/theme';
 import { LayoutDefaultModule } from '@delon/theme/layout-default';
 import { SettingDrawerModule } from '@delon/theme/setting-drawer';
 import { ThemeBtnComponent } from '@delon/theme/theme-btn';
-import { CurrencyPricePipe } from '@delon/util';
+// @delon/theme 管道 — https://ng-alain.com/theme
+// @delon/util 管道 — https://ng-alain.com/util
+import {
+  CurrencyCNYPipe, // 金額格式化（模板使用: `{{ value | price }}`）
+  CurrencyMegaPipe,
+  CurrencyPricePipe, // 格式掩碼（模板使用: `{{ value | mask:'###-####' }}`）
+  FilterPipe, // 數組過濾（模板使用: `{{ array | filter:matcher }}`）
+
+  // 人民幣格式化（模板使用: `{{ value | cny }}`）
+  FormatMaskPipe
+} from '@delon/util';
 // ========== @delon/theme 組件模組 ==========
 // 默認佈局 — https://ng-alain.com/theme/layout-default
 // 設置抽屜 — https://ng-alain.com/theme/setting-drawer
 // 主題切換按鈕 — https://ng-alain.com/theme/theme-btn
 
 export const SHARED_DELON_MODULES = [
+  // ========== @delon/form 動態表單 ==========
+  DelonFormModule, // 動態表單（基於 JSON Schema） — https://ng-alain.com/form
+
+  // ========== @delon/abc 組件模組 ==========
   CellModule, // 單元格渲染 — https://ng-alain.com/components/cell/zh
-  DelonFormModule, // 動態表單 — https://ng-alain.com/form
   STModule, // 智能表格 — https://ng-alain.com/components/st
   SVModule, // 鍵值描述視圖 — https://ng-alain.com/components/sv
   SEModule, // 表單佈局 — https://ng-alain.com/components/se
@@ -97,14 +130,38 @@ export const SHARED_DELON_MODULES = [
   ExceptionModule, // 異常頁面 — https://ng-alain.com/components/exception
   NoticeIconModule, // 通知圖標 — https://ng-alain.com/components/notice-icon
   DownFileDirective, // 下載文件指令 — https://ng-alain.com/components/down-file
+  AutoFocusModule, // 自動聚焦指令 — https://ng-alain.com/components/auto-focus
+  DatePickerModule, // 日期選擇器 — https://ng-alain.com/components/date-picker
+  ErrorCollectModule, // 錯誤收集組件 — https://ng-alain.com/components/error-collect
+  HotkeyModule, // 快捷鍵指令 — https://ng-alain.com/components/hotkey
+  LoadingModule, // 加載組件 — https://ng-alain.com/components/loading
+  MediaModule, // 媒體組件 — https://ng-alain.com/components/media
+  SGModule, // 簡單網格組件 — https://ng-alain.com/components/sg
+  XlsxModule, // Excel 導出指令 — https://ng-alain.com/components/xlsx
+  PdfModule, // PDF 查看器組件 — https://ng-alain.com/components/pdf
+
+  // ========== @delon/acl 訪問控制指令 ==========
   ACLDirective, // ACL 指令 — https://ng-alain.com/acl
   ACLIfDirective, // 條件 ACL 指令 — https://ng-alain.com/acl
-  CurrencyPricePipe, // 金額格式化 — https://ng-alain.com/util
+
+  // ========== @delon/util 管道 ==========
+  CurrencyPricePipe, // 金額格式化（模板使用: `{{ value | price }}`） — https://ng-alain.com/util
+  CurrencyMegaPipe, // 大數字格式化（模板使用: `{{ value | mega }}`） — https://ng-alain.com/util
+  CurrencyCNYPipe, // 人民幣格式化（模板使用: `{{ value | cny }}`） — https://ng-alain.com/util
+  FormatMaskPipe, // 格式掩碼（模板使用: `{{ value | mask:'###-####' }}`） — https://ng-alain.com/util
+  FilterPipe, // 數組過濾（模板使用: `{{ array | filter:matcher }}`） — https://ng-alain.com/util
+
   // ========== @delon/theme 組件模組 ==========
   LayoutDefaultModule, // 默認佈局 — https://ng-alain.com/theme/layout-default
   SettingDrawerModule, // 設置抽屜 — https://ng-alain.com/theme/setting-drawer
   ThemeBtnComponent, // 主題切換按鈕 — https://ng-alain.com/theme/theme-btn
-  // @delon/chart 完整圖表模組套件
+  // ========== @delon/theme 管道 ==========
+  HTMLPipe, // HTML 渲染管道（模板使用: `{{ value | html }}`） — https://ng-alain.com/theme
+  URLPipe, // URL 管道（模板使用: `{{ value | url }}`） — https://ng-alain.com/theme
+  YNPipe, // 是/否管道（模板使用: `{{ value | yn }}`） — https://ng-alain.com/theme
+  KeysPipe, // 鍵值管道（模板使用: `{{ obj | keys }}`） — https://ng-alain.com/theme
+
+  // ========== @delon/chart 圖表模組套件 ==========
   G2BarModule, // 柱狀圖 — https://ng-alain.com/chart/bar
   G2CardModule, // 圖表卡片 — https://ng-alain.com/chart/card
   ChartEChartsModule, // ECharts 圖表 — https://ng-alain.com/chart/chart-echarts

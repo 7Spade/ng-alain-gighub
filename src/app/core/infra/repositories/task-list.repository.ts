@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
-import { TaskListType } from '../types/task.types';
+import { Database } from '../types/common';
+import { TaskListType } from '../types/task';
 
 /**
  * TaskList 实体类型（camelCase）

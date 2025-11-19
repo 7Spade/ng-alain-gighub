@@ -1,44 +1,9 @@
-import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
-import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
+import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
-import { ErrorStateService } from '../../shared/services/common/error-state.service';
+import { SubscriptionConfig, SubscriptionInfo } from '../infra/types/common';
+import { ErrorStateService } from '../services/error-state.service';
 import { SupabaseService } from '../supabase/supabase.service';
-
-/**
- * Subscription Configuration
- */
-export interface SubscriptionConfig {
-  /** Subscription ID (auto-generated if not provided) */
-  id?: string;
-  /** Table name to subscribe to */
-  table?: string;
-  /** Schema name (default: 'public') */
-  schema?: string;
-  /** Filter string (e.g., 'blueprint_id=eq.123') */
-  filter?: string;
-  /** Event types to listen for (default: all) */
-  events?: Array<'INSERT' | 'UPDATE' | 'DELETE' | '*'>;
-  /** Channel name for broadcast/presence */
-  channelName?: string;
-}
-
-/**
- * Subscription Info
- */
-export interface SubscriptionInfo {
-  /** Subscription ID */
-  id: string;
-  /** Subscription type */
-  type: 'table' | 'broadcast' | 'presence';
-  /** Channel instance */
-  channel: RealtimeChannel;
-  /** Configuration used */
-  config: SubscriptionConfig;
-  /** Subscription status */
-  status: 'connecting' | 'connected' | 'disconnected' | 'error';
-  /** Created timestamp */
-  createdAt: Date;
-}
 
 /**
  * Realtime Facade

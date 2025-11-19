@@ -1,0 +1,110 @@
+<form nz-form [formGroup]="form" (ngSubmit)="submit()" class="daily-report-form">
+  <div nz-row [nzGutter]="16">
+    <div nz-col nzXs="24" nzSm="12">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'date'" nzRequired>日期</nz-form-label>
+        <nz-form-control [nzErrorTip]="'請選擇日期'">
+          <nz-date-picker
+            formControlName="date"
+            nzFormat="yyyy-MM-dd"
+            [disabled]="loading()"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div nz-col nzXs="24" nzSm="12">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'weather'">天氣</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="weather" [disabled]="loading()" placeholder="晴朗 / 陰 / 雨..." />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item>
+    <nz-form-label [nzFor]="'content'" nzRequired>施工內容</nz-form-label>
+    <nz-form-control [nzErrorTip]="'請輸入施工內容'">
+      <textarea nz-input formControlName="content" rows="4" [disabled]="loading()"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div nz-row [nzGutter]="16">
+    <div nz-col nzXs="24" nzSm="12">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'progress_percentage'">進度百分比</nz-form-label>
+        <nz-form-control [nzErrorTip]="'0 ~ 100 之間'">
+          <nz-input-number
+            formControlName="progress_percentage"
+            [nzMin]="0"
+            [nzMax]="100"
+            [disabled]="loading()"
+            [nzStep]="1"
+            nzStyle="width: 100%;"
+          ></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div nz-col nzXs="24" nzSm="12">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'participants'">參與人員</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            formControlName="participants"
+            nzMode="multiple"
+            nzPlaceHolder="選擇參與人員"
+            [disabled]="loading()"
+            [nzOptions]="memberOptions()"
+            [nzMaxTagCount]="5"
+          ></nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div nz-row [nzGutter]="16">
+    <div nz-col nzXs="24" nzSm="12">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'issues'">問題紀錄</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="issues" rows="3" [disabled]="loading()"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div nz-col nzXs="24" nzSm="12">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'notes'">備註</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="notes" rows="3" [disabled]="loading()"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item>
+    <nz-form-label [nzFor]="'photos'">照片（以逗號分隔）</nz-form-label>
+    <nz-form-control>
+      <textarea
+        nz-input
+        formControlName="photos"
+        rows="2"
+        [disabled]="loading()"
+        placeholder="https://example.com/photo1.jpg, https://example.com/photo2.jpg"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="form-actions" nz-row nzJustify="end" nzGutter="8">
+    <div nz-col>
+      <button nz-button nzType="default" (click)="cancel()" [disabled]="loading()">取消</button>
+    </div>
+    <div nz-col>
+      <button nz-button nzType="primary" [nzLoading]="loading()" type="submit">
+        {{ editingReport() ? '更新日誌' : '建立日誌' }}
+      </button>
+    </div>
+  </div>
+</form>

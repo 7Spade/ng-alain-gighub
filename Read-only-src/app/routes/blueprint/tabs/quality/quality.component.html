@@ -1,0 +1,7 @@
+@if (loading()) {
+  <nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else if (blueprintIdValue(); as blueprintId) {
+  <task-quality-panel [blueprintId]="blueprintId" [members]="members()"></task-quality-panel>
+} @else {
+  <nz-empty nzNotFoundContent="藍圖不存在"></nz-empty>
+}

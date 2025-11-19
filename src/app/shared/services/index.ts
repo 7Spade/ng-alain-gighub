@@ -30,6 +30,7 @@ export * from './bot';
 export * from './collab';
 export * from './common';
 export * from './document';
+export * from './explore';
 export * from './issue';
 export * from './org';
 export * from './permission';

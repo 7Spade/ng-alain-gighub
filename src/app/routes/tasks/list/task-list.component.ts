@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { STColumn } from '@delon/abc/st';
 import {
   SHARED_IMPORTS,
@@ -226,6 +226,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   taskStagingService = inject(TaskStagingService);
   authState = inject(AuthStateService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
   message = inject(NzMessageService);
 
   // Component signals
@@ -303,7 +304,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.loadBlueprints();
+    this.loadBlueprints().then(() => {
+      // 从查询参数中获取蓝图ID
+      const blueprintId = this.route.snapshot.queryParamMap.get('blueprintId');
+      if (blueprintId) {
+        this.selectedBlueprintId.set(blueprintId);
+        this.onBlueprintChange();
+      }
+    });
   }
 
   ngOnDestroy(): void {

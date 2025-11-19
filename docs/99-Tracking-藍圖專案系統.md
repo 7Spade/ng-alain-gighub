@@ -415,12 +415,15 @@ API 文檔更新（藍圖系統 API 文檔）[⏳待開始]
 - **實現方式**：通過 Supabase Edge Function 客戶端調用
 - **相關服務**：需要創建 Edge Function 調用服務
 
-#### Edge Function 整合
+#### PR 合併邏輯實現（不使用 Edge Functions）
 
-PR 合併 Edge Function（branch-merge）實施[⏳待開始]
-PR 合併 Edge Function 整合（合併承攬欄位、任務對應關係追蹤）[⏳待開始]
-PR 合併 Edge Function 錯誤處理與衝突解決[⏳待開始]
-Edge Function 調用服務創建（Supabase Edge Function 客戶端封裝）[⏳待開始]
+PR 合併邏輯完整實現方案設計[✅已完成]（參考 [PR合併邏輯實現方案-2025-01-20.md](../PR合併邏輯實現方案-2025-01-20.md)）
+TaskService.updateTaskContractorFields() 方法實現[⏳待開始]
+PullRequestService.mergePullRequest() 完整實現[⏳待開始]
+任務對應關係建立邏輯（buildTaskMappings）[⏳待開始]
+PR 合併錯誤處理與日誌記錄[⏳待開始]
+PR 合併單元測試[⏳待開始]
+PR 合併集成測試[⏳待開始]
 
 ### 測試覆蓋
 

@@ -1,0 +1,53 @@
+.documents-page {
+  .mb-lg {
+    margin-bottom: 24px;
+  }
+
+  .mt-md {
+    margin-top: 16px;
+  }
+
+  .documents-summary-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .documents-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .stat-value {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .stat-label {
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 12px;
+      }
+    }
+  }
+
+  .text-muted {
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  nz-card {
+    height: 100%;
+  }
+
+  nz-table {
+    th,
+    td {
+      white-space: nowrap;
+    }
+  }
+}

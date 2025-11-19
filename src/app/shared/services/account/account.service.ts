@@ -1,5 +1,14 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { AccountInsert, AccountRepository, AccountUpdate, CollaborationMemberRepository, OrganizationCollaborationRepository } from '@core';
+import {
+  AccountInsert,
+  AccountRepository,
+  AccountUpdate,
+  CollaborationMemberRepository,
+  OrganizationCollaborationRepository,
+  Team,
+  TeamMemberRepository,
+  TeamRepository
+} from '@core';
 import { Account, AccountStatus, AccountType } from '@shared';
 import { firstValueFrom, forkJoin } from 'rxjs';
 
@@ -29,6 +38,8 @@ export class AccountService {
   private accountRepository = inject(AccountRepository);
   private collaborationMemberRepository = inject(CollaborationMemberRepository);
   private organizationCollaborationRepository = inject(OrganizationCollaborationRepository);
+  private teamMemberRepository = inject(TeamMemberRepository);
+  private teamRepository = inject(TeamRepository);
 
   // 使用 Signals 管理状态
   private accountsState = signal<Account[]>([]);
@@ -400,6 +411,46 @@ export class AccountService {
       return organizations.filter(org => org.type === AccountType.ORGANIZATION);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '获取用户加入的组织失败');
+      return [];
+    }
+  }
+
+  /**
+   * 获取用户所属的团队
+   * 通过 team_members 表查询用户作为成员的团队
+   *
+   * @param userAccountId 用户的账户 ID
+   * @returns Promise<Team[]>
+   */
+  async getUserTeams(userAccountId: string): Promise<Team[]> {
+    try {
+      // 1. 查询用户作为成员的所有团队成员关系
+      const teamMembers = await firstValueFrom(this.teamMemberRepository.findByAccountId(userAccountId));
+
+      if (teamMembers.length === 0) {
+        return [];
+      }
+
+      // 2. 获取所有团队 ID（注意：BaseRepository 返回的是 snake_case）
+      const teamIds = teamMembers.map(m => (m as any).team_id || (m as any).teamId);
+
+      if (teamIds.length === 0) {
+        return [];
+      }
+
+      // 3. 批量查询团队详细信息
+      const teams$ = teamIds.map(teamId =>
+        this.teamRepository.findAll({
+          filters: { id: teamId }
+        })
+      );
+
+      const teamsArrays = await firstValueFrom(forkJoin(teams$));
+      const teams = teamsArrays.flat() as Team[];
+
+      return teams;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '获取用户团队失败');
       return [];
     }
   }

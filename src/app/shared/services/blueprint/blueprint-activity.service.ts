@@ -1,10 +1,10 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { ActivityLogRepository, type ActivityLog, type ActivityLogInsert, type Json } from '@core';
+import { ErrorStateService } from '@core';
 import { firstValueFrom } from 'rxjs';
 
 import { type ActivityLogFilters } from '../../models/data.models';
 import { AuthStateService } from '../auth';
-import { ErrorStateService } from '../common';
 
 /**
  * Activity Change Detail

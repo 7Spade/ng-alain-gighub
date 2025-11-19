@@ -1,0 +1,60 @@
+<div class="task-report-panel">
+  <div class="panel-header" nz-row nzAlign="middle" nzJustify="space-between">
+    <div nz-col>
+      <nz-statistic [nzTitle]="'日誌總數'" [nzValue]="totalReports()" class="mr-md"></nz-statistic>
+      <nz-statistic [nzTitle]="'今日新增'" [nzValue]="todayReports()"></nz-statistic>
+    </div>
+    <div nz-col>
+      <button nz-button nzType="primary" (click)="openCreate()" [disabled]="loading()">
+        <span nz-icon nzType="plus"></span>
+        新增施工日誌
+      </button>
+    </div>
+  </div>
+
+  @if (showForm()) {
+    <nz-card nzTitle="{{ editingReport() ? '編輯日誌' : '新增日誌' }}" class="mb-md">
+      <task-daily-report-form
+        [blueprintId]="blueprintId()!"
+        [editingReport]="editingReport()"
+        [members]="members()"
+        (saved)="onFormSaved()"
+        (cancelled)="onFormCancelled()"
+      ></task-daily-report-form>
+    </nz-card>
+  }
+
+  <nz-table
+    nzBordered
+    [nzLoading]="loading()"
+    [nzData]="reports()"
+    [nzFrontPagination]="false"
+    [nzNoResult]="'目前尚無施工日誌'"
+  >
+    <thead>
+      <tr>
+        <th>日期</th>
+        <th>天氣</th>
+        <th>施工內容</th>
+        <th>進度</th>
+        <th>參與人員</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (report of reports(); track trackByReportId($index, report)) {
+        <tr>
+          <td>{{ formatDate(report.date) }}</td>
+          <td>{{ report.weather || '—' }}</td>
+          <td>{{ report.content }}</td>
+          <td>{{ report.progress_percentage ?? '—' }}%</td>
+          <td>{{ getParticipantNames(report.participants) }}</td>
+          <td>
+            <button nz-button nzType="link" (click)="editReport(report)">編輯</button>
+            <button nz-button nzType="link" nzDanger (click)="deleteReport(report)">刪除</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>

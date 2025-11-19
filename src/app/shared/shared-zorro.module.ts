@@ -13,9 +13,11 @@ import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
 import { NzCheckListModule } from 'ng-zorro-antd/check-list';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
+import { NzCronExpressionModule } from 'ng-zorro-antd/cron-expression';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -25,6 +27,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFloatButtonModule } from 'ng-zorro-antd/float-button';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzGraphModule } from 'ng-zorro-antd/graph';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzHashCodeModule } from 'ng-zorro-antd/hash-code';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -38,12 +41,14 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzPipesModule } from 'ng-zorro-antd/pipes';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzRateModule } from 'ng-zorro-antd/rate';
+import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -68,6 +73,11 @@ import { NzTreeViewModule } from 'ng-zorro-antd/tree-view';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark';
+// 代碼編輯器組件 — https://ng.ant.design/components/code-editor/en
+// Cron 表達式組件 — https://ng.ant.design/components/cron-expression/en
+// 圖形組件 — https://ng.ant.design/components/graph/en
+// 可調整大小指令 — https://ng.ant.design/components/resizable/en
+// 管道模組 — https://ng.ant.design/components/pipes/en
 
 export const SHARED_ZORRO_MODULES = [
   // 反饋類組件
@@ -149,5 +159,11 @@ export const SHARED_ZORRO_MODULES = [
   NzWaterMarkModule, // WaterMark 水印 - https://ng.ant.design/components/water-mark/en
   // 特色組件
   NzCheckListModule, // CheckList 任務清單 - https://ng.ant.design/components/check-list/en
-  NzHashCodeModule // HashCode 哈希碼 - https://ng.ant.design/components/hash-code/en
+  NzHashCodeModule, // HashCode 哈希碼 - https://ng.ant.design/components/hash-code/en
+  NzCodeEditorModule, // CodeEditor 代碼編輯器 - https://ng.ant.design/components/code-editor/en
+  NzCronExpressionModule, // CronExpression Cron 表達式 - https://ng.ant.design/components/cron-expression/en
+  NzGraphModule, // Graph 圖形 - https://ng.ant.design/components/graph/en
+  NzResizableModule, // Resizable 可調整大小 - https://ng.ant.design/components/resizable/en
+  // 管道模組（包含：NzAggregatePipe, NzBytesPipe, NzEllipsisPipe, NzSanitizerPipe, NzToCssUnitPipe, NzTrimPipe）
+  NzPipesModule // Pipes 管道集合 - https://ng.ant.design/components/pipes/en
 ];

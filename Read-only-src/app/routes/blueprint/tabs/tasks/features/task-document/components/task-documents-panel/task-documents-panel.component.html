@@ -1,0 +1,186 @@
+@if (loading()) {
+  <nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else {
+  <nz-card nzBordered="false" class="mb-lg filters-card" nzTitle="分類篩選">
+    <div nz-row [nzGutter]="16" class="filters-row">
+      <div nz-col nzXs="24" nzSm="12" nzMd="6">
+        <label class="filter-label">專業（Discipline）</label>
+        <nz-select
+          nzAllowClear
+          nzPlaceHolder="選擇專業"
+          [ngModel]="disciplineFilter()"
+          (ngModelChange)="setDisciplineFilter($event)"
+        >
+          @for (option of disciplineOptions(); track option) {
+            <nz-option [nzValue]="option" [nzLabel]="option"></nz-option>
+          }
+        </nz-select>
+      </div>
+      <div nz-col nzXs="24" nzSm="12" nzMd="6">
+        <label class="filter-label">施工階段（Phase）</label>
+        <nz-select nzAllowClear nzPlaceHolder="選擇階段" [ngModel]="phaseFilter()" (ngModelChange)="setPhaseFilter($event)">
+          @for (option of phaseOptions(); track option) {
+            <nz-option [nzValue]="option" [nzLabel]="option"></nz-option>
+          }
+        </nz-select>
+      </div>
+      <div nz-col nzXs="24" nzSm="12" nzMd="6">
+        <label class="filter-label">工作包（Package）</label>
+        <nz-select
+          nzAllowClear
+          nzPlaceHolder="選擇工作包"
+          [ngModel]="packageFilter()"
+          (ngModelChange)="setPackageFilter($event)"
+        >
+          @for (option of packageOptions(); track option) {
+            <nz-option [nzValue]="option" [nzLabel]="option"></nz-option>
+          }
+        </nz-select>
+      </div>
+      <div nz-col nzXs="24" nzSm="12" nzMd="6" style="display: flex; flex-direction: column; justify-content: flex-end;">
+        <label class="filter-label">&nbsp;</label>
+        <button nz-button nzType="default" [disabled]="!hasActiveFilters()" (click)="clearFilters()">清除篩選</button>
+      </div>
+    </div>
+  </nz-card>
+
+  <div nz-row [nzGutter]="16">
+    <div nz-col nzXs="24" nzSm="24" nzMd="8">
+      <nz-card nzBordered="false" nzType="inner" nzTitle="分類統計" class="mb-md">
+        <nz-tabs nzSize="small">
+          <nz-tab nzTitle="專業">
+            @if (disciplineSummary().length) {
+              <nz-table nzSize="small" [nzShowPagination]="false">
+                <thead>
+                  <tr>
+                    <th>專業</th>
+                    <th class="text-right">檔案數</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of disciplineSummary(); track item.key) {
+                    <tr>
+                      <td>{{ item.label }}</td>
+                      <td class="text-right">{{ item.value }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="2"><nz-empty nzNotFoundContent="尚無統計資料"></nz-empty></td>
+                    </tr>
+                  }
+                </tbody>
+              </nz-table>
+            } @else {
+              <nz-empty nzNotFoundContent="尚無統計資料"></nz-empty>
+            }
+          </nz-tab>
+          <nz-tab nzTitle="施工階段">
+            @if (phaseSummary().length) {
+              <nz-table nzSize="small" [nzShowPagination]="false">
+                <thead>
+                  <tr>
+                    <th>階段</th>
+                    <th class="text-right">檔案數</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of phaseSummary(); track item.key) {
+                    <tr>
+                      <td>{{ item.label }}</td>
+                      <td class="text-right">{{ item.value }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="2"><nz-empty nzNotFoundContent="尚無統計資料"></nz-empty></td>
+                    </tr>
+                  }
+                </tbody>
+              </nz-table>
+            } @else {
+              <nz-empty nzNotFoundContent="尚無統計資料"></nz-empty>
+            }
+          </nz-tab>
+          <nz-tab nzTitle="工作包">
+            @if (packageSummary().length) {
+              <nz-table nzSize="small" [nzShowPagination]="false">
+                <thead>
+                  <tr>
+                    <th>工作包</th>
+                    <th class="text-right">檔案數</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of packageSummary(); track item.key) {
+                    <tr>
+                      <td>{{ item.label }}</td>
+                      <td class="text-right">{{ item.value }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="2"><nz-empty nzNotFoundContent="尚無統計資料"></nz-empty></td>
+                    </tr>
+                  }
+                </tbody>
+              </nz-table>
+            } @else {
+              <nz-empty nzNotFoundContent="尚無統計資料"></nz-empty>
+            }
+          </nz-tab>
+        </nz-tabs>
+      </nz-card>
+
+      <app-document-tree-panel
+        [treeData]="documentTree()"
+        [expandedKeys]="expandedKeys()"
+        [selectedKey]="selectedKey()"
+        (treeSelect)="onTreeSelect($event)"
+        (treeExpand)="onTreeExpand($event)"
+        (createFolder)="openCreateFolderModal()"
+      >
+      </app-document-tree-panel>
+    </div>
+    <div nz-col nzXs="24" nzSm="24" nzMd="16">
+      <app-document-detail-panel
+        [document]="selectedDocument()"
+        [documentVersions]="documentVersions()"
+        [selectedTabIndex]="selectedTabIndex()"
+        [fileList]="fileList()"
+        [uploading]="uploading()"
+        [beforeUpload]="beforeUpload"
+        [uploadRequest]="uploadRequest"
+        [handleUploadChange]="onUploadChange"
+        [formatFileSize]="formatFileSize"
+        [formatDate]="formatDate"
+        [metadataForm]="metadataForm"
+        [metadataSaving]="metadataSaving()"
+        (selectedTabIndexChange)="setSelectedTabIndex($event)"
+        (deleteDocument)="deleteDocument($event)"
+        (fileListChange)="setFileList($event)"
+        (saveMetadata)="saveMetadata()"
+        (resetMetadata)="resetMetadata()"
+      >
+      </app-document-detail-panel>
+    </div>
+  </div>
+}
+
+<nz-modal
+  [nzVisible]="showFolderModal()"
+  (nzVisibleChange)="setCreateFolderModalVisible($event)"
+  nzTitle="新建目錄"
+  (nzOnCancel)="closeCreateFolderModal()"
+  (nzOnOk)="submitCreateFolder()"
+  [nzOkLoading]="loading()"
+>
+  <div *nzModalContent>
+    <form nz-form [formGroup]="folderForm" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label nzRequired>目錄名稱</nz-form-label>
+        <nz-form-control [nzErrorTip]="'請輸入目錄名稱'">
+          <input nz-input formControlName="name" placeholder="請輸入目錄名稱..." />
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</nz-modal>
+

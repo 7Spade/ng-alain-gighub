@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { OrganizationCollaboration } from '@shared';
-import { of } from 'rxjs';
 
 import { OrganizationCollaborationRepository } from './organization-collaboration.repository';
 import { SupabaseService } from '../../supabase/supabase.service';
-import { CollaborationType, CollaborationStatus } from '../types/collaboration.types';
+import { CollaborationStatus, CollaborationType } from '../types/org';
 
 describe('OrganizationCollaborationRepository', () => {
   let repository: OrganizationCollaborationRepository;

@@ -1,0 +1,208 @@
+@if (vm.loading()) {
+  <nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+} @else if (vm.viewModel(); as data) {
+  @if (vm.blueprintId(); as blueprintId) {
+    <div class="documents-page">
+      <nz-row [nzGutter]="16" class="mb-lg">
+        <nz-col nzXs="24" nzSm="24" nzMd="8">
+          <nz-card nzTitle="專業分佈">
+            <nz-table nzSize="small" [nzShowPagination]="false" [nzScroll]="{ y: '220px' }">
+              <thead>
+                <tr>
+                  <th>專業</th>
+                  <th class="text-right">檔案數</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of vm.disciplineSummary(); track item.key) {
+                  <tr>
+                    <td>{{ item.label ?? item.key }}</td>
+                    <td class="text-right">{{ item.value }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="2">
+                      <nz-empty nzNotFoundContent="尚無專業分佈資料"></nz-empty>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </nz-card>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="8">
+          <nz-card nzTitle="施工階段分佈">
+            <nz-table nzSize="small" [nzShowPagination]="false" [nzScroll]="{ y: '220px' }">
+              <thead>
+                <tr>
+                  <th>階段</th>
+                  <th class="text-right">檔案數</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of vm.phaseSummary(); track item.key) {
+                  <tr>
+                    <td>{{ item.label ?? item.key }}</td>
+                    <td class="text-right">{{ item.value }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="2">
+                      <nz-empty nzNotFoundContent="尚無階段分佈資料"></nz-empty>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </nz-card>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="8">
+          <nz-card nzTitle="工作包分佈">
+            <nz-table nzSize="small" [nzShowPagination]="false" [nzScroll]="{ y: '220px' }">
+              <thead>
+                <tr>
+                  <th>工作包</th>
+                  <th class="text-right">檔案數</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of vm.packageSummary(); track item.key) {
+                  <tr>
+                    <td>{{ item.label ?? item.key }}</td>
+                    <td class="text-right">{{ item.value }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="2">
+                      <nz-empty nzNotFoundContent="尚無工作包分佈資料"></nz-empty>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </nz-card>
+        </nz-col>
+      </nz-row>
+
+      <nz-row [nzGutter]="16" class="mb-lg">
+        <nz-col nzXs="24" nzSm="24" nzMd="12">
+          <nz-card nzBordered="false">
+            <div class="documents-summary-header">
+              <h2 class="mb-sm">{{ data.blueprint?.name ?? '未命名藍圖' }}</h2>
+              <span class="text-muted">最後彙整：{{ vm.generatedAt() ? (vm.generatedAt() | date: 'yyyy/MM/dd HH:mm') : '尚未產生' }}</span>
+            </div>
+            @if (vm.totals(); as totals) {
+              <div class="documents-stats">
+                <div class="stat-item">
+                  <span class="stat-value">{{ totals.total }}</span>
+                  <span class="stat-label">總文件項目</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ totals.files }}</span>
+                  <span class="stat-label">檔案數</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ totals.directories }}</span>
+                  <span class="stat-label">目錄數</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ formatBytes(totals.storageSize) }}</span>
+                  <span class="stat-label">總容量</span>
+                </div>
+              </div>
+              <div class="mt-md text-muted">
+                最後更新時間：{{ totals.lastUpdatedAt ? (totals.lastUpdatedAt | date: 'yyyy/MM/dd HH:mm') : '尚未更新' }}
+              </div>
+            } @else {
+              <nz-empty nzNotFoundContent="尚無文件彙總資料"></nz-empty>
+            }
+          </nz-card>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12">
+          <nz-card nzBordered="false" nzTitle="近期更新">
+            <nz-list nzItemLayout="horizontal">
+              @for (item of vm.recentDocuments(); track item.id) {
+                <nz-list-item>
+                  <nz-list-item-meta
+                    nzTitle="{{ item.name }}"
+                    nzDescription="更新於 {{ item.updatedAt | date: 'MM/dd HH:mm' }}"
+                  ></nz-list-item-meta>
+                  <span class="text-muted">{{ item.path }}</span>
+                </nz-list-item>
+              } @empty {
+                <nz-empty nzNotFoundContent="最近尚無更新"></nz-empty>
+              }
+            </nz-list>
+          </nz-card>
+        </nz-col>
+      </nz-row>
+
+      <nz-row [nzGutter]="16" class="mb-lg">
+        <nz-col nzXs="24" nzSm="24" nzMd="12">
+          <nz-card nzTitle="類型分佈">
+            <nz-table nzSize="small" [nzShowPagination]="false" [nzScroll]="{ y: '220px' }">
+              <thead>
+                <tr>
+                  <th>類型</th>
+                  <th class="text-right">數量</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of vm.distributionByType(); track item.key) {
+                  <tr>
+                    <td>{{ item.key }}</td>
+                    <td class="text-right">{{ item.value }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="2">
+                      <nz-empty nzNotFoundContent="尚無類型分佈資料"></nz-empty>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </nz-card>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12">
+          <nz-card nzTitle="熱門目錄">
+            <nz-table nzSize="small" [nzShowPagination]="false" [nzScroll]="{ y: '220px' }">
+              <thead>
+                <tr>
+                  <th>目錄</th>
+                  <th class="text-right">檔案數</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of vm.distributionByDirectory(); track item.directoryId ?? item.directoryPath) {
+                  <tr>
+                    <td>{{ item.directoryPath }}</td>
+                    <td class="text-right">{{ item.count }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="2">
+                      <nz-empty nzNotFoundContent="尚無目錄統計資料"></nz-empty>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </nz-card>
+        </nz-col>
+      </nz-row>
+
+      <nz-row class="mb-lg">
+        <nz-col nzSpan="24">
+          <nz-card nzTitle="任務文件管理">
+            <task-documents-panel [blueprintId]="blueprintId"></task-documents-panel>
+          </nz-card>
+        </nz-col>
+      </nz-row>
+    </div>
+  } @else {
+    <nz-empty nzNotFoundContent="藍圖資訊不可用"></nz-empty>
+  }
+} @else {
+  <nz-empty nzNotFoundContent="藍圖不存在"></nz-empty>
+}

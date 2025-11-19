@@ -1,16 +1,8 @@
 import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
-import {
-  BotInsert,
-  BotUpdate,
-  BotTaskInsert,
-  BotTaskUpdate,
-  Bot,
-  BotTask,
-  BotExecutionLog,
-  BlueprintActivityService,
-  ErrorStateService
-} from '@shared';
+import { BotInsert, BotUpdate, BotTaskInsert, BotTaskUpdate, Bot, BotTask, BotExecutionLog, BlueprintActivityService } from '@shared';
 import { BotService, type BotDetail } from '@shared/services/bot/bot.service';
+
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Bot Facade

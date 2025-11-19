@@ -1,7 +1,7 @@
-import { CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { SHARED_IMPORTS, Task, TaskTreeNode, TaskStatus } from '@shared';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BlueprintService, SHARED_IMPORTS, TaskTreeNode } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 
@@ -67,6 +67,8 @@ interface NzTreeNodeOptions {
 export class TaskTreeComponent implements OnInit, OnDestroy {
   readonly facade = inject(TaskTreeFacade);
   readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
+  readonly blueprintService = inject(BlueprintService);
   private readonly message = inject(NzMessageService);
   private readonly dragService = inject(TaskTreeDragService);
 
@@ -102,18 +104,20 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    // Load tasks if blueprint is available
-    // TODO: Get blueprint from route params or user selection
-    const blueprintId = this.getBlueprintIdFromRoute();
-    if (blueprintId) {
-      this.selectedBlueprintId.set(blueprintId);
-      this.loadTasks(blueprintId);
-    }
+    // Load blueprints first, then check for blueprint ID from route
+    this.loadBlueprints().then(() => {
+      // 从查询参数中获取蓝图ID
+      const blueprintId = this.route.snapshot.queryParamMap.get('blueprintId');
+      if (blueprintId) {
+        this.selectedBlueprintId.set(blueprintId);
+        this.loadTasks(blueprintId);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     // Cleanup will be handled by facade if needed
-    // Realtime subscriptions should be cleaned up here
+    // Realtime subscriptions are automatically cleaned up by facade
   }
 
   /**
@@ -131,7 +135,11 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   /**
    * Handle blueprint selection change
    */
-  async onBlueprintChange(blueprintId: string): Promise<void> {
+  async onBlueprintChange(blueprintId: string | null): Promise<void> {
+    if (!blueprintId) {
+      this.selectedBlueprintId.set(null);
+      return;
+    }
     this.selectedBlueprintId.set(blueprintId);
     await this.loadTasks(blueprintId);
   }
@@ -217,24 +225,16 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   /**
    * Handle task assignment change
    *
-   * Note: Facade updateTaskAssignment method requires task_assignments table integration
-   * Current implementation logs the event pending full implementation.
-   *
    * Phase 3.2: Assignment integration
    */
   async onAssignmentChange(event: AssignmentChangeEvent): Promise<void> {
     try {
-      console.log('[TaskTreeComponent] Assignment change:', event);
+      // Map assigneeType to supported types (exclude 'subcontractor' for now)
+      const assigneeType =
+        event.assigneeType === 'subcontractor' ? 'user' : ((event.assigneeType || 'user') as 'user' | 'team' | 'organization');
 
-      // TODO: Uncomment when facade.updateTaskAssignment is fully implemented
-      // await this.facade.updateTaskAssignment(event.taskId, event.assigneeId);
-
-      // For now, just show success message (implementation pending)
-      if (event.assigneeId) {
-        this.message.success('任務已指派 (功能實作中)');
-      } else {
-        this.message.success('已取消指派 (功能實作中)');
-      }
+      await this.facade.updateTaskAssignment(event.taskId, event.assigneeId, assigneeType);
+      this.message.success(event.assigneeId ? '任務已指派' : '已取消指派');
     } catch (error) {
       this.message.error(`指派失敗：${(error as Error).message}`);
       console.error('[TaskTreeComponent] Assignment change failed:', error);
@@ -330,11 +330,14 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get blueprint ID from route params or query
-   * TODO: Implement actual route param extraction
+   * Load blueprints list
    */
-  private getBlueprintIdFromRoute(): string | null {
-    // For now, return null - will be implemented with actual routing
-    return null;
+  async loadBlueprints(): Promise<void> {
+    try {
+      await this.blueprintService.loadBlueprints();
+    } catch (error) {
+      this.message.error('載入藍圖列表失敗');
+      console.error('Failed to load blueprints:', error);
+    }
   }
 }

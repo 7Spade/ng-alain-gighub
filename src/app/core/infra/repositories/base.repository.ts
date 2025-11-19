@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { SupabaseClient, PostgrestResponse, PostgrestSingleResponse, PostgrestMaybeSingleResponse } from '@supabase/supabase-js';
+import { PostgrestMaybeSingleResponse, PostgrestResponse, PostgrestSingleResponse, SupabaseClient } from '@supabase/supabase-js';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { SupabaseService } from '../../supabase/supabase.service';
 import { handleSupabaseResponse } from '../errors/supabase-error.transformer';
-import { Database } from '../types/database.types';
+import { Database } from '../types/common';
 import { toCamelCaseData, toSnakeCaseData } from '../utils/transformers';
 
 /**

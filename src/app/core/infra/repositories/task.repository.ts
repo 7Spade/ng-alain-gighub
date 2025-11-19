@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
-import { TaskStatus, TaskType, TaskPriority } from '../types/task.types';
+import { Database } from '../types/common';
+import { TaskPriority, TaskStatus, TaskType } from '../types/task';
 
 /**
  * Task 实体类型（camelCase）

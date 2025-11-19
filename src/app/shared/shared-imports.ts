@@ -20,8 +20,8 @@ import {
 } from '@angular/common';
 // 表單模組（模板式 / 響應式） — https://angular.dev/guide/forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// 路由（RouterLink/RouterOutlet） — https://angular.dev/guide/routing
-import { RouterOutlet, RouterLink } from '@angular/router';
+// 路由（RouterLink/RouterOutlet/RouterLinkActive） — https://angular.dev/guide/routing
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 // @delon/theme 管道（I18n/Date） — https://ng-alain.com/theme
 // 注意：@delon/theme 的 DatePipe 在模板中使用 `_date` pipe，Angular Common 的 DatePipe 使用 `date` pipe
 import { DatePipe as DelonDatePipe, I18nPipe } from '@delon/theme';
@@ -49,10 +49,11 @@ export const SHARED_IMPORTS = [
   ReactiveFormsModule, // 響應式表單 — https://angular.dev/guide/forms#reactive-forms
 
   // ========== Angular 路由 ==========
-  RouterLink, // 路由連結指令 — https://angular.dev/guide/routing#routerlink
-  RouterOutlet, // 路由插座 — https://angular.dev/guide/routing#routeroutlet
-  NgTemplateOutlet, // 動態嵌入模板 — https://angular.dev/api/common/NgTemplateOutlet
-  NgComponentOutlet, // 動態組件嵌入 — https://angular.dev/api/common/NgComponentOutlet
+  RouterLink, // 路由連結指令（模板使用: `[routerLink]="..."`） — https://angular.dev/guide/routing#routerlink
+  RouterLinkActive, // 路由連結激活狀態指令（模板使用: `[routerLinkActive]="..."`） — https://angular.dev/api/router/RouterLinkActive
+  RouterOutlet, // 路由插座（模板使用: `<router-outlet />`） — https://angular.dev/guide/routing#routeroutlet
+  NgTemplateOutlet, // 動態嵌入模板（模板使用: `[ngTemplateOutlet]="..."`） — https://angular.dev/api/common/NgTemplateOutlet
+  NgComponentOutlet, // 動態組件嵌入（模板使用: `[ngComponentOutlet]="..."`） — https://angular.dev/api/common/NgComponentOutlet
 
   // ========== Angular Common 標準管道 ==========
   DatePipe, // 日期格式化（模板使用: `{{ value | date }}`） — https://angular.dev/api/common/DatePipe

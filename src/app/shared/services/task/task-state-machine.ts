@@ -28,17 +28,31 @@ export interface StateTransitionResult {
  * 狀態轉換規則映射
  * key: 當前狀態
  * value: 允許轉換到的下一個狀態列表
+ *
+ * 使用函數延遲初始化，避免模組載入順序問題
  */
-const STATE_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
-  [TaskStatus.PENDING]: [TaskStatus.ASSIGNED, TaskStatus.CANCELLED],
-  [TaskStatus.ASSIGNED]: [TaskStatus.IN_PROGRESS, TaskStatus.PENDING, TaskStatus.CANCELLED],
-  [TaskStatus.IN_PROGRESS]: [TaskStatus.STAGING, TaskStatus.ASSIGNED, TaskStatus.CANCELLED],
-  [TaskStatus.STAGING]: [TaskStatus.IN_QA, TaskStatus.IN_PROGRESS, TaskStatus.CANCELLED],
-  [TaskStatus.IN_QA]: [TaskStatus.IN_INSPECTION, TaskStatus.STAGING, TaskStatus.CANCELLED],
-  [TaskStatus.IN_INSPECTION]: [TaskStatus.COMPLETED, TaskStatus.IN_QA, TaskStatus.CANCELLED],
-  [TaskStatus.COMPLETED]: [], // 已完成不可轉換
-  [TaskStatus.CANCELLED]: [] // 已取消不可轉換
-};
+function getStateTransitions(): Record<TaskStatus, TaskStatus[]> {
+  return {
+    [TaskStatus.PENDING]: [TaskStatus.ASSIGNED, TaskStatus.CANCELLED],
+    [TaskStatus.ASSIGNED]: [TaskStatus.IN_PROGRESS, TaskStatus.PENDING, TaskStatus.CANCELLED],
+    [TaskStatus.IN_PROGRESS]: [TaskStatus.STAGING, TaskStatus.ASSIGNED, TaskStatus.CANCELLED],
+    [TaskStatus.STAGING]: [TaskStatus.IN_QA, TaskStatus.IN_PROGRESS, TaskStatus.CANCELLED],
+    [TaskStatus.IN_QA]: [TaskStatus.IN_INSPECTION, TaskStatus.STAGING, TaskStatus.CANCELLED],
+    [TaskStatus.IN_INSPECTION]: [TaskStatus.COMPLETED, TaskStatus.IN_QA, TaskStatus.CANCELLED],
+    [TaskStatus.COMPLETED]: [], // 已完成不可轉換
+    [TaskStatus.CANCELLED]: [] // 已取消不可轉換
+  };
+}
+
+// 緩存狀態轉換規則，避免重複創建
+let _stateTransitionsCache: Record<TaskStatus, TaskStatus[]> | null = null;
+
+function getStateTransitionsCached(): Record<TaskStatus, TaskStatus[]> {
+  if (!_stateTransitionsCache) {
+    _stateTransitionsCache = getStateTransitions();
+  }
+  return _stateTransitionsCache;
+}
 
 /**
  * 檢查狀態轉換是否有效
@@ -57,7 +71,8 @@ export function validateStateTransition(fromStatus: TaskStatus, toStatus: TaskSt
   }
 
   // 檢查轉換是否在允許列表中
-  const allowedTransitions = STATE_TRANSITIONS[fromStatus] || [];
+  const stateTransitions = getStateTransitionsCached();
+  const allowedTransitions = stateTransitions[fromStatus] || [];
   const isAllowed = allowedTransitions.includes(toStatus);
 
   if (!isAllowed) {
@@ -131,11 +146,14 @@ function isSkippingStages(fromStatus: TaskStatus, toStatus: TaskStatus): boolean
  * 獲取狀態的所有允許轉換
  */
 export function getAllowedTransitions(status: TaskStatus): TaskStatus[] {
-  return STATE_TRANSITIONS[status] || [];
+  const stateTransitions = getStateTransitionsCached();
+  return stateTransitions[status] || [];
 }
 
 /**
  * 獲取下一個推薦狀態（正常流程）
+ *
+ * 使用函數延遲初始化，避免模組載入順序問題
  */
 export function getNextStatus(currentStatus: TaskStatus): TaskStatus | null {
   const statusOrder: Record<TaskStatus, TaskStatus | null> = {

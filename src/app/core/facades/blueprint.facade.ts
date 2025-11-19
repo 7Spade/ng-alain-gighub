@@ -9,8 +9,10 @@ import {
   type BlueprintBranch
 } from '@core';
 import { BlueprintService, BlueprintActivityService, BranchService, type BlueprintStatus } from '@shared';
-import { BlueprintAggregationRefreshService, ErrorStateService } from '@shared';
+import { BlueprintAggregationRefreshService } from '@shared';
 import { firstValueFrom } from 'rxjs';
+
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Blueprint Facade

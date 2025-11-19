@@ -3,7 +3,7 @@ import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { Database } from '../types/database.types';
+import { Database } from '../types/common';
 import { toCamelCaseData } from '../utils/transformers';
 
 /**

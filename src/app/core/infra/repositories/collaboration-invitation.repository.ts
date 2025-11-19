@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { InvitationStatus } from '../types/collaboration.types';
-import { Database } from '../types/database.types';
+import { Database } from '../types/common';
+import { InvitationStatus } from '../types/org';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）

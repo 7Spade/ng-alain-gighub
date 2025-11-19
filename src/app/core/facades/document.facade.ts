@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import type { Document, DocumentInsert, DocumentUpdate } from '@shared/models/data.models';
 import { BlueprintActivityService } from '@shared/services/blueprint/blueprint-activity.service';
-import { ErrorStateService } from '@shared/services/common/error-state.service';
 import { DocumentService } from '@shared/services/document/document.service';
 
 import { StorageFacade } from './storage.facade';
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * DocumentFacade - Enterprise document management facade

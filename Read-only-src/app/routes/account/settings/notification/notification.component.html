@@ -1,0 +1,26 @@
+<nz-list nzItemLayout="horizontal">
+  <nz-list-item>
+    <ul nz-list-item-actions>
+      <nz-list-item-action>
+        <nz-switch [(ngModel)]="i.password" nzCheckedChildren="開" nzUnCheckedChildren="關" />
+      </nz-list-item-action>
+    </ul>
+    <nz-list-item-meta nzTitle="賬戶密碼" nzDescription="其他用戶的消息將以站內信的形式通知" />
+  </nz-list-item>
+  <nz-list-item>
+    <ul nz-list-item-actions>
+      <nz-list-item-action>
+        <nz-switch [(ngModel)]="i.messages" nzCheckedChildren="開" nzUnCheckedChildren="關" />
+      </nz-list-item-action>
+    </ul>
+    <nz-list-item-meta nzTitle="系統消息" nzDescription="系統消息將以站內信的形式通知" />
+  </nz-list-item>
+  <nz-list-item>
+    <ul nz-list-item-actions>
+      <nz-list-item-action>
+        <nz-switch [(ngModel)]="i.todo" nzCheckedChildren="開" nzUnCheckedChildren="關" />
+      </nz-list-item-action>
+    </ul>
+    <nz-list-item-meta nzTitle="待辦消息" nzDescription="待辦消息將以站內信的形式通知" />
+  </nz-list-item>
+</nz-list>

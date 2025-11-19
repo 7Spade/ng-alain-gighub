@@ -1,0 +1,35 @@
+<form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
+  @if (error) {
+  <nz-alert [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg" />
+  }
+  <nz-form-item>
+    <nz-form-control nzErrorTip="請輸入有效的電子郵件地址">
+      <nz-input-group nzSize="large" nzPrefixIcon="user">
+        <input nz-input type="email" formControlName="userName" placeholder="電子郵件地址" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control nzErrorTip="請輸入密碼">
+      <nz-input-group nzSize="large" nzPrefixIcon="lock">
+        <input nz-input type="password" formControlName="password" placeholder="密碼" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-col [nzSpan]="12">
+      <label nz-checkbox formControlName="remember">{{ 'app.login.remember-me' | i18n }}</label>
+    </nz-col>
+    <nz-col [nzSpan]="12" class="text-right">
+      <a class="forgot" routerLink="/passport/register">{{ 'app.login.forgot-password' | i18n }}</a>
+    </nz-col>
+  </nz-form-item>
+  <nz-form-item>
+    <button nz-button type="submit" nzType="primary" nzSize="large" [nzLoading]="loading" nzBlock>
+      {{ 'app.login.login' | i18n }}
+    </button>
+  </nz-form-item>
+</form>
+<div class="other">
+  <a class="register" routerLink="/passport/register">{{ 'app.login.signup' | i18n }}</a>
+</div>

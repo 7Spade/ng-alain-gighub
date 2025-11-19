@@ -1,4 +1,23 @@
 {
-  "menu": []
+  "app": {
+    "name": "NG-ALAIN",
+    "description": "Ng-zorro admin panel front-end framework"
+  },
+  "menu": [
+    {
+      "text": "Formal",
+      "i18n": "menu.formal",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Explore",
+          "i18n": "menu.formal.explore",
+          "icon": "anticon-search",
+          "link": "/explore"
+        }
+      ]
+    }
+  ]
 }
 

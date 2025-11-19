@@ -434,7 +434,7 @@ API 文檔更新（資料分析系統 API 文檔）[⏳待開始]
 >>>>>>> new-main
 ### 2025-11-14：路由骨架建立
 
-- ✅ **全站路由骨架鋪設**：依據 `app-data.json` 建立 analytics 和 documents 模組的路由與頁面骨架
+- ✅ **全站路由骨架鋪設**：依據 `user-data.json` 建立 analytics 和 documents 模組的路由與頁面骨架
 - ✅ 創建 11 個 Analytics Standalone Components（StatisticsComponent, ProgressTrackingComponent 等）
 - ✅ 創建 8 個 Documents Standalone Components（DocumentListComponent, DocumentUploadComponent 等）
 - ✅ 所有頁面採用 `page-header + nz-card + nz-alert + nz-empty` 模板

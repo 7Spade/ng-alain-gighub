@@ -12933,7 +12933,7 @@ src/typings.d.ts
  79:             // this.httpClient.get('/app', { context: new HttpContext().set(ALLOW_ANONYMOUS, this.tokenService.get()?.token ? false : true) })
  80:             return zip(
  81:               this.i18n.loadLangData(defaultLang),
- 82:               this.httpClient.get<NzSafeAny>('./assets/tmp/app-data.json'),
+ 82:               this.httpClient.get<NzSafeAny>('./assets/tmp/user-data.json'),
  83:               this.httpClient.get<NzSafeAny>('./assets/tmp/user-data.json').pipe(catchError(() => of({ menu: [] }))),
  84:               this.httpClient.get<NzSafeAny>('./assets/tmp/organization-data.json').pipe(catchError(() => of({ menu: [] }))),
  85:               this.httpClient.get<NzSafeAny>('./assets/tmp/team-data.json').pipe(catchError(() => of({ menu: [] }))),
@@ -12957,7 +12957,7 @@ src/typings.d.ts
 103:                   // setting language data
 104:                   this.i18n.use(defaultLang, langData);
 105: 
-106:                   // 应用信息：包括站点名、描述、年份（从 app-data.json 加载）
+106:                   // 应用信息：包括站点名、描述、年份（从 user-data.json 加载）
 107:                   this.settingService.setApp(appData.app);
 108: 
 109:                   // 用户信息：优先从 Supabase 加载，如果不存在则使用 JSON 文件中的默认值

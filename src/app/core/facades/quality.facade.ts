@@ -2,7 +2,6 @@ import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angula
 import { type Inspection, type InspectionInsert, type InspectionUpdate } from '@core';
 import {
   BlueprintActivityService,
-  ErrorStateService,
   InspectionService,
   QualityCheckService,
   type InspectionDetail,
@@ -10,6 +9,8 @@ import {
   type QualityCheckInsert,
   type QualityCheckUpdate
 } from '@shared';
+
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Quality Facade

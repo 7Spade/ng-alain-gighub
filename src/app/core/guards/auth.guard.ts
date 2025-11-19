@@ -31,6 +31,11 @@ export const authGuard: CanActivateFn = async (route, state): Promise<boolean | 
   const authFacade = inject(AuthFacade);
   const router = inject(Router);
 
+  // 如果已经在 passport 路由，不需要检查认证
+  if (state.url.startsWith('/passport')) {
+    return true;
+  }
+
   // 检查认证状态
   const isAuthenticated = await authFacade.checkAuthStatus();
 
@@ -38,6 +43,7 @@ export const authGuard: CanActivateFn = async (route, state): Promise<boolean | 
     console.log('[AuthGuard] User not authenticated, redirecting to login');
 
     // 保存原始 URL，登录后可以返回
+    // 使用 createUrlTree 而不是 navigateByUrl，避免在路由转换过程中中断
     return router.createUrlTree(['/passport/login'], {
       queryParams: { returnUrl: state.url }
     });

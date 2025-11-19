@@ -2,9 +2,10 @@ import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { type Account } from '@shared/models';
 import { AuthService, type SignInRequest, type SignUpRequest } from '@shared/services/auth';
-import { ErrorStateService } from '@shared/services/common';
 import type { User, Session } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
+
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Auth Facade
@@ -65,6 +66,9 @@ export class AuthFacade {
   private readonly userState = signal<Account | null>(null);
   private readonly loadingState = signal<boolean>(false);
   private readonly lastOperationState = signal<string | null>(null);
+
+  // Concurrent control for checkAuthStatus
+  private checkAuthStatusPromise: Promise<boolean> | null = null;
 
   // Readonly signals exposed to components
   /** Current authenticated user */
@@ -254,10 +258,34 @@ export class AuthFacade {
    * Check current authentication status
    *
    * Queries the backend to verify session validity and loads user data.
+   * Uses promise caching to prevent concurrent calls and Navigator LockManager conflicts.
    *
    * @returns Promise<boolean> True if authenticated
    */
   async checkAuthStatus(): Promise<boolean> {
+    // If a check is already in progress, return the existing promise
+    if (this.checkAuthStatusPromise) {
+      return this.checkAuthStatusPromise;
+    }
+
+    // Create new promise for this check
+    this.checkAuthStatusPromise = this._performCheckAuthStatus();
+
+    try {
+      const result = await this.checkAuthStatusPromise;
+      return result;
+    } finally {
+      // Clear the promise cache after completion
+      this.checkAuthStatusPromise = null;
+    }
+  }
+
+  /**
+   * Internal method to perform the actual authentication check
+   *
+   * @private
+   */
+  private async _performCheckAuthStatus(): Promise<boolean> {
     this.loadingState.set(true);
     this.lastOperationState.set('check_auth_status');
 

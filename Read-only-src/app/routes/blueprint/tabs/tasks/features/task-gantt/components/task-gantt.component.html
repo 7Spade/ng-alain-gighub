@@ -1,0 +1,32 @@
+<!-- Task Gantt Component Template -->
+<!-- 任務甘特圖視圖模板 -->
+<div class="task-gantt-container">
+  @if (loading()) {
+    <nz-spin nzSimple [nzSize]="'large'" style="display: block; text-align: center; padding: 50px;"></nz-spin>
+  } @else if (hasTasks()) {
+    <nz-card [nzBordered]="false">
+      <div class="gantt-header">
+        <h3>甘特圖視圖</h3>
+        <p>顯示時間軸上的任務排程</p>
+      </div>
+      <div class="gantt-content">
+        @for (task of tasks(); track task.id) {
+          <div class="gantt-task-item">
+            <div class="task-info">
+              <span class="task-code">{{ task.code }}</span>
+              <span class="task-name">{{ task.name }}</span>
+            </div>
+            <div class="task-timeline">
+              <!-- 甘特圖時間軸將在這裡實作 -->
+              <p>時間軸視圖（待實作）</p>
+            </div>
+          </div>
+        } @empty {
+          <nz-empty nzNotFoundContent="尚無任務"></nz-empty>
+        }
+      </div>
+    </nz-card>
+  } @else {
+    <nz-empty nzNotFoundContent="尚無任務"></nz-empty>
+  }
+</div>

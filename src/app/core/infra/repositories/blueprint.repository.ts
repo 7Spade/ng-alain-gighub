@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseRepository, QueryOptions } from './base.repository';
-import { BlueprintStatus } from '../types/blueprint.types';
-import { Database } from '../types/database.types';
+import { handleSupabaseResponse } from '../errors/supabase-error.transformer';
+import { BlueprintStatus } from '../types/blueprint';
+import { Database } from '../types/common';
+import { toCamelCaseData } from '../utils/transformers';
 
 /**
  * Blueprint 实体类型（camelCase）
@@ -96,5 +99,52 @@ export class BlueprintRepository extends BaseRepository<Blueprint, BlueprintInse
    */
   findActive(options?: QueryOptions): Observable<Blueprint[]> {
     return this.findByStatus(BlueprintStatus.ACTIVE, options);
+  }
+
+  /**
+   * 搜索蓝图（支持模糊查询）
+   *
+   * @param query 搜索关键词
+   * @param options 查询选项
+   * @returns Observable<Blueprint[]>
+   */
+  search(query: string, options?: QueryOptions): Observable<Blueprint[]> {
+    if (!query || query.trim().length === 0) {
+      return of([]);
+    }
+
+    const trimmedQuery = query.trim();
+    let searchQuery = this.supabase
+      .from(this.tableName as any)
+      .select(options?.select || '*')
+      .or(`name.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%,project_code.ilike.%${trimmedQuery}%`);
+
+    // 只搜索规划中或进行中的蓝图
+    searchQuery = searchQuery.in('status', [BlueprintStatus.PLANNING, BlueprintStatus.ACTIVE]);
+
+    // 应用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      searchQuery = searchQuery.order(snakeOrderBy, {
+        ascending: options.orderDirection !== 'desc'
+      });
+    } else {
+      // 默认按名称排序
+      searchQuery = searchQuery.order('name', { ascending: true });
+    }
+
+    // 应用分页
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      searchQuery = searchQuery.range(fromIndex, toIndex);
+    }
+
+    return from(searchQuery as unknown as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Blueprint>(item)) : [];
+      })
+    );
   }
 }

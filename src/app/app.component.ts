@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { NavigationEnd, NavigationError, RouteConfigLoadStart, Router, RouterOutlet } from '@angular/router';
+import { NavigationCancel, NavigationEnd, NavigationError, RouteConfigLoadStart, Router, RouterOutlet } from '@angular/router';
 import { TitleService, VERSION as VERSION_ALAIN, stepPreloader } from '@delon/theme';
 import { environment } from '@env/environment';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
         configLoad = true;
       }
       if (configLoad && ev instanceof NavigationError) {
+        this.donePreloader(); // ← 导航错误时也关闭预加载动画
         this.modalSrv.confirm({
           nzTitle: `提醒`,
           nzContent: environment.production ? `应用可能已发布新版本，请点击刷新才能生效。` : `无法加载路由：${ev.url}`,
@@ -38,6 +39,10 @@ export class AppComponent implements OnInit {
           nzCancelText: '忽略',
           nzOnOk: () => location.reload()
         });
+      }
+      if (ev instanceof NavigationCancel) {
+        // ← 路由守卫返回 false 时会触发 NavigationCancel
+        this.donePreloader(); // ← 关闭预加载动画
       }
       if (ev instanceof NavigationEnd) {
         this.donePreloader();

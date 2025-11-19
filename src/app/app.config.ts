@@ -3,11 +3,11 @@ import { default as ngLang } from '@angular/common/locales/zh';
 import { ApplicationConfig, EnvironmentProviders, Provider } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
+  RouterFeatures,
   provideRouter,
   withComponentInputBinding,
-  withInMemoryScrolling,
   withHashLocation,
-  RouterFeatures,
+  withInMemoryScrolling,
   withViewTransitions
 } from '@angular/router';
 import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
@@ -15,7 +15,7 @@ import { provideCellWidgets } from '@delon/abc/cell';
 import { provideSTWidgets } from '@delon/abc/st';
 import { authSimpleInterceptor, provideAuth } from '@delon/auth';
 import { provideSFConfig } from '@delon/form';
-import { AlainProvideLang, provideAlain, zh_CN as delonLang } from '@delon/theme';
+import { AlainProvideLang, zh_CN as delonLang, provideAlain } from '@delon/theme';
 import { AlainConfig } from '@delon/util/config';
 import { environment } from '@env/environment';
 import { CELL_WIDGETS, SF_WIDGETS, ST_WIDGETS } from '@shared';
@@ -42,7 +42,10 @@ const alainConfig: AlainConfig = {
     license: `A59B099A586B3851E0F0D7FDBF37B603`,
     licenseA: `C94CEE276DB2187AE6B65D56B3FC2848`
   },
-  auth: { login_url: '/passport/login' }
+  auth: {
+    login_url: '/passport/login',
+    token_invalid_redirect: true // ← 明确设置，确保未登录时重定向
+  }
 };
 
 const ngZorroConfig: NzConfig = {};

@@ -6,11 +6,12 @@ import {
   FeatureFlagUpdate,
   Setting,
   FeatureFlag,
-  BlueprintActivityService,
-  ErrorStateService
+  BlueprintActivityService
 } from '@shared';
 import { FeatureFlagService } from '@shared/services/system/feature-flag.service';
 import { SettingService } from '@shared/services/system/setting.service';
+
+import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * A/B Test Result

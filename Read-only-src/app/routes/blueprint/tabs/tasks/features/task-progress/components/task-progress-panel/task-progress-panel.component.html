@@ -1,0 +1,205 @@
+<div class="task-progress-panel">
+    <div class="panel-header" nz-row nzAlign="middle" nzJustify="space-between">
+        <div nz-col class="panel-statistics">
+            <nz-statistic [nzTitle]="'日誌總數'" [nzValue]="progressRecords().length" class="mr-md"></nz-statistic>
+            <nz-statistic [nzTitle]="'里程碑數'" [nzValue]="milestones().length" class="mr-md"></nz-statistic>
+            <nz-statistic [nzTitle]="'平均里程碑進度'" [nzValue]="averageMilestoneProgress()" [nzSuffix]="'%'">
+            </nz-statistic>
+        </div>
+        <div nz-col class="panel-actions">
+            <button nz-button nzType="default" class="mr-sm" (click)="openMilestoneForm()"
+                [disabled]="savingMilestone() || loading()">
+                <span nz-icon nzType="flag"></span>
+                新增里程碑
+            </button>
+            <button nz-button nzType="primary" (click)="openProgressForm()" [disabled]="savingProgress() || loading()">
+                <span nz-icon nzType="plus"></span>
+                新增進度紀錄
+            </button>
+        </div>
+    </div>
+
+    @if (showProgressForm()) {
+    <nz-card nzTitle="進度紀錄" class="mb-lg">
+        <form nz-form [formGroup]="progressForm" (ngSubmit)="submitProgress()" nzLayout="vertical">
+            <nz-form-item>
+                <nz-form-label nzRequired>施工階段</nz-form-label>
+                <nz-form-control [nzErrorTip]="'請輸入施工階段'">
+                    <input nz-input formControlName="stage" [disabled]="savingProgress()" placeholder="如：結構封頂 / 外牆安裝" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzXs="24" nzSm="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>進度百分比</nz-form-label>
+                        <nz-form-control [nzErrorTip]="'0 ~ 100 之間'">
+                            <nz-input-number formControlName="progress_percentage" [nzMin]="0" [nzMax]="100"
+                                [disabled]="savingProgress()" [nzStep]="1" nzStyle="width: 100%;"></nz-input-number>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzXs="24" nzSm="12">
+                    <nz-form-item>
+                        <nz-form-label>備註</nz-form-label>
+                        <nz-form-control>
+                            <textarea nz-input formControlName="notes" rows="3"
+                                [disabled]="savingProgress()"></textarea>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <div nz-row nzJustify="end" nzGutter="8">
+                <div nz-col>
+                    <button nz-button type="button" (click)="closeProgressForm()"
+                        [disabled]="savingProgress()">取消</button>
+                </div>
+                <div nz-col>
+                    <button nz-button nzType="primary" [nzLoading]="savingProgress()" htmlType="submit">提交進度</button>
+                </div>
+            </div>
+        </form>
+    </nz-card>
+    }
+
+    @if (showMilestoneForm()) {
+    <nz-card [nzTitle]="editingMilestone() ? '編輯里程碑' : '新增里程碑'" class="mb-lg">
+        <form nz-form [formGroup]="milestoneForm" (ngSubmit)="submitMilestone()" nzLayout="vertical">
+            <nz-form-item>
+                <nz-form-label nzRequired>里程碑名稱</nz-form-label>
+                <nz-form-control [nzErrorTip]="'請輸入里程碑名稱'">
+                    <input nz-input formControlName="name" [disabled]="savingMilestone()" placeholder="例如：結構封頂" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label>里程碑描述</nz-form-label>
+                <nz-form-control>
+                    <textarea nz-input formControlName="description" rows="3" [disabled]="savingMilestone()"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzXs="24" nzSm="12">
+                    <nz-form-item>
+                        <nz-form-label>目標日期</nz-form-label>
+                        <nz-form-control>
+                            <nz-date-picker formControlName="target_date" style="width: 100%"
+                                [disabled]="savingMilestone()"></nz-date-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzXs="24" nzSm="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>排序索引</nz-form-label>
+                        <nz-form-control [nzErrorTip]="'索引需 ≥ 0'">
+                            <nz-input-number formControlName="order_index" [nzMin]="0" [disabled]="savingMilestone()"
+                                nzStyle="width: 100%"></nz-input-number>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <div nz-row nzJustify="end" nzGutter="8">
+                <div nz-col>
+                    <button nz-button type="button" (click)="closeMilestoneForm()"
+                        [disabled]="savingMilestone()">取消</button>
+                </div>
+                <div nz-col>
+                    <button nz-button nzType="primary" [nzLoading]="savingMilestone()" htmlType="submit">
+                        {{ editingMilestone() ? '更新里程碑' : '建立里程碑' }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </nz-card>
+    }
+
+    <nz-card [nzBordered]="false" class="mb-lg">
+        <nz-descriptions nzTitle="進度摘要" [nzColumn]="3">
+            <nz-descriptions-item nzTitle="最新進度">{{ progressSummary().percent | number: '1.0-0'
+                }}%</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="趨勢">{{ progressSummary().trend === 'up' ? '上升' : progressSummary().trend ===
+                'down' ? '下降' : '持平' }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="最近更新">
+                @if (progressSummary().lastUpdatedAt) {
+                {{ progressSummary().lastUpdatedAt | date: 'yyyy-MM-dd HH:mm' }}
+                } @else {
+                尚無紀錄
+                }
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="最新階段" [nzSpan]="3">
+                {{ progressSummary().stage || '未設定' }}
+            </nz-descriptions-item>
+        </nz-descriptions>
+    </nz-card>
+
+    <div nz-row [nzGutter]="16">
+        <div nz-col nzXs="24" nzLg="12">
+            <nz-card nzTitle="進度紀錄" [nzLoading]="loading()">
+                @if (sortedProgressRecords().length === 0) {
+                <nz-empty nzNotFoundContent="尚無進度紀錄"></nz-empty>
+                } @else {
+                <nz-timeline>
+                    @for (record of sortedProgressRecords(); track trackProgressById($index, record); let idx = $index)
+                    {
+                    <nz-timeline-item
+                        [nzColor]="getTimelineColor(record.progress_percentage - (sortedProgressRecords()[idx + 1]?.progress_percentage ?? record.progress_percentage), record.progress_percentage)">
+                        <div class="timeline-item">
+                            <div class="timeline-header">
+                                <strong>{{ record.stage }}</strong>
+                                <span class="timeline-date">{{ record.recorded_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+                            </div>
+                            <div class="timeline-body">
+                                <nz-tag nzColor="blue">{{ record.progress_percentage }}%</nz-tag>
+                                @if (record.notes) {
+                                <p class="mt-sm text-muted">{{ record.notes }}</p>
+                                }
+                            </div>
+                        </div>
+                    </nz-timeline-item>
+                    }
+                </nz-timeline>
+                }
+            </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzLg="12">
+            <nz-card nzTitle="里程碑" [nzLoading]="loading()">
+                @if (sortedMilestones().length === 0) {
+                <nz-empty nzNotFoundContent="尚無里程碑">
+                    <button nz-button nzType="primary" (click)="openMilestoneForm()">新增里程碑</button>
+                </nz-empty>
+                } @else {
+                <nz-list [nzDataSource]="sortedMilestones()" nzItemLayout="vertical" [nzRenderItem]="milestoneItem">
+                </nz-list>
+                <ng-template #milestoneItem let-milestone>
+                    <nz-list-item>
+                        <nz-list-item-meta [nzTitle]="millTitle"
+                            [nzDescription]="milestone.description"></nz-list-item-meta>
+                        <ng-template #millTitle>
+                            <div class="milestone-title">
+                                <span>{{ milestone.name }}</span>
+                                <span class="milestone-tags">
+                                    <nz-tag [nzColor]="getMilestoneStatusColor(milestone.status)">{{ milestone.status |
+                                        titlecase }}</nz-tag>
+                                    @if (milestone.target_date) {
+                                    <nz-tag>{{ milestone.target_date | date: 'yyyy-MM-dd' }}</nz-tag>
+                                    }
+                                    <nz-tag nzColor="blue">{{ milestone.progress_percentage ?? 0 }}%</nz-tag>
+                                </span>
+                            </div>
+                        </ng-template>
+                        <nz-list-item-action>
+                            <button nz-button nzType="link" (click)="openMilestoneForm(milestone)">編輯</button>
+                            <button nz-button nzType="link" nzDanger
+                                (click)="confirmDeleteMilestone(milestone)">刪除</button>
+                        </nz-list-item-action>
+                    </nz-list-item>
+                </ng-template>
+                }
+            </nz-card>
+        </div>
+    </div>
+</div>

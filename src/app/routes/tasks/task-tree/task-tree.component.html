@@ -28,8 +28,9 @@
           nzShowSearch
           style="width: 300px;"
         >
-          <!-- TODO: Add blueprint options -->
-          <nz-option nzValue="test-blueprint-1" nzLabel="測試藍圖 1"></nz-option>
+          @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
+            <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
+          }
         </nz-select>
       </nz-form-control>
     </nz-form-item>

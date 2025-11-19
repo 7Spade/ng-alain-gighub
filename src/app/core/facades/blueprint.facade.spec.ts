@@ -27,7 +27,13 @@ describe('BlueprintFacade', () => {
     owner_id: 'user-1',
     status: 'active',
     created_at: '2025-01-01',
-    updated_at: '2025-01-01'
+    updated_at: '2025-01-01',
+    budget: null,
+    description: null,
+    end_date: null,
+    location: null,
+    metadata: null,
+    start_date: null
   };
 
   const mockBlueprints: Blueprint[] = [
@@ -39,7 +45,13 @@ describe('BlueprintFacade', () => {
       owner_id: 'user-1',
       status: 'planning',
       created_at: '2025-01-01',
-      updated_at: '2025-01-01'
+      updated_at: '2025-01-01',
+      budget: null,
+      description: null,
+      end_date: null,
+      location: null,
+      metadata: null,
+      start_date: null
     }
   ];
 

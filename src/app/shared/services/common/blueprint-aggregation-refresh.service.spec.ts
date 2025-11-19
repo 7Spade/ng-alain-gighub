@@ -1,8 +1,8 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ErrorStateService } from '@core';
 import { take } from 'rxjs/operators';
 
 import { BlueprintAggregationRefreshService, RefreshReason } from './blueprint-aggregation-refresh.service';
-import { ErrorStateService } from './error-state.service';
 import { RealtimeFacade } from '../../../core/facades/realtime.facade';
 
 describe('BlueprintAggregationRefreshService', () => {

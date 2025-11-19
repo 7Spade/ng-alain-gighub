@@ -63,6 +63,9 @@ export class SupabaseSessionAdapterService {
   /**
    * 恢復 Session（應用啟動時調用）
    *
+   * 修復執行順序問題：確保即使沒有 session 也設置正確的狀態
+   * 這樣路由守衛可以正確檢測到未登錄狀態
+   *
    * @returns Observable<void>
    */
   restoreSession(): Observable<void> {
@@ -74,10 +77,18 @@ export class SupabaseSessionAdapterService {
       tap(({ data }) => {
         if (data.session) {
           this.syncSessionToTokenService(data.session);
+        } else {
+          // 如果沒有 session，確保 TokenService 是空的
+          // 這樣路由守衛可以正確檢測到未登錄狀態
+          this.tokenService.clear();
         }
       }),
       map(() => undefined),
-      catchError(() => of(undefined))
+      catchError(() => {
+        // 錯誤時也清除 token，確保狀態正確
+        this.tokenService.clear();
+        return of(undefined);
+      })
     );
   }
 

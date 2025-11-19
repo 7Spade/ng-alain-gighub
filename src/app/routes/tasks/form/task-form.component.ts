@@ -1,7 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS, TaskService, TaskInsert, TaskUpdate, TaskType, TaskStatus, TaskPriority, BlueprintService } from '@shared';
+import { AuthFacade } from '@core';
+import { BlueprintService, SHARED_IMPORTS, TaskInsert, TaskService, TaskUpdate } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -128,6 +129,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class TaskFormComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
+  private readonly authFacade = inject(AuthFacade);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
@@ -209,6 +211,13 @@ export class TaskFormComponent implements OnInit {
       return;
     }
 
+    // 获取当前用户ID（创建任务时必填字段）
+    const currentUserId = this.authFacade.userId();
+    if (!currentUserId) {
+      this.message.error('无法获取当前用户信息，请重新登录');
+      return;
+    }
+
     const formValue = this.form.value;
     const taskData: TaskInsert | TaskUpdate = {
       blueprint_id: formValue.blueprintId,
@@ -219,7 +228,8 @@ export class TaskFormComponent implements OnInit {
       priority: formValue.priority,
       planned_start_date: formValue.plannedStartDate ? formValue.plannedStartDate.toISOString() : null,
       planned_end_date: formValue.plannedEndDate ? formValue.plannedEndDate.toISOString() : null,
-      progress_percentage: formValue.progressPercentage || 0
+      progress_percentage: formValue.progressPercentage || 0,
+      created_by: currentUserId // 设置创建者ID（必填字段）
     };
 
     try {
@@ -230,9 +240,19 @@ export class TaskFormComponent implements OnInit {
         await this.taskService.createTask(taskData as TaskInsert);
         this.message.success('任务创建成功');
       }
-      this.router.navigate(['/tasks/list']);
+      // 导航到列表页面，传递蓝图ID作为查询参数
+      const blueprintId = formValue.blueprintId;
+      if (blueprintId) {
+        this.router.navigate(['/tasks/list'], {
+          queryParams: { blueprintId }
+        });
+      } else {
+        this.router.navigate(['/tasks/list']);
+      }
     } catch (error) {
-      this.message.error(this.isEdit() ? '任务更新失败' : '任务创建失败');
+      console.error('Task operation error:', error);
+      const errorMessage = error instanceof Error ? error.message : '操作失败';
+      this.message.error(this.isEdit() ? `任务更新失败：${errorMessage}` : `任务创建失败：${errorMessage}`);
     }
   }
 

@@ -322,7 +322,7 @@ API 文檔更新（問題追蹤系統 API 文檔）[⏳待開始]
 
 ### 2025-11-14：路由骨架建立
 
-- ✅ **全站路由骨架鋪設**：依據 `app-data.json` 建立 issues 模組的路由與頁面骨架
+- ✅ **全站路由骨架鋪設**：依據 `user-data.json` 建立 issues 模組的路由與頁面骨架
 - ✅ 創建 12 個 Standalone Components（IssueListComponent, IssueFormComponent, IssueDetailComponent 等）
 - ✅ 所有頁面採用 `page-header + nz-card + nz-alert + nz-empty` 模板
 - ✅ 更新 `src/app/routes/routes.ts`，主框架可導航至所有菜單節點
