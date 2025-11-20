@@ -22,4 +22,4 @@ import { SHARED_IMPORTS } from '@shared';
     </nz-card>
   `
 })
-export class SyncLogs {}
+export class SyncLogsComponent {}

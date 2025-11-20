@@ -88,7 +88,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     `
   ]
 })
-export class NotificationDetail implements OnInit {
+export class NotificationDetailComponent implements OnInit {
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);

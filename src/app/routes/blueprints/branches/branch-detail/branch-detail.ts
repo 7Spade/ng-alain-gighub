@@ -11,7 +11,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   templateUrl: './branch-detail.html',
   styleUrl: './branch-detail.less'
 })
-export class BranchDetail implements OnInit {
+export class BranchDetailComponent implements OnInit {
   branchService = inject(BranchService);
   blueprintService = inject(BlueprintService);
   accountService = inject(AccountService);

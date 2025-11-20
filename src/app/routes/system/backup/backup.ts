@@ -110,7 +110,7 @@ interface BackupItem {
     </nz-card>
   `
 })
-export class Backup implements OnInit {
+export class BackupComponent implements OnInit {
   message = inject(NzMessageService);
 
   // Component signals
