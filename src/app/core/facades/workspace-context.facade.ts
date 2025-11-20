@@ -67,6 +67,8 @@ export class WorkspaceContextFacade {
   readonly loadingOrganizations = this.dataService.loadingOrganizations;
   readonly userTeams = this.dataService.userTeams;
   readonly loadingTeams = this.dataService.loadingTeams;
+  readonly contextBlueprints = this.dataService.contextBlueprints;
+  readonly loadingBlueprints = this.dataService.loadingBlueprints;
   readonly error = computed(() => {
     const dataError = this.dataService.error();
     if (dataError) {
@@ -80,6 +82,8 @@ export class WorkspaceContextFacade {
   // 暴露上下文服务的 computed signals（通过 Facade）
   readonly allOrganizations = this.contextService.allOrganizations;
   readonly teamsByOrganization = this.contextService.teamsByOrganization;
+  readonly defaultBlueprintId = this.contextService.defaultBlueprintId;
+  readonly currentBlueprintIds = this.contextService.currentBlueprintIds;
 
   // 标记是否已尝试恢复上下文（避免重复恢复）
   private hasRestoredContext = false;

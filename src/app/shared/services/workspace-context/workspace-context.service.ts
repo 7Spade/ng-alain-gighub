@@ -56,6 +56,8 @@ export class WorkspaceContextService {
   readonly loadingOrganizations = this.dataService.loadingOrganizations;
   readonly userTeams = this.dataService.userTeams;
   readonly loadingTeams = this.dataService.loadingTeams;
+  readonly contextBlueprints = this.dataService.contextBlueprints;
+  readonly loadingBlueprints = this.dataService.loadingBlueprints;
   readonly error = this.dataService.error;
 
   // Computed signals
@@ -112,6 +114,24 @@ export class WorkspaceContextService {
     });
 
     return teamsMap;
+  });
+
+  /**
+   * 当前视角下的第一个（默认）蓝图ID
+   * 用于自动选择蓝图的场景
+   */
+  readonly defaultBlueprintId = computed(() => {
+    const blueprints = this.contextBlueprints();
+    return blueprints.length > 0 ? blueprints[0].id : null;
+  });
+
+  /**
+   * 当前视角下的所有蓝图IDs
+   * 用于加载所有蓝图数据的场景
+   */
+  readonly currentBlueprintIds = computed(() => {
+    const blueprints = this.contextBlueprints();
+    return blueprints.map(b => b.id);
   });
 
   /**
@@ -281,6 +301,12 @@ export class WorkspaceContextService {
 
       // 持久化上下文
       this.persistenceService.saveContext(type, id);
+
+      // 加载当前视角下的蓝图列表
+      this.dataService.loadBlueprintsByContext(type, id).catch(error => {
+        console.error('[WorkspaceContextService] 加载蓝图列表失败:', error);
+        // 不阻止上下文切换，只记录错误
+      });
     } finally {
       // 使用 setTimeout 确保状态更新完成后再重置切换状态
       setTimeout(() => {
