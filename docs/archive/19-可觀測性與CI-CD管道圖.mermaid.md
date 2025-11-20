@@ -1,39 +1,73 @@
 # 可觀測性與 CI/CD 管道圖
 
-> 📋 **目的**：展示持續整合/持續部署流程和系統可觀測性架構，包含測試、構建、部署等環節
+## 📑 目錄
 
-**最後更新**：2025-11-15  
-**維護者**：開發團隊
+- [CI/CD 流程說明](#cicd-流程說明)
+  - [開發階段](#開發階段)
+  - [CI/CD 流程階段](#cicd-流程階段)
+    - [1. Lint 檢查](#1-lint-檢查)
+    - [2. Type Check](#2-type-check)
+    - [3. 單元測試](#3-單元測試)
+    - [4. E2E 測試](#4-e2e-測試)
+    - [5. 建置應用](#5-建置應用)
+    - [6. 部署](#6-部署)
+  - [監控與可觀測性階段](#監控與可觀測性階段)
+    - [日誌收集](#日誌收集)
+    - [指標收集](#指標收集)
+    - [事件追蹤](#事件追蹤)
+    - [告警系統](#告警系統)
+- [品質檢查標準](#品質檢查標準)
+- [QA Pipeline 要求](#qa-pipeline-要求)
+- [監控儀表板](#監控儀表板)
+  - [核心指標](#核心指標)
+  - [監控工具](#監控工具)
+- [錯誤分類與處理](#錯誤分類與處理)
+  - [錯誤分類](#錯誤分類)
+  - [錯誤處理機制](#錯誤處理機制)
+- [維護與優化](#維護與優化)
+  - [定期檢查](#定期檢查)
+  - [持續改進](#持續改進)
+- [部署回滾機制](#部署回滾機制)
+  - [自動回滾條件](#自動回滾條件)
+  - [回滾流程](#回滾流程)
 
 ---
+
+
+> 📋 **目的**：展示持續整合/持續部署流程和系統可觀測性架構，包含測試、構建、部署等環節
+
+**最後更新**：2025-11-15
+**維護者**：開發團隊
+
+- --
 
 ```mermaid
 flowchart TD
     Start([開發者提交代碼]) --> GitPush[Git Push to Repository]
-    
+
     GitPush --> Trigger{觸發條件}
     Trigger -->|Push to main| MainBranch[Main 分支]
     Trigger -->|Pull Request| PRBranch[PR 分支]
-    
+
     MainBranch --> GitHubActions[GitHub Actions 觸發]
     PRBranch --> GitHubActions
-    
+
     GitHubActions --> LintCheck[Lint 檢查<br/>yarn lint]
     LintCheck -->|零警告要求| TypeCheck[Type Check<br/>yarn type-check]
     LintCheck -->|有警告| LintFail[❌ Lint 失敗<br/>阻擋合併]
-    
+
     TypeCheck -->|零錯誤| UnitTest[單元測試<br/>yarn test<br/>覆蓋率 ≥80%]
     TypeCheck -->|有錯誤| TypeFail[❌ Type 錯誤<br/>阻擋合併]
-    
+
     UnitTest -->|通過| E2ETest[E2E 測試<br/>yarn e2e<br/>Playwright]
     UnitTest -->|失敗| TestFail[❌ 測試失敗<br/>阻擋合併]
-    
+
     E2ETest -->|通過| BuildCheck{測試通過?}
     E2ETest -->|失敗| E2EFail[❌ E2E 失敗<br/>阻擋合併]
-    
+
     BuildCheck -->|是| BuildApp[建置應用<br/>yarn build --configuration production]
     BuildCheck -->|否| NotifyDev[通知開發者<br/>Email/Slack]
-    
+
     BuildApp --> BuildSuccess{建置成功?}
     BuildSuccess -->|是| SupabaseMigrate[執行 Supabase Migrations<br/>- schema sync<br/>- RLS 驗證]
     SupabaseMigrate --> MigrationCheck{遷移成功?}
@@ -41,44 +75,44 @@ flowchart TD
     MigrationCheck -->|是| EdgeDeploy[部署 Edge Functions<br/>- branch-merge<br/>- webhook]
     EdgeDeploy --> Deploy[部署到 Supabase<br/>- 上傳前端檔案<br/>- 設定 CDN<br/>- 版本標記]
     BuildSuccess -->|否| BuildFail[❌ 建置失敗<br/>阻擋合併]
-    
+
     Deploy --> SmokeTest[Smoke Test<br/>- 任務列表<br/>- 任務詳情<br/>- 變更流程]
     SmokeTest -->|通過| DeploySuccess[✅ 部署成功]
     SmokeTest -->|失敗| Rollback[回滾部署]
-    
+
     DeploySuccess --> Monitoring[監控與可觀測性]
-    
+
     subgraph "監控與可觀測性"
         Monitoring --> LogCollection[日誌收集<br/>- 前端錯誤<br/>- Edge Functions 日誌<br/>- 資料庫查詢日誌]
         Monitoring --> MetricsCollection[指標收集<br/>- Core Web Vitals<br/>- API 回應時間<br/>- 業務指標<br/>- Branch PR SLA]
         Monitoring --> EventTracking[事件追蹤<br/>- 領域事件<br/>- 系統事件<br/>- 審計日誌]
-        
+
         LogCollection --> AlertSystem[告警系統]
         MetricsCollection --> AlertSystem
         EventTracking --> AlertSystem
-        
+
         AlertSystem -->|異常| Alert[發送告警<br/>- Email<br/>- Slack<br/>- Dashboard]
         AlertSystem -->|正常| Dashboard[監控儀表板<br/>- Grafana<br/>- Angular Analytics<br/>- Supabase Dashboard]
     end
-    
+
     LintFail --> NotifyDev
     TypeFail --> NotifyDev
     TestFail --> NotifyDev
     E2EFail --> NotifyDev
     BuildFail --> NotifyDev
     Rollback --> NotifyDev
-    
+
     NotifyDev --> End([結束])
     DeploySuccess --> End
     Dashboard --> End
-    
+
     %% 樣式定義
     classDef successStyle fill:#4CAF50,stroke:#2E7D32,color:#fff,stroke-width:2px
     classDef errorStyle fill:#F44336,stroke:#C62828,color:#fff,stroke-width:2px
     classDef processStyle fill:#2196F3,stroke:#1565C0,color:#fff,stroke-width:2px
     classDef monitorStyle fill:#FF9800,stroke:#E65100,color:#fff,stroke-width:2px
     classDef endStyle fill:#607D8B,stroke:#37474F,color:#fff,stroke-width:3px
-    
+
     class DeploySuccess,SmokeTest successStyle
     class LintFail,TypeFail,TestFail,E2EFail,BuildFail errorStyle
     class LintCheck,TypeCheck,UnitTest,E2ETest,BuildApp,Deploy processStyle

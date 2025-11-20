@@ -1,11 +1,65 @@
 # Storage Bucket 結構視圖
 
-> 📋 **目的**：展示 Supabase Storage 的 Bucket 結構設計，包含檔案組織、權限控制等配置
+## 📑 目錄
 
-**最後更新**：2025-11-15  
-**維護者**：開發團隊
+- [Storage Bucket 詳細說明](#storage-bucket-詳細說明)
+  - [1. Bucket 結構設計原則](#1-bucket-結構設計原則)
+    - [1.1 隔離策略](#11-隔離策略)
+    - [1.2 路徑命名規範](#12-路徑命名規範)
+  - [2. images/ Bucket (公開讀取)](#2-images-bucket-公開讀取)
+    - [2.1 每日報表照片](#21-每日報表照片)
+    - [2.2 品質驗收照片](#22-品質驗收照片)
+    - [2.3 問題追蹤照片](#23-問題追蹤照片)
+  - [3. documents/ Bucket (私有)](#3-documents-bucket-私有)
+    - [3.1 合約文件](#31-合約文件)
+    - [3.2 工程報表](#32-工程報表)
+    - [3.3 會議記錄](#33-會議記錄)
+    - [3.4 施工計畫書](#34-施工計畫書)
+  - [4. drawings/ Bucket (私有)](#4-drawings-bucket-私有)
+    - [4.1 建築圖](#41-建築圖)
+    - [4.2 結構圖](#42-結構圖)
+    - [4.3 機電圖](#43-機電圖)
+    - [4.4 竣工圖 (As-Built)](#44-竣工圖-as-built)
+  - [5. avatars/ Bucket (公開)](#5-avatars-bucket-公開)
+    - [5.1 用戶頭像](#51-用戶頭像)
+  - [6. exports/ Bucket (私有,暫存)](#6-exports-bucket-私有暫存)
+    - [6.1 報表匯出](#61-報表匯出)
+  - [7. Storage RLS 權限策略](#7-storage-rls-權限策略)
+    - [7.1 images/ Bucket](#71-images-bucket)
+    - [7.2 documents/ Bucket](#72-documents-bucket)
+  - [8. CDN 快取策略](#8-cdn-快取策略)
+    - [8.1 快取規則](#81-快取規則)
+    - [8.2 快取失效](#82-快取失效)
+  - [9. 圖片處理 Pipeline](#9-圖片處理-pipeline)
+    - [9.1 上傳流程](#91-上傳流程)
+  - [10. 監控與維護](#10-監控與維護)
+    - [10.1 儲存空間監控](#101-儲存空間監控)
+    - [10.2 存取日誌](#102-存取日誌)
+    - [10.3 成本優化](#103-成本優化)
+- [Bucket 結構說明](#bucket-結構說明)
+- [詳細路徑結構](#詳細路徑結構)
+  - [images/ Bucket](#images-bucket)
+  - [documents/ Bucket](#documents-bucket)
+  - [drawings/ Bucket](#drawings-bucket)
+- [檔案命名規範](#檔案命名規範)
+  - [images/ 命名規則](#images-命名規則)
+  - [documents/ 命名規則](#documents-命名規則)
+  - [drawings/ 命名規則](#drawings-命名規則)
+- [上傳流程](#上傳流程)
+- [配額管理](#配額管理)
+  - [配額限制](#配額限制)
+  - [監控與告警](#監控與告警)
+  - [優化策略](#優化策略)
 
 ---
+
+
+> 📋 **目的**：展示 Supabase Storage 的 Bucket 結構設計，包含檔案組織、權限控制等配置
+
+**最後更新**：2025-11-15
+**維護者**：開發團隊
+
+- --
 
 ```mermaid
 graph TD
@@ -15,10 +69,10 @@ graph TD
 
     subgraph "Bucket: images/ (公開讀取)"
         Images[images/]
-        
+
         subgraph "專案照片結構"
             BP1["{blueprint_id}/"]
-            
+
             subgraph "每日報表照片"
                 DR1[daily_reports/]
                 DR2["{report_id}_001.jpg"]
@@ -26,7 +80,7 @@ graph TD
                 DR4["{report_id}_thumbnail_001.jpg"]
                 DR5["EXIF: GPS, 時間戳記, 裝置資訊"]
             end
-            
+
             subgraph "品質驗收照片"
                 QC1[quality_checks/]
                 QC2["{qc_id}_before_001.jpg"]
@@ -35,36 +89,36 @@ graph TD
                 QC5["{qc_id}_defect_001.jpg"]
                 QC6["標註: 問題區域, 測量數據"]
             end
-            
+
             subgraph "問題追蹤照片"
                 IS1[issues/]
                 IS2["{issue_id}_001.jpg"]
                 IS3["{issue_id}_002.jpg"]
                 IS4["{issue_id}_fixed_001.jpg"]
             end
-            
+
             BP1 --> DR1 & QC1 & IS1
             DR1 --> DR2 & DR3 & DR4 & DR5
             QC1 --> QC2 & QC3 & QC4 & QC5 & QC6
             IS1 --> IS2 & IS3 & IS4
         end
-        
+
         Images --> BP1
     end
 
     subgraph "Bucket: documents/ (私有)"
         Documents[documents/]
-        
+
         subgraph "專案文件結構"
             BP2["{blueprint_id}/"]
-            
+
             subgraph "合約文件"
                 CT1[contracts/]
                 CT2["主合約.pdf"]
                 CT3["變更單_001.pdf"]
                 CT4["報價單.xlsx"]
             end
-            
+
             subgraph "工程報表"
                 RP1[reports/]
                 RP2["週報_2025W03.pdf"]
@@ -72,36 +126,36 @@ graph TD
                 RP4["驗收報告.pdf"]
                 RP5["品質統計.xlsx"]
             end
-            
+
             subgraph "會議記錄"
             MT1[meetings/]
                 MT2["會議記錄_20250115.docx"]
                 MT3["會議簽到表.pdf"]
             end
-            
+
             subgraph "施工計畫書"
                 PL1[plans/]
                 PL2["施工計畫書.pdf"]
                 PL3["安全衛生計畫.pdf"]
                 PL4["品質計畫書.pdf"]
             end
-            
+
             BP2 --> CT1 & RP1 & MT1 & PL1
             CT1 --> CT2 & CT3 & CT4
             RP1 --> RP2 & RP3 & RP4 & RP5
             MT1 --> MT2 & MT3
             PL1 --> PL2 & PL3 & PL4
         end
-        
+
         Documents --> BP2
     end
 
     subgraph "Bucket: drawings/ (私有)"
         Drawings[drawings/]
-        
+
         subgraph "圖紙結構"
             BP3["{blueprint_id}/"]
-            
+
             subgraph "建築圖"
                 AR1[architectural/]
                 AR2["A01_平面圖.dwg"]
@@ -109,34 +163,34 @@ graph TD
                 AR4["A03_剖面圖.dwg"]
                 AR5["版本: v1.2"]
             end
-            
+
             subgraph "結構圖"
                 ST1[structural/]
                 ST2["S01_基礎配筋圖.dwg"]
                 ST3["S02_樑柱配筋圖.dwg"]
                 ST4["S03_版配筋圖.dwg"]
             end
-            
+
             subgraph "機電圖"
                 ME1[mep/]
                 ME2["M01_給排水.dwg"]
                 ME3["E01_電力系統.dwg"]
                 ME4["AC01_空調系統.dwg"]
             end
-            
+
             subgraph "現場修改圖"
                 AS1[as_built/]
                 AS2["竣工圖_標註變更.pdf"]
                 AS3["現場實測圖.dwg"]
             end
-            
+
             BP3 --> AR1 & ST1 & ME1 & AS1
             AR1 --> AR2 & AR3 & AR4 & AR5
             ST1 --> ST2 & ST3 & ST4
             ME1 --> ME2 & ME3 & ME4
             AS1 --> AS2 & AS3
         end
-        
+
         Drawings --> BP3
     end
 
@@ -212,36 +266,36 @@ graph TD
 
     subgraph "圖片處理 Pipeline"
         Pipeline[圖片上傳 Pipeline]
-        
+
         P1[原圖上傳]
         P2[壓縮優化<br/>- WebP 轉換<br/>- 質量 85%]
         P3[生成縮圖<br/>- 200x200<br/>- 800x800]
         P4[EXIF 處理<br/>- 提取 GPS<br/>- 提取時間<br/>- 移除隱私資訊]
         P5[儲存到 Storage]
         P6[記錄元資料到 DB]
-        
+
         P1 --> P2 --> P3 --> P4 --> P5 --> P6
-        
+
         Pipeline --> P1
     end
 
     subgraph "Storage RLS 權限"
         RLS[Row Level Security]
-        
+
         R1["images/:<br/>- 讀取: 專案成員<br/>- 上傳: authenticated<br/>- 刪除: 上傳者或管理員"]
-        
+
         R2["documents/:<br/>- 讀取: 專案成員+權限<br/>- 上傳: 專案管理角色<br/>- 刪除: 管理員"]
-        
+
         R3["drawings/:<br/>- 讀取: 工程相關角色<br/>- 上傳: 專案經理<br/>- 刪除: 專案經理"]
-        
+
         R4["avatars/:<br/>- 讀取: public<br/>- 上傳: 帳戶擁有者<br/>- 刪除: 帳戶擁有者"]
-        
+
         R5["task-attachments/:<br/>- 讀取: 任務相關成員<br/>- 上傳: 指派者/承攬分支<br/>- 刪除: 任務擁有者"]
         R6["qa-evidence/:<br/>- 讀取: 品管/擁有者<br/>- 上傳: 驗收人員<br/>- 刪除: 品管主管"]
         R7["issue-attachments/:<br/>- 讀取: 問題相關成員<br/>- 上傳: 回報人/處理人<br/>- 刪除: 問題管理員"]
         R8["blueprint-assets/:<br/>- 讀取: public (只讀)<br/>- 上傳: 擁有者<br/>- 刪除: 擁有者"]
         R9["public-assets/:<br/>- 讀取: public<br/>- 上傳: DevOps<br/>- 刪除: DevOps"]
-        
+
         RLS --> R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9
     end
 
@@ -365,7 +419,7 @@ drawings/550e8400-e29b-41d4-a716-446655440000/architectural/A01_平面圖.dwg
 - **路徑**: `drawings/{blueprint_id}/architectural/`
 - **圖檔格式**: DWG, DXF, PDF
 - **編號規範**: A01, A02, A03...
-- **版本管理**: 
+- **版本管理**:
   - 每次修改產生新版本
   - 版本號格式: v1.0, v1.1, v2.0
   - 保留所有版本歷史
@@ -380,7 +434,7 @@ drawings/550e8400-e29b-41d4-a716-446655440000/architectural/A01_平面圖.dwg
 
 #### 4.3 機電圖
 - **路徑**: `drawings/{blueprint_id}/mep/`
-- **編號規範**: 
+- **編號規範**:
   - M01... (機械/給排水)
   - E01... (電力)
   - AC01... (空調)
@@ -388,7 +442,7 @@ drawings/550e8400-e29b-41d4-a716-446655440000/architectural/A01_平面圖.dwg
 #### 4.4 竣工圖 (As-Built)
 - **路徑**: `drawings/{blueprint_id}/as_built/`
 - **用途**: 記錄現場實際施工與設計變更
-- **特點**: 
+- **特點**:
   - 標註變更內容
   - 現場實測尺寸
   - 隱蔽工程記錄
@@ -526,27 +580,27 @@ async function uploadImage(file: File, path: string) {
   // 1. 驗證檔案
   if (file.size > 10 * 1024 * 1024) throw new Error('檔案過大');
   if (!['image/jpeg', 'image/png'].includes(file.type)) throw new Error('格式不支援');
-  
+
   // 2. 壓縮優化
   const compressed = await compressImage(file, { quality: 0.85 });
-  
+
   // 3. 生成縮圖
   const thumbnails = await generateThumbnails(compressed, [200, 800]);
-  
+
   // 4. 提取 EXIF
   const exif = await extractEXIF(file);
-  
+
   // 5. 上傳原圖
   const { data: original } = await supabase.storage
     .from('images')
     .upload(path, compressed);
-  
+
   // 6. 上傳縮圖
   for (const [size, thumb] of Object.entries(thumbnails)) {
     const thumbPath = path.replace(/\.jpg$/, `_thumbnail_${size}.jpg`);
     await supabase.storage.from('images').upload(thumbPath, thumb);
   }
-  
+
   // 7. 記錄元資料
   await supabase.from('documents').insert({
     storage_path: path,
@@ -554,7 +608,7 @@ async function uploadImage(file: File, path: string) {
     mime_type: compressed.type,
     metadata: { exif, thumbnails: Object.keys(thumbnails) }
   });
-  
+
   return original;
 }
 ```
@@ -563,7 +617,7 @@ async function uploadImage(file: File, path: string) {
 
 #### 10.1 儲存空間監控
 - **告警閾值**: 使用率 > 80%
-- **清理策略**: 
+- **清理策略**:
   - 刪除 exports/ 中 > 7 天的檔案
   - 歸檔 > 1 年未存取的文件
 

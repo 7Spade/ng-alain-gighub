@@ -1,13 +1,48 @@
 # RLS 策略開發指南
 
-> **目的**：定義 Supabase Row Level Security (RLS) 策略的開發流程和最佳實踐
+## 📑 目錄
 
-**最後更新**：2025-11-16  
-**版本**：v1.0  
-**維護者**：開發團隊  
-**相關技術**：Supabase PostgreSQL RLS
+- [📋 目錄](#-目錄)
+- [RLS 基礎](#rls-基礎)
+  - [什麼是 RLS？](#什麼是-rls)
+  - [啟用 RLS](#啟用-rls)
+  - [策略類型](#策略類型)
+- [策略設計原則](#策略設計原則)
+  - [1. 最小權限原則](#1-最小權限原則)
+  - [2. 明確的策略命名](#2-明確的策略命名)
+  - [3. 使用函數封裝複雜邏輯](#3-使用函數封裝複雜邏輯)
+- [常見模式](#常見模式)
+  - [1. 使用者擁有資料模式](#1-使用者擁有資料模式)
+  - [2. 團隊成員存取模式](#2-團隊成員存取模式)
+  - [3. 階層權限模式](#3-階層權限模式)
+  - [4. 協作權限模式](#4-協作權限模式)
+  - [5. 公開/私有資料模式](#5-公開私有資料模式)
+  - [6. 時間限制模式](#6-時間限制模式)
+- [測試與除錯](#測試與除錯)
+  - [1. 測試策略](#1-測試策略)
+  - [2. 檢視有效策略](#2-檢視有效策略)
+  - [3. 除錯策略](#3-除錯策略)
+  - [4. 常見錯誤排查](#4-常見錯誤排查)
+  - [5. 效能優化](#5-效能優化)
+- [開發流程](#開發流程)
+  - [1. 規劃階段](#1-規劃階段)
+  - [2. 實作階段](#2-實作階段)
+  - [3. 測試階段](#3-測試階段)
+  - [4. 部署階段](#4-部署階段)
+- [安全檢查清單](#安全檢查清單)
+- [相關文檔](#相關文檔)
 
 ---
+
+
+> **目的**：定義 Supabase Row Level Security (RLS) 策略的開發流程和最佳實踐
+
+**最後更新**：2025-11-16
+**版本**：v1.0
+**維護者**：開發團隊
+**相關技術**：Supabase PostgreSQL RLS
+
+- --
 
 ## 📋 目錄
 
@@ -16,7 +51,7 @@
 3. [常見模式](#常見模式)
 4. [測試與除錯](#測試與除錯)
 
----
+- --
 
 ## RLS 基礎
 
@@ -31,8 +66,8 @@ Row Level Security (RLS) 是 PostgreSQL 的安全功能，允許在資料庫層�
 ALTER TABLE accounts ENABLE ROW LEVEL SECURITY;
 
 -- 檢查 RLS 狀態
-SELECT tablename, rowsecurity 
-FROM pg_tables 
+SELECT tablename, rowsecurity
+FROM pg_tables
 WHERE schemaname = 'public';
 ```
 
@@ -46,7 +81,7 @@ WHERE schemaname = 'public';
 | **DELETE** | 刪除權限 | 控制使用者可以刪除哪些資料列 |
 | **ALL** | 所有操作 | 套用到所有 CRUD 操作 |
 
----
+- --
 
 ## 策略設計原則
 
@@ -81,7 +116,7 @@ CREATE POLICY "team_members_read_team_blueprints"
   ON blueprints FOR SELECT
   USING (
     owner_id IN (
-      SELECT team_id FROM team_members 
+      SELECT team_id FROM team_members
       WHERE user_id = auth.uid()
     )
   );
@@ -113,7 +148,7 @@ CREATE POLICY "team_members_access"
   USING (is_team_member(owner_id));
 ```
 
----
+- --
 
 ## 常見模式
 
@@ -142,7 +177,7 @@ CREATE POLICY "team_members_read_blueprints"
   ON blueprints FOR SELECT
   USING (
     owner_id IN (
-      SELECT team_id 
+      SELECT team_id
       FROM team_members
       WHERE user_id = auth.uid()
         AND status = 'active'
@@ -181,7 +216,7 @@ CREATE POLICY "admin_read_all"
 CREATE POLICY "user_read_own"
   ON accounts FOR SELECT
   USING (
-    auth.uid() = user_id 
+    auth.uid() = user_id
     OR has_role('admin')
   );
 ```
@@ -195,13 +230,13 @@ CREATE POLICY "collaborators_read_branches"
   USING (
     -- 是藍圖擁有者
     blueprint_id IN (
-      SELECT id FROM blueprints 
+      SELECT id FROM blueprints
       WHERE created_by = auth.uid()
     )
     OR
     -- 或是協作組織成員
     organization_id IN (
-      SELECT organization_id 
+      SELECT organization_id
       FROM collaboration_members
       WHERE user_id = auth.uid()
         AND status = 'active'
@@ -213,7 +248,7 @@ CREATE POLICY "collaborators_update_own_branch"
   ON blueprint_branches FOR UPDATE
   USING (
     organization_id IN (
-      SELECT organization_id 
+      SELECT organization_id
       FROM collaboration_members
       WHERE user_id = auth.uid()
         AND status = 'active'
@@ -221,7 +256,7 @@ CREATE POLICY "collaborators_update_own_branch"
   )
   WITH CHECK (
     organization_id IN (
-      SELECT organization_id 
+      SELECT organization_id
       FROM collaboration_members
       WHERE user_id = auth.uid()
         AND status = 'active'
@@ -241,7 +276,7 @@ CREATE POLICY "public_read_public_blueprints"
 CREATE POLICY "owner_read_private_blueprints"
   ON blueprints FOR SELECT
   USING (
-    is_public = false 
+    is_public = false
     AND created_by = auth.uid()
   );
 ```
@@ -259,7 +294,7 @@ CREATE POLICY "access_valid_subscriptions"
   );
 ```
 
----
+- --
 
 ## 測試與除錯
 
@@ -273,16 +308,16 @@ SET request.jwt.claim.sub = '測試使用者UUID';
 SELECT * FROM accounts WHERE user_id = '測試使用者UUID';
 
 -- 測試插入
-INSERT INTO accounts (user_id, email) 
+INSERT INTO accounts (user_id, email)
 VALUES ('測試使用者UUID', 'test@example.com');
 
 -- 測試更新
-UPDATE accounts 
-SET name = 'New Name' 
+UPDATE accounts
+SET name = 'New Name'
 WHERE user_id = '測試使用者UUID';
 
 -- 測試刪除
-DELETE FROM accounts 
+DELETE FROM accounts
 WHERE user_id = '測試使用者UUID';
 
 -- 重置
@@ -293,7 +328,7 @@ RESET request.jwt.claim.sub;
 
 ```sql
 -- 查看表的所有策略
-SELECT 
+SELECT
   schemaname,
   tablename,
   policyname,
@@ -316,7 +351,7 @@ SET client_min_messages TO DEBUG;
 SELECT * FROM accounts;
 
 -- 查看執行計劃
-EXPLAIN (ANALYZE, VERBOSE) 
+EXPLAIN (ANALYZE, VERBOSE)
 SELECT * FROM accounts;
 ```
 
@@ -340,8 +375,8 @@ SELECT * FROM accounts;
 
 ```sql
 -- 為 RLS 策略創建索引
-CREATE INDEX idx_team_members_user_team 
-ON team_members(user_id, team_id) 
+CREATE INDEX idx_team_members_user_team
+ON team_members(user_id, team_id)
 WHERE status = 'active';
 
 -- 使用 SECURITY DEFINER 函數避免重複計算
@@ -349,13 +384,13 @@ CREATE OR REPLACE FUNCTION get_user_teams()
 RETURNS TABLE(team_id UUID) AS $$
 BEGIN
   RETURN QUERY
-  SELECT t.team_id 
+  SELECT t.team_id
   FROM team_members t
   WHERE t.user_id = auth.uid()
     AND t.status = 'active';
 END;
-$$ LANGUAGE plpgsql 
-   SECURITY DEFINER 
+$$ LANGUAGE plpgsql
+   SECURITY DEFINER
    STABLE;  -- 標記為 STABLE 允許快取
 
 -- 在策略中使用
@@ -364,7 +399,7 @@ CREATE POLICY "team_access"
   USING (owner_id IN (SELECT * FROM get_user_teams()));
 ```
 
----
+- --
 
 ## 開發流程
 
@@ -427,17 +462,17 @@ describe('Accounts RLS', () => {
       .from('accounts')
       .select('*')
       .eq('user_id', currentUser.id);
-      
+
     expect(error).toBeNull();
     expect(data).toHaveLength(1);
   });
-  
+
   it('should prevent users from reading others accounts', async () => {
     const { data, error } = await supabase
       .from('accounts')
       .select('*')
       .eq('user_id', otherUser.id);
-      
+
     expect(data).toHaveLength(0);
   });
 });
@@ -460,7 +495,7 @@ DROP POLICY IF EXISTS "users_read_own_account" ON accounts;
 ALTER TABLE accounts DISABLE ROW LEVEL SECURITY;
 ```
 
----
+- --
 
 ## 安全檢查清單
 
@@ -473,7 +508,7 @@ ALTER TABLE accounts DISABLE ROW LEVEL SECURITY;
 - [ ] 策略效能已優化（適當的索引）
 - [ ] 策略文檔已更新
 
----
+- --
 
 ## 相關文檔
 
@@ -481,8 +516,8 @@ ALTER TABLE accounts DISABLE ROW LEVEL SECURITY;
 - [開發作業指引](./00-開發作業指引.md)
 - [測試指南](./38-測試指南.md)
 
----
+- --
 
-**維護者**：開發團隊  
-**最後更新**：2025-11-16  
+**維護者**：開發團隊
+**最後更新**：2025-11-16
 **下次審查**：2026-02-16

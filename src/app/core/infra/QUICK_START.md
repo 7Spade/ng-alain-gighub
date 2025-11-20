@@ -19,7 +19,7 @@
 - ✅ **类型安全** - 完整的 TypeScript 类型支持
 - ✅ **错误预防** - 统一的错误处理和类型检查
 
----
+- --
 
 ## 🚀 如何创建新的 Repository
 
@@ -67,7 +67,7 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
 - ✅ 错误处理和转换
 - ✅ 类型安全
 
----
+- --
 
 ## 📝 使用示例
 
@@ -107,7 +107,7 @@ import { BlueprintRepository } from '@core';
 })
 export class BlueprintListComponent implements OnInit {
   private readonly blueprintRepo = inject(BlueprintRepository);
-  
+
   blueprints: Blueprint[] = [];
 
   ngOnInit() {
@@ -118,7 +118,7 @@ export class BlueprintListComponent implements OnInit {
 }
 ```
 
----
+- --
 
 ## 🛡️ 错误预防机制
 
@@ -139,7 +139,7 @@ export class BlueprintListComponent implements OnInit {
 - ✅ 自动处理字段名转换（snake_case ↔ camelCase）
 - ✅ 无需手动转换，减少错误
 
----
+- --
 
 ## 🔄 未来扩展方式
 
@@ -161,15 +161,15 @@ export class BlueprintListComponent implements OnInit {
 1. 在 `error.types.ts` 中添加新类型
 2. 在 `supabase-error.transformer.ts` 中添加转换逻辑
 
----
+- --
 
 ## 📚 参考文档
 
 - [完整使用指南](./README.md) - 详细的功能说明和 API 文档
-- [BaseRepository 源码](../repositories/base.repository.ts) - 查看所有可用方法
-- [BlueprintRepository 示例](../repositories/blueprint.repository.ts) - 参考实现
+- [BaseRepository 源码](repositories/base.repository.ts) - 查看所有可用方法
+- [BlueprintRepository 示例](repositories/blueprint.repository.ts) - 参考实现
 
----
+- --
 
 ## ⚠️ 注意事项
 
@@ -178,8 +178,8 @@ export class BlueprintListComponent implements OnInit {
 3. **自动转换** - 字段名会自动转换，无需手动处理
 4. **错误处理** - 所有错误都会自动转换，无需手动处理
 
----
+- --
 
-**最后更新**：2025-01-15  
+**最后更新**：2025-01-15
 **维护者**：开发团队
 

@@ -1,12 +1,61 @@
 # @delon/acl 使用指南
 
-> 📋 **目的**：詳細說明 `@delon/acl` 訪問控制列表的使用方法、API 和最佳實踐
+## 📑 目錄
 
-**最後更新**：2025-01-15  
-**適用版本**：@delon/acl ^20.1.0  
-**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+- [📋 目錄](#-目錄)
+- [概述](#概述)
+  - [核心特點](#核心特點)
+- [安裝與導入](#安裝與導入)
+  - [安裝](#安裝)
+  - [導入方式](#導入方式)
+    - [方式 1：導入 ACLModule（已棄用，推薦使用 Standalone）](#方式-1導入-aclmodule已棄用推薦使用-standalone)
+    - [方式 2：使用 SHARED_IMPORTS（推薦）](#方式-2使用-shared_imports推薦)
+- [配置](#配置)
+- [主要功能](#主要功能)
+  - [ACLDirective - ACL 指令](#acldirective---acl-指令)
+    - [基本用法](#基本用法)
+    - [API 參數](#api-參數)
+    - [使用示例](#使用示例)
+  - [ACLIfDirective - 條件 ACL 指令](#aclifdirective---條件-acl-指令)
+    - [基本用法](#基本用法)
+    - [使用示例](#使用示例)
+  - [ACLService - ACL 服務](#aclservice---acl-服務)
+    - [主要方法](#主要方法)
+    - [使用示例](#使用示例)
+    - [在服務中使用](#在服務中使用)
+- [實際使用示例](#實際使用示例)
+  - [示例 1：角色控制](#示例-1角色控制)
+  - [示例 2：權限控制](#示例-2權限控制)
+  - [示例 3：與 PermissionService 集成](#示例-3與-permissionservice-集成)
+  - [示例 4：路由守衛集成](#示例-4路由守衛集成)
+  - [示例 5：動態設置權限](#示例-5動態設置權限)
+- [最佳實踐](#最佳實踐)
+  - [1. 優先使用 SHARED_IMPORTS](#1-優先使用-shared_imports)
+  - [2. 使用 Signals 管理權限狀態](#2-使用-signals-管理權限狀態)
+  - [3. 與 PermissionService 集成](#3-與-permissionservice-集成)
+  - [4. 路由級權限控制](#4-路由級權限控制)
+  - [5. 模板中使用條件渲染](#5-模板中使用條件渲染)
+- [常見問題](#常見問題)
+  - [Q1: 如何同時檢查角色和權限？](#q1-如何同時檢查角色和權限)
+  - [Q2: 如何動態更新權限？](#q2-如何動態更新權限)
+  - [Q3: 如何清空所有權限？](#q3-如何清空所有權限)
+  - [Q4: 如何獲取當前 ACL 數據？](#q4-如何獲取當前-acl-數據)
+  - [Q5: 如何與 Supabase 權限系統集成？](#q5-如何與-supabase-權限系統集成)
+- [🔗 相關文檔](#-相關文檔)
+- [📚 參考資源](#-參考資源)
+  - [官方文檔](#官方文檔)
+  - [相關組件](#相關組件)
 
 ---
+
+
+> 📋 **目的**：詳細說明 `@delon/acl` 訪問控制列表的使用方法、API 和最佳實踐
+
+**最後更新**：2025-01-15
+**適用版本**：@delon/acl ^20.1.0
+**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+
+- --
 
 ## 📋 目錄
 
@@ -21,7 +70,7 @@
 - [最佳實踐](#最佳實踐)
 - [常見問題](#常見問題)
 
----
+- --
 
 ## 概述
 
@@ -34,7 +83,7 @@
 - **服務 API**：提供 `ACLService` 服務，支持在組件和服務中使用
 - **路由守衛**：可配合路由守衛實現路由級權限控制
 
----
+- --
 
 ## 安裝與導入
 
@@ -80,7 +129,7 @@ import { SHARED_IMPORTS } from '@shared/shared-imports';
 export class ExampleComponent {}
 ```
 
----
+- --
 
 ## 配置
 
@@ -101,13 +150,13 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
----
+- --
 
 ## 主要功能
 
 ### ACLDirective - ACL 指令
 
-**導入**：`import { ACLDirective } from '@delon/acl';`  
+**導入**：`import { ACLDirective } from '@delon/acl';`
 **文檔**：https://ng-alain.com/acl
 
 用於控制元素的顯示/隱藏。
@@ -175,11 +224,11 @@ import { SHARED_IMPORTS } from '@shared';
 export class ExampleComponent {}
 ```
 
----
+- --
 
 ### ACLIfDirective - 條件 ACL 指令
 
-**導入**：`import { ACLIfDirective } from '@delon/acl';`  
+**導入**：`import { ACLIfDirective } from '@delon/acl';`
 **文檔**：https://ng-alain.com/acl
 
 條件渲染指令，類似 `*ngIf`。
@@ -239,7 +288,7 @@ import { SHARED_IMPORTS } from '@shared';
 export class ExampleComponent {}
 ```
 
----
+- --
 
 ### ACLService - ACL 服務
 
@@ -378,7 +427,7 @@ export class PermissionService {
 }
 ```
 
----
+- --
 
 ## 實際使用示例
 
@@ -396,7 +445,7 @@ import { SHARED_IMPORTS } from '@shared';
   template: `
     <nz-card>
       <h3>角色控制示例</h3>
-      
+
       <!-- 管理員專屬 -->
       <div [acl]="'admin'">
         <button nz-button nzType="primary">管理員操作</button>
@@ -438,7 +487,7 @@ import { SHARED_IMPORTS } from '@shared';
   template: `
     <nz-card>
       <h3>權限控制示例</h3>
-      
+
       <!-- 讀權限 -->
       <button nz-button [acl]="'blueprint.read'" (click)="view()">
         查看藍圖
@@ -491,7 +540,7 @@ export class PermissionExampleComponent {
 export class PermissionService {
   private readonly aclService = inject(ACLService);
   // ...
-  
+
   can(permission: string): Observable<boolean> {
     // 1. 检查本地 ACLService 缓存
     if (this.aclService.can(permission)) {
@@ -499,7 +548,7 @@ export class PermissionService {
     }
     // ...
   }
-  
+
   private syncPermissionToACL(permission: string): void {
     // 同步权限到 @delon/acl ACLService
     const parts = permission.split('.');
@@ -598,7 +647,7 @@ export class DynamicACLComponent implements OnInit {
 }
 ```
 
----
+- --
 
 ## 最佳實踐
 
@@ -686,7 +735,7 @@ export const routes: Routes = [
 </div>
 ```
 
----
+- --
 
 ## 常見問題
 
@@ -768,7 +817,7 @@ this.permissionService.can('blueprint.read').subscribe(hasPermission => {
 });
 ```
 
----
+- --
 
 ## 🔗 相關文檔
 
@@ -777,7 +826,7 @@ this.permissionService.can('blueprint.read').subscribe(hasPermission => {
 - [PermissionService 源碼](../../src/app/core/permissions/permission.service.ts) - 權限服務實現
 - [返回索引](./README.md)
 
----
+- --
 
 ## 📚 參考資源
 
@@ -791,8 +840,8 @@ this.permissionService.can('blueprint.read').subscribe(hasPermission => {
 - [@delon/auth](https://ng-alain.com/auth) - 認證服務
 - [@delon/theme](https://ng-alain.com/theme) - 主題系統
 
----
+- --
 
-**最後更新**：2025-01-15  
-**維護者**：開發團隊  
+**最後更新**：2025-01-15
+**維護者**：開發團隊
 **下次審查**：2025-02-15

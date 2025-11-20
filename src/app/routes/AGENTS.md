@@ -1,5 +1,33 @@
 # Routes 模組開發規範（GitHub Copilot Agent 優化版）
 
+## 📑 目錄
+
+- [🎯 Routes 模組職責](#-routes-模組職責)
+- [⚡ 快速參考](#-快速參考)
+  - [依賴關係](#依賴關係)
+  - [關鍵原則](#關鍵原則)
+- [📋 核心規範檢查清單](#-核心規範檢查清單)
+  - [路由配置](#路由配置)
+  - [組件開發（UI 層）](#組件開發ui-層)
+  - [業務邏輯層（Service/Facade）](#業務邏輯層servicefacade)
+  - [API 設計](#api-設計)
+  - [UX 規範](#ux-規範)
+- [🧪 測試要求](#-測試要求)
+  - [覆蓋率標準](#覆蓋率標準)
+  - [測試重點](#測試重點)
+- [📚 相關 Cursor 規則](#-相關-cursor-規則)
+  - [模組特定規則](#模組特定規則)
+  - [通用規則（自動應用）](#通用規則自動應用)
+- [🔗 相關文檔](#-相關文檔)
+  - [必讀文檔](#必讀文檔)
+  - [參考文檔](#參考文檔)
+- [💡 AI 助手使用建議](#-ai-助手使用建議)
+  - [適合使用的 AI 助手](#適合使用的-ai-助手)
+  - [常見 Prompt 範例](#常見-prompt-範例)
+
+---
+
+
 > 📖 **目的**：為 Routes 模組開發提供 AI 助手友善的規範指引。本模組規範已整合到 Cursor 規則系統（`.cursor/rules/routes-specific.mdc`），規則會自動應用到 `src/app/routes/` 目錄。
 
 ## 🎯 Routes 模組職責
@@ -105,11 +133,11 @@ import { SHARED_IMPORTS } from '@shared';
 })
 export class UserListComponent implements OnInit {
   private facade = inject(UserFacade);
-  
+
   users = this.facade.users;
   loading = this.facade.loading;
   error = this.facade.error;
-  
+
   ngOnInit(): void {
     this.facade.loadUsers();
   }
@@ -129,19 +157,19 @@ export class UserListComponent implements OnInit {
 @Injectable({ providedIn: 'root' })
 export class UserFacade {
   private userService = inject(UserService);
-  
+
   private usersSignal = signal<User[]>([]);
   private loadingSignal = signal<boolean>(false);
   private errorSignal = signal<string | null>(null);
-  
+
   readonly users = this.usersSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
-  
+
   async loadUsers(): Promise<void> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
-    
+
     try {
       const users = await this.userService.getAll();
       this.usersSignal.set(users);
@@ -172,14 +200,14 @@ export class UserRepository extends BaseRepository<
   constructor() {
     super('blueprint_users');
   }
-  
+
   async findByEmail(email: string): Promise<User | null> {
     const { data, error } = await this.supabase
       .from(this.tableName)
       .select('*')
       .eq('email', email)
       .single();
-    
+
     if (error) throw error;
     return data;
   }
@@ -274,9 +302,9 @@ async deleteUser(id: string): Promise<void> {
 6. 遵循 .cursor/rules/routes-specific.mdc 規範
 ```
 
----
+- --
 
-**最後更新**：2025-11-20  
-**架構版本**：v2.0  
-**維護者**：開發團隊  
+**最後更新**：2025-11-20
+**架構版本**：v2.0
+**維護者**：開發團隊
 **適用**：GitHub Copilot Agent Mode

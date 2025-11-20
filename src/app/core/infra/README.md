@@ -1,6 +1,28 @@
 # 基础设施模块 (Infrastructure)
 
-> **位置**：`src/app/core/infra/`  
+## 📑 目錄
+
+- [📋 模块结构](#-模块结构)
+- [🎯 核心功能](#-核心功能)
+  - [1. 类型定义 (`types/`)](#1-类型定义-types)
+  - [2. Repository 模式 (`repositories/`)](#2-repository-模式-repositories)
+    - [BaseRepository](#baserepository)
+    - [BlueprintRepository](#blueprintrepository)
+  - [3. 错误处理 (`errors/`)](#3-错误处理-errors)
+  - [4. 数据转换工具 (`utils/`)](#4-数据转换工具-utils)
+- [📖 使用示例](#-使用示例)
+  - [创建新的 Repository](#创建新的-repository)
+  - [在 Service 中使用 Repository](#在-service-中使用-repository)
+- [🔧 技术细节](#-技术细节)
+  - [类型安全](#类型安全)
+  - [错误处理](#错误处理)
+  - [数据转换](#数据转换)
+- [📚 相关文档](#-相关文档)
+
+---
+
+
+> **位置**：`src/app/core/infra/`
 > **职责**：提供数据访问、错误处理、类型定义等基础设施功能
 
 ## 📋 模块结构
@@ -24,7 +46,7 @@ infra/
 └── index.ts           # 统一导出
 ```
 
----
+- --
 
 ## 🎯 核心功能
 
@@ -42,7 +64,7 @@ type BlueprintInsert = TablesInsert<'blueprints'>;
 type BlueprintUpdate = TablesUpdate<'blueprints'>;
 ```
 
----
+- --
 
 ### 2. Repository 模式 (`repositories/`)
 
@@ -58,7 +80,7 @@ import { BaseRepository } from '@core';
 @Injectable({ providedIn: 'root' })
 export class MyRepository extends BaseRepository<MyEntity, MyEntityInsert, MyEntityUpdate> {
   protected tableName = 'my_table';
-  
+
   // 可以添加特定查询方法
   findByCustomField(value: string): Observable<MyEntity[]> {
     return this.findAll({
@@ -102,7 +124,7 @@ blueprintRepo.findActive().subscribe(blueprints => {
 });
 ```
 
----
+- --
 
 ### 3. 错误处理 (`errors/`)
 
@@ -135,7 +157,7 @@ try {
 const data = handleSupabaseResponse(response, 'MyService');
 ```
 
----
+- --
 
 ### 4. 数据转换工具 (`utils/`)
 
@@ -158,7 +180,7 @@ const dbData = toSnakeCaseData(appData);
 
 **注意**：BaseRepository 会自动进行转换，通常不需要手动调用。
 
----
+- --
 
 ## 📖 使用示例
 
@@ -233,7 +255,7 @@ export class BlueprintService {
 }
 ```
 
----
+- --
 
 ## 🔧 技术细节
 
@@ -255,7 +277,7 @@ export class BlueprintService {
 - 支持嵌套对象转换
 - 支持数组转换
 
----
+- --
 
 ## 📚 相关文档
 
@@ -264,8 +286,8 @@ export class BlueprintService {
 - [类型安全规范](../../../../.cursor/rules/typescript.mdc)
 - [Core 模組規範](../../../../.cursor/rules/core-specific.mdc)
 
----
+- --
 
-**最后更新**：2025-01-15  
+**最后更新**：2025-01-15
 **维护者**：开发团队
 

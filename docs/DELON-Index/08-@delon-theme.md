@@ -1,12 +1,66 @@
 # @delon/theme 使用指南
 
-> 📋 **目的**：詳細說明 `@delon/theme` 主題系統的使用方法、API 和最佳實踐
+## 📑 目錄
 
-**最後更新**：2025-01-15  
-**適用版本**：@delon/theme ^20.1.0  
-**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+- [📋 目錄](#-目錄)
+- [概述](#概述)
+  - [核心特點](#核心特點)
+- [安裝與導入](#安裝與導入)
+  - [安裝](#安裝)
+  - [導入方式](#導入方式)
+    - [方式 1：單個組件導入](#方式-1單個組件導入)
+    - [方式 2：使用 SHARED_IMPORTS（推薦）](#方式-2使用-shared_imports推薦)
+- [配置](#配置)
+- [主要功能](#主要功能)
+  - [LayoutDefault - 默認佈局](#layoutdefault---默認佈局)
+    - [基本用法](#基本用法)
+  - [SettingDrawer - 設置抽屜](#settingdrawer---設置抽屜)
+    - [基本用法](#基本用法)
+  - [ThemeBtnComponent - 主題切換按鈕](#themebtncomponent---主題切換按鈕)
+    - [基本用法](#基本用法)
+  - [I18nPipe - 國際化管道](#i18npipe---國際化管道)
+    - [基本用法](#基本用法)
+  - [DatePipe - 日期管道](#datepipe---日期管道)
+    - [基本用法](#基本用法)
+  - [I18NService - 國際化服務](#i18nservice---國際化服務)
+    - [主要方法](#主要方法)
+    - [使用示例](#使用示例)
+  - [_HttpClient - HTTP 客戶端](#_httpclient---http-客戶端)
+    - [主要方法](#主要方法)
+    - [使用示例](#使用示例)
+  - [SettingsService - 設置服務](#settingsservice---設置服務)
+    - [主要方法](#主要方法)
+    - [使用示例](#使用示例)
+- [實際使用示例](#實際使用示例)
+  - [示例 1：使用佈局](#示例-1使用佈局)
+  - [示例 2：使用國際化](#示例-2使用國際化)
+  - [示例 3：使用 HTTP 客戶端](#示例-3使用-http-客戶端)
+- [最佳實踐](#最佳實踐)
+  - [1. 使用 SHARED_IMPORTS](#1-使用-shared_imports)
+  - [2. 使用 I18NService 進行國際化](#2-使用-i18nservice-進行國際化)
+  - [3. 使用 _HttpClient 進行 HTTP 請求](#3-使用-_httpclient-進行-http-請求)
+  - [4. 配置主題](#4-配置主題)
+- [常見問題](#常見問題)
+  - [Q1: 如何切換語言？](#q1-如何切換語言)
+  - [Q2: 如何在模板中使用國際化？](#q2-如何在模板中使用國際化)
+  - [Q3: 如何獲取當前語言？](#q3-如何獲取當前語言)
+  - [Q4: 如何自定義 I18NService？](#q4-如何自定義-i18nservice)
+  - [Q5: _HttpClient 和 HttpClient 有什麼區別？](#q5-_httpclient-和-httpclient-有什麼區別)
+- [🔗 相關文檔](#-相關文檔)
+- [📚 參考資源](#-參考資源)
+  - [官方文檔](#官方文檔)
+  - [相關組件](#相關組件)
 
 ---
+
+
+> 📋 **目的**：詳細說明 `@delon/theme` 主題系統的使用方法、API 和最佳實踐
+
+**最後更新**：2025-01-15
+**適用版本**：@delon/theme ^20.1.0
+**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+
+- --
 
 ## 📋 目錄
 
@@ -26,7 +80,7 @@
 - [最佳實踐](#最佳實踐)
 - [常見問題](#常見問題)
 
----
+- --
 
 ## 概述
 
@@ -40,7 +94,7 @@
 - **HTTP 客戶端**：封裝的 HTTP 客戶端服務
 - **設置服務**：應用設置管理服務
 
----
+- --
 
 ## 安裝與導入
 
@@ -85,7 +139,7 @@ import { SHARED_IMPORTS } from '@shared/shared-imports';
 export class ExampleComponent {}
 ```
 
----
+- --
 
 ## 配置
 
@@ -150,13 +204,13 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
----
+- --
 
 ## 主要功能
 
 ### LayoutDefault - 默認佈局
 
-**導入**：`import { LayoutDefaultModule } from '@delon/theme/layout-default';`  
+**導入**：`import { LayoutDefaultModule } from '@delon/theme/layout-default';`
 **文檔**：https://ng-alain.com/theme/layout-default
 
 提供默認的後台管理佈局，包含頂部導航、側邊欄、內容區等。
@@ -263,11 +317,11 @@ export const appConfig: ApplicationConfig = {
 })
 ```
 
----
+- --
 
 ### SettingDrawer - 設置抽屜
 
-**導入**：`import { SettingDrawerModule } from '@delon/theme/setting-drawer';`  
+**導入**：`import { SettingDrawerModule } from '@delon/theme/setting-drawer';`
 **文檔**：https://ng-alain.com/theme/setting-drawer
 
 提供設置抽屜組件，用於主題配置。
@@ -278,11 +332,11 @@ export const appConfig: ApplicationConfig = {
 <setting-drawer></setting-drawer>
 ```
 
----
+- --
 
 ### ThemeBtnComponent - 主題切換按鈕
 
-**導入**：`import { ThemeBtnComponent } from '@delon/theme/theme-btn';`  
+**導入**：`import { ThemeBtnComponent } from '@delon/theme/theme-btn';`
 **文檔**：https://ng-alain.com/theme/theme-btn
 
 主題切換按鈕組件。
@@ -293,11 +347,11 @@ export const appConfig: ApplicationConfig = {
 <theme-btn></theme-btn>
 ```
 
----
+- --
 
 ### I18nPipe - 國際化管道
 
-**導入**：`import { I18nPipe } from '@delon/theme';`  
+**導入**：`import { I18nPipe } from '@delon/theme';`
 **文檔**：https://ng-alain.com/theme
 
 國際化翻譯管道。
@@ -316,11 +370,11 @@ export const appConfig: ApplicationConfig = {
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
 ```
 
----
+- --
 
 ### DatePipe - 日期管道
 
-**導入**：`import { DatePipe as DelonDatePipe } from '@delon/theme';`  
+**導入**：`import { DatePipe as DelonDatePipe } from '@delon/theme';`
 **文檔**：https://ng-alain.com/theme
 
 **注意**：@delon/theme 的 DatePipe 在模板中使用 `_date` pipe，Angular Common 的 DatePipe 使用 `date` pipe。
@@ -332,7 +386,7 @@ export const appConfig: ApplicationConfig = {
 {{ dateValue | _date: 'yyyy-MM-dd HH:mm:ss' }}
 ```
 
----
+- --
 
 ### I18NService - 國際化服務
 
@@ -471,7 +525,7 @@ export class I18NService extends AlainI18nBaseService {
 }
 ```
 
----
+- --
 
 ### _HttpClient - HTTP 客戶端
 
@@ -549,7 +603,7 @@ export class ExampleComponent {
 }
 ```
 
----
+- --
 
 ### SettingsService - 設置服務
 
@@ -601,7 +655,7 @@ export class ExampleComponent {
 }
 ```
 
----
+- --
 
 ## 實際使用示例
 
@@ -700,7 +754,7 @@ export class HttpExampleComponent {
 }
 ```
 
----
+- --
 
 ## 最佳實踐
 
@@ -750,7 +804,7 @@ provideAlain({
 })
 ```
 
----
+- --
 
 ## 常見問題
 
@@ -806,7 +860,7 @@ provideAlain({
 
 `_HttpClient` 是 `@delon/theme` 封裝的 HTTP 客戶端，提供了更便捷的 API 和統一的錯誤處理。建議在項目中使用 `_HttpClient`。
 
----
+- --
 
 ## 🔗 相關文檔
 
@@ -815,7 +869,7 @@ provideAlain({
 - [I18NService 源碼](../../src/app/core/i18n/i18n.service.ts) - 國際化服務實現
 - [返回索引](./README.md)
 
----
+- --
 
 ## 📚 參考資源
 
@@ -829,8 +883,8 @@ provideAlain({
 - [@delon/auth](https://ng-alain.com/auth) - 認證服務
 - [@delon/util](https://ng-alain.com/util) - 工具函數庫
 
----
+- --
 
-**最後更新**：2025-01-15  
-**維護者**：開發團隊  
+**最後更新**：2025-01-15
+**維護者**：開發團隊
 **下次審查**：2025-02-15

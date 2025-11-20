@@ -39,13 +39,13 @@ Core 模組是應用程式的**核心基礎設施層**，提供：
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
   const token = tokenService.get()?.token;
-  
+
   if (token) {
     req = req.clone({
       setHeaders: { Authorization: `Bearer ${token}` }
     });
   }
-  
+
   return next(req);
 };
 ```
@@ -63,11 +63,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 export class ErrorStateService {
   private errorSignal = signal<AppError | null>(null);
   readonly error = this.errorSignal.asReadonly();
-  
+
   setError(error: AppError): void {
     this.errorSignal.set(error);
   }
-  
+
   clearError(): void {
     this.errorSignal.set(null);
   }
@@ -151,10 +151,10 @@ export class ErrorStateService {
 4. 遵循 .cursor/rules/core-specific.mdc 規範
 ```
 
----
+- --
 
-**最後更新**：2025-11-20  
-**架構版本**：v2.0  
-**維護者**：開發團隊  
+**最後更新**：2025-11-20
+**架構版本**：v2.0
+**維護者**：開發團隊
 **適用**：GitHub Copilot Agent Mode
 
