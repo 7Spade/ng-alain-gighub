@@ -505,10 +505,10 @@ async withdraw(record: any): Promise<void> {
 
 ## 📚 參考文檔
 
-- [SRP 規範文件](../00-SRP.md)
+- [SRP 規範文件](../specs/00-single-responsibility-principle.md)
 - [五層架構開發順序](./back/00-順序.md)
 - [核心開發原則](../.cursor/rules/core-principles.mdc)
-- [開發工作流程](../28-開發工作流程.md)
+- [開發工作流程](../guides/development-workflow.md)
 
 - --
 
