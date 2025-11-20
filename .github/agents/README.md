@@ -2,11 +2,20 @@
 
 > **目的**：集中管理原 `.ai/` 與舊 `.github/agents/` 的所有 AI 上下文，提供一致的代理說明、專案背景與工作流程。所有檔案皆依角色職責分類，方便在 GitHub Actions、Cursor 或任意 Agent Runtime 中引用。
 
+## 🚀 快速開始
+
+**新手？** 先閱讀 [QUICK-START.md](./QUICK-START.md) 了解：
+- 🗺️ 決策樹：根據任務類型選擇對應文件
+- 📋 常見任務快速參考（創建元件、整合 API、修復型別等）
+- 🔍 重要文件速查表
+- 💡 最佳實踐和回覆檢查清單
+
 ## 📁 目錄結構
 
 ```
 .github/agents/
 ├── README.md             # 本文件
+├── QUICK-START.md        # 🚀 快速開始指南（新手必讀）
 ├── docs-index.md         # 🔍 docs/ 目錄索引
 ├── role.agent.md         # Copilot / AI 角色設定
 ├── role-config.md        # System message 快速參考
@@ -27,28 +36,102 @@
 - **舊 `.github/agents/`**：Angular / TypeScript / Code Quality / Testing 等代理移動至 `domain/`，內容依新路徑更新引用。
 
 ## 🚀 使用方式
-- **Context**：先查官方來源，再以 `docs-index.md` 尋找對應 `docs/` 文件。
-- **回答結構**：載入 `role.agent.md` 作為系統角色；若需精簡 system message，可引用 `role-config.md`。
-- **任務檢查表**：依需求挑選 `domain/*.md`；這些文件僅保留可操作清單與指令。
-- **專案脈絡**：`ng-project-agent.md` 提供架構 / 資料 / 流程的最小必要資訊。
+
+### 第一次使用
+1. **閱讀** [QUICK-START.md](./QUICK-START.md) - 了解整體工作流程和決策樹
+2. **參考** `role.agent.md` - 了解 AI 角色定位與回覆原則
+3. **查閱** `ng-project-agent.md` - 獲取專案願景、架構、資料與 API 摘要
+4. **選擇** 適當的 `domain/*.md` - 依任務類型套用專家檢查表
+
+### 日常使用
+- **Context7 (@C7)**：先查官方來源（Angular、ng-alain、Supabase）
+- **文件索引**：使用 `docs-index.md` 尋找對應 `docs/` 文件
+- **決策支援**：使用 `QUICK-START.md` 的決策樹快速定位
+- **任務執行**：依 `domain/*.md` 檢查清單逐項完成
+- **品質把關**：參考每個 agent 的審查檢查清單
 
 ## 🧭 推薦閱讀順序
-1. `docs-index.md` – 先確認任務涉及的 `docs/` 原始資料。
-2. `role.agent.md` – 了解 AI 角色定位與回覆原則。
-3. `ng-project-agent.md` – 獲取專案願景、架構、資料與 API 摘要。
-4. `domain/*.md` – 依任務類型套用專家檢查表。
-5. `role-config.md` – 需要快速複製的 system message 時使用。
+
+### 初次了解專案
+1. `QUICK-START.md` – ⭐ **從這裡開始**
+2. `role.agent.md` – 了解 AI 角色定位與回覆原則
+3. `ng-project-agent.md` – 獲取專案願景、架構、資料與 API 摘要
+4. `docs-index.md` – 確認任務涉及的 `docs/` 原始資料
+
+### 執行特定任務
+1. `QUICK-START.md` - 使用決策樹找到對應文件
+2. `domain/*.md` – 依任務類型套用專家檢查表
+3. `docs-index.md` - 查找詳細文檔
+4. `role-config.md` – 需要快速複製的 system message 時使用
+
+## 📚 核心文件說明
+
+### 指引文件
+| 文件 | 用途 | 適用對象 |
+|------|------|----------|
+| [QUICK-START.md](./QUICK-START.md) | 快速開始指南、決策樹、常見任務參考 | **所有 Agent（新手必讀）** |
+| [role.agent.md](./role.agent.md) | AI 角色定位、工作流程、回覆原則 | 所有 Agent |
+| [ng-project-agent.md](./ng-project-agent.md) | 專案架構、技術棧、資料模型摘要 | 開發相關任務 |
+| [docs-index.md](./docs-index.md) | docs/ 目錄索引 | 查找詳細文檔時 |
+| [role-config.md](./role-config.md) | System message 精簡版 | 快速參考時 |
+
+### 領域專家文件（domain/）
+| Agent | 職責範圍 | 適用情境 |
+|-------|----------|----------|
+| [angular-agent.md](./domain/angular-agent.md) | Angular 20 + Signals 開發規範 | 元件開發、模板編寫、程式碼審查 |
+| [typescript-agent.md](./domain/typescript-agent.md) | TypeScript 型別安全與品質 | 型別定義、型別檢查、模型一致性 |
+| [code-quality-agent.md](./domain/code-quality-agent.md) | 代碼品質與最佳實踐 | Code Review、重構、品質檢查 |
+| [security-agent.md](./domain/security-agent.md) | 安全與權限控制 | 安全審查、RLS 設定、憑證管理 |
+| [performance-agent.md](./domain/performance-agent.md) | 效能優化 | 效能問題診斷、優化建議 |
+| [testing-agent.md](./domain/testing-agent.md) | 測試策略與實踐 | 撰寫測試、測試審查、覆蓋率 |
+| [accessibility-agent.md](./domain/accessibility-agent.md) | 無障礙性與 WCAG 合規 | A11y 審查、WCAG 檢查 |
+| [docs-agent.md](./domain/docs-agent.md) | 文件維護與更新 | 更新文件、文件審查 |
 
 ## 🔗 Docs Index 快速導覽
 - `docs-index.md` 提供 `docs/` 目錄的分類索引（架構、流程、資料、權限、Agent 等九大類）。
 - 每個項目都附 `@file` 標籤與說明，方便在回覆中引用。
 - 若新增或修改 `docs/` 內容，請同步更新 `docs-index.md` 並於 PR 描述記錄。
 
+## 🎯 文件改進重點
+
+### v2.1（2025-11-20）更新
+所有 domain agent 文件現已包含：
+- ✅ 明確的角色定位與適用場景
+- ✅ 詳細的核心檢查清單（每項都有範例）
+- ✅ 正反面範例（✅ 正確 / ❌ 錯誤）
+- ✅ 常見錯誤與解決方案
+- ✅ 審查檢查清單
+- ✅ 必跑指令
+- ✅ 參考來源
+
+### 已改進的 Agents
+- ✅ angular-agent.md - 大幅增強（250+ 行，包含 Signals、Control Flow、Forms 等詳細範例）
+- ✅ typescript-agent.md - 大幅增強（250+ 行，包含型別安全、模型一致性等）
+- ✅ security-agent.md - 大幅增強（300+ 行，包含 RLS、Token、依賴安全等）
+- 🔄 其他 agents 持續改進中...
+
 ## 🔗 關聯資源
-- `AGENTS.md` – 專案最高層決策與規範索引。
-- `docs/` – 完整詳細文件，agents 僅保留摘要並附連結。
-- `.cursor/rules/` – Cursor 自動載入的細部規範，domain agents 會引用對應章節。
+- `AGENTS.md` – 專案最高層決策與規範索引
+- `docs/` – 完整詳細文件，agents 僅保留摘要並附連結
+- `.cursor/rules/` – Cursor 自動載入的細部規範，domain agents 會引用對應章節
+
+## 💡 最佳實踐
+
+### 使用這些文件時
+- ✅ **先搜尋官方文檔**（使用 @C7）再查專案文件
+- ✅ **引用文件來源**（使用 `@file` 標籤）
+- ✅ **遵循檢查清單**（每個 agent 都提供）
+- ✅ **執行必要指令**（lint/type-check/test/build）
+- ✅ **提供範例**（好的 ✅ 和壞的 ❌）
+
+### 維護這些文件時
+- ✅ 保持兩套文件同步（.copilot-* 和非 .copilot-）
+- ✅ 添加實際範例和常見錯誤
+- ✅ 更新版本號和更新日期
+- ✅ 在 PR 中記錄文件變更
 
 ---
-**最後更新**：2025-11-18  
-**維護者**：開發團隊
+**最後更新**：2025-11-20  
+**版本**：v2.1  
+**維護者**：開發團隊  
+**主要改進**：新增 QUICK-START.md、大幅增強 domain agents 內容
