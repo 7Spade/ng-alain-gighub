@@ -283,9 +283,9 @@
 
 ## 相關文檔
 
-- [專案路線圖](./44-專案路線圖.md) - 開發計劃與里程碑
-- [架構審查報告](./28-架構審查報告.md) - 系統架構設計
-- [完整架構流程圖](./27-完整架構流程圖.mermaid.md) - Git-like 分支模型完整架構
+- [專案路線圖](./archive/44-project-roadmap.md) - 開發計劃與里程碑
+- [架構審查報告](./architecture/21-architecture-review-report.md) - 系統架構設計
+- [完整架構流程圖](./architecture/20-complete-architecture-flowchart.mermaid.md) - Git-like 分支模型完整架構
 
 - --
 

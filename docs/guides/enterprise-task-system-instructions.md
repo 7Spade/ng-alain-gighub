@@ -1336,17 +1336,17 @@ pending → assigned → in_progress → staging → in_qa → in_inspection →
    - 完整系統架構（11 模組、51 表）
    - 所有設計決策的依據
 
-2. **[50-AI助手角色配置.md](./50-AI助手角色配置.md)** ⭐⭐⭐⭐⭐
+2. **[50-AI助手角色配置.md](./reference/ai-assistant-role-configuration.md)** ⭐⭐⭐⭐⭐
    - AI 助手行為規範
    - 回覆格式要求
    - 企業標準定義
 
-3. **[27-完整架構流程圖.mermaid.md](./27-完整架構流程圖.mermaid.md)** ⭐⭐⭐⭐
+3. **[27-完整架構流程圖.mermaid.md](./architecture/20-complete-architecture-flowchart.mermaid.md)** ⭐⭐⭐⭐
    - Git-like 分支模型
    - 任務執行流程
    - 待辦中心機制
 
-4. **[28-架構審查報告.md](./28-架構審查報告.md)** ⭐⭐⭐⭐
+4. **[28-架構審查報告.md](./architecture/21-architecture-review-report.md)** ⭐⭐⭐⭐
    - 架構決策理由
    - 設計原則
    - 最佳實踐
@@ -1357,11 +1357,11 @@ pending → assigned → in_progress → staging → in_qa → in_inspection →
 
 ### 參考文檔
 
-- [00-開發作業指引.md](./00-開發作業指引.md) - 開發規範
+- [00-開發作業指引.md](./specs/00-development-guidelines.md) - 開發規範
 - [14-業務流程圖.mermaid.md](./14-業務流程圖.mermaid.md) - 業務流程
 - [16-狀態圖.mermaid.md](./16-狀態圖.mermaid.md) - 狀態流轉
 - [43-狀態枚舉值定義.md](./43-狀態枚舉值定義.md) - 狀態定義
-- [45-SHARED_IMPORTS-使用指南.md](./45-SHARED_IMPORTS-使用指南.md) - 共享模組
+- [45-SHARED_IMPORTS-使用指南.md](./reference/shared-imports-guide.md) - 共享模組
 
 - --
 

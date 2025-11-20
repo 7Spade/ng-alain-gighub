@@ -97,7 +97,7 @@
 - [最佳實踐](#最佳實踐)
 
 **參考文檔**：
-- [開發作業指引](./00-開發作業指引.md) - 效能優化規範
+- [開發作業指引](./specs/00-development-guidelines.md) - 效能優化規範
 - [部署指南](./39-部署指南.md) - 部署相關優化
 
 - --
@@ -655,7 +655,7 @@ SELECT * FROM tasks WHERE blueprint_id = 'xxx';
 
 ## 相關文檔
 
-- [開發作業指引](./00-開發作業指引.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
 - [部署指南](./39-部署指南.md)
 - [常見問題 FAQ](./36-常見問題-FAQ.md)
 

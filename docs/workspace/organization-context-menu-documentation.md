@@ -644,8 +644,8 @@
 - [organization-data.json](../src/assets/tmp/organization-data.json) - 組織上下文菜單數據
 
 ### 技術文檔
-- [完整架構流程圖](./27-完整架構流程圖.mermaid.md) - Git-like 分支模型
-- [架構審查報告](./28-架構審查報告.md) - 生產就緒版架構
+- [完整架構流程圖](./architecture/20-complete-architecture-flowchart.mermaid.md) - Git-like 分支模型
+- [架構審查報告](./architecture/21-architecture-review-report.md) - 生產就緒版架構
 
 - --
 

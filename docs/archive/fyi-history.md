@@ -152,7 +152,7 @@
 - ✅ 賬戶系統實施（9 個任務）- 數據模型層、Repository 層、Service 層、路由層
 - ✅ 賬戶系統架構違規修復 - 修復 core 依賴 shared 的架構違規，修復路徑別名使用錯誤
 - ⏳ 規劃階段 - 賬戶系統後續完善（詳情、編輯、創建頁面）
-- ✅ 專案路線圖建立（[44-專案路線圖.md](./44-專案路線圖.md)）- 記錄開發計劃與里程碑
+- ✅ 專案路線圖建立（[44-專案路線圖.md](./archive/44-project-roadmap.md)）- 記錄開發計劃與里程碑
 - ✅ **賬戶系統完整評估**（2025-01-15）- 使用 Sequential Thinking + Software Planning Tool 完成系統性評估，識別已完成和缺失功能，更新實施計劃
 - ✅ **賬戶系統 MVP 實施完成**（2025-01-15）- 完成 Service 層、UI 層和路由配置，所有核心功能已實現，構建通過
 - ✅ **賬戶系統 RLS 策略驗證和完善**（2025-01-15）- 使用 Supabase MCP 工具驗證和完善 4 張表的 RLS 策略（accounts, teams, team_members, organization_schedules），共創建 15 個策略，構建驗證通過
@@ -546,12 +546,12 @@
 
 ## 📚 相關文檔
 
-- [專案路線圖](./44-專案路線圖.md) - **專案開發路線圖與里程碑** ⭐ 新增
+- [專案路線圖](./archive/44-project-roadmap.md) - **專案開發路線圖與里程碑** ⭐ 新增
 - [開發脈絡記錄](./fyi-development.md) - 詳細的開發決策記錄
 - [架構說明](./fyi-architecture.md) - 系統架構設計
 - [上下文](./fyi-context.md) - Domain 用語和業務背景
-- [完整架構流程圖](./27-完整架構流程圖.mermaid.md) - 系統架構圖（Git-like 分支模型）
-- [架構審查報告](./28-架構審查報告.md) - 架構設計說明
+- [完整架構流程圖](./architecture/20-complete-architecture-flowchart.mermaid.md) - 系統架構圖（Git-like 分支模型）
+- [架構審查報告](./architecture/21-architecture-review-report.md) - 架構設計說明
 
 - --
 
@@ -705,7 +705,7 @@
 
 ### 相關文檔
 - [實施完成總結](./账户系统MVP实施完成总结.md) ⭐ 詳細記錄
-- [專案路線圖](./44-專案路線圖.md) - 更新狀態
+- [專案路線圖](./archive/44-project-roadmap.md) - 更新狀態
 - Software Planning Tool - 任務完成狀態
 
 - --

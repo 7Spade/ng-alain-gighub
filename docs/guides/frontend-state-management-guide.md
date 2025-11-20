@@ -627,8 +627,8 @@ state.update(c => ({ ...c, field3: value3 }));
 
 ## 相關文檔
 
-- [開發作業指引](./00-開發作業指引.md)
-- [開發最佳實踐指南](./51-開發最佳實踐指南.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
+- [開發最佳實踐指南](./guides/development-best-practices.md)
 - [測試指南](./38-測試指南.md)
 
 - --

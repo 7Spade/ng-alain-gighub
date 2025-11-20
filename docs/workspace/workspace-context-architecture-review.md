@@ -1097,10 +1097,10 @@ async load(): Promise<void> {
 
 ## 📚 相關文檔參考
 
-- [系統架構思維導圖](./01-系統架構思維導圖.mermaid.md) - 核心架構概覽
-- [完整架構流程圖](./27-完整架構流程圖.mermaid.md) - Git-like 分支模型
-- [架構審查報告](./28-架構審查報告.md) - 生產就緒版審查
-- [開發作業指引](./24-開發前檢查清單.md) - 開發規範
+- [系統架構思維導圖](./architecture/01-system-architecture-mindmap.mermaid.md) - 核心架構概覽
+- [完整架構流程圖](./architecture/20-complete-architecture-flowchart.mermaid.md) - Git-like 分支模型
+- [架構審查報告](./architecture/21-architecture-review-report.md) - 生產就緒版審查
+- [開發作業指引](./guides/pre-development-checklist.md) - 開發規範
 - [Angular 20 最佳實踐](../.cursor/rules/angular.mdc) - Angular 規範
 - [TypeScript 類型安全](../.cursor/rules/typescript.mdc) - TypeScript 規範
 - [Signals 狀態管理](../.cursor/rules/modern-angular.mdc) - 現代化 Angular

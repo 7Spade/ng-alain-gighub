@@ -276,15 +276,15 @@ graph TD
 ### 核心文檔
 - [AGENTS.md](../AGENTS.md) - Agent 指引總覽
 - [GitHub Copilot Instructions](../.github/agents/copilot-instructions.md) - 完整指引
-- [開發作業指引](./00-開發作業指引.md) - 開發規範
+- [開發作業指引](./specs/00-development-guidelines.md) - 開發規範
 
 ### 架構文檔
-- [完整架構流程圖](./27-完整架構流程圖.mermaid.md)
-- [架構審查報告](./28-架構審查報告.md)
+- [完整架構流程圖](./architecture/20-complete-architecture-flowchart.mermaid.md)
+- [架構審查報告](./architecture/21-architecture-review-report.md)
 - [完整SQL表結構定義](./30-0-完整SQL表結構定義.md)
 
 ### 開發指南
-- [SHARED_IMPORTS 使用指南](./45-SHARED_IMPORTS-使用指南.md)
+- [SHARED_IMPORTS 使用指南](./reference/shared-imports-guide.md)
 - [測試指南](./38-測試指南.md)
 - [常見問題 FAQ](./36-常見問題-FAQ.md)
 

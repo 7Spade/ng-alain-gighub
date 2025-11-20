@@ -513,7 +513,7 @@ ALTER TABLE accounts DISABLE ROW LEVEL SECURITY;
 ## 相關文檔
 
 - [安全與 RLS 權限矩陣](./21-安全與-RLS-權限矩陣.md)
-- [開發作業指引](./00-開發作業指引.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
 - [測試指南](./38-測試指南.md)
 
 - --

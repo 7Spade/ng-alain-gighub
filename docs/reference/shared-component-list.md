@@ -514,7 +514,7 @@ yarn test-coverage
 - [帳戶層流程圖](./13-帳戶層流程圖.mermaid.md)
 - [業務流程圖](./14-業務流程圖.mermaid.md)
 - [元件模組視圖](./19-元件模組視圖.mermaid.md)
-- [SHARED_IMPORTS 使用指南](./45-SHARED_IMPORTS-使用指南.md)
+- [SHARED_IMPORTS 使用指南](./reference/shared-imports-guide.md)
 - [測試指南](./38-測試指南.md)
 
 - --

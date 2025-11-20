@@ -158,9 +158,9 @@
 
 ### 內部文檔
 
-- [開發最佳實踐指南](./51-開發最佳實踐指南.md)
-- [SHARED_IMPORTS 使用指南](./45-SHARED_IMPORTS-使用指南.md)
-- [Agent 開發指南與限制說明](./52-Agent開發指南與限制說明.md)
+- [開發最佳實踐指南](./guides/development-best-practices.md)
+- [SHARED_IMPORTS 使用指南](./reference/shared-imports-guide.md)
+- [Agent 開發指南與限制說明](./guides/agent-development-guide.md)
 
 - --
 

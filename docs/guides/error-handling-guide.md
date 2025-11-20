@@ -69,7 +69,7 @@
 - [最佳實踐](#最佳實踐)
 
 **參考文檔**：
-- [開發作業指引](./00-開發作業指引.md) - 錯誤處理規範
+- [開發作業指引](./specs/00-development-guidelines.md) - 錯誤處理規範
 - `src/app/core/net/error/ERROR_HANDLING_GUIDE.md` - 詳細使用手冊
 - [API接口詳細文檔](./33-API-接口詳細文檔.md) - API 錯誤處理
 
@@ -670,7 +670,7 @@ export class ContactFormComponent {
 
 ## 相關文檔
 
-- [開發作業指引](./00-開發作業指引.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
 - [API接口詳細文檔](./33-API-接口詳細文檔.md)
 - [常見問題 FAQ](./36-常見問題-FAQ.md)
 - `src/app/core/net/error/ERROR_HANDLING_GUIDE.md`

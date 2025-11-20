@@ -419,7 +419,7 @@ async function saveTask(taskData: any) {
 
 ## 相關文檔
 
-- [開發作業指引](./00-開發作業指引.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
 - [測試指南](./38-測試指南.md)
 - [版本管理與發布指南](./55-版本管理與發布指南.md)
 

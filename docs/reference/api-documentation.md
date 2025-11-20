@@ -903,7 +903,7 @@ Retry-After: 60
 
 - [API介面映射圖](./25-API-介面映射圖.mermaid.md)
 - [資料模型對照表](./34-資料模型對照表.md)
-- [開發作業指引](./00-開發作業指引.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
 
 - --
 

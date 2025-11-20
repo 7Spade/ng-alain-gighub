@@ -681,8 +681,8 @@ export class GoodComponent {
 
 ## 📚 相關文檔
 
-- [SHARED_IMPORTS 使用指南](./45-SHARED_IMPORTS-使用指南.md) ⭐ 必讀
-- [開發作業指引](./00-開發作業指引.md) - 完整開發規範
+- [SHARED_IMPORTS 使用指南](./reference/shared-imports-guide.md) ⭐ 必讀
+- [開發作業指引](./specs/00-development-guidelines.md) - 完整開發規範
 - [Angular 20 最佳實踐](../.cursor/rules/angular.mdc) - Angular 現代語法
 - [代碼質量規範](../.cursor/rules/code-quality.mdc) - 代碼質量要求
 

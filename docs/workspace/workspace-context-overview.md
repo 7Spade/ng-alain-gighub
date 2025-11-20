@@ -761,8 +761,8 @@ export class FeatureComponent {
 ### 技術文檔
 - [工作區上下文系統架構審查](./工作區上下文系統架構審查.md) - 技術架構
 - [工作區系統快速參考指南](./工作區系統-快速參考指南.md) - 開發者參考
-- [完整架構流程圖](./27-完整架構流程圖.mermaid.md) - Git-like 分支模型
-- [架構審查報告](./28-架構審查報告.md) - 生產就緒版架構
+- [完整架構流程圖](./architecture/20-complete-architecture-flowchart.mermaid.md) - Git-like 分支模型
+- [架構審查報告](./architecture/21-architecture-review-report.md) - 生產就緒版架構
 
 - --
 

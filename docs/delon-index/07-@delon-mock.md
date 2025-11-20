@@ -46,7 +46,7 @@
 
 **最後更新**：2025-01-15
 **適用版本**：@delon/mock ^20.1.0
-**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+**相關文檔**：[SHARED_IMPORTS 使用指南](../reference/shared-imports-guide.md)
 
 - --
 
@@ -580,8 +580,8 @@ provideMockConfig({
 
 ## 🔗 相關文檔
 
-- [SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md) - 共享模組使用指南
-- [開發作業指引](../00-開發作業指引.md) - 開發規範
+- [SHARED_IMPORTS 使用指南](../reference/shared-imports-guide.md) - 共享模組使用指南
+- [開發作業指引](../specs/00-development-guidelines.md) - 開發規範
 - [返回索引](./README.md)
 
 - --

@@ -529,10 +529,10 @@ yarn build 2>&1 | tee build-error.log
 - [Supabase 文檔](https://supabase.com/docs)
 
 ### 專案文檔
-- [開發者快速檢查清單](./60-開發者快速檢查清單.md)
-- [快速開始指南](./25-快速開始指南.md)
+- [開發者快速檢查清單](./guides/developer-quick-checklist.md)
+- [快速開始指南](./guides/getting-started.md)
 - [常見問題 FAQ](./29-常見問題-FAQ.md)
-- [開發最佳實踐指南](./42-開發最佳實踐指南.md)
+- [開發最佳實踐指南](./guides/development-best-practices.md)
 
 - --
 

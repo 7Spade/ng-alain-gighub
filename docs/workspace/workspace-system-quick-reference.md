@@ -683,8 +683,8 @@ export class MyComponent {
 ## 📚 相關文檔
 
 - [完整架構審查報告](./工作區上下文系統架構審查.md) - 詳細的五層架構審查
-- [系統架構思維導圖](./01-系統架構思維導圖.mermaid.md) - 系統整體架構
-- [開發作業指引](./24-開發前檢查清單.md) - 開發規範
+- [系統架構思維導圖](./architecture/01-system-architecture-mindmap.mermaid.md) - 系統整體架構
+- [開發作業指引](./guides/pre-development-checklist.md) - 開發規範
 - [Angular 20 最佳實踐](../.cursor/rules/angular.mdc) - Angular 規範
 - [Signals 狀態管理](../.cursor/rules/modern-angular.mdc) - 現代化 Angular
 

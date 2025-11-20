@@ -141,5 +141,5 @@ export interface NzShowSearchOptions {
 ## 相關資源
 
 - [官方文檔](https://ng.ant.design/components/cascader/en)
-- [返回索引](../46-ng-zorro-antd-組件清單與CLI指令.md)
+- [返回索引](../reference/ng-zorro-component-cli-reference.md)
 

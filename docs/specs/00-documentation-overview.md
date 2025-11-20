@@ -147,26 +147,26 @@
 ##### 開發規範（00-）
 | 文檔 | 說明 | 優先級 |
 |------|------|--------|
-| [00-API規範.md](./00-API規範.md) | API 設計規範 | ⭐⭐⭐⭐⭐ |
-| [00-Component規範.md](./00-Component規範.md) | 元件開發規範 | ⭐⭐⭐⭐⭐ |
-| [00-DevOps規範.md](./00-DevOps規範.md) | DevOps 規範 | ⭐⭐⭐⭐ |
-| [00-SRP.md](./00-SRP.md) | 單一職責原則 | ⭐⭐⭐⭐⭐ |
-| [00-State規範.md](./00-State規範.md) | 狀態管理規範 | ⭐⭐⭐⭐⭐ |
-| [00-一致性規範.md](./00-一致性規範.md) | 一致性原則 | ⭐⭐⭐⭐⭐ |
-| [00-可組合性規範.md](./00-可組合性規範.md) | 可組合性原則 | ⭐⭐⭐⭐ |
-| [00-可維護性規範.md](./00-可維護性規範.md) | 可維護性原則 | ⭐⭐⭐⭐ |
-| [00-命名標準化規範.md](./00-命名標準化規範.md) | 命名規範 | ⭐⭐⭐⭐⭐ |
-| [00-安全規範.md](./00-安全規範.md) | 安全規範 | ⭐⭐⭐⭐⭐ |
-| [00-性能規範.md](./00-性能規範.md) | 效能規範 | ⭐⭐⭐⭐⭐ |
-| [00-架構治理規範.md](./00-架構治理規範.md) | 架構治理 | ⭐⭐⭐⭐ |
-| [00-測試規範.md](./00-測試規範.md) | 測試規範 | ⭐⭐⭐⭐⭐ |
-| [00-現代化語法規範.md](./00-現代化語法規範.md) | 現代 Angular 語法 | ⭐⭐⭐⭐⭐ |
+| [00-API規範.md](./specs/00-api-standards.md) | API 設計規範 | ⭐⭐⭐⭐⭐ |
+| [00-Component規範.md](./specs/00-component-standards.md) | 元件開發規範 | ⭐⭐⭐⭐⭐ |
+| [00-DevOps規範.md](./specs/00-devops-standards.md) | DevOps 規範 | ⭐⭐⭐⭐ |
+| [00-SRP.md](./specs/00-single-responsibility-principle.md) | 單一職責原則 | ⭐⭐⭐⭐⭐ |
+| [00-State規範.md](./specs/00-state-management-standards.md) | 狀態管理規範 | ⭐⭐⭐⭐⭐ |
+| [00-一致性規範.md](./specs/00-consistency-standards.md) | 一致性原則 | ⭐⭐⭐⭐⭐ |
+| [00-可組合性規範.md](./specs/00-composability-standards.md) | 可組合性原則 | ⭐⭐⭐⭐ |
+| [00-可維護性規範.md](./specs/00-maintainability-standards.md) | 可維護性原則 | ⭐⭐⭐⭐ |
+| [00-命名標準化規範.md](./specs/00-naming-standards.md) | 命名規範 | ⭐⭐⭐⭐⭐ |
+| [00-安全規範.md](./specs/00-security-standards.md) | 安全規範 | ⭐⭐⭐⭐⭐ |
+| [00-性能規範.md](./specs/00-performance-standards.md) | 效能規範 | ⭐⭐⭐⭐⭐ |
+| [00-架構治理規範.md](./specs/00-architecture-governance-standards.md) | 架構治理 | ⭐⭐⭐⭐ |
+| [00-測試規範.md](./specs/00-testing-standards.md) | 測試規範 | ⭐⭐⭐⭐⭐ |
+| [00-現代化語法規範.md](./specs/00-modern-syntax-standards.md) | 現代 Angular 語法 | ⭐⭐⭐⭐⭐ |
 
 ##### 架構設計圖（01-20 編號）
 | 文檔 | 說明 | 優先級 |
 |------|------|--------|
-| [01-系統架構思維導圖.mermaid.md](./01-系統架構思維導圖.mermaid.md) | 系統架構總覽 | ⭐⭐⭐⭐⭐ |
-| [02-專案結構流程圖.mermaid.md](./02-專案結構流程圖.mermaid.md) | 專案結構流程 | ⭐⭐⭐⭐ |
+| [01-系統架構思維導圖.mermaid.md](./architecture/01-system-architecture-mindmap.mermaid.md) | 系統架構總覽 | ⭐⭐⭐⭐⭐ |
+| [02-專案結構流程圖.mermaid.md](./architecture/02-project-structure-flowchart.mermaid.md) | 專案結構流程 | ⭐⭐⭐⭐ |
 | [03-系統上下文圖.mermaid.md](./03-系統上下文圖.mermaid.md) | 系統上下文 | ⭐⭐⭐⭐ |
 | [04-業務流程圖.mermaid.md](./04-業務流程圖.mermaid.md) | 業務流程 | ⭐⭐⭐⭐⭐ |
 | [05-帳戶層流程圖.mermaid.md](./05-帳戶層流程圖.mermaid.md) | 帳戶層架構 | ⭐⭐⭐⭐⭐ |
@@ -184,19 +184,19 @@
 | [17-Supabase架構流程圖.mermaid.md](./17-Supabase架構流程圖.mermaid.md) | Supabase 架構 | ⭐⭐⭐⭐⭐ |
 | [18-部署基礎設施視圖.mermaid.md](./18-部署基礎設施視圖.mermaid.md) | 部署架構 | ⭐⭐⭐⭐ |
 | [19-可觀測性與CI-CD管道圖.mermaid.md](archive/19-可觀測性與CI-CD管道圖.mermaid.md) | CI/CD 管道 | ⭐⭐⭐⭐ |
-| [20-完整架構流程圖.mermaid.md](./20-完整架構流程圖.mermaid.md) | 完整架構流程 | ⭐⭐⭐⭐⭐ |
+| [20-完整架構流程圖.mermaid.md](./architecture/20-complete-architecture-flowchart.mermaid.md) | 完整架構流程 | ⭐⭐⭐⭐⭐ |
 
 #### 6.2 核心文檔（21-40 編號）
 | 文檔 | 說明 | 優先級 |
 |------|------|--------|
-| [21-架構審查報告.md](./21-架構審查報告.md) | 架構審查報告（生產就緒） | ⭐⭐⭐⭐⭐ |
-| [22-完整SQL表結構定義.md](./22-完整SQL表結構定義.md) | 51 張表結構定義 | ⭐⭐⭐⭐⭐ |
+| [21-架構審查報告.md](./architecture/21-architecture-review-report.md) | 架構審查報告（生產就緒） | ⭐⭐⭐⭐⭐ |
+| [22-完整SQL表結構定義.md](./reference/sql-schema-definition.md) | 51 張表結構定義 | ⭐⭐⭐⭐⭐ |
 | [23-資料表清單總覽.md](./23-資料表清單總覽.md) | 資料表清單 | ⭐⭐⭐⭐ |
-| [24-開發前檢查清單.md](./24-開發前檢查清單.md) | 開發檢查清單 | ⭐⭐⭐⭐⭐ |
-| [25-快速開始指南.md](./25-快速開始指南.md) | 快速開始 | ⭐⭐⭐⭐⭐ |
+| [24-開發前檢查清單.md](./guides/pre-development-checklist.md) | 開發檢查清單 | ⭐⭐⭐⭐⭐ |
+| [25-快速開始指南.md](./guides/getting-started.md) | 快速開始 | ⭐⭐⭐⭐⭐ |
 | [26-API-接口詳細文檔.md](./26-API-接口詳細文檔.md) | API 接口文檔 | ⭐⭐⭐⭐ |
 | [27-資料模型對照表.md](./27-資料模型對照表.md) | 資料模型對照 | ⭐⭐⭐⭐ |
-| [28-開發工作流程.md](./28-開發工作流程.md) | 開發流程 | ⭐⭐⭐⭐⭐ |
+| [28-開發工作流程.md](./guides/development-workflow.md) | 開發流程 | ⭐⭐⭐⭐⭐ |
 | [29-常見問題-FAQ.md](./29-常見問題-FAQ.md) | 常見問題 | ⭐⭐⭐⭐ |
 | [30-錯誤處理指南.md](./30-錯誤處理指南.md) | 錯誤處理 | ⭐⭐⭐⭐⭐ |
 | [31-測試指南.md](./31-測試指南.md) | 測試指南 | ⭐⭐⭐⭐⭐ |
@@ -205,7 +205,7 @@
 | [34-安全檢查清單.md](./34-安全檢查清單.md) | 安全檢查 | ⭐⭐⭐⭐⭐ |
 | [35-詞彙表.md](./35-詞彙表.md) | 專案詞彙 | ⭐⭐⭐⭐ |
 | [36-狀態枚舉值定義.md](./36-狀態枚舉值定義.md) | 狀態枚舉 | ⭐⭐⭐⭐ |
-| [37-SHARED_IMPORTS-使用指南.md](./37-SHARED_IMPORTS-使用指南.md) | SHARED_IMPORTS 指南 | ⭐⭐⭐⭐⭐ |
+| [37-SHARED_IMPORTS-使用指南.md](./reference/shared-imports-guide.md) | SHARED_IMPORTS 指南 | ⭐⭐⭐⭐⭐ |
 | [38-ng-zorro-antd-組件清單與CLI指令.md](./38-ng-zorro-antd-組件清單與CLI指令.md) | NG-ZORRO 組件清單 | ⭐⭐⭐⭐⭐ |
 | [39-DELON-Index-索引.md](./39-DELON-Index-索引.md) | DELON 索引 | ⭐⭐⭐⭐⭐ |
 | [40-共用元件清單.md](./40-共用元件清單.md) | 共用元件 | ⭐⭐⭐⭐ |
@@ -214,7 +214,7 @@
 | 文檔 | 說明 | 優先級 |
 |------|------|--------|
 | [41-AI助手角色配置.md](./41-AI助手角色配置.md) | AI 助手角色 | ⭐⭐⭐⭐⭐ |
-| [42-開發最佳實踐指南.md](./42-開發最佳實踐指南.md) | 最佳實踐 | ⭐⭐⭐⭐⭐ |
+| [42-開發最佳實踐指南.md](./guides/development-best-practices.md) | 最佳實踐 | ⭐⭐⭐⭐⭐ |
 | [43-Agent開發指南與限制說明.md](./43-Agent開發指南與限制說明.md) | Agent 開發限制 | ⭐⭐⭐⭐⭐ |
 | [44-企業級任務系統開發指令.md](./44-企業級任務系統開發指令.md) | 任務系統開發 | ⭐⭐⭐⭐ |
 | [45-版本管理與發布指南.md](./45-版本管理與發布指南.md) | 版本管理 | ⭐⭐⭐⭐ |
@@ -230,9 +230,9 @@
 | [55-移動端適配指南.md](./55-移動端適配指南.md) | 移動端適配 | ⭐⭐⭐ |
 | [56-第三方服務整合指南.md](./56-第三方服務整合指南.md) | 第三方服務 | ⭐⭐⭐ |
 | [57-Redis使用指南.md](./57-Redis使用指南.md) | Redis 使用 | ⭐⭐⭐⭐ |
-| [58-工作區上下文功能總覽.md](./58-工作區上下文功能總覽.md) | 工作區上下文 | ⭐⭐⭐⭐⭐ |
-| [60-開發者快速檢查清單.md](./60-開發者快速檢查清單.md) | 快速檢查 | ⭐⭐⭐⭐⭐ |
-| [61-開發疑難排解指南.md](./61-開發疑難排解指南.md) | 疑難排解 | ⭐⭐⭐⭐⭐ |
+| [58-工作區上下文功能總覽.md](./workspace/workspace-context-overview.md) | 工作區上下文 | ⭐⭐⭐⭐⭐ |
+| [60-開發者快速檢查清單.md](./guides/developer-quick-checklist.md) | 快速檢查 | ⭐⭐⭐⭐⭐ |
+| [61-開發疑難排解指南.md](./guides/development-troubleshooting-guide.md) | 疑難排解 | ⭐⭐⭐⭐⭐ |
 | [62-專案開發改善實施總結報告.md](archive/62-專案開發改善實施總結報告.md) | 改善實施總結 | ⭐⭐⭐ |
 
 #### 6.4 工作區上下文系統（5 個）
@@ -399,30 +399,30 @@
 
 ### 新成員入門路徑
 1. [README.md](../README.md) - 專案總覽
-2. [25-快速開始指南.md](./25-快速開始指南.md) - 環境設定
-3. [60-開發者快速檢查清單.md](./60-開發者快速檢查清單.md) - 環境驗證
-4. [42-開發最佳實踐指南.md](./42-開發最佳實踐指南.md) - 最佳實踐
-5. [37-SHARED_IMPORTS-使用指南.md](./37-SHARED_IMPORTS-使用指南.md) - 必讀 ⭐
+2. [25-快速開始指南.md](./guides/getting-started.md) - 環境設定
+3. [60-開發者快速檢查清單.md](./guides/developer-quick-checklist.md) - 環境驗證
+4. [42-開發最佳實踐指南.md](./guides/development-best-practices.md) - 最佳實踐
+5. [37-SHARED_IMPORTS-使用指南.md](./reference/shared-imports-guide.md) - 必讀 ⭐
 
 ### 前端開發者路徑
-1. [00-Component規範.md](./00-Component規範.md) - 元件規範
-2. [00-現代化語法規範.md](./00-現代化語法規範.md) - 現代語法
+1. [00-Component規範.md](./specs/00-component-standards.md) - 元件規範
+2. [00-現代化語法規範.md](./specs/00-modern-syntax-standards.md) - 現代語法
 3. [38-ng-zorro-antd-組件清單與CLI指令.md](./38-ng-zorro-antd-組件清單與CLI指令.md) - NG-ZORRO
 4. [39-DELON-Index-索引.md](./39-DELON-Index-索引.md) - DELON
 5. [49-前端狀態管理指南.md](./49-前端狀態管理指南.md) - 狀態管理
 6. [52-前端路由設計指南.md](./52-前端路由設計指南.md) - 路由設計
 
 ### 後端開發者路徑
-1. [00-API規範.md](./00-API規範.md) - API 規範
+1. [00-API規範.md](./specs/00-api-standards.md) - API 規範
 2. [50-RLS策略開發指南.md](./50-RLS策略開發指南.md) - RLS 策略
 3. [51-Edge-Function開發指南.md](./51-Edge-Function開發指南.md) - Edge Function
-4. [22-完整SQL表結構定義.md](./22-完整SQL表結構定義.md) - 資料庫結構
+4. [22-完整SQL表結構定義.md](./reference/sql-schema-definition.md) - 資料庫結構
 
 ### 架構師路徑
-1. [20-完整架構流程圖.mermaid.md](./20-完整架構流程圖.mermaid.md) - 完整架構
-2. [21-架構審查報告.md](./21-架構審查報告.md) - 架構審查
-3. [00-架構治理規範.md](./00-架構治理規範.md) - 架構治理
-4. [00-SRP.md](./00-SRP.md) - 單一職責原則
+1. [20-完整架構流程圖.mermaid.md](./architecture/20-complete-architecture-flowchart.mermaid.md) - 完整架構
+2. [21-架構審查報告.md](./architecture/21-architecture-review-report.md) - 架構審查
+3. [00-架構治理規範.md](./specs/00-architecture-governance-standards.md) - 架構治理
+4. [00-SRP.md](./specs/00-single-responsibility-principle.md) - 單一職責原則
 
 ### AI 助手開發者路徑
 1. [AGENTS.md](../AGENTS.md) - AI 助手總覽

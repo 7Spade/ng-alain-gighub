@@ -597,7 +597,7 @@ describe('BlueprintDetailComponent', () => {
 
 ## 相關文檔
 
-- [開發作業指引](./00-開發作業指引.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
 - [前端狀態管理指南](./59-前端狀態管理指南.md)
 - [測試指南](./38-測試指南.md)
 

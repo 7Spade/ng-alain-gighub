@@ -21,7 +21,7 @@
 
 ## 索引
 
-請查看主索引文檔：[46-ng-zorro-antd-組件清單與CLI指令.md](../46-ng-zorro-antd-組件清單與CLI指令.md)
+請查看主索引文檔：[46-ng-zorro-antd-組件清單與CLI指令.md](../reference/ng-zorro-component-cli-reference.md)
 
 ## 組件分類
 

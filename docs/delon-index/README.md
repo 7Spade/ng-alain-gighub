@@ -45,5 +45,5 @@
 
 - [ng-alain 官方文檔](https://ng-alain.com)
 - [@delon GitHub 倉庫](https://github.com/ng-alain/delon)
-- [SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+- [SHARED_IMPORTS 使用指南](../reference/shared-imports-guide.md)
 

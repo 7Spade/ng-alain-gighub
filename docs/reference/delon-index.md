@@ -212,7 +212,7 @@ import { SHARED_IMPORTS } from '@shared/shared-imports';
 export class ExampleComponent {}
 ```
 
-詳細說明請參考：[SHARED_IMPORTS 使用指南](./45-SHARED_IMPORTS-使用指南.md)
+詳細說明請參考：[SHARED_IMPORTS 使用指南](./reference/shared-imports-guide.md)
 
 ### 包分類說明
 
@@ -227,9 +227,9 @@ export class ExampleComponent {}
 
 ### 專案文檔
 
-- [SHARED_IMPORTS 使用指南](./45-SHARED_IMPORTS-使用指南.md) - 共享模組使用指南 ⭐ 必讀
-- [開發作業指引](./00-開發作業指引.md) - 開發規範
-- [專案結構說明](./01-專案結構說明.md) - 專案結構
+- [SHARED_IMPORTS 使用指南](./reference/shared-imports-guide.md) - 共享模組使用指南 ⭐ 必讀
+- [開發作業指引](./specs/00-development-guidelines.md) - 開發規範
+- [專案結構說明](./architecture/02-project-structure-flowchart.mermaid.md) - 專案結構
 
 ### 官方文檔
 
@@ -238,7 +238,7 @@ export class ExampleComponent {}
 
 ### 相關索引
 
-- [NG-ZORRO-Index 索引](./46-ng-zorro-antd-組件清單與CLI指令.md) - ng-zorro-antd 組件索引
+- [NG-ZORRO-Index 索引](./reference/ng-zorro-component-cli-reference.md) - ng-zorro-antd 組件索引
 
 - --
 

@@ -1167,9 +1167,9 @@ export class ExampleComponent {
 
 ### 專案相關文檔
 
-- [SHARED_IMPORTS 使用指南](./45-SHARED_IMPORTS-使用指南.md)
-- [專案結構說明](./01-專案結構說明.md)
-- [開發作業指引](./00-開發作業指引.md)
+- [SHARED_IMPORTS 使用指南](./reference/shared-imports-guide.md)
+- [專案結構說明](./architecture/02-project-structure-flowchart.mermaid.md)
+- [開發作業指引](./specs/00-development-guidelines.md)
 
 ### 驗證來源
 

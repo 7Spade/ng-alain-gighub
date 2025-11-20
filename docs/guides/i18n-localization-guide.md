@@ -781,8 +781,8 @@ describe('I18nService', () => {
 
 ## 相關文檔
 
-- [00-開發作業指引.md](./00-開發作業指引.md) - 開發流程
-- [45-SHARED_IMPORTS-使用指南.md](./45-SHARED_IMPORTS-使用指南.md) - 共用模組
+- [00-開發作業指引.md](./specs/00-development-guidelines.md) - 開發流程
+- [45-SHARED_IMPORTS-使用指南.md](./reference/shared-imports-guide.md) - 共用模組
 - [59-前端狀態管理指南.md](./59-前端狀態管理指南.md) - 狀態管理
 - [62-前端路由設計指南.md](./62-前端路由設計指南.md) - 路由設計
 

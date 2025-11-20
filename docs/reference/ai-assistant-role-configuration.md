@@ -325,20 +325,20 @@ export class UserProfileComponent {
 ### 必讀文檔
 
 - [10-系統架構思維導圖.mermaid.md](./10-系統架構思維導圖.mermaid.md) - **首要參考文檔**
-- [00-開發作業指引.md](./00-開發作業指引.md) - 開發規範與流程
+- [00-開發作業指引.md](./specs/00-development-guidelines.md) - 開發規範與流程
 - [13-帳戶層流程圖.mermaid.md](./13-帳戶層流程圖.mermaid.md) - 認證系統架構
 - [14-業務流程圖.mermaid.md](./14-業務流程圖.mermaid.md) - 業務流程說明
 
 ### 技術標準文檔
 
-- [45-SHARED_IMPORTS-使用指南.md](./45-SHARED_IMPORTS-使用指南.md) - 共享模組使用
+- [45-SHARED_IMPORTS-使用指南.md](./reference/shared-imports-guide.md) - 共享模組使用
 - [38-測試指南.md](./38-測試指南.md) - 測試規範
 - [41-安全檢查清單.md](./41-安全檢查清單.md) - 安全標準
 
 ### 架構文檔
 
-- [27-完整架構流程圖.mermaid.md](./27-完整架構流程圖.mermaid.md) - 完整系統架構
-- [28-架構審查報告.md](./28-架構審查報告.md) - 架構審查
+- [27-完整架構流程圖.mermaid.md](./architecture/20-complete-architecture-flowchart.mermaid.md) - 完整系統架構
+- [28-架構審查報告.md](./architecture/21-architecture-review-report.md) - 架構審查
 - [30-0-完整SQL表結構定義.md](./30-0-完整SQL表結構定義.md) - 資料庫結構
 
 - --
