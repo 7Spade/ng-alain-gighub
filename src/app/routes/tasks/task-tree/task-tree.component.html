@@ -16,25 +16,6 @@
 </page-header>
 
 <nz-card nzTitle="任務樹狀視圖" [nzExtra]="statsTemplate" class="task-tree-card">
-  <!-- Blueprint Selector -->
-  <div class="task-tree-filters">
-    <nz-form-item>
-      <nz-form-label>選擇藍圖</nz-form-label>
-      <nz-form-control>
-        <nz-select
-          [ngModel]="selectedBlueprintId()"
-          (ngModelChange)="onBlueprintChange($event)"
-          nzPlaceHolder="請選擇藍圖"
-          nzShowSearch
-          style="width: 300px;"
-        >
-          <!-- TODO: Add blueprint options -->
-          <nz-option nzValue="test-blueprint-1" nzLabel="測試藍圖 1"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-  </div>
-
   <!-- Loading State -->
   @if (loading()) {
     <div class="loading-container">
@@ -117,7 +98,7 @@
               <app-task-assignee-selector
                 [taskId]="node.origin.id"
                 [currentAssigneeId]="node.origin.assigned_to"
-                [blueprintId]="selectedBlueprintId()"
+                [blueprintId]="currentBlueprintId()"
                 (assigneeChanged)="onAssignmentChange($event)"
                 class="task-assignee"
               />

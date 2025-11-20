@@ -101,7 +101,12 @@ export class FeatureFlagComponent implements OnInit {
     { title: '描述', index: 'description', width: 300 },
     { title: '状态', index: 'enabled', width: 120, render: 'enabled' },
     { title: '灰度比例', index: 'rolloutPercentage', width: 150, render: 'rolloutPercentage' },
-    { title: '目标用户', index: 'targetUsers', width: 200, format: (item: FeatureFlagItem) => item.targetUsers.length > 0 ? item.targetUsers.join(', ') : '全部用户' },
+    {
+      title: '目标用户',
+      index: 'targetUsers',
+      width: 200,
+      format: (item: FeatureFlagItem) => (item.targetUsers.length > 0 ? item.targetUsers.join(', ') : '全部用户')
+    },
     { title: '创建时间', index: 'createdAt', type: 'date', width: 180 },
     {
       title: '操作',

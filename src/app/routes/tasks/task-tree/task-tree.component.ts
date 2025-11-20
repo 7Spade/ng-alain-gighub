@@ -1,6 +1,7 @@
 import { CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
+import { BranchContextService } from '@core';
 import { SHARED_IMPORTS, Task, TaskTreeNode, TaskStatus } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
@@ -67,11 +68,12 @@ interface NzTreeNodeOptions {
 export class TaskTreeComponent implements OnInit, OnDestroy {
   readonly facade = inject(TaskTreeFacade);
   readonly router = inject(Router);
+  private readonly branchContext = inject(BranchContextService);
   private readonly message = inject(NzMessageService);
   private readonly dragService = inject(TaskTreeDragService);
 
-  // Blueprint selection
-  readonly selectedBlueprintId = signal<string | null>(null);
+  // 從 BranchContextService 獲取當前藍圖 ID
+  readonly currentBlueprintId = this.branchContext.currentBlueprintId;
 
   // Facade signals (exposed for template)
   readonly taskTree = this.facade.taskTree;
@@ -101,14 +103,18 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
     return this.convertToNzTreeData(this.taskTree());
   });
 
+  constructor() {
+    // 監聽藍圖變更，自動載入任務
+    effect(() => {
+      const blueprintId = this.currentBlueprintId();
+      if (blueprintId) {
+        this.loadTasks(blueprintId);
+      }
+    });
+  }
+
   ngOnInit(): void {
-    // Load tasks if blueprint is available
-    // TODO: Get blueprint from route params or user selection
-    const blueprintId = this.getBlueprintIdFromRoute();
-    if (blueprintId) {
-      this.selectedBlueprintId.set(blueprintId);
-      this.loadTasks(blueprintId);
-    }
+    // ngOnInit 保持空實現，任務載入由 effect 處理
   }
 
   ngOnDestroy(): void {
@@ -126,14 +132,6 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
       this.message.error('載入任務失敗');
       console.error('Failed to load tasks:', error);
     }
-  }
-
-  /**
-   * Handle blueprint selection change
-   */
-  async onBlueprintChange(blueprintId: string): Promise<void> {
-    this.selectedBlueprintId.set(blueprintId);
-    await this.loadTasks(blueprintId);
   }
 
   /**
@@ -327,14 +325,5 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
       origin: node, // Store original node data
       children: node.children ? node.children.map(child => this.taskNodeToTreeNode(child)) : []
     };
-  }
-
-  /**
-   * Get blueprint ID from route params or query
-   * TODO: Implement actual route param extraction
-   */
-  private getBlueprintIdFromRoute(): string | null {
-    // For now, return null - will be implemented with actual routing
-    return null;
   }
 }

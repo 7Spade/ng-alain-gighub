@@ -1,18 +1,8 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
+import { BranchContextService } from '@core';
 import { STColumn } from '@delon/abc/st';
-import {
-  SHARED_IMPORTS,
-  TaskService,
-  Task,
-  TaskStatus,
-  TaskType,
-  TaskPriority,
-  BlueprintService,
-  Blueprint,
-  TaskStagingService,
-  AuthStateService
-} from '@shared';
+import { SHARED_IMPORTS, TaskService, Task, TaskStatus, TaskType, TaskPriority, TaskStagingService, AuthStateService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -31,25 +21,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     </page-header>
 
     <nz-card nzTitle="任务列表" style="margin-top: 16px;">
-      <!-- Blueprint and Filters -->
+      <!-- Filters -->
       <div style="margin-bottom: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
-        <nz-form-item style="margin-bottom: 0;">
-          <nz-form-label>选择蓝图</nz-form-label>
-          <nz-form-control>
-            <nz-select
-              [ngModel]="selectedBlueprintId()"
-              (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
-              nzPlaceHolder="请选择蓝图"
-              style="width: 250px;"
-            >
-              @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
-                <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
-              }
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-
-        @if (selectedBlueprintId()) {
+        @if (currentBlueprintId()) {
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-label>状态</nz-form-label>
             <nz-form-control>
@@ -110,7 +84,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         }
       </div>
 
-      @if (!selectedBlueprintId()) {
+      @if (!currentBlueprintId()) {
         <nz-empty nzNotFoundContent="请先选择蓝图"></nz-empty>
       } @else {
         <st
@@ -222,14 +196,16 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   taskService = inject(TaskService);
-  blueprintService = inject(BlueprintService);
+  private readonly branchContext = inject(BranchContextService);
   taskStagingService = inject(TaskStagingService);
   authState = inject(AuthStateService);
   router = inject(Router);
   message = inject(NzMessageService);
 
+  // 從 BranchContextService 獲取當前藍圖 ID
+  readonly currentBlueprintId = this.branchContext.currentBlueprintId;
+
   // Component signals
-  selectedBlueprintId = signal<string | null>(null);
   filterStatus = signal<TaskStatus | null>(null);
   filterPriority = signal<TaskPriority | null>(null);
   filterType = signal<TaskType | null>(null);
@@ -302,32 +278,31 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }
   ];
 
+  constructor() {
+    // 監聽藍圖變更，自動載入任務
+    effect(() => {
+      const blueprintId = this.currentBlueprintId();
+      if (blueprintId) {
+        this.loadTasks(blueprintId);
+      }
+    });
+  }
+
   ngOnInit(): void {
-    this.loadBlueprints();
+    // ngOnInit 保持空實現，任務載入由 effect 處理
   }
 
   ngOnDestroy(): void {
     // Cleanup if needed
   }
 
-  async loadBlueprints(): Promise<void> {
+  async loadTasks(blueprintId: string): Promise<void> {
     try {
-      await this.blueprintService.loadBlueprints();
+      await this.taskService.loadTasksByBlueprint(blueprintId);
+      await this.loadStagingInfo();
+      await this.loadAllowedStatuses();
     } catch (error) {
-      this.message.error('加载蓝图列表失败');
-    }
-  }
-
-  async onBlueprintChange(): Promise<void> {
-    const blueprintId = this.selectedBlueprintId();
-    if (blueprintId) {
-      try {
-        await this.taskService.loadTasksByBlueprint(blueprintId);
-        await this.loadStagingInfo();
-        await this.loadAllowedStatuses();
-      } catch (error) {
-        this.message.error('加载任务列表失败');
-      }
+      this.message.error('加载任务列表失败');
     }
   }
 
@@ -423,7 +398,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
       this.message.success('撤回成功');
 
       // Reload data
-      await this.onBlueprintChange();
+      const blueprintId = this.currentBlueprintId();
+      if (blueprintId) {
+        await this.loadTasks(blueprintId);
+      }
     } catch (error) {
       this.message.error(error instanceof Error ? error.message : '撤回失败');
     }

@@ -48,7 +48,13 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         <nz-form-item>
           <nz-form-label [nzSpan]="4" nzRequired>每日配额</nz-form-label>
           <nz-form-control [nzSpan]="20" [nzErrorTip]="'请输入每日配额'">
-            <nz-input-number formControlName="dailyQuota" [nzMin]="1" [nzMax]="10000" style="width: 100%;" placeholder="请输入每日配额"></nz-input-number>
+            <nz-input-number
+              formControlName="dailyQuota"
+              [nzMin]="1"
+              [nzMax]="10000"
+              style="width: 100%;"
+              placeholder="请输入每日配额"
+            ></nz-input-number>
           </nz-form-control>
         </nz-form-item>
 
@@ -56,7 +62,13 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         <nz-form-item>
           <nz-form-label [nzSpan]="4" nzRequired>缓存时间（小时）</nz-form-label>
           <nz-form-control [nzSpan]="20" [nzErrorTip]="'请输入缓存时间'">
-            <nz-input-number formControlName="cacheHours" [nzMin]="1" [nzMax]="24" style="width: 100%;" placeholder="请输入缓存时间"></nz-input-number>
+            <nz-input-number
+              formControlName="cacheHours"
+              [nzMin]="1"
+              [nzMax]="24"
+              style="width: 100%;"
+              placeholder="请输入缓存时间"
+            ></nz-input-number>
           </nz-form-control>
         </nz-form-item>
 
@@ -74,9 +86,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
               <span nz-icon nzType="save"></span>
               保存配置
             </button>
-            <button nz-button nzType="default" type="button" (click)="resetForm()" style="margin-left: 8px;">
-              重置
-            </button>
+            <button nz-button nzType="default" type="button" (click)="resetForm()" style="margin-left: 8px;"> 重置 </button>
           </nz-form-control>
         </nz-form-item>
       </form>

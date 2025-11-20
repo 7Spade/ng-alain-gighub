@@ -46,7 +46,13 @@ interface IssueAssignmentItem {
         <nz-form-item style="margin-bottom: 0;">
           <nz-form-label>被分配人</nz-form-label>
           <nz-form-control>
-            <input nz-input [ngModel]="filterAssignee()" (ngModelChange)="filterAssignee.set($event)" placeholder="搜索被分配人" style="width: 200px;" />
+            <input
+              nz-input
+              [ngModel]="filterAssignee()"
+              (ngModelChange)="filterAssignee.set($event)"
+              placeholder="搜索被分配人"
+              style="width: 200px;"
+            />
           </nz-form-control>
         </nz-form-item>
       </div>

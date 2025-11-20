@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -21,9 +21,7 @@ interface PermissionItem {
   template: `
     <page-header [title]="'权限设置'">
       <ng-template #extra>
-        <button nz-button nzType="default" (click)="cancel()" style="margin-right: 8px;">
-          取消
-        </button>
+        <button nz-button nzType="default" (click)="cancel()" style="margin-right: 8px;"> 取消 </button>
         <button nz-button nzType="primary" (click)="save()" [nzLoading]="saving()">
           <span nz-icon nzType="save"></span>
           保存

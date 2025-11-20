@@ -36,12 +36,12 @@ import { LoadingIndicatorComponent } from './components/loading-indicator';
 import { PhotoGalleryComponent } from './components/photo-gallery';
 import { QcCameraComponent } from './components/qc-camera';
 import { TodoWidgetComponent } from './components/todo-widget';
+import { FileSizePipe } from './pipes/file-size.pipe';
+import { StatusPipe } from './pipes/status.pipe';
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
 // Shared Pipes
-import { FileSizePipe } from './pipes/file-size.pipe';
-import { StatusPipe } from './pipes/status.pipe';
 
 export const SHARED_IMPORTS = [
   // ========== Angular 表單模組 ==========
