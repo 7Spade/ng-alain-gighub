@@ -7,7 +7,8 @@
 <h1 align="center">NG-ALAIN</h1>
 
 <div align="center">
-  基於 Antd 的中後台前端解決方案，提供通用業務模組，專注業務開發。
+  基於 ng-alain 框架的企業級 Angular 20 應用系統。<br>
+  採用 Git-like 分支模型、Supabase 整合與現代化開發標準。
 
   [![CI](https://github.com/ng-alain/ng-alain-gighub/actions/workflows/ci.yml/badge.svg)](https://github.com/ng-alain/ng-alain-gighub/actions/workflows/ci.yml)
   [![GitHub Release Date](https://img.shields.io/github/release-date/ng-alain/ng-alain-gighub.svg?style=flat-square)](https://github.com/ng-alain/ng-alain-gighub/releases)
@@ -22,38 +23,283 @@
 
 [English](README.md) | 简体中文
 
+## 專案願景
+
+這是一個基於 Angular 20 和 Supabase 構建的**企業級工地管理系統**，採用 **Git-like 分支模型**實現專案協作。系統提供完整的工地管理解決方案，涵蓋專案管理、任務執行、品質控制與團隊協作。
+
+### 核心願景
+
+- **Git-like 分支模型**：主分支（擁有者控制）與組織分支（協作者控制），支援 PR 工作流
+- **51 張資料表**：分為 11 個業務模組，涵蓋工地管理各個面向
+- **企業級標準**：遵循 SRP 原則、五層架構與完整開發規範
+- **現代技術棧**：Angular 20 Signals、Supabase 即時功能與 MCP 工具鏈整合
+
+詳細架構說明請參考：
+- [系統架構思維導圖](./docs/01-系統架構思維導圖.mermaid.md) - 完整系統架構總覽
+- [完整架構流程圖](./docs/20-完整架構流程圖.mermaid.md) - Git-like 分支模型與數據流
+
 ## 快速入門
 
-- [開始使用](https://ng-alain.com/docs/getting-started)
+- [快速開始指南](./docs/25-快速開始指南.md) - 專案專屬設定指南
+- [ng-alain 文檔](https://ng-alain.com/docs/getting-started) - 框架文檔
 
-## 链接
+## 文檔索引
 
-+ [Document](https://ng-alain.com) ([Surge Mirror](https://ng-alain-doc.surge.sh))
-+ [@delon Source](https://github.com/ng-alain/delon)
-+ [DEMO](https://ng-alain.surge.sh) ([国内镜像](https://ng-alain.gitee.io/))
+### 🚀 快速入門
+- [快速開始指南](./docs/25-快速開始指南.md) - 環境設定與啟動
+- [完整文檔索引](./docs/README.md) - 完整文檔導航
+
+### 📐 架構與設計
+
+#### 核心架構文檔
+- [系統架構思維導圖](./docs/01-系統架構思維導圖.mermaid.md) ⭐⭐⭐⭐⭐ - 完整系統架構總覽
+- [完整架構流程圖](./docs/20-完整架構流程圖.mermaid.md) ⭐⭐⭐⭐⭐ - Git-like 分支模型與數據流
+- [專案結構流程圖](./docs/02-專案結構流程圖.mermaid.md) - 專案結構概覽
+- [系統上下文圖](./docs/03-系統上下文圖.mermaid.md) - 系統上下文與邊界
+- [容器圖](./docs/10-容器圖.mermaid.md) - 容器架構
+- [元件模組視圖](./docs/11-元件模組視圖.mermaid.md) - 元件模組結構
+- [元件模組視圖-補充](./docs/12-元件模組視圖-補充.md) - 補充元件細節
+
+#### 業務流程與資料
+- [業務流程圖](./docs/04-業務流程圖.mermaid.md) - 業務流程
+- [帳戶層流程圖](./docs/05-帳戶層流程圖.mermaid.md) - 帳戶與身份系統
+- [實體關係圖](./docs/06-實體關係圖.mermaid.md) - 資料庫 ER 圖
+- [資料生命週期-ETL-流程圖](./docs/07-資料生命週期-ETL-流程圖.mermaid.md) - 資料生命週期與 ETL 流程
+- [Storage-Bucket結構視圖](./docs/08-Storage-Bucket結構視圖.mermaid.md) - 儲存架構
+- [序列圖](./docs/13-序列圖.mermaid.md) - 序列圖
+- [狀態圖](./docs/14-狀態圖.mermaid.md) - 狀態轉換
+- [領域事件時間軸圖](./docs/15-領域事件時間軸圖.mermaid.md) - 領域事件時間軸
+- [API-介面映射圖](./docs/16-API-介面映射圖.mermaid.md) - API 介面映射
+
+#### 基礎設施與部署
+- [Supabase架構流程圖](./docs/17-Supabase架構流程圖.mermaid.md) - Supabase 架構
+- [部署基礎設施視圖](./docs/18-部署基礎設施視圖.mermaid.md) - 部署基礎設施
+- [可觀測性與CI-CD管道圖](./docs/19-可觀測性與CI-CD管道圖.mermaid.md) - 監控與 CI/CD
+
+### 📋 開發標準
+
+#### 核心原則
+- [SRP (單一職責原則)](./docs/00-SRP.md) ⭐⭐⭐⭐⭐ - 單一職責原則與企業架構十大原則
+- [架構治理規範](./docs/00-架構治理規範.md) ⭐⭐⭐⭐⭐ - 架構治理標準
+- [一致性規範](./docs/00-一致性規範.md) - 代碼一致性要求
+- [可組合性規範](./docs/00-可組合性規範.md) - 元件可組合性指南
+- [可維護性規範](./docs/00-可維護性規範.md) - 代碼可維護性要求
+
+#### 技術標準
+- [現代化語法規範](./docs/00-現代化語法規範.md) - Angular 20 現代語法
+- [API規範](./docs/00-API規範.md) - API 設計標準
+- [Component規範](./docs/00-Component規範.md) - 元件開發標準
+- [State規範](./docs/00-State規範.md) - Signals 狀態管理
+- [命名標準化規範](./docs/00-命名標準化規範.md) - 命名規範
+- [測試規範](./docs/00-測試規範.md) - 測試要求與覆蓋率
+- [性能規範](./docs/00-性能規範.md) - 性能優化指南
+- [安全規範](./docs/00-安全規範.md) - 安全要求
+- [DevOps規範](./docs/00-DevOps規範.md) - DevOps 與部署標準
+
+### 🔒 安全與權限
+- [安全與-RLS-權限矩陣](./docs/09-安全與-RLS-權限矩陣.md) ⭐⭐⭐⭐⭐ - 行級安全策略
+
+### 📚 其他資源
+- [開發最佳實踐指南](./docs/42-開發最佳實踐指南.md) ⭐ - 編碼規範與範例
+- [工作區上下文功能總覽](./docs/58-工作區上下文功能總覽.md) ⭐⭐⭐⭐⭐ - 完整工作區上下文系統（個人/組織/團隊三個上下文）
+- [完整SQL表結構定義](./docs/22-完整SQL表結構定義.md) ⭐⭐⭐⭐⭐ - 完整資料庫架構（51 張表）
+- [完整文檔索引](./docs/README.md) - 完整文檔導航
+
+### 框架文檔
+- [ng-alain 文檔](https://ng-alain.com) ([Surge Mirror](https://ng-alain-doc.surge.sh))
+- [@delon 源碼](https://github.com/ng-alain/delon)
+- [DEMO](https://ng-alain.surge.sh) ([国内镜像](https://ng-alain.gitee.io/))
 
 ## 特性
 
-+ 基於 `ng-zorro-antd`
-+ 響應式設計
-+ 國際化
-+ 基建類庫 [@delon](https://github.com/ng-alain/delon)（業務組件、ACL、緩存、授權、動態表單）
-+ 延遲加載與啟動畫面
-+ UI 路由設計
-+ 定制主題
-+ Less 預編譯
-+ RTL 支持
-+ 清晰目錄結構
-+ 簡單升級
-+ Docker 部署支持
+### 核心框架特性
++ **Angular 20.3.x** - 最新 Angular，支援 Standalone Components 與 Signals
++ **NG-ZORRO 20.3.x** - 企業級 UI 組件庫
++ **ng-alain 20.1.x** - 開箱即用的中後台解決方案
++ **TypeScript 5.9.x** - 嚴格模式，完整類型安全
++ **Supabase** - PostgreSQL 資料庫，支援即時功能
 
-## Architecture
+### Angular 現代特性
++ **Standalone Components** - 無需 NgModules，架構更清晰
++ **Angular Signals** - 響應式狀態管理
++ **Typed Forms** - 類型安全的表單處理
++ **現代控制流** - `@if`、`@for`、`@switch` 語法
++ **延遲視圖** - 漸進式懶加載
+
+### 架構與開發
++ **五層架構** - Types → Repositories → Models → Services → Facades → Routes
++ **Git-like 分支模型** - 主分支、組織分支、PR 工作流
++ **工作區上下文系統** - 個人/組織/團隊三個上下文切換（參考 [工作區上下文功能總覽](./docs/58-工作區上下文功能總覽.md)）
++ **Repository 模式** - 清晰的資料存取層
++ **Facade 模式** - 統一的狀態管理介面
++ **SRP 原則** - 單一職責原則貫穿始終
+
+### 資料庫與後端
++ **51 張資料表** - 分為 11 個業務模組
++ **Supabase 整合** - 即時訂閱、RLS 策略
++ **類型安全查詢** - 自動生成的 TypeScript 類型
++ **行級安全** - 資料庫層級權限控制
+
+### 開發體驗
++ **MCP 工具鏈整合** - Sequential Thinking、Software Planning、Supabase MCP
++ **企業級標準** - 完整的開發規範
++ **代碼質量工具** - ESLint、Prettier、Stylelint、Husky
++ **完整文檔** - 50+ 文檔文件
++ **AI 助手支援** - Cursor IDE、GitHub Copilot 整合
+
+### UI/UX 特性
++ 響應式設計
++ 國際化（i18n）
++ 可定制主題
++ RTL 支援
++ 延遲加載資源
++ UI 路由設計
++ Less 預編譯器
+
+## 技術棧
+
+### 前端
+- **框架**: Angular 20.3.x（Standalone Components）
+- **UI 庫**: NG-ZORRO 20.3.x + ng-alain 20.1.x
+- **狀態管理**: Angular Signals + RxJS 7.8.x
+- **語言**: TypeScript 5.9.x（嚴格模式）
+- **樣式**: Less + ng-alain 主題系統
+
+### 後端與資料庫
+- **資料庫**: Supabase（PostgreSQL 15+）
+- **即時功能**: Supabase Realtime 訂閱
+- **認證**: Supabase Auth
+- **儲存**: Supabase Storage
+
+### 開發工具
+- **套件管理**: Yarn 4.9.2（Plug'n'Play）
+- **代碼質量**: ESLint 9.x、Prettier、Stylelint
+- **測試**: Karma + Jasmine
+- **Git Hooks**: Husky + lint-staged
+- **MCP 工具**: Sequential Thinking、Software Planning、Supabase MCP
+
+## 架構
+
+> 📐 **架構總覽**：本系統採用**五層架構**，遵循**SRP 原則**與**企業架構標準**。完整架構說明請參考 [系統架構思維導圖](./docs/01-系統架構思維導圖.mermaid.md) 與 [完整架構流程圖](./docs/20-完整架構流程圖.mermaid.md)。
+
+### 五層架構
+
+```
+Routes（業務層）
+  ↓ 依賴
+Shared（共享層）
+  ↓ 依賴
+Core（基礎設施層）
+  ├─ Facades（狀態與 UI 溝通）
+  ├─ Services（業務邏輯）
+  ├─ Repositories（資料存取）
+  └─ SupabaseService（資料庫客戶端）
+```
+
+**設計原則**（參考 [SRP 標準](./docs/00-SRP.md) 與 [架構治理規範](./docs/00-架構治理規範.md)）：
+- **單一職責原則（SRP）** - 每層職責清晰
+- **依賴方向** - 嚴格的單向依賴（參考 [架構治理規範](./docs/00-架構治理規範.md)）
+- **Repository 模式** - 清晰的資料存取抽象
+- **Facade 模式** - 統一的組件介面
+- **一致性** - 統一的代碼風格、API 格式與命名（參考 [一致性規範](./docs/00-一致性規範.md)）
+- **可組合性** - 小而專注的元件，可自由組合（參考 [可組合性規範](./docs/00-可組合性規範.md)）
+- **可維護性** - 嚴格型別、代碼檢查與清晰的檔案結構（參考 [可維護性規範](./docs/00-可維護性規範.md)）
+
+### Git-like 分支模型
+
+系統採用 **Git-like 分支模型**進行專案管理（詳細流程請參考 [完整架構流程圖](./docs/20-完整架構流程圖.mermaid.md)）：
+
+- **主分支（blueprints）** - 擁有者完全控制任務結構
+- **組織分支（blueprint_branches）** - 協作者只能填寫承攬欄位（1:1 承攬關係）
+- **Pull Request 工作流** - 提交執行數據 → 擁有者審核 → 合併更新至主分支
+- **Fork 機制** - 組織可從主分支 Fork 任務進行協作
+
+此模型確保清晰的擁有權邊界與受控協作，類似 Git 的分支與 PR 工作流。
+
+### 工作區上下文系統
+
+系統採用**三個上下文工作區模型**，支援不同用戶角色與使用場景（完整說明請參考 [工作區上下文功能總覽](./docs/58-工作區上下文功能總覽.md)）：
+
+- **個人上下文** - 輕量級個人生產力中心（15 個頁面，6 個模組）
+  - 跨所有組織與團隊的個人數據聚合
+  - 最常用功能的快捷入口
+  - 跨上下文數據視圖
+  
+- **組織上下文** - 組織全功能管理中心（70+ 個頁面，9 個模組）
+  - 完整 Git-like 分支模型支援
+  - 完整管理能力（成員、團隊、藍圖、任務、品質、問題）
+  - 完整的分析與報表功能
+  
+- **團隊上下文** - 團隊協作與任務執行中心（20 個頁面，5 個模組）
+  - 聚焦於任務執行與進度更新
+  - 簡化的管理功能
+  - 團隊溝通與協作
+
+**上下文切換**：用戶可根據當前角色與任務需求，無縫切換不同上下文。
+
+### 資料庫架構
+
+- **51 張資料表**，分為 11 個模組（參考 [實體關係圖](./docs/06-實體關係圖.mermaid.md) 與 [完整SQL表結構定義](./docs/22-完整SQL表結構定義.md)）：
+  - 🔐 帳戶與身份系統（4 張表） - 統一身份抽象（User、Bot、Organization）
+  - 🤝 組織協作系統（3 張表） - 跨組織協作
+  - 🔒 權限系統（5 張表） - 行級安全（RLS）策略（參考 [安全與-RLS-權限矩陣](./docs/09-安全與-RLS-權限矩陣.md)）
+  - 🎯 藍圖/專案系統（5 張表） - Git-like 分支模型實現
+  - 📋 任務執行系統（9 張表） - 任務管理與執行追蹤
+  - ✅ 品質驗收系統（4 張表） - 品質控制與驗收流程
+  - ⚠️ 問題追蹤系統（4 張表） - 問題追蹤與解決
+  - 💬 協作溝通系統（6 張表） - 團隊溝通與協作
+  - 📊 資料分析系統（6 張表） - 分析與報表
+  - 🤖 機器人系統（3 張表） - 機器人與自動化系統
+  - ⚙️ 系統管理（2 張表） - 系統配置與管理
+
+**安全性**：所有資料庫操作均受**行級安全（RLS）**策略保護。詳細權限配置請參考 [安全與-RLS-權限矩陣](./docs/09-安全與-RLS-權限矩陣.md)。
 
 ![Architecture](https://raw.githubusercontent.com/ng-alain/delon/master/_screenshot/architecture.png)
 
 > [delon](https://github.com/ng-alain/delon) 基於 Ant Design 設計理念的企業級中後台業務組件庫。
 
-## 应用截图
+## 開發標準
+
+> 📋 **開發標準**：本專案遵循**企業級開發標準**，提供完整的開發規範。所有開發者必須遵循這些標準以確保代碼質量與可維護性。
+
+### 核心開發原則
+
+1. **常見做法** - 遵循 Angular/TypeScript/ng-alain 最佳實踐（參考 [現代化語法規範](./docs/00-現代化語法規範.md)）
+2. **企業標準** - 代碼結構清晰、職責分離、錯誤處理完善（參考 [SRP 標準](./docs/00-SRP.md)）
+3. **符合邏輯** - 數據流清晰、命名語義化、條件判斷合理（參考 [一致性規範](./docs/00-一致性規範.md)）
+4. **符合常理** - 功能真正可用、用戶體驗優先、避免過度設計
+
+### 開發工作流程
+
+**五層架構開發順序**（參考 [架構治理規範](./docs/00-架構治理規範.md)）：
+1. **Types 層** - 資料庫類型、業務類型
+2. **Repositories 層** - 資料存取（繼承 BaseRepository）
+3. **Models 層** - 業務模型（可與 Repositories 並行）
+4. **Services 層** - 業務邏輯（使用 Signals，參考 [State規範](./docs/00-State規範.md)）
+5. **Facades 層** - 狀態與 UI 溝通
+6. **Routes/Components 層** - UI 組件（參考 [Component規範](./docs/00-Component規範.md)）
+7. **測試與文檔** - 單元測試、文檔更新（參考 [測試規範](./docs/00-測試規範.md)）
+
+### 代碼質量標準
+
+- **類型安全**: TypeScript 嚴格模式，禁止 `any` 類型（參考 [可維護性規範](./docs/00-可維護性規範.md)）
+- **代碼檢查**: ESLint + Prettier + Stylelint
+- **測試覆蓋**: Services/Facades ≥80%，關鍵邏輯 100%（參考 [測試規範](./docs/00-測試規範.md)）
+- **架構規範**: 嚴格依賴方向，禁止循環依賴（參考 [架構治理規範](./docs/00-架構治理規範.md)）
+- **性能**: 遵循性能優化指南（參考 [性能規範](./docs/00-性能規範.md)）
+- **安全**: 遵循安全要求（參考 [安全規範](./docs/00-安全規範.md)）
+- **API 設計**: 遵循 API 設計標準（參考 [API規範](./docs/00-API規範.md)）
+- **命名**: 遵循命名規範（參考 [命名標準化規範](./docs/00-命名標準化規範.md)）
+
+### 其他資源
+
+詳細開發指南請參考：
+- [開發最佳實踐指南](./docs/42-開發最佳實踐指南.md) ⭐ - 編碼規範與範例
+- [SRP 標準](./docs/00-SRP.md) ⭐⭐⭐⭐⭐ - 單一職責原則與企業架構十大原則
+- [架構治理規範](./docs/00-架構治理規範.md) ⭐⭐⭐⭐⭐ - 架構治理標準
+- [完整架構流程圖](./docs/20-完整架構流程圖.mermaid.md) - 系統架構
+
+## 應用截圖
 
 ![desktop](https://raw.githubusercontent.com/ng-alain/delon/master/_screenshot/desktop.png)
 ![ipad](https://raw.githubusercontent.com/ng-alain/delon/master/_screenshot/ipad.png)
