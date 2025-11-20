@@ -79,6 +79,9 @@ export class WorkspaceContextFacade {
   readonly allOrganizations = this.contextService.allOrganizations;
   readonly teamsByOrganization = this.contextService.teamsByOrganization;
 
+  // 标记是否已尝试恢复上下文（避免重复恢复）
+  private hasRestoredContext = false;
+
   constructor() {
     // 监听用户登录状态，自动加载工作区数据
     effect(() => {
@@ -97,6 +100,7 @@ export class WorkspaceContextFacade {
       } else {
         // 用户未登录，重置状态
         this.reset();
+        this.hasRestoredContext = false;
       }
     });
 
@@ -107,6 +111,11 @@ export class WorkspaceContextFacade {
 
       // 如果正在切换中，跳过菜单更新（避免重复更新）
       if (this.switching()) {
+        return;
+      }
+
+      // 如果菜单数据未初始化，跳过菜单更新
+      if (!this.menuService.initialized()) {
         return;
       }
 
@@ -131,16 +140,40 @@ export class WorkspaceContextFacade {
       }
     });
 
-    // 恢复持久化的上下文状态
-    this.restoreContext();
+    // 监听数据加载完成和菜单初始化，自动恢复上下文
+    effect(() => {
+      const menuInitialized = this.menuService.initialized();
+      const dataLoading = this.loadingOrganizations() || this.loadingTeams();
+      const token = this.tokenService.get();
+      const hasToken = !!token?.['user']?.['id'];
+
+      // 如果已经恢复过上下文，不再重复恢复
+      if (this.hasRestoredContext) {
+        return;
+      }
+
+      // 条件：菜单已初始化 && 数据加载完成 && 用户已登录
+      if (menuInitialized && !dataLoading && hasToken) {
+        // 延迟恢复，确保所有状态都已准备好
+        setTimeout(() => {
+          if (!this.hasRestoredContext) {
+            this.hasRestoredContext = true;
+            this.restoreContext();
+          }
+        }, 100);
+      }
+    });
   }
 
   /**
    * 初始化菜单数据
    * 在 StartupService 中调用，保存不同账户类型的菜单数据
+   * 上下文恢复由 effect 自动处理（等待菜单数据初始化和工作区数据加载完成）
    */
   initializeMenuData(data: { appMenu?: unknown[]; userMenu?: unknown[]; organizationMenu?: unknown[]; teamMenu?: unknown[] }): void {
     this.menuService.initializeMenuData(data);
+    // 注意：上下文恢复由 constructor 中的 effect 自动处理
+    // 该 effect 会等待菜单数据初始化和工作区数据加载完成后再恢复上下文
   }
 
   /**

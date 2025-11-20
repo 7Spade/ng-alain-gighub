@@ -326,35 +326,66 @@ export class WorkspaceContextService {
 
   /**
    * 恢复持久化的上下文状态
+   * 注意：此方法应该在数据加载完成后调用，否则可能因为数据未加载而切换失败
    *
    * @returns 是否成功恢复
    */
   restoreContext(): boolean {
     const saved = this.persistenceService.restoreContext();
     if (saved) {
-      // 延迟恢复，等待数据加载完成
-      setTimeout(() => {
-        switch (saved.type) {
-          case 'app':
-            this.switchToApp();
-            break;
-          case 'user':
-            if (saved.id) {
-              this.switchToUser(saved.id);
+      // 立即恢复，因为调用此方法时数据应该已经加载完成
+      switch (saved.type) {
+        case 'app':
+          this.switchToApp();
+          break;
+        case 'user':
+          if (saved.id) {
+            this.switchToUser(saved.id);
+          }
+          break;
+        case 'organization':
+          if (saved.id) {
+            const orgId = saved.id;
+            // 验证组织是否存在，如果不存在则延迟重试
+            const organization = this.allOrganizations().find(org => org.id === orgId);
+            if (organization) {
+              this.switchToOrganization(orgId);
+            } else {
+              console.warn(`Cannot restore organization context: organization ${orgId} not found, data may not be loaded yet`);
+              // 延迟重试一次
+              setTimeout(() => {
+                const retryOrg = this.allOrganizations().find(org => org.id === orgId);
+                if (retryOrg) {
+                  this.switchToOrganization(orgId);
+                } else {
+                  console.warn(`Failed to restore organization context after retry: organization ${orgId} not found`);
+                }
+              }, 500);
             }
-            break;
-          case 'organization':
-            if (saved.id) {
-              this.switchToOrganization(saved.id);
+          }
+          break;
+        case 'team':
+          if (saved.id) {
+            const teamId = saved.id;
+            // 验证团队是否存在，如果不存在则延迟重试
+            const team = this.userTeams().find(t => t.id === teamId);
+            if (team) {
+              this.switchToTeam(teamId);
+            } else {
+              console.warn(`Cannot restore team context: team ${teamId} not found, data may not be loaded yet`);
+              // 延迟重试一次
+              setTimeout(() => {
+                const retryTeam = this.userTeams().find(t => t.id === teamId);
+                if (retryTeam) {
+                  this.switchToTeam(teamId);
+                } else {
+                  console.warn(`Failed to restore team context after retry: team ${teamId} not found`);
+                }
+              }, 500);
             }
-            break;
-          case 'team':
-            if (saved.id) {
-              this.switchToTeam(saved.id);
-            }
-            break;
-        }
-      }, 100);
+          }
+          break;
+      }
       return true;
     }
     return false;

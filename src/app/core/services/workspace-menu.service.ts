@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { MenuService } from '@delon/theme';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 
@@ -36,11 +36,17 @@ import { NzSafeAny } from 'ng-zorro-antd/core/types';
 export class WorkspaceMenuService {
   private readonly menuService = inject(MenuService);
 
+  // 菜单数据初始化状态
+  private initializedState = signal<boolean>(false);
+
   // 菜单数据缓存
   private userMenuData: NzSafeAny[] = [];
   private organizationMenuData: NzSafeAny[] = [];
   private teamMenuData: NzSafeAny[] = [];
   private appMenuData: NzSafeAny[] = [];
+
+  // 暴露初始化状态
+  readonly initialized = this.initializedState.asReadonly();
 
   /**
    * 初始化菜单数据
@@ -64,12 +70,21 @@ export class WorkspaceMenuService {
     if (data.teamMenu) {
       this.teamMenuData = data.teamMenu;
     }
+
+    // 标记菜单数据已初始化
+    this.initializedState.set(true);
   }
 
   /**
    * 切换到应用菜单（默认菜单）
    */
   switchToApp(): void {
+    // 如果菜单数据未初始化，跳过菜单切换
+    if (!this.initializedState()) {
+      console.warn('[WorkspaceMenuService] Menu data not initialized, skipping switchToApp');
+      return;
+    }
+
     this.menuService.clear();
     this.menuService.add(this.appMenuData);
     this.menuService.resume();
@@ -79,6 +94,12 @@ export class WorkspaceMenuService {
    * 切换到个人用户菜单
    */
   switchToUser(): void {
+    // 如果菜单数据未初始化，跳过菜单切换
+    if (!this.initializedState()) {
+      console.warn('[WorkspaceMenuService] Menu data not initialized, skipping switchToUser');
+      return;
+    }
+
     this.menuService.clear();
     this.menuService.add(this.userMenuData);
     this.menuService.resume();
@@ -90,6 +111,12 @@ export class WorkspaceMenuService {
    * @param organizationId 组织账户 ID
    */
   switchToOrganization(organizationId: string): void {
+    // 如果菜单数据未初始化，跳过菜单切换
+    if (!this.initializedState()) {
+      console.warn('[WorkspaceMenuService] Menu data not initialized, skipping switchToOrganization');
+      return;
+    }
+
     this.menuService.clear();
     // 处理菜单链接中的动态 ID 替换
     const processedMenu = this.processMenuLinks(this.organizationMenuData, organizationId);
@@ -103,6 +130,12 @@ export class WorkspaceMenuService {
    * @param teamId 团队 ID
    */
   switchToTeam(teamId: string): void {
+    // 如果菜单数据未初始化，跳过菜单切换
+    if (!this.initializedState()) {
+      console.warn('[WorkspaceMenuService] Menu data not initialized, skipping switchToTeam');
+      return;
+    }
+
     this.menuService.clear();
     // 处理菜单链接中的动态 ID 替换
     const processedMenu = this.processMenuLinks(this.teamMenuData, teamId);
