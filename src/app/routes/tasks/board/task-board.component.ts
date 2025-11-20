@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
-import { SHARED_IMPORTS, TaskService, Task, TaskStatus, BlueprintService } from '@shared';
 import { WorkspaceContextFacade } from '@core';
+import { SHARED_IMPORTS, TaskService, Task, TaskStatus, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -40,9 +40,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
       } @else if (currentBlueprintIds().length === 0) {
         <nz-empty nzNotFoundContent="当前视角下没有蓝图">
           <ng-container nz-empty-footer>
-            <button nz-button nzType="primary" (click)="createBlueprint()">
-              创建蓝图
-            </button>
+            <button nz-button nzType="primary" (click)="createBlueprint()"> 创建蓝图 </button>
           </ng-container>
         </nz-empty>
       } @else if (taskService.loading()) {
