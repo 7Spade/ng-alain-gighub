@@ -199,19 +199,29 @@ export class WorkspaceContextFacade {
   }
 
   /**
+   * 处理上下文切换错误
+   *
+   * @param error 错误对象
+   * @param context 上下文类型（用于错误消息）
+   */
+  private handleSwitchError(error: unknown, context: string): void {
+    this.errorStateService.addError({
+      category: 'BusinessLogic',
+      severity: 'error',
+      message: error instanceof Error ? error.message : `Failed to switch to ${context} context`,
+      details: error,
+      context: 'workspace'
+    });
+  }
+
+  /**
    * 切换到应用菜单（默认菜单）
    */
   switchToApp(): void {
     try {
       this.contextService.switchToApp();
     } catch (error) {
-      this.errorStateService.addError({
-        category: 'BusinessLogic',
-        severity: 'error',
-        message: error instanceof Error ? error.message : 'Failed to switch to app context',
-        details: error,
-        context: 'workspace'
-      });
+      this.handleSwitchError(error, 'app');
     }
   }
 
@@ -230,13 +240,7 @@ export class WorkspaceContextFacade {
       }
       this.contextService.switchToUser(targetUserId);
     } catch (error) {
-      this.errorStateService.addError({
-        category: 'BusinessLogic',
-        severity: 'error',
-        message: error instanceof Error ? error.message : 'Failed to switch to user context',
-        details: error,
-        context: 'workspace'
-      });
+      this.handleSwitchError(error, 'user');
     }
   }
 
@@ -249,13 +253,7 @@ export class WorkspaceContextFacade {
     try {
       this.contextService.switchToOrganization(organizationId);
     } catch (error) {
-      this.errorStateService.addError({
-        category: 'BusinessLogic',
-        severity: 'error',
-        message: error instanceof Error ? error.message : 'Failed to switch to organization context',
-        details: error,
-        context: 'workspace'
-      });
+      this.handleSwitchError(error, 'organization');
     }
   }
 
@@ -268,13 +266,7 @@ export class WorkspaceContextFacade {
     try {
       this.contextService.switchToTeam(teamId);
     } catch (error) {
-      this.errorStateService.addError({
-        category: 'BusinessLogic',
-        severity: 'error',
-        message: error instanceof Error ? error.message : 'Failed to switch to team context',
-        details: error,
-        context: 'workspace'
-      });
+      this.handleSwitchError(error, 'team');
     }
   }
 

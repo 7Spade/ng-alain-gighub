@@ -27,12 +27,12 @@
             },
             {
               "text": "My Teams",
-              "link": "/accounts/org",
+              "link": "/accounts/org?view=teams",
               "i18n": "menu.personal.account.teams"
             },
             {
               "text": "My Schedules",
-              "link": "/accounts/schedules",
+              "link": "/accounts/org?view=schedules",
               "i18n": "menu.personal.account.schedules"
             }
           ]

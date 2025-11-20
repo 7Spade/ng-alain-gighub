@@ -1,23 +1,13 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isValidUUID } from '@core';
-import {
-  AccountService,
-  AccountStatus,
-  AccountType,
-  OrganizationMemberService,
-  OrganizationScheduleService,
-  SHARED_IMPORTS,
-  TeamService
-} from '@shared';
+import { AccountService, AccountStatus, AccountType, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
-
-import { OrgRoleManageComponent } from '../org/org-role-manage/role-manage.component';
 
 @Component({
   selector: 'app-account-detail',
   standalone: true,
-  imports: [SHARED_IMPORTS, OrgRoleManageComponent],
+  imports: [SHARED_IMPORTS],
   template: `
     <page-header [title]="'账户详情'">
       <ng-template #extra>
@@ -95,73 +85,27 @@ import { OrgRoleManageComponent } from '../org/org-role-manage/role-manage.compo
           </nz-descriptions>
         </nz-card>
 
-        <!-- 组织账户：显示成员管理 -->
+        <!-- 组织账户：快速操作入口 -->
         @if (account()!.type === AccountType.ORGANIZATION) {
-          <!-- 组织成员和角色管理 -->
-          @if (account()?.id) {
-            <app-org-role-manage [organizationId]="account()!.id"></app-org-role-manage>
-          }
-
-          <!-- 组织账户：显示团队信息 -->
-          <nz-card nzTitle="团队信息" style="margin-bottom: 16px;">
-            @if (teamService.loading()) {
-              <nz-spin nzSimple></nz-spin>
-            } @else if (teamService.teams().length > 0) {
-              <nz-table [nzData]="teamService.teams()" [nzShowPagination]="false" [nzSize]="'small'">
-                <thead>
-                  <tr>
-                    <th>团队名称</th>
-                    <th>描述</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (team of teamService.teams(); track team.id) {
-                    <tr>
-                      <td>{{ team.name }}</td>
-                      <td>{{ team.description || '-' }}</td>
-                      <td>{{ team.created_at | date: 'yyyy-MM-dd' }}</td>
-                      <td>
-                        <button nz-button nzType="link" nzSize="small" (click)="viewTeam(team.id, team.organization_id)"> 查看 </button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </nz-table>
-            } @else {
-              <nz-empty nzNotFoundContent="暂无团队"></nz-empty>
-            }
-          </nz-card>
-
-          <!-- 组织账户：显示排班信息 -->
-          <nz-card nzTitle="排班信息">
-            @if (scheduleService.loading()) {
-              <nz-spin nzSimple></nz-spin>
-            } @else if (scheduleService.schedules().length > 0) {
-              <nz-table [nzData]="scheduleService.schedules()" [nzShowPagination]="false" [nzSize]="'small'">
-                <thead>
-                  <tr>
-                    <th>日期</th>
-                    <th>账户</th>
-                    <th>团队</th>
-                    <th>备注</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (schedule of scheduleService.schedules(); track schedule.id) {
-                    <tr>
-                      <td>{{ schedule.schedule_date | date: 'yyyy-MM-dd' }}</td>
-                      <td>{{ schedule.account_id || '-' }}</td>
-                      <td>{{ schedule.team_id || '-' }}</td>
-                      <td>{{ schedule.notes || '-' }}</td>
-                    </tr>
-                  }
-                </tbody>
-              </nz-table>
-            } @else {
-              <nz-empty nzNotFoundContent="暂无排班记录"></nz-empty>
-            }
+          <nz-card nzTitle="快速操作" style="margin-bottom: 16px;">
+            <div class="flex gap-md">
+              <button nz-button nzType="default" (click)="manageMembers(account()!.id)">
+                <span nz-icon nzType="team"></span>
+                成員管理
+              </button>
+              <button nz-button nzType="default" (click)="manageTeams(account()!.id)">
+                <span nz-icon nzType="usergroup-add"></span>
+                團隊管理
+              </button>
+              <button nz-button nzType="default" (click)="manageRoles(account()!.id)">
+                <span nz-icon nzType="safety-certificate"></span>
+                角色管理
+              </button>
+              <button nz-button nzType="default" (click)="manageSchedules(account()!.id)">
+                <span nz-icon nzType="calendar"></span>
+                排班管理
+              </button>
+            </div>
           </nz-card>
         }
       </div>
@@ -171,20 +115,17 @@ import { OrgRoleManageComponent } from '../org/org-role-manage/role-manage.compo
   `
 })
 export class AccountDetailComponent implements OnInit {
-  accountService = inject(AccountService);
-  teamService = inject(TeamService);
-  scheduleService = inject(OrganizationScheduleService);
-  organizationMemberService = inject(OrganizationMemberService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  message = inject(NzMessageService);
+  readonly accountService = inject(AccountService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly message = inject(NzMessageService);
 
   // 使用 computed 从 Service 获取账户信息
-  account = computed(() => this.accountService.selectedAccount());
+  readonly account = computed(() => this.accountService.selectedAccount());
 
   // 导出枚举供模板使用
-  AccountType = AccountType;
-  AccountStatus = AccountStatus;
+  readonly AccountType = AccountType;
+  readonly AccountStatus = AccountStatus;
 
   ngOnInit(): void {
     const accountId = this.route.snapshot.paramMap.get('id');
@@ -203,43 +144,18 @@ export class AccountDetailComponent implements OnInit {
   async loadAccount(id: string): Promise<void> {
     try {
       const account = await this.accountService.loadAccountById(id);
-      if (account) {
-        // 如果是组织账户，清空成员服务状态并加载相关信息
-        if (account.type === AccountType.ORGANIZATION) {
-          // 清空组织成员服务状态，确保加载的是当前组织的成员
-          this.organizationMemberService.clearState();
-          await this.loadTeams(account.id);
-          await this.loadSchedules(account.id);
-        }
-      } else {
-        this.message.warning('账户不存在');
+      if (!account) {
+        this.message.warning('帳戶不存在');
         this.goBack();
       }
     } catch (error) {
-      this.message.error('加载账户详情失败');
-    }
-  }
-
-  async loadTeams(organizationId: string): Promise<void> {
-    try {
-      await this.teamService.loadTeamsByOrganizationId(organizationId);
-    } catch (error) {
-      // 静默失败，不影响主流程
-      console.error('加载团队信息失败', error);
-    }
-  }
-
-  async loadSchedules(organizationId: string): Promise<void> {
-    try {
-      await this.scheduleService.loadSchedulesByOrganizationId(organizationId);
-    } catch (error) {
-      // 静默失败，不影响主流程
-      console.error('加载排班信息失败', error);
+      const errorMessage = error instanceof Error ? error.message : '載入帳戶詳情失敗';
+      this.message.error(errorMessage);
     }
   }
 
   goBack(): void {
-    this.router.navigate(['/accounts']);
+    this.router.navigate(['/accounts/org']);
   }
 
   edit(): void {
@@ -254,19 +170,31 @@ export class AccountDetailComponent implements OnInit {
     }
 
     // 使用 nz-modal 确认删除（这里简化处理，实际应该使用 ModalHelper）
-    if (confirm('确定要删除此账户吗？此操作不可恢复。')) {
+    if (confirm('確定要刪除此帳戶嗎？此操作不可恢復。')) {
       try {
         await this.accountService.deleteAccount(this.account()!.id);
-        this.message.success('删除成功');
+        this.message.success('刪除成功');
         this.goBack();
       } catch (error) {
-        this.message.error('删除失败');
+        const errorMessage = error instanceof Error ? error.message : '刪除失敗';
+        this.message.error(errorMessage);
       }
     }
   }
 
-  viewTeam(teamId: string, organizationId: string): void {
-    // 导航到组织上下文下的团队管理页面
+  manageMembers(organizationId: string): void {
+    this.router.navigate(['/accounts/org', organizationId, 'members']);
+  }
+
+  manageTeams(organizationId: string): void {
     this.router.navigate(['/accounts/org', organizationId, 'teams']);
+  }
+
+  manageRoles(organizationId: string): void {
+    this.router.navigate(['/accounts/org', organizationId, 'roles']);
+  }
+
+  manageSchedules(organizationId: string): void {
+    this.router.navigate(['/accounts/org', organizationId, 'schedules']);
   }
 }

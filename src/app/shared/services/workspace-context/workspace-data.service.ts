@@ -77,18 +77,55 @@ export class WorkspaceDataService {
         return;
       }
 
-      // 2. 并行加载创建的组织、加入的组织
-      const [createdOrgs, joinedOrgs] = await Promise.all([
-        this.accountService.getUserCreatedOrganizations(authUserId),
-        this.accountService.getUserJoinedOrganizations(userAccount.id)
-      ]);
+      // 2. 并行加载创建的组织、加入的组织（分别处理错误）
+      let createdOrgs: Account[] = [];
+      let joinedOrgs: Account[] = [];
+      let hasError = false;
+      let errorMessages: string[] = [];
+
+      try {
+        createdOrgs = await this.accountService.getUserCreatedOrganizations(authUserId);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : '載入我的組織失敗';
+        console.error('[WorkspaceDataService] 載入我的組織失敗:', error);
+        errorMessages.push(`載入我的組織失敗：${errorMessage}`);
+        hasError = true;
+      }
+
+      try {
+        joinedOrgs = await this.accountService.getUserJoinedOrganizations(userAccount.id);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : '載入我加入的組織失敗';
+        console.error('[WorkspaceDataService] 載入我加入的組織失敗:', error);
+        errorMessages.push(`載入我加入的組織失敗：${errorMessage}`);
+        hasError = true;
+      }
+
+      // 如果两个都失败，设置错误状态
+      if (createdOrgs.length === 0 && joinedOrgs.length === 0 && hasError) {
+        this.errorState.set(errorMessages.join('；'));
+      } else if (hasError && errorMessages.length > 0) {
+        // 部分失败，记录警告但不阻止继续
+        console.warn('[WorkspaceDataService] 部分數據載入失敗:', errorMessages);
+      }
 
       // 3. 加载团队列表（用户作为成员的团队）
-      const memberTeams = await this.accountService.getUserTeams(userAccount.id);
+      let memberTeams: Team[] = [];
+      try {
+        memberTeams = await this.accountService.getUserTeams(userAccount.id);
+      } catch (error) {
+        console.error('[WorkspaceDataService] 載入團隊列表失敗:', error);
+        // 团队加载失败不影响主流程
+      }
 
       // 4. 加载用户创建的组织下的所有团队（即使不是成员）
       const allOrgIds = [...createdOrgs, ...joinedOrgs].map(org => org.id);
-      const orgTeamsPromises = allOrgIds.map(orgId => this.teamService.loadTeamsByOrganizationId(orgId).catch(() => [] as Team[]));
+      const orgTeamsPromises = allOrgIds.map(orgId =>
+        this.teamService.loadTeamsByOrganizationId(orgId).catch(() => {
+          console.warn(`[WorkspaceDataService] 載入組織 ${orgId} 的團隊失敗`);
+          return [] as Team[];
+        })
+      );
       const orgTeamsArrays = await Promise.all(orgTeamsPromises);
       const orgTeams = orgTeamsArrays.flat();
 
@@ -122,9 +159,9 @@ export class WorkspaceDataService {
         console.log('[WorkspaceDataService] No teams found for user:', userAccount.id);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '加载用户工作区数据失败';
+      const errorMessage = error instanceof Error ? error.message : '載入用戶工作區數據失敗';
       this.errorState.set(errorMessage);
-      console.error('加载用户工作区数据失败:', error);
+      console.error('載入用戶工作區數據失敗:', error);
       throw error;
     } finally {
       this.loadingOrganizationsState.set(false);

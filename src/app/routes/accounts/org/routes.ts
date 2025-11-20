@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { OrgMembersComponent } from './org-members/members.component';
 import { OrgRoleManageComponent } from './org-role-manage/role-manage.component';
 import { OrgComponent } from './org.component';
+import { OrgScheduleListComponent } from './schedules/schedule-list.component';
 import { OrgTeamMembersComponent } from './teams/team-member/members.component';
 import { OrgTeamsComponent } from './teams/teams.component';
 
@@ -14,6 +15,7 @@ import { OrgTeamsComponent } from './teams/teams.component';
  * /accounts/org/:id/members - 组织成员列表
  * /accounts/org/:id/roles - 角色管理
  * /accounts/org/:id/teams - 组织团队列表
+ * /accounts/org/:id/schedules - 组织排班列表
  * /accounts/org/teams/:id/members - 团队成员列表
  *
  * 注意：路由顺序很重要，具体路径（:id/teams）必须在动态路径（teams/:id/members）之前
@@ -38,6 +40,11 @@ export const routes: Routes = [
     path: ':id/teams',
     component: OrgTeamsComponent,
     data: { title: '團隊管理', titleI18n: 'menu.org.teams' }
+  },
+  {
+    path: ':id/schedules',
+    component: OrgScheduleListComponent,
+    data: { title: '排班管理', titleI18n: 'menu.org.schedules' }
   },
   {
     path: 'teams/:id/members',

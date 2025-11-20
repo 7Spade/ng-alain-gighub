@@ -1,26 +1,32 @@
 import { Routes } from '@angular/router';
 
-import { BotListComponent } from './bots/bot-list.component';
 import { CreateBotComponent } from './create/create-bot.component';
 import { CreateOrganizationComponent } from './create/create-organization.component';
 import { AccountDetailComponent } from './detail/account-detail.component';
 import { AccountFormComponent } from './form/account-form.component';
-import { AccountListComponent } from './list/account-list.component';
-import { ScheduleListComponent } from './schedules/schedule-list.component';
-import { UserListComponent } from './users/user-list.component';
 
+/**
+ * 账户管理路由配置
+ *
+ * 路由结构：
+ * /accounts - 重定向到 /accounts/org（组织管理）
+ * /accounts/create/organization - 创建组织
+ * /accounts/create/bot - 创建机器人
+ * /accounts/org - 组织管理（懒加载）
+ * /accounts/:id - 账户详情
+ * /accounts/:id/edit - 编辑账户
+ *
+ * 注意：
+ * - 已移除管理员功能模块（list、users、bots）
+ * - schedules 已移动到 org 模块下
+ */
 export const routes: Routes = [
-  { path: '', redirectTo: 'list', pathMatch: 'full' },
-  { path: 'list', component: AccountListComponent },
+  { path: '', redirectTo: 'org', pathMatch: 'full' },
   // 创建路由：按账户类型分离
   // 注意：User 账户通过注册流程的触发器自动创建，不需要手动创建组件
   { path: 'create/organization', component: CreateOrganizationComponent },
   { path: 'create/bot', component: CreateBotComponent },
-  // 具体路径必须放在动态路径（:id）之前，避免路由冲突
-  { path: 'users', component: UserListComponent },
-  { path: 'bots', component: BotListComponent },
-  { path: 'schedules', component: ScheduleListComponent },
-  // 组织管理路由（从 /org 迁移过来）
+  // 组织管理路由（包含 schedules）
   {
     path: 'org',
     loadChildren: () => import('./org/routes').then(m => m.routes)

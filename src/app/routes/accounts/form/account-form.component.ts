@@ -1,8 +1,9 @@
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppError, isValidUUID } from '@core';
-import { AccountService, AccountStatus, AccountType, AccountUpdate, SHARED_IMPORTS } from '@shared';
+import { AppError, isValidUUID, OrganizationMemberRole } from '@core';
+import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { AccountService, AccountStatus, AccountType, AccountUpdate, OrganizationMemberService, SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
@@ -96,10 +97,12 @@ interface AccountFormValue {
   `
 })
 export class AccountFormComponent implements OnInit {
-  accountService = inject(AccountService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  message = inject(NzMessageService);
+  readonly accountService = inject(AccountService);
+  private readonly organizationMemberService = inject(OrganizationMemberService);
+  private readonly tokenService = inject(DA_SERVICE_TOKEN);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly message = inject(NzMessageService);
 
   // 导出枚举供模板使用
   AccountType = AccountType;
@@ -126,7 +129,7 @@ export class AccountFormComponent implements OnInit {
     status: new FormControl(AccountStatus.ACTIVE, { nonNullable: true })
   });
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // 此组件仅用于编辑，必须要有 id 参数
     const accountId = this.route.snapshot.paramMap.get('id');
     if (!accountId) {
@@ -142,7 +145,68 @@ export class AccountFormComponent implements OnInit {
       return;
     }
 
-    this.loadAccount(accountId);
+    // 检查编辑权限
+    const hasPermission = await this.checkEditPermission(accountId);
+    if (!hasPermission) {
+      this.message.error('您沒有權限編輯此帳戶');
+      this.goBack();
+      return;
+    }
+
+    await this.loadAccount(accountId);
+  }
+
+  /**
+   * 检查编辑权限
+   * - 用户只能编辑自己的账户（auth_user_id 匹配）
+   * - 组织拥有者只能编辑自己拥有的组织
+   */
+  private async checkEditPermission(accountId: string): Promise<boolean> {
+    try {
+      // 1. 获取当前用户信息
+      const currentUserAuthId = this.tokenService.get()?.['user']?.id;
+      if (!currentUserAuthId) {
+        return false;
+      }
+
+      // 2. 获取当前用户账户
+      const currentUserAccount = await this.accountService.findByAuthUserId(currentUserAuthId);
+      if (!currentUserAccount) {
+        return false;
+      }
+
+      // 3. 加载要编辑的账户
+      const account = await this.accountService.loadAccountById(accountId);
+      if (!account) {
+        return false;
+      }
+
+      // 4. 检查是否是账户创建者（User 和 Bot 账户）
+      // Repository 层会将 snake_case 转换为 camelCase，所以使用 authUserId
+      const accountAuthUserId = (account as any).authUserId || (account as any).auth_user_id;
+      if (accountAuthUserId === currentUserAuthId) {
+        return true;
+      }
+
+      // 5. 对于组织账户，检查用户是否是组织拥有者
+      if (account.type === AccountType.ORGANIZATION) {
+        try {
+          const members = await this.organizationMemberService.loadMembersByOrganizationId(accountId);
+          const isOwner = members.some(
+            member => member.account_id === currentUserAccount.id && member.role === OrganizationMemberRole.OWNER
+          );
+          return isOwner;
+        } catch (error) {
+          console.error('檢查組織擁有者權限失敗:', error);
+          return false;
+        }
+      }
+
+      return false;
+    } catch (error) {
+      console.error('檢查編輯權限失敗:', error);
+      return false;
+    }
   }
 
   async loadAccount(id: string): Promise<void> {

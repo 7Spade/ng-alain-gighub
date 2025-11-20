@@ -124,13 +124,7 @@ export class WorkspaceContextService {
     switch (type) {
       case 'user':
         if (id) {
-          // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
-          const currentAccount = this.currentUserAccount();
-          if (currentAccount && currentAccount.id === id) {
-            return currentAccount.name || '个人账户';
-          }
-          // 否则从 userAccounts 中查找
-          const account = this.accountService.userAccounts().find(a => a.id === id);
+          const account = this.findUserAccount(id);
           return account?.name || '个人账户';
         }
         return '个人账户';
@@ -178,14 +172,7 @@ export class WorkspaceContextService {
     switch (type) {
       case 'user':
         if (id) {
-          // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
-          const currentAccount = this.currentUserAccount();
-          if (currentAccount && currentAccount.id === id) {
-            // 优先使用 camelCase 格式，向后兼容 snake_case
-            return (currentAccount as any).avatarUrl || (currentAccount as any).avatar_url || null;
-          }
-          // 否则从 userAccounts 中查找
-          const account = this.accountService.userAccounts().find(a => a.id === id);
+          const account = this.findUserAccount(id);
           if (account) {
             return (account as any).avatarUrl || (account as any).avatar_url || null;
           }
@@ -208,13 +195,11 @@ export class WorkspaceContextService {
         if (id) {
           const team = this.userTeams().find(t => t.id === id);
           if (team) {
-            // Team 模型也有 avatar_url 字段
             return (team as any).avatarUrl || (team as any).avatar_url || null;
           }
         }
         return null;
       default:
-        // app 类型返回 null，使用默认用户头像
         return null;
     }
   });
@@ -229,18 +214,11 @@ export class WorkspaceContextService {
     switch (type) {
       case 'user':
         if (id) {
-          // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
-          const currentAccount = this.currentUserAccount();
-          if (currentAccount && currentAccount.id === id) {
-            return currentAccount.email || null;
-          }
-          // 否则从 userAccounts 中查找
-          const account = this.accountService.userAccounts().find(a => a.id === id);
+          const account = this.findUserAccount(id);
           return account?.email || null;
         }
         // 如果没有找到，返回当前用户账户的邮箱
-        const currentAccount = this.currentUserAccount();
-        return currentAccount?.email || null;
+        return this.currentUserAccount()?.email || null;
       case 'organization':
         if (id) {
           const account = this.allOrganizations().find(a => a.id === id);
@@ -248,44 +226,74 @@ export class WorkspaceContextService {
         }
         return null;
       case 'team':
-        // 团队没有邮箱字段，返回 null
         return null;
       default:
-        // app 类型返回 null
         return null;
     }
   });
 
   /**
-   * 切换到应用菜单（默认菜单）
+   * 查找用户账户（优先使用 currentUserAccount，否则从 userAccounts 中查找）
+   *
+   * @param userId 用户账户 ID
+   * @returns 用户账户，如果不存在则返回 null
    */
-  switchToApp(): void {
+  private findUserAccount(userId: string): Account | null {
+    const currentAccount = this.currentUserAccount();
+    if (currentAccount && currentAccount.id === userId) {
+      return currentAccount;
+    }
+    return this.accountService.userAccounts().find(a => a.id === userId) || null;
+  }
+
+  /**
+   * 统一切换上下文的方法
+   *
+   * @param type 上下文类型
+   * @param id 上下文 ID（可选）
+   * @param account 账户对象（可选，用于 user 和 organization 类型）
+   */
+  private switchContext(type: 'app' | 'user' | 'organization' | 'team', id: string | null, account: Account | null): void {
     // 防止重复切换
     if (this.switchingState()) {
       return;
     }
 
-    // 如果已经是应用菜单，直接返回
-    if (this.contextTypeState() === 'app' && this.contextIdState() === null) {
+    // 如果已经是目标上下文，直接返回
+    if (this.contextTypeState() === type && this.contextIdState() === id) {
       return;
     }
 
     this.switchingState.set(true);
 
     try {
-      // 先更新状态，再更新账户
-      this.contextTypeState.set('app');
-      this.contextIdState.set(null);
+      // 更新状态
+      this.contextTypeState.set(type);
+      this.contextIdState.set(id);
 
-      // 同步更新账户和持久化
-      this.accountService.selectAccount(null);
-      this.persistenceService.saveContext('app', null);
+      // 更新账户（仅 user 和 organization 类型需要）
+      if (account && (type === 'user' || type === 'organization')) {
+        this.accountService.selectAccount(account);
+      } else if (type === 'app') {
+        this.accountService.selectAccount(null);
+      }
+      // team 类型不需要更新账户
+
+      // 持久化上下文
+      this.persistenceService.saveContext(type, id);
     } finally {
       // 使用 setTimeout 确保状态更新完成后再重置切换状态
       setTimeout(() => {
         this.switchingState.set(false);
       }, 0);
     }
+  }
+
+  /**
+   * 切换到应用菜单（默认菜单）
+   */
+  switchToApp(): void {
+    this.switchContext('app', null, null);
   }
 
   /**
@@ -294,52 +302,18 @@ export class WorkspaceContextService {
    * @param userId 用户账户 ID（必需）
    */
   switchToUser(userId: string): void {
-    // 防止重复切换
-    if (this.switchingState()) {
-      return;
-    }
-
     if (!userId) {
       console.warn('Cannot switch to user: user account ID is required');
       return;
     }
 
-    // 如果已经是该用户，直接返回
-    if (this.contextTypeState() === 'user' && this.contextIdState() === userId) {
-      return;
-    }
-
-    // 验证用户账户是否存在
-    // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
-    const currentAccount = this.currentUserAccount();
-    let account = currentAccount && currentAccount.id === userId ? currentAccount : null;
-
-    // 如果 currentUserAccount 不匹配，从 userAccounts 中查找
-    if (!account) {
-      account = this.accountService.userAccounts().find(a => a.id === userId) || null;
-    }
-
+    const account = this.findUserAccount(userId);
     if (!account) {
       console.warn(`Cannot switch to user: account ${userId} not found`);
       return;
     }
 
-    this.switchingState.set(true);
-
-    try {
-      // 先更新状态，再更新账户和持久化
-      this.contextTypeState.set('user');
-      this.contextIdState.set(userId);
-
-      // 同步更新账户和持久化
-      this.accountService.selectAccount(account);
-      this.persistenceService.saveContext('user', userId);
-    } finally {
-      // 使用 setTimeout 确保状态更新完成后再重置切换状态
-      setTimeout(() => {
-        this.switchingState.set(false);
-      }, 0);
-    }
+    this.switchContext('user', userId, account);
   }
 
   /**
@@ -348,39 +322,13 @@ export class WorkspaceContextService {
    * @param organizationId 组织账户 ID
    */
   switchToOrganization(organizationId: string): void {
-    // 防止重复切换
-    if (this.switchingState()) {
-      return;
-    }
-
-    // 如果已经是该组织，直接返回
-    if (this.contextTypeState() === 'organization' && this.contextIdState() === organizationId) {
-      return;
-    }
-
-    // 验证组织是否存在
     const organization = this.allOrganizations().find(org => org.id === organizationId);
     if (!organization) {
       console.warn(`Cannot switch to organization: organization ${organizationId} not found`);
       return;
     }
 
-    this.switchingState.set(true);
-
-    try {
-      // 先更新状态，再更新账户和持久化
-      this.contextTypeState.set('organization');
-      this.contextIdState.set(organizationId);
-
-      // 同步更新账户和持久化
-      this.accountService.selectAccount(organization);
-      this.persistenceService.saveContext('organization', organizationId);
-    } finally {
-      // 使用 setTimeout 确保状态更新完成后再重置切换状态
-      setTimeout(() => {
-        this.switchingState.set(false);
-      }, 0);
-    }
+    this.switchContext('organization', organizationId, organization);
   }
 
   /**
@@ -389,44 +337,21 @@ export class WorkspaceContextService {
    * @param teamId 团队 ID
    */
   switchToTeam(teamId: string): void {
-    // 防止重复切换
-    if (this.switchingState()) {
-      return;
-    }
-
-    // 如果已经是该团队，直接返回
-    if (this.contextTypeState() === 'team' && this.contextIdState() === teamId) {
-      return;
-    }
-
-    // 验证团队是否存在
     const team = this.userTeams().find(t => t.id === teamId);
     if (!team) {
       console.warn(`Cannot switch to team: team ${teamId} not found`);
       return;
     }
 
-    this.switchingState.set(true);
-
-    try {
-      // 先更新状态，再更新持久化
-      this.contextTypeState.set('team');
-      this.contextIdState.set(teamId);
-
-      // 同步更新持久化
-      this.persistenceService.saveContext('team', teamId);
-      // 注意：Team 不是 Account，所以不需要调用 selectAccount
-    } finally {
-      // 使用 setTimeout 确保状态更新完成后再重置切换状态
-      setTimeout(() => {
-        this.switchingState.set(false);
-      }, 0);
-    }
+    // Team 不是 Account，所以不需要传递 account 参数
+    this.switchContext('team', teamId, null);
   }
 
   /**
    * 恢复持久化的上下文状态
    * 注意：此方法应该在数据加载完成后调用，否则可能因为数据未加载而切换失败
+   *
+   * 如果没有保存的上下文，默认切换到用户上下文（如果用户已登录）
    *
    * @returns 是否成功恢复
    */
@@ -440,79 +365,101 @@ export class WorkspaceContextService {
           break;
         case 'user':
           if (saved.id) {
-            const userId = saved.id;
-            // 验证用户账户是否存在，如果不存在则延迟重试
-            const currentAccount = this.currentUserAccount();
-            let account = currentAccount && currentAccount.id === userId ? currentAccount : null;
-            if (!account) {
-              account = this.accountService.userAccounts().find(a => a.id === userId) || null;
-            }
-            if (account) {
-              this.switchToUser(userId);
-            } else {
-              console.warn(`Cannot restore user context: account ${userId} not found, data may not be loaded yet`);
-              // 延迟重试一次
-              setTimeout(() => {
-                const retryCurrentAccount = this.currentUserAccount();
-                let retryAccount = retryCurrentAccount && retryCurrentAccount.id === userId ? retryCurrentAccount : null;
-                if (!retryAccount) {
-                  retryAccount = this.accountService.userAccounts().find(a => a.id === userId) || null;
-                }
-                if (retryAccount) {
-                  this.switchToUser(userId);
-                } else {
-                  console.warn(`Failed to restore user context after retry: account ${userId} not found`);
-                }
-              }, 500);
-            }
+            this.tryRestoreUserContext(saved.id);
           }
           break;
         case 'organization':
           if (saved.id) {
-            const orgId = saved.id;
-            // 验证组织是否存在，如果不存在则延迟重试
-            const organization = this.allOrganizations().find(org => org.id === orgId);
-            if (organization) {
-              this.switchToOrganization(orgId);
-            } else {
-              console.warn(`Cannot restore organization context: organization ${orgId} not found, data may not be loaded yet`);
-              // 延迟重试一次
-              setTimeout(() => {
-                const retryOrg = this.allOrganizations().find(org => org.id === orgId);
-                if (retryOrg) {
-                  this.switchToOrganization(orgId);
-                } else {
-                  console.warn(`Failed to restore organization context after retry: organization ${orgId} not found`);
-                }
-              }, 500);
-            }
+            this.tryRestoreOrganizationContext(saved.id);
           }
           break;
         case 'team':
           if (saved.id) {
-            const teamId = saved.id;
-            // 验证团队是否存在，如果不存在则延迟重试
-            const team = this.userTeams().find(t => t.id === teamId);
-            if (team) {
-              this.switchToTeam(teamId);
-            } else {
-              console.warn(`Cannot restore team context: team ${teamId} not found, data may not be loaded yet`);
-              // 延迟重试一次
-              setTimeout(() => {
-                const retryTeam = this.userTeams().find(t => t.id === teamId);
-                if (retryTeam) {
-                  this.switchToTeam(teamId);
-                } else {
-                  console.warn(`Failed to restore team context after retry: team ${teamId} not found`);
-                }
-              }, 500);
-            }
+            this.tryRestoreTeamContext(saved.id);
           }
           break;
       }
       return true;
     }
+
+    // 如果没有保存的上下文，默认切换到用户上下文（如果用户已登录）
+    const userId = this.currentUserAccountId();
+    if (userId) {
+      this.switchToUser(userId);
+      return true;
+    }
+
+    // 如果用户未登录，保持 app 上下文
     return false;
+  }
+
+  /**
+   * 尝试恢复用户上下文（带重试逻辑）
+   *
+   * @param userId 用户账户 ID
+   */
+  private tryRestoreUserContext(userId: string): void {
+    const account = this.findUserAccount(userId);
+    if (account) {
+      this.switchToUser(userId);
+    } else {
+      console.warn(`Cannot restore user context: account ${userId} not found, data may not be loaded yet`);
+      // 延迟重试一次
+      setTimeout(() => {
+        const retryAccount = this.findUserAccount(userId);
+        if (retryAccount) {
+          this.switchToUser(userId);
+        } else {
+          console.warn(`Failed to restore user context after retry: account ${userId} not found`);
+        }
+      }, 500);
+    }
+  }
+
+  /**
+   * 尝试恢复组织上下文（带重试逻辑）
+   *
+   * @param orgId 组织账户 ID
+   */
+  private tryRestoreOrganizationContext(orgId: string): void {
+    const organization = this.allOrganizations().find(org => org.id === orgId);
+    if (organization) {
+      this.switchToOrganization(orgId);
+    } else {
+      console.warn(`Cannot restore organization context: organization ${orgId} not found, data may not be loaded yet`);
+      // 延迟重试一次
+      setTimeout(() => {
+        const retryOrg = this.allOrganizations().find(org => org.id === orgId);
+        if (retryOrg) {
+          this.switchToOrganization(orgId);
+        } else {
+          console.warn(`Failed to restore organization context after retry: organization ${orgId} not found`);
+        }
+      }, 500);
+    }
+  }
+
+  /**
+   * 尝试恢复团队上下文（带重试逻辑）
+   *
+   * @param teamId 团队 ID
+   */
+  private tryRestoreTeamContext(teamId: string): void {
+    const team = this.userTeams().find(t => t.id === teamId);
+    if (team) {
+      this.switchToTeam(teamId);
+    } else {
+      console.warn(`Cannot restore team context: team ${teamId} not found, data may not be loaded yet`);
+      // 延迟重试一次
+      setTimeout(() => {
+        const retryTeam = this.userTeams().find(t => t.id === teamId);
+        if (retryTeam) {
+          this.switchToTeam(teamId);
+        } else {
+          console.warn(`Failed to restore team context after retry: team ${teamId} not found`);
+        }
+      }, 500);
+    }
   }
 
   /**
