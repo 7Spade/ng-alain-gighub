@@ -228,13 +228,13 @@ export class TodoWidgetComponent {
   showViewAll = input<boolean>(true);
 
   /** 點擊待辦事項 */
-  itemClick = output<TodoItem>();
+  readonly itemClick = output<TodoItem>();
 
   /** 狀態變更 */
-  statusChange = output<TodoStatusFilter>();
+  readonly statusChange = output<TodoStatusFilter>();
 
   /** 查看全部 */
-  viewAll = output<void>();
+  readonly viewAll = output<void>();
 
   /** 當前選中的 Tab 索引 */
   selectedTabIndex = signal(0);

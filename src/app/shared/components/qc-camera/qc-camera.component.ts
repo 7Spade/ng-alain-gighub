@@ -319,10 +319,10 @@ export class QcCameraComponent {
   annotationText = '';
 
   /** 拍照事件 */
-  photoCapture = output<CapturedPhoto>();
+  readonly photoCapture = output<CapturedPhoto>();
 
   /** 完成拍照事件 */
-  photosComplete = output<CapturedPhoto[]>();
+  readonly photosComplete = output<CapturedPhoto[]>();
 
   /**
    * 開始拍照

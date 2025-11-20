@@ -211,16 +211,16 @@ export class CommentThreadComponent {
   isNested = input<boolean>(false);
 
   /** 提交留言事件 */
-  commentSubmit = output<{ content: string; parentId?: string }>();
+  readonly commentSubmit = output<{ content: string; parentId?: string }>();
 
   /** 編輯留言事件 */
-  commentEdit = output<{ commentId: string; content: string }>();
+  readonly commentEdit = output<{ commentId: string; content: string }>();
 
   /** 刪除留言事件 */
-  commentDelete = output<string>();
+  readonly commentDelete = output<string>();
 
   /** 回覆留言事件 */
-  commentReply = output<CommentData>();
+  readonly commentReply = output<CommentData>();
 
   /** 新留言內容 */
   newCommentText = '';

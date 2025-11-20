@@ -190,7 +190,7 @@ export class WorkspaceContextService {
     const id = this.contextId();
 
     switch (type) {
-      case 'user':
+      case 'user': {
         if (id) {
           const account = this.findUserAccount(id);
           if (account) {
@@ -203,7 +203,8 @@ export class WorkspaceContextService {
           return (currentAccount as any).avatarUrl || (currentAccount as any).avatar_url || null;
         }
         return null;
-      case 'organization':
+      }
+      case 'organization': {
         if (id) {
           const account = this.allOrganizations().find(a => a.id === id);
           if (account) {
@@ -211,7 +212,8 @@ export class WorkspaceContextService {
           }
         }
         return null;
-      case 'team':
+      }
+      case 'team': {
         if (id) {
           const team = this.userTeams().find(t => t.id === id);
           if (team) {
@@ -219,6 +221,7 @@ export class WorkspaceContextService {
           }
         }
         return null;
+      }
       default:
         return null;
     }
