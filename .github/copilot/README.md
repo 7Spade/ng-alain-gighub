@@ -7,8 +7,12 @@
 ```
 .github/copilot/
 ├── mcp.json          # MCP 伺服器配置檔（本檔案）
+├── mcp.json.example  # 配置範例模板
 ├── memory.jsonl      # Memory MCP 伺服器的記憶體儲存
-└── README.md         # 本說明文件
+├── README.md         # 本說明文件（完整配置說明）
+├── QUICKSTART.md     # 5 分鐘快速上手指南
+├── SECURITY.md       # 安全性注意事項
+└── TESTING.md        # 測試指南與驗收標準
 ```
 
 ## 🔧 MCP 伺服器配置
@@ -263,15 +267,34 @@ interface MCPServerConfig {
 
 ### 配置後
 - [ ] 驗證 JSON 語法正確
-- [ ] 測試每個 MCP 伺服器連線
+- [ ] 測試每個 MCP 伺服器連線（參考 [TESTING.md](./TESTING.md)）
 - [ ] 確認 Token 權限適當
 - [ ] 更新相關文件
 
 ### 安全檢查
-- [ ] Token 已妥善保管
+- [ ] Token 已妥善保管（參考 [SECURITY.md](./SECURITY.md)）
 - [ ] 權限範圍最小化
 - [ ] 監控機制已設置
 - [ ] 定期輪換計畫
+
+## 📖 相關文件
+
+### 本目錄文件
+- 📘 [README.md](./README.md) - 本檔案，完整配置說明
+- 🚀 [QUICKSTART.md](./QUICKSTART.md) - 5 分鐘快速上手指南
+- 🔐 [SECURITY.md](./SECURITY.md) - 安全性注意事項與最佳實踐
+- 🧪 [TESTING.md](./TESTING.md) - 測試指南與驗收標準
+- 📝 [mcp.json.example](./mcp.json.example) - 配置範例模板
+
+### 專案文件
+- 📚 [GitHub Agents 使用說明](../agents/README.md)
+- 🎯 [快速開始指南](../agents/QUICK-START.md)
+- 📖 [專案開發規範](../../AGENTS.md)
+
+### 外部資源
+- 🌐 [Model Context Protocol (MCP) 規範](https://spec.modelcontextprotocol.io/)
+- 🤖 [GitHub Copilot Agent 文件](https://docs.github.com/en/copilot)
+- 🔗 [Supabase MCP 伺服器](https://github.com/supabase/mcp)
 
 ---
 
