@@ -1,7 +1,37 @@
 # @delon/chart - 圖表組件
 
-> **包分類**：圖表組件 (Chart Components)  
-> **版本**：^20.1.0  
+## 📑 目錄
+
+- [基本信息](#基本信息)
+- [安裝](#安裝)
+- [使用方式](#使用方式)
+  - [導入模組](#導入模組)
+  - [或使用 SHARED_IMPORTS](#或使用-shared_imports)
+- [主要組件](#主要組件)
+  - [1. G2Bar - 柱狀圖](#1-g2bar---柱狀圖)
+  - [2. G2Pie - 餅圖](#2-g2pie---餅圖)
+  - [3. G2MiniArea - 迷你面積圖](#3-g2miniarea---迷你面積圖)
+  - [4. G2MiniBar - 迷你柱狀圖](#4-g2minibar---迷你柱狀圖)
+  - [5. G2MiniProgress - 迷你進度條](#5-g2miniprogress---迷你進度條)
+  - [6. G2Gauge - 儀表盤](#6-g2gauge---儀表盤)
+  - [7. G2Radar - 雷達圖](#7-g2radar---雷達圖)
+  - [8. G2TagCloud - 標籤雲](#8-g2tagcloud---標籤雲)
+  - [9. G2Timeline - 時間軸](#9-g2timeline---時間軸)
+  - [10. G2WaterWave - 水波圖](#10-g2waterwave---水波圖)
+  - [11. G2SingleBar - 單一柱狀圖](#11-g2singlebar---單一柱狀圖)
+  - [12. G2Card - 圖表卡片](#12-g2card---圖表卡片)
+  - [13. NumberInfo - 數據文本](#13-numberinfo---數據文本)
+  - [14. Trend - 趨勢標記](#14-trend---趨勢標記)
+  - [15. ChartECharts - ECharts 圖表](#15-chartecharts---echarts-圖表)
+- [基本用法示例](#基本用法示例)
+- [項目中的使用](#項目中的使用)
+- [相關資源](#相關資源)
+
+---
+
+
+> **包分類**：圖表組件 (Chart Components)
+> **版本**：^20.1.0
 > **最後更新**：2025-01-15
 
 ## 基本信息
@@ -68,7 +98,7 @@ export class ExampleComponent {}
 
 ### 1. G2Bar - 柱狀圖
 
-**導入**：`import { G2BarModule } from '@delon/chart/bar';`  
+**導入**：`import { G2BarModule } from '@delon/chart/bar';`
 **文檔**：https://ng-alain.com/chart/bar
 
 ```html
@@ -77,7 +107,7 @@ export class ExampleComponent {}
 
 ### 2. G2Pie - 餅圖
 
-**導入**：`import { G2PieModule } from '@delon/chart/pie';`  
+**導入**：`import { G2PieModule } from '@delon/chart/pie';`
 **文檔**：https://ng-alain.com/chart/pie
 
 ```html
@@ -86,7 +116,7 @@ export class ExampleComponent {}
 
 ### 3. G2MiniArea - 迷你面積圖
 
-**導入**：`import { G2MiniAreaModule } from '@delon/chart/mini-area';`  
+**導入**：`import { G2MiniAreaModule } from '@delon/chart/mini-area';`
 **文檔**：https://ng-alain.com/chart/mini-area
 
 ```html
@@ -95,7 +125,7 @@ export class ExampleComponent {}
 
 ### 4. G2MiniBar - 迷你柱狀圖
 
-**導入**：`import { G2MiniBarModule } from '@delon/chart/mini-bar';`  
+**導入**：`import { G2MiniBarModule } from '@delon/chart/mini-bar';`
 **文檔**：https://ng-alain.com/chart/mini-bar
 
 ```html
@@ -104,7 +134,7 @@ export class ExampleComponent {}
 
 ### 5. G2MiniProgress - 迷你進度條
 
-**導入**：`import { G2MiniProgressModule } from '@delon/chart/mini-progress';`  
+**導入**：`import { G2MiniProgressModule } from '@delon/chart/mini-progress';`
 **文檔**：https://ng-alain.com/chart/mini-progress
 
 ```html
@@ -113,7 +143,7 @@ export class ExampleComponent {}
 
 ### 6. G2Gauge - 儀表盤
 
-**導入**：`import { G2GaugeModule } from '@delon/chart/gauge';`  
+**導入**：`import { G2GaugeModule } from '@delon/chart/gauge';`
 **文檔**：https://ng-alain.com/chart/gauge
 
 ```html
@@ -122,7 +152,7 @@ export class ExampleComponent {}
 
 ### 7. G2Radar - 雷達圖
 
-**導入**：`import { G2RadarModule } from '@delon/chart/radar';`  
+**導入**：`import { G2RadarModule } from '@delon/chart/radar';`
 **文檔**：https://ng-alain.com/chart/radar
 
 ```html
@@ -131,7 +161,7 @@ export class ExampleComponent {}
 
 ### 8. G2TagCloud - 標籤雲
 
-**導入**：`import { G2TagCloudModule } from '@delon/chart/tag-cloud';`  
+**導入**：`import { G2TagCloudModule } from '@delon/chart/tag-cloud';`
 **文檔**：https://ng-alain.com/chart/tag-cloud
 
 ```html
@@ -140,7 +170,7 @@ export class ExampleComponent {}
 
 ### 9. G2Timeline - 時間軸
 
-**導入**：`import { G2TimelineModule } from '@delon/chart/timeline';`  
+**導入**：`import { G2TimelineModule } from '@delon/chart/timeline';`
 **文檔**：https://ng-alain.com/chart/timeline
 
 ```html
@@ -149,7 +179,7 @@ export class ExampleComponent {}
 
 ### 10. G2WaterWave - 水波圖
 
-**導入**：`import { G2WaterWaveModule } from '@delon/chart/water-wave';`  
+**導入**：`import { G2WaterWaveModule } from '@delon/chart/water-wave';`
 **文檔**：https://ng-alain.com/chart/water-wave
 
 ```html
@@ -158,7 +188,7 @@ export class ExampleComponent {}
 
 ### 11. G2SingleBar - 單一柱狀圖
 
-**導入**：`import { G2SingleBarModule } from '@delon/chart/single-bar';`  
+**導入**：`import { G2SingleBarModule } from '@delon/chart/single-bar';`
 **文檔**：https://ng-alain.com/chart/single-bar
 
 ```html
@@ -167,7 +197,7 @@ export class ExampleComponent {}
 
 ### 12. G2Card - 圖表卡片
 
-**導入**：`import { G2CardModule } from '@delon/chart/card';`  
+**導入**：`import { G2CardModule } from '@delon/chart/card';`
 **文檔**：https://ng-alain.com/chart/card
 
 ```html
@@ -178,7 +208,7 @@ export class ExampleComponent {}
 
 ### 13. NumberInfo - 數據文本
 
-**導入**：`import { NumberInfoModule } from '@delon/chart/number-info';`  
+**導入**：`import { NumberInfoModule } from '@delon/chart/number-info';`
 **文檔**：https://ng-alain.com/chart/number-info
 
 ```html
@@ -187,7 +217,7 @@ export class ExampleComponent {}
 
 ### 14. Trend - 趨勢標記
 
-**導入**：`import { TrendModule } from '@delon/chart/trend';`  
+**導入**：`import { TrendModule } from '@delon/chart/trend';`
 **文檔**：https://ng-alain.com/chart/trend
 
 ```html
@@ -196,7 +226,7 @@ export class ExampleComponent {}
 
 ### 15. ChartECharts - ECharts 圖表
 
-**導入**：`import { ChartEChartsModule } from '@delon/chart/chart-echarts';`  
+**導入**：`import { ChartEChartsModule } from '@delon/chart/chart-echarts';`
 **文檔**：https://ng-alain.com/chart/chart-echarts
 
 ```html

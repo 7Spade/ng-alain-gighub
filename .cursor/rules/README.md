@@ -175,7 +175,7 @@ According to Cursor documentation, rules are categorized as:
 ## 📚 Related Documentation
 
 - [Cursor Rules Documentation](https://docs.cursor.com/context/rules)
-- [AGENTS.md](../AGENTS.md) - High-level architecture decisions
+- [AGENTS.md](../../AGENTS.md) - High-level architecture decisions
 - [Development Guidelines](../docs/00-開發作業指引.md) - Complete development standards
 
 ## 🔄 Updating Rules
@@ -186,8 +186,8 @@ When updating rules:
 2. Update references in `AGENTS.md` (if needed)
 3. Rules will automatically take effect in the next AI conversation
 
----
+- --
 
-**Last Updated**: 2025-01-15  
+**Last Updated**: 2025-01-15
 **Maintained By**: Development Team
 

@@ -1,13 +1,43 @@
 # DELON-Index 索引
 
-> 📋 **目的**：提供 @delon 套件索引和配置參考，包含常用組件和最佳實踐
+## 📑 目錄
 
-**最後更新**：2025-11-15  
-**維護者**：開發團隊  
-**版本**：基於 @delon ^20.1.0  
-**驗證來源**：ng-alain 官方文檔、專案 `shared-delon.module.ts`
+- [📋 目錄](#-目錄)
+- [包列表](#包列表)
+  - [業務組件 (Business Components)](#業務組件-business-components)
+    - [[@delon/abc - 業務組件庫](./DELON-Index/01-@delon-abc.md)](#delonabc---業務組件庫delon-index01-delon-abcmd)
+    - [[@delon/form - 動態表單](./DELON-Index/06-@delon-form.md)](#delonform---動態表單delon-index06-delon-formmd)
+  - [核心服務 (Core Services)](#核心服務-core-services)
+    - [[@delon/auth - 認證服務](./DELON-Index/03-@delon-auth.md)](#delonauth---認證服務delon-index03-delon-authmd)
+    - [[@delon/cache - 緩存服務](./DELON-Index/04-@delon-cache.md)](#deloncache---緩存服務delon-index04-delon-cachemd)
+    - [[@delon/acl - 訪問控制列表](./DELON-Index/02-@delon-acl.md)](#delonacl---訪問控制列表delon-index02-delon-aclmd)
+  - [UI 組件 (UI Components)](#ui-組件-ui-components)
+    - [[@delon/chart - 圖表組件](./DELON-Index/05-@delon-chart.md)](#delonchart---圖表組件delon-index05-delon-chartmd)
+    - [[@delon/theme - 主題系統](./DELON-Index/08-@delon-theme.md)](#delontheme---主題系統delon-index08-delon-thememd)
+  - [工具庫 (Utilities)](#工具庫-utilities)
+    - [[@delon/util - 工具函數庫](./DELON-Index/09-@delon-util.md)](#delonutil---工具函數庫delon-index09-delon-utilmd)
+    - [[@delon/mock - Mock 數據服務](./DELON-Index/07-@delon-mock.md)](#delonmock---mock-數據服務delon-index07-delon-mockmd)
+    - [[@delon/testing - 測試工具](./DELON-Index/10-@delon-testing.md)](#delontesting---測試工具delon-index10-delon-testingmd)
+- [使用指南](#使用指南)
+  - [快速開始](#快速開始)
+  - [優先使用 SHARED_IMPORTS](#優先使用-shared_imports)
+  - [包分類說明](#包分類說明)
+- [參考文檔](#參考文檔)
+  - [專案文檔](#專案文檔)
+  - [官方文檔](#官方文檔)
+  - [相關索引](#相關索引)
 
 ---
+
+
+> 📋 **目的**：提供 @delon 套件索引和配置參考，包含常用組件和最佳實踐
+
+**最後更新**：2025-11-15
+**維護者**：開發團隊
+**版本**：基於 @delon ^20.1.0
+**驗證來源**：ng-alain 官方文檔、專案 `shared-delon.module.ts`
+
+- --
 
 ## 📋 目錄
 
@@ -15,7 +45,7 @@
 - [使用指南](#使用指南)
 - [參考文檔](#參考文檔)
 
----
+- --
 
 ## 包列表
 
@@ -53,7 +83,7 @@
 | **主要功能** | 基於 JSON Schema 的動態表單生成與驗證 |
 | **詳細文檔** | [查看詳細文檔](./DELON-Index/06-@delon-form.md) |
 
----
+- --
 
 ### 核心服務 (Core Services)
 
@@ -87,7 +117,7 @@
 | **主要功能** | 提供訪問控制列表（ACL）功能，用於權限控制 |
 | **詳細文檔** | [查看詳細文檔](./DELON-Index/02-@delon-acl.md) |
 
----
+- --
 
 ### UI 組件 (UI Components)
 
@@ -118,7 +148,7 @@
 | **主要功能** | 提供主題系統，包括佈局、樣式、國際化等功能 |
 | **詳細文檔** | [查看詳細文檔](./DELON-Index/08-@delon-theme.md) |
 
----
+- --
 
 ### 工具庫 (Utilities)
 
@@ -159,7 +189,7 @@
 | **主要功能** | 提供測試輔助函數和工具，用於單元測試和集成測試 |
 | **詳細文檔** | [查看詳細文檔](./DELON-Index/10-@delon-testing.md) |
 
----
+- --
 
 ## 使用指南
 
@@ -191,7 +221,7 @@ export class ExampleComponent {}
 - **UI 組件**：提供圖表、主題等 UI 相關組件
 - **工具庫**：提供工具函數、Mock 數據、測試工具等
 
----
+- --
 
 ## 參考文檔
 
@@ -210,22 +240,10 @@ export class ExampleComponent {}
 
 - [NG-ZORRO-Index 索引](./46-ng-zorro-antd-組件清單與CLI指令.md) - ng-zorro-antd 組件索引
 
----
+- --
 
-**最後更新**：2025-01-15  
-**維護者**：開發團隊  
+**最後更新**：2025-01-15
+**維護者**：開發團隊
 **下次審查**：2025-02-15
-
-
-
-
-
-
-
-
-
-
-
-
 
 

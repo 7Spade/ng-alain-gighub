@@ -14,7 +14,7 @@
 
 **New numbering (10-19 series)**:
 1. **10-系統架構總覽.mermaid.md** ← merge 01+02+03
-2. **11-業務與帳戶層.mermaid.md** ← merge 04+05  
+2. **11-業務與帳戶層.mermaid.md** ← merge 04+05
 3. **12-資料庫ER圖.mermaid.md** ← rename 06
 4. **13-資料生命週期與Storage.mermaid.md** ← merge 07+08
 5. **14-安全與RLS權限矩陣.md** ← rename 09 (not mermaid)

@@ -1,12 +1,96 @@
 # @delon/abc 使用指南
 
-> 📋 **目的**：詳細說明 `@delon/abc` 業務組件庫的使用方法、API 和最佳實踐
+## 📑 目錄
 
-**最後更新**：2025-01-15  
-**適用版本**：@delon/abc ^20.1.0  
-**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+- [📋 目錄](#-目錄)
+- [概述](#概述)
+  - [核心特點](#核心特點)
+- [安裝與導入](#安裝與導入)
+  - [安裝](#安裝)
+  - [導入方式](#導入方式)
+    - [方式 1：單個組件導入](#方式-1單個組件導入)
+    - [方式 2：使用 SHARED_IMPORTS（推薦）](#方式-2使用-shared_imports推薦)
+- [主要組件](#主要組件)
+  - [ST (Smart Table) - 智能表格](#st-smart-table---智能表格)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [SV (Simple View) - 鍵值描述視圖](#sv-simple-view---鍵值描述視圖)
+    - [基本用法](#基本用法)
+  - [SE (Simple Edit) - 表單佈局](#se-simple-edit---表單佈局)
+    - [基本用法](#基本用法)
+  - [PageHeader - 頁面標題](#pageheader---頁面標題)
+    - [基本用法](#基本用法)
+  - [Ellipsis - 文本省略](#ellipsis---文本省略)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [FooterToolbar - 底部工具欄](#footertoolbar---底部工具欄)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [FullContent - 全屏內容](#fullcontent---全屏內容)
+    - [基本用法](#基本用法)
+  - [ReuseTab - 標籤頁（路由快取）](#reusetab---標籤頁路由快取)
+    - [基本用法](#基本用法)
+  - [TagSelect - 標籤選擇](#tagselect---標籤選擇)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [Onboarding - 引導式操作](#onboarding---引導式操作)
+    - [基本用法](#基本用法)
+    - [使用示例](#使用示例)
+  - [QuickMenu - 快捷菜單](#quickmenu---快捷菜單)
+    - [基本用法](#基本用法)
+    - [使用示例](#使用示例)
+  - [CountDown - 倒計時](#countdown---倒計時)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [GlobalFooter - 全局頁腳](#globalfooter---全局頁腳)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [Exception - 異常頁面](#exception---異常頁面)
+    - [基本用法](#基本用法)
+  - [NoticeIcon - 通知圖標](#noticeicon---通知圖標)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [DownFile - 下載文件指令](#downfile---下載文件指令)
+    - [基本用法](#基本用法)
+    - [主要屬性](#主要屬性)
+    - [使用示例](#使用示例)
+  - [Cell - 單元格渲染](#cell---單元格渲染)
+    - [基本用法](#基本用法)
+    - [使用示例](#使用示例)
+- [實際使用示例](#實際使用示例)
+  - [示例 1：ST 表格完整示例](#示例-1st-表格完整示例)
+  - [示例 2：SV 鍵值描述視圖](#示例-2sv-鍵值描述視圖)
+  - [示例 3：SE 表單佈局](#示例-3se-表單佈局)
+- [最佳實踐](#最佳實踐)
+  - [1. 使用 SHARED_IMPORTS](#1-使用-shared_imports)
+  - [2. 使用 Signals 管理表格數據](#2-使用-signals-管理表格數據)
+  - [3. ST 表格列配置](#3-st-表格列配置)
+- [常見問題](#常見問題)
+  - [Q1: 如何自定義 ST 表格列渲染？](#q1-如何自定義-st-表格列渲染)
+  - [Q2: 如何實現 ST 表格服務器端分頁？](#q2-如何實現-st-表格服務器端分頁)
+  - [Q3: 如何清空 ReuseTab 緩存？](#q3-如何清空-reusetab-緩存)
+- [🔗 相關文檔](#-相關文檔)
+- [📚 參考資源](#-參考資源)
+  - [官方文檔](#官方文檔)
+  - [相關組件](#相關組件)
 
 ---
+
+
+> 📋 **目的**：詳細說明 `@delon/abc` 業務組件庫的使用方法、API 和最佳實踐
+
+**最後更新**：2025-01-15
+**適用版本**：@delon/abc ^20.1.0
+**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+
+- --
 
 ## 📋 目錄
 
@@ -34,7 +118,7 @@
 - [最佳實踐](#最佳實踐)
 - [常見問題](#常見問題)
 
----
+- --
 
 ## 概述
 
@@ -47,7 +131,7 @@
 - **易於使用**：組件 API 設計簡潔，易於上手
 - **類型安全**：完整的 TypeScript 類型定義
 
----
+- --
 
 ## 安裝與導入
 
@@ -102,13 +186,13 @@ import { SHARED_IMPORTS } from '@shared/shared-imports';
 export class ExampleComponent {}
 ```
 
----
+- --
 
 ## 主要組件
 
 ### ST (Smart Table) - 智能表格
 
-**導入**：`import { STModule } from '@delon/abc/st';`  
+**導入**：`import { STModule } from '@delon/abc/st';`
 **文檔**：https://ng-alain.com/components/st
 
 功能強大的數據表格組件，支持排序、篩選、分頁、自定義渲染等功能。
@@ -259,11 +343,11 @@ export class ExampleComponent {}
   ];
 ```
 
----
+- --
 
 ### SV (Simple View) - 鍵值描述視圖
 
-**導入**：`import { SVModule } from '@delon/abc/sv';`  
+**導入**：`import { SVModule } from '@delon/abc/sv';`
 **文檔**：https://ng-alain.com/components/sv
 
 用於鍵值對形式的數據展示。
@@ -311,11 +395,11 @@ export class ExampleComponent {}
   </sv-container>
 ```
 
----
+- --
 
 ### SE (Simple Edit) - 表單佈局
 
-**導入**：`import { SEModule } from '@delon/abc/se';`  
+**導入**：`import { SEModule } from '@delon/abc/se';`
 **文檔**：https://ng-alain.com/components/se
 
 簡潔的表單佈局組件，快速排版表單項。
@@ -347,11 +431,11 @@ export class ExampleComponent {}
         </form>
 ```
 
----
+- --
 
 ### PageHeader - 頁面標題
 
-**導入**：`import { PageHeaderModule } from '@delon/abc/page-header';`  
+**導入**：`import { PageHeaderModule } from '@delon/abc/page-header';`
 **文檔**：https://ng-alain.com/components/page-header
 
 頁面標題區，包含麵包屑和操作區。
@@ -442,11 +526,11 @@ export class ExampleComponent {}
   </ng-template>
 ```
 
----
+- --
 
 ### Ellipsis - 文本省略
 
-**導入**：`import { EllipsisComponent } from '@delon/abc/ellipsis';`  
+**導入**：`import { EllipsisComponent } from '@delon/abc/ellipsis';`
 **文檔**：https://ng-alain.com/components/ellipsis
 
 文本超出省略顯示組件，支持按長度或行數省略，並可顯示 Tooltip。
@@ -490,11 +574,11 @@ export class ExampleComponent {}
 </ellipsis>
 ```
 
----
+- --
 
 ### FooterToolbar - 底部工具欄
 
-**導入**：`import { FooterToolbarModule } from '@delon/abc/footer-toolbar';`  
+**導入**：`import { FooterToolbarModule } from '@delon/abc/footer-toolbar';`
 **文檔**：https://ng-alain.com/components/footer-toolbar
 
 頁面底部操作工具欄，固定在頁面底部，適合表單提交等場景。
@@ -550,11 +634,11 @@ interface UserForm {
 </footer-toolbar>
 ```
 
----
+- --
 
 ### FullContent - 全屏內容
 
-**導入**：`import { FullContentModule } from '@delon/abc/full-content';`  
+**導入**：`import { FullContentModule } from '@delon/abc/full-content';`
 **文檔**：https://ng-alain.com/components/full-content
 
 內容區全屏/填充切換。
@@ -620,11 +704,11 @@ interface UserForm {
   }
 ```
 
----
+- --
 
 ### ReuseTab - 標籤頁（路由快取）
 
-**導入**：`import { ReuseTabModule } from '@delon/abc/reuse-tab';`  
+**導入**：`import { ReuseTabModule } from '@delon/abc/reuse-tab';`
 **文檔**：https://ng-alain.com/components/reuse-tab
 
 標籤頁組件，支持路由快取。
@@ -649,11 +733,11 @@ export const routes: Routes = [
           this.reuseTabService?.clear();
 ```
 
----
+- --
 
 ### TagSelect - 標籤選擇
 
-**導入**：`import { TagSelectComponent } from '@delon/abc/tag-select';`  
+**導入**：`import { TagSelectComponent } from '@delon/abc/tag-select';`
 **文檔**：https://ng-alain.com/components/tag-select
 
 Tag 多選與展開/收起選擇器，用於篩選和標籤選擇場景。
@@ -701,11 +785,11 @@ Tag 多選與展開/收起選擇器，用於篩選和標籤選擇場景。
 </se>
 ```
 
----
+- --
 
 ### Onboarding - 引導式操作
 
-**導入**：`import { OnboardingModule, OnboardingService } from '@delon/abc/onboarding';`  
+**導入**：`import { OnboardingModule, OnboardingService } from '@delon/abc/onboarding';`
 **文檔**：https://ng-alain.com/components/onboarding
 
 引導式操作組件，用於新用戶引導和功能提示。
@@ -757,11 +841,11 @@ obSrv.start(config);
 }
 ```
 
----
+- --
 
 ### QuickMenu - 快捷菜單
 
-**導入**：`import { QuickMenuModule } from '@delon/abc/quick-menu';`  
+**導入**：`import { QuickMenuModule } from '@delon/abc/quick-menu';`
 **文檔**：https://ng-alain.com/components/quick-menu
 
 快捷菜單組件，用於快速導航和常用功能入口。
@@ -807,11 +891,11 @@ obSrv.start(config);
 </quick-menu>
 ```
 
----
+- --
 
 ### CountDown - 倒計時
 
-**導入**：`import { CountDownModule } from '@delon/abc/count-down';`  
+**導入**：`import { CountDownModule } from '@delon/abc/count-down';`
 **文檔**：https://ng-alain.com/components/count-down
 
 倒計時組件，基於 `ngx-countdown`，支持多種格式和配置。
@@ -861,11 +945,11 @@ countdownConfig: CountdownConfig = {
 };
 ```
 
----
+- --
 
 ### GlobalFooter - 全局頁腳
 
-**導入**：`import { GlobalFooterModule } from '@delon/abc/global-footer';`  
+**導入**：`import { GlobalFooterModule } from '@delon/abc/global-footer';`
 **文檔**：https://ng-alain.com/components/global-footer
 
 全局頁腳組件，用於顯示版權信息、鏈接等。
@@ -903,11 +987,11 @@ links = [
 copyright = '2024 © ng-alain';
 ```
 
----
+- --
 
 ### Exception - 異常頁面
 
-**導入**：`import { ExceptionModule } from '@delon/abc/exception';`  
+**導入**：`import { ExceptionModule } from '@delon/abc/exception';`
 **文檔**：https://ng-alain.com/components/exception
 
 異常頁面組件（404、403、500 等）。
@@ -939,11 +1023,11 @@ export class ExceptionComponent {
 }
 ```
 
----
+- --
 
 ### NoticeIcon - 通知圖標
 
-**導入**：`import { NoticeIconModule, NoticeItem, NoticeIconSelect } from '@delon/abc/notice-icon';`  
+**導入**：`import { NoticeIconModule, NoticeItem, NoticeIconSelect } from '@delon/abc/notice-icon';`
 **文檔**：https://ng-alain.com/components/notice-icon
 
 通知圖標組件，用於顯示通知、消息、待辦等信息。
@@ -1176,11 +1260,11 @@ export class HeaderNotifyComponent {
 }
 ```
 
----
+- --
 
 ### DownFile - 下載文件指令
 
-**導入**：`import { DownFileDirective } from '@delon/abc/down-file';`  
+**導入**：`import { DownFileDirective } from '@delon/abc/down-file';`
 **文檔**：https://ng-alain.com/components/down-file
 
 下載文件指令，用於觸發文件下載。
@@ -1230,11 +1314,11 @@ downloadBlob(): void {
 </button>
 ```
 
----
+- --
 
 ### Cell - 單元格渲染
 
-**導入**：`import { CellModule } from '@delon/abc/cell';`  
+**導入**：`import { CellModule } from '@delon/abc/cell';`
 **文檔**：https://ng-alain.com/components/cell/zh
 
 單元格渲染組件，用於 ST 表格的自定義單元格渲染。
@@ -1279,7 +1363,7 @@ columns: STColumn[] = [
 ];
 ```
 
----
+- --
 
 ## 實際使用示例
 
@@ -1454,7 +1538,7 @@ export class AccountListComponent implements OnInit {
         </form>
 ```
 
----
+- --
 
 ## 最佳實踐
 
@@ -1517,7 +1601,7 @@ const columns: STColumn[] = [
 ];
 ```
 
----
+- --
 
 ## 常見問題
 
@@ -1557,7 +1641,7 @@ const reuseTabService = inject(ReuseTabService);
 reuseTabService?.clear();
 ```
 
----
+- --
 
 ## 🔗 相關文檔
 
@@ -1565,7 +1649,7 @@ reuseTabService?.clear();
 - [開發作業指引](../00-開發作業指引.md) - 開發規範
 - [返回索引](./README.md)
 
----
+- --
 
 ## 📚 參考資源
 
@@ -1579,8 +1663,8 @@ reuseTabService?.clear();
 - [@delon/form](https://ng-alain.com/form) - 動態表單
 - [@delon/chart](https://ng-alain.com/chart) - 圖表組件
 
----
+- --
 
-**最後更新**：2025-01-15  
-**維護者**：開發團隊  
+**最後更新**：2025-01-15
+**維護者**：開發團隊
 **下次審查**：2025-02-15

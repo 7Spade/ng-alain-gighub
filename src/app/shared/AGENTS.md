@@ -1,5 +1,32 @@
 # Shared 模組開發規範（GitHub Copilot Agent 優化版）
 
+## 📑 目錄
+
+- [🎯 Shared 模組職責](#-shared-模組職責)
+- [⚡ 快速參考](#-快速參考)
+  - [依賴關係](#依賴關係)
+  - [關鍵原則](#關鍵原則)
+- [📋 核心規範檢查清單](#-核心規範檢查清單)
+  - [UI 組件開發](#ui-組件開發)
+  - [工具函數開發](#工具函數開發)
+  - [共享服務開發](#共享服務開發)
+  - [SHARED_IMPORTS 使用](#shared_imports-使用)
+- [🧪 測試要求](#-測試要求)
+  - [覆蓋率標準](#覆蓋率標準)
+  - [測試重點](#測試重點)
+- [📚 相關 Cursor 規則](#-相關-cursor-規則)
+  - [模組特定規則](#模組特定規則)
+  - [通用規則（自動應用）](#通用規則自動應用)
+- [🔗 相關文檔](#-相關文檔)
+  - [必讀文檔](#必讀文檔)
+  - [參考文檔](#參考文檔)
+- [💡 AI 助手使用建議](#-ai-助手使用建議)
+  - [適合使用的 AI 助手](#適合使用的-ai-助手)
+  - [常見 Prompt 範例](#常見-prompt-範例)
+
+---
+
+
 > 📖 **目的**：為 Shared 模組開發提供 AI 助手友善的規範指引。本模組規範已整合到 Cursor 規則系統（`.cursor/rules/shared-specific.mdc`），規則會自動應用到 `src/app/shared/` 目錄。
 
 ## 🎯 Shared 模組職責
@@ -79,11 +106,11 @@ export function formatDate(date: Date | string | null): string {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
   if (isNaN(d.getTime())) return '';
-  
+
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
-  
+
   return `${year}-${month}-${day}`;
 }
 ```
@@ -102,13 +129,13 @@ export function formatDate(date: Date | string | null): string {
 export class ThemeService {
   private themeSignal = signal<'light' | 'dark'>('light');
   readonly theme = this.themeSignal.asReadonly();
-  
+
   toggleTheme(): void {
     const newTheme = this.theme() === 'light' ? 'dark' : 'light';
     this.themeSignal.set(newTheme);
     localStorage.setItem('theme', newTheme);
   }
-  
+
   loadTheme(): void {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (savedTheme) {
@@ -199,10 +226,10 @@ import { CommonModule } from '@angular/common'; // ❌ 已在 SHARED_IMPORTS 中
 6. 遵循 .cursor/rules/shared-specific.mdc 規範
 ```
 
----
+- --
 
-**最後更新**：2025-11-20  
-**架構版本**：v2.0  
-**維護者**：開發團隊  
+**最後更新**：2025-11-20
+**架構版本**：v2.0
+**維護者**：開發團隊
 **適用**：GitHub Copilot Agent Mode
 

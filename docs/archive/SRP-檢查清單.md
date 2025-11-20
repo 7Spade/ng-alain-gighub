@@ -1,9 +1,29 @@
 # SRP 合規性檢查清單
 
-**用途**: 開發新功能時的快速檢查清單  
-**更新**: 2025-11-19
+## 📑 目錄
+
+- [✅ Component 檢查清單](#-component-檢查清單)
+- [✅ Service 檢查清單](#-service-檢查清單)
+- [✅ Repository 檢查清單](#-repository-檢查清單)
+- [✅ Facade 檢查清單](#-facade-檢查清單)
+- [❌ 常見違規模式](#-常見違規模式)
+  - [🚫 Component 直接使用 Repository](#-component-直接使用-repository)
+  - [🚫 Service 直接使用 SupabaseService.client](#-service-直接使用-supabaseserviceclient)
+  - [🚫 Repository 包含業務邏輯](#-repository-包含業務邏輯)
+- [🎯 快速決策樹](#-快速決策樹)
+- [📋 Code Review 檢查清單](#-code-review-檢查清單)
+  - [Component PR](#component-pr)
+  - [Service PR](#service-pr)
+  - [Repository PR](#repository-pr)
+  - [Facade PR](#facade-pr)
 
 ---
+
+
+**用途**: 開發新功能時的快速檢查清單
+**更新**: 2025-11-19
+
+- --
 
 ## ✅ Component 檢查清單
 
@@ -33,11 +53,11 @@
 })
 export class ExampleComponent {
   private readonly exampleService = inject(ExampleService);
-  
+
   // ✅ 使用 Service 的 signals
   readonly items = this.exampleService.items;
   readonly loading = this.exampleService.loading;
-  
+
   // ✅ UI 邏輯
   async onAction(): Promise<void> {
     await this.exampleService.performAction();
@@ -45,7 +65,7 @@ export class ExampleComponent {
 }
 ```
 
----
+- --
 
 ## ✅ Service 檢查清單
 
@@ -78,21 +98,21 @@ export class ExampleComponent {
 })
 export class ExampleService {
   private readonly exampleRepository = inject(ExampleRepository);
-  
+
   // ✅ 使用 Signals 管理狀態
   private itemsState = signal<Item[]>([]);
   private loadingState = signal<boolean>(false);
   private errorState = signal<string | null>(null);
-  
+
   readonly items = this.itemsState.asReadonly();
   readonly loading = this.loadingState.asReadonly();
   readonly error = this.errorState.asReadonly();
-  
+
   // ✅ 業務邏輯方法
   async loadItems(): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
-    
+
     try {
       const items = await firstValueFrom(this.exampleRepository.findAll());
       this.itemsState.set(items);
@@ -106,7 +126,7 @@ export class ExampleService {
 }
 ```
 
----
+- --
 
 ## ✅ Repository 檢查清單
 
@@ -144,7 +164,7 @@ export type { ExampleInsert, ExampleUpdate };
 })
 export class ExampleRepository extends BaseRepository<Example, ExampleInsert, ExampleUpdate> {
   protected tableName = 'examples';
-  
+
   // ✅ 自定義查詢方法
   findByUserId(userId: string): Observable<Example[]> {
     return this.findAll({
@@ -154,7 +174,7 @@ export class ExampleRepository extends BaseRepository<Example, ExampleInsert, Ex
 }
 ```
 
----
+- --
 
 ## ✅ Facade 檢查清單
 
@@ -182,11 +202,11 @@ export class ExampleRepository extends BaseRepository<Example, ExampleInsert, Ex
 export class ExampleFacade {
   private readonly exampleService = inject(ExampleService);
   private readonly activityService = inject(ActivityService);
-  
+
   // ✅ 暴露 Service 的 signals
   readonly items = this.exampleService.items;
   readonly loading = this.exampleService.loading;
-  
+
   // ✅ 協調多個 Service
   async performComplexOperation(): Promise<void> {
     await this.exampleService.doSomething();
@@ -198,7 +218,7 @@ export class ExampleFacade {
 }
 ```
 
----
+- --
 
 ## ❌ 常見違規模式
 
@@ -208,7 +228,7 @@ export class ExampleFacade {
 // ❌ 錯誤
 export class BadComponent {
   private readonly repository = inject(ExampleRepository);
-  
+
   async load(): Promise<void> {
     const items = await firstValueFrom(this.repository.findAll());
   }
@@ -217,14 +237,14 @@ export class BadComponent {
 // ✅ 正確
 export class GoodComponent {
   private readonly service = inject(ExampleService);
-  
+
   async load(): Promise<void> {
     await this.service.loadItems();
   }
 }
 ```
 
----
+- --
 
 ### 🚫 Service 直接使用 SupabaseService.client
 
@@ -232,7 +252,7 @@ export class GoodComponent {
 // ❌ 錯誤
 export class BadService {
   private readonly supabase = inject(SupabaseService);
-  
+
   async signIn(email: string, password: string): Promise<void> {
     const { data } = await this.supabase.client.auth.signInWithPassword({
       email, password
@@ -243,7 +263,7 @@ export class BadService {
 // ✅ 正確
 export class GoodService {
   private readonly authRepository = inject(AuthRepository);
-  
+
   signIn(request: SignInRequest): Observable<AuthResult> {
     return this.authRepository.signIn(request).pipe(
       map(response => this.handleAuthResponse(response))
@@ -252,7 +272,7 @@ export class GoodService {
 }
 ```
 
----
+- --
 
 ### 🚫 Repository 包含業務邏輯
 
@@ -275,13 +295,13 @@ export class GoodRepository {
 
 // ✅ 業務邏輯放在 Service
 export class UserService {
-  readonly activeUsers = computed(() => 
+  readonly activeUsers = computed(() =>
     this.users().filter(u => u.status === 'active' && this.isRecentlyActive(u))
   );
 }
 ```
 
----
+- --
 
 ## 🎯 快速決策樹
 
@@ -305,7 +325,7 @@ export class UserService {
   └─ 否 → 重新思考職責
 ```
 
----
+- --
 
 ## 📋 Code Review 檢查清單
 
@@ -334,8 +354,8 @@ export class UserService {
 - [ ] 協調多個 Service
 - [ ] 暴露統一的 Signal 接口
 
----
+- --
 
-**更新日期**: 2025-11-19  
-**維護者**: 開發團隊  
+**更新日期**: 2025-11-19
+**維護者**: 開發團隊
 **參考**: [SRP 重構完成報告](./SRP-重構完成報告.md)

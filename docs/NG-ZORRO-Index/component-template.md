@@ -1,6 +1,6 @@
 # {COMPONENT_NAME} - {COMPONENT_DESCRIPTION}
 
-> **組件分類**：{CATEGORY}  
+> **組件分類**：{CATEGORY}
 > **最後更新**：2025-01-15
 
 ## 基本信息

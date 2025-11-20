@@ -70,12 +70,12 @@ For detailed architecture understanding, see:
 - [Sequence Diagram](./docs/13-序列圖.mermaid.md) - Sequence diagrams
 - [State Diagram](./docs/14-狀態圖.mermaid.md) - State transitions
 - [Domain Event Timeline](./docs/15-領域事件時間軸圖.mermaid.md) - Domain events timeline
-- [API Interface Mapping](./docs/16-API-介面映射圖.mermaid.md) - API interface mapping
+- [API Interface Mapping](docs/archive/16-API-介面映射圖.mermaid.md) - API interface mapping
 
 #### Infrastructure & Deployment
 - [Supabase Architecture Flowchart](./docs/17-Supabase架構流程圖.mermaid.md) - Supabase architecture
 - [Deployment Infrastructure](./docs/18-部署基礎設施視圖.mermaid.md) - Deployment infrastructure
-- [Observability & CI/CD Pipeline](./docs/19-可觀測性與CI-CD管道圖.mermaid.md) - Monitoring and CI/CD
+- [Observability & CI/CD Pipeline](docs/archive/19-可觀測性與CI-CD管道圖.mermaid.md) - Monitoring and CI/CD
 
 ### 📋 Development Standards
 
@@ -225,12 +225,12 @@ The system implements a **three-context workspace model** for different user rol
   - Personal data aggregation across all organizations and teams
   - Quick access to most frequently used features
   - Cross-context data views
-  
+
 - **Organization Context** - Full-featured organization management center (70+ pages, 9 modules)
   - Complete Git-like branching model support
   - Full management capabilities (members, teams, blueprints, tasks, quality, issues)
   - Comprehensive analytics and reporting
-  
+
 - **Team Context** - Team collaboration and task execution center (20 pages, 5 modules)
   - Focused on task execution and progress updates
   - Simplified management features
