@@ -22,9 +22,9 @@
 
 ### 📊 目前包含的知識
 
-**版本 v3.0** - 完整企業級開發標準 + 詳細實作規範（Phase 5 完成）
+**版本 v4.0** - 組織化 + 文檔導航增強（文檔整合完成）
 
-#### 實體統計（129 個實體，+45 from v2.0）
+#### 實體統計（138 個實體，+12 from v3.0）
 - **專案**：ng-alain-gighub（企業級資源中心）
 - **技術棧**：Angular 20、NG-ZORRO、@delon、TypeScript、Supabase、RxJS
 - **架構設計**：Git-like Branch Model、Database Schema、Layered Architecture、Five Layer Architecture
@@ -32,7 +32,20 @@
 - **功能特性**：Staging Area Mechanism（48h 可撤回）、Todo Center System（五種狀態）、Issue Synchronization、Activity Logging System、Document Management System、Task Tree Structure、Data Analysis System、Notification System、Bot System、Workspace Context System、File Upload Standards、Search Functionality、Pagination Standards
 - **設計模式**：SHARED_IMPORTS、Repository Pattern、Component Design Patterns、Modal Design Patterns、Table Design Patterns、Form Design Patterns、Layout Patterns
 - **安全性**：Authentication Flow、Security Principles、Security Best Practices、Branch Permission Rules、RLS Policy Patterns、Security Scanning
-- **標準規範**（+18 新增）：
+- **文檔導航**（✨ v4.0 新增）：
+  - Documentation Structure（232 個文檔的完整結構）⭐
+  - Documentation Priority System（優先級系統）⭐
+  - Reading Paths（不同角色的閱讀路徑）⭐
+  - NG-ZORRO Component Index（73 個組件索引）
+  - DELON Package Index（11 個套件索引）
+  - Core Documentation Files（核心文檔引用）
+  - Quick Reference Documents（快速參考）
+  - Architecture Diagrams（20 個架構圖）
+  - Module Documentation（模組文檔）
+  - Workspace Context Documentation（工作區文檔）
+  - Cursor IDE Rules（29 個規則）
+  - GitHub Agents Configuration（Agent 配置）
+- **標準規範**：
   - API Design Standards ⭐
   - State Management Rules ⭐
   - Error Handling Standards ⭐
@@ -65,7 +78,7 @@
   - Onboarding Process ⭐
 - **約束條件**：Forbidden Practices
 
-#### 關係統計（137 個關係，+40 from v2.0）
+#### 關係統計（159 個關係，+14 from v3.0）
 - **技術使用關係**：ng-alain-gighub → Angular 20/NG-ZORRO/@delon/Supabase/TypeScript/Git-like Branch Model/Database Schema
 - **架構實作關係**：Five Layer Architecture → Layered Architecture、Git-like Branch Model → Database Schema
 - **技術整合關係**：Angular 20 → NG-ZORRO/RxJS/OnPush Strategy、@delon → NG-ZORRO/Supabase
@@ -75,8 +88,9 @@
 - **支援關係**：Staging Area Mechanism/Issue Synchronization → Git-like Branch Model、Notification System → Todo Center System
 - **組織關係**：Task Tree Structure/Data Analysis System/Activity Logging System → Git-like Branch Model、Workspace Context System → Git-like Branch Model
 - **原則實作**：SRP Enforcement → SOLID Principles、Consistency Principle → Code Quality Checklist
-- **UI 模式關係**（+15 新增）：Modal/Table/Form/Layout Design Patterns → NG-ZORRO/@delon、Theme Customization → NG-ZORRO、Responsive Design → NG-ZORRO
-- **DevOps 關係**（+10 新增）：Git Workflow → CI/CD Pipeline、CI/CD Pipeline → Migration Standards、Monitoring & Analytics → Performance Monitoring、Security Scanning → Security Principles、Team Collaboration → Git Workflow、Onboarding Process → Documentation
+- **UI 模式關係**：Modal/Table/Form/Layout Design Patterns → NG-ZORRO/@delon、Theme Customization → NG-ZORRO、Responsive Design → NG-ZORRO
+- **DevOps 關係**：Git Workflow → CI/CD Pipeline、CI/CD Pipeline → Migration Standards、Monitoring & Analytics → Performance Monitoring、Security Scanning → Security Principles、Team Collaboration → Git Workflow、Onboarding Process → Documentation
+- **文檔關係**（✨ v4.0 新增）：Documentation Structure → ng-alain-gighub、Documentation Priority System → Documentation Structure、Reading Paths → Documentation Structure、NG-ZORRO Component Index → NG-ZORRO、DELON Package Index → @delon、Core Documentation Files → Documentation Structure/Git-like Branch Model/Database Schema、Cursor IDE Rules → Code Quality、GitHub Agents Configuration → ng-alain-gighub、Module Documentation → Layered Architecture、Quick Reference Documents → Documentation Structure、Architecture Diagrams → Documentation Structure、Workspace Context Documentation → Workspace Context System
 
 ### 🎯 使用目的
 
@@ -92,6 +106,7 @@
 8. **效能優化**：OnPush 策略、Lazy Loading、快取機制、Bundle 優化、效能基準（LCP < 2.5s）
 9. **開發流程**：驗證序列（lint → lint:style → type-check → build → test）、Git workflow、CI/CD
 10. **禁止事項**：不應該做的事情與限制（Agent 操作約束）
+11. **文檔導航**（✨ v4.0 新增）：完整的文檔結構（232 個文檔）、優先級系統（⭐ 標記）、不同角色的閱讀路徑、快速參考文檔、核心架構圖、組件索引
 
 ### 📝 維護建議
 
@@ -139,20 +154,24 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
 ---
 
 **版本歷史**：
+- **v4.0** (2025-11-20): 文檔整合與組織化 - 添加文檔導航知識 ✨
+  - 新增 12 個文檔實體：Documentation Structure、Documentation Priority System、Reading Paths、NG-ZORRO Component Index、DELON Package Index、Core Documentation Files、Quick Reference Documents、Architecture Diagrams、Module Documentation、Workspace Context Documentation、Cursor IDE Rules、GitHub Agents Configuration
+  - 新增 14 個文檔關係：連接文檔系統與專案核心
+  - 組織化：移除 9 個重複實體、6 個重複關係
+  - 按類別重新組織所有實體：提高可讀性
+  - 總計：138 個實體、159 個關係（+6.9% 實體、+16.1% 關係）
+  - 重點：幫助 AI 助手理解專案的 232 個文檔結構和閱讀路徑
 - **v3.0** (2025-11-20): Phase 5 完成 - 擴展詳細實作規範與 UI/DevOps 標準
-  - 新增 45 個實體：API Design Standards、Component Design Patterns、State Management Rules、Error Handling Standards、Form Validation Standards、Routing Standards、Service Design Standards、Naming Conventions、CSS/LESS Standards、Import Order Standards、Database Table Structure、RLS Policy Patterns、Migration Standards、Environment Configuration、Build Optimization、Caching Strategy、Logging Standards、Internationalization (i18n)、Workspace Context System、Bot System、Data Analysis System、Notification System、File Upload Standards、Search Functionality、Pagination Standards、Modal Design Patterns、Table Design Patterns、Form Design Patterns、Layout Patterns、Theme Customization、Responsive Design、Keyboard Shortcuts、Loading States、Empty States、Code Review Checklist、Git Workflow、CI/CD Pipeline、Monitoring & Analytics、Backup & Recovery、Dependency Management、Security Scanning、Performance Monitoring、Documentation Maintenance、Team Collaboration、Onboarding Process
+  - 新增 45 個實體：涵蓋完整開發生命週期
   - 新增 40 個關係：串連所有新實體與現有核心原則
-  - 涵蓋完整開發生命週期：設計 → 開發 → 測試 → 部署 → 監控 → 維護
   - 總計：129 個實體、137 個關係（+53.6% 實體、+41.2% 關係）
-- **v2.0** (2025-11-20): 新增 61 個企業標準實體和 73 個關係，建立完整的企業級開發標準記憶庫
-  - 新增功能特性：暫存區機制、待辦中心、問題同步、活動記錄、文件管理、任務樹、數據分析、通知系統、Bot 系統
-  - 新增核心原則：企業開發原則、UI 元件優先級、一致性原則、可組合性原則、依賴方向原則
-  - 新增標準規範：效能基準、安全最佳實踐、資料庫查詢優化、分支權限規則、驗證序列
-  - 新增開發流程：五層架構、代碼質量檢查清單、SRP 強制執行、現代 Angular 語法、Agent 操作約束
+- **v2.0** (2025-11-20): 新增 61 個企業標準實體和 73 個關係
+  - 建立完整的企業級開發標準記憶庫
   - 總計：84 個實體、97 個關係
 - **v1.0** (2025-11-19): 初始版本，基礎專案知識
   - 基礎技術棧、架構設計、開發原則
   - 總計：23 個實體、24 個關係
 
-**最後更新**：2025-11-20（Phase 5 完成）  
-**維護者**：開發團隊
+**最後更新**：2025-11-20（v4.0 文檔整合完成）  
+**維護者**：開發團隊  
+**下次檢視**：專案重大架構變更時
