@@ -22,36 +22,46 @@
 
 ### 📊 目前包含的知識
 
-#### 實體統計（23 個實體）
-- **專案**：ng-alain-gighub
+**版本 v2.0** - 完整企業級開發標準
+
+#### 實體統計（84 個實體）
+- **專案**：ng-alain-gighub（企業級資源中心）
 - **技術棧**：Angular 20、NG-ZORRO、@delon、TypeScript、Supabase、RxJS
-- **架構設計**：Git-like Branch Model、Database Schema、Layered Architecture
-- **開發原則**：OnPush Strategy、SOLID Principles、Code Quality
+- **架構設計**：Git-like Branch Model、Database Schema、Layered Architecture、Five Layer Architecture
+- **核心原則**：OnPush Strategy、SOLID Principles、Code Quality、Enterprise Development Principles、UI Component Priority、Consistency Principle、Composability Principle、Dependency Direction Principle、Low Coupling High Cohesion
+- **功能特性**：Staging Area Mechanism（48h 可撤回）、Todo Center System（五種狀態）、Issue Synchronization、Activity Logging System、Document Management System、Task Tree Structure、Data Analysis System、Notification System、Bot System
 - **設計模式**：SHARED_IMPORTS、Repository Pattern
-- **安全性**：Authentication Flow、Security Principles
-- **標準規範**：Testing Strategy、Commit Convention、Accessibility、Documentation
-- **效能優化**：Performance Optimization
+- **安全性**：Authentication Flow、Security Principles、Security Best Practices、Branch Permission Rules
+- **標準規範**：Testing Strategy、Testing Requirements、Commit Convention、Git Commit Guidelines、Pull Request Standards、Accessibility、Documentation Standards、Documentation Requirements、Validation Sequence、Path Alias Standards、Modern Angular Syntax、Agent Operation Constraints、Production Readiness Checklist
+- **效能優化**：Performance Optimization、Performance Benchmarks、Performance Optimization Techniques、Database Query Optimization
+- **開發流程**：API Design Standards、Error Handling Strategy、Build and Deployment、Dependency Management、Core Module Standards、Shared Module Standards、Routes Module Standards、Linting Standards、Code Formatting、Git Workflow Standards、Internationalization、Caching Strategy、Logging and Monitoring、Code Review Standards、CI/CD Pipeline、Version Control Strategy、Environment Management、State Management Patterns、Form Handling Standards、HTTP Client Standards、Component Communication、Lazy Loading Strategy、Bundle Optimization、Browser Compatibility、Mobile Responsiveness、Debugging Practices、Migration Strategy、Code Quality Checklist、SRP Enforcement
 - **約束條件**：Forbidden Practices
 
-#### 關係統計（24 個關係）
-- 技術使用關係：ng-alain-gighub → Angular 20/NG-ZORRO/@delon/Supabase/TypeScript
-- 架構實作關係：ng-alain-gighub → Git-like Branch Model/Database Schema
-- 技術整合關係：Angular 20 → NG-ZORRO/RxJS/OnPush Strategy
-- 擴展關係：@delon → NG-ZORRO
-- 安全實作關係：Supabase → Authentication Flow → Security Principles
-- 品質保證關係：SOLID Principles/Testing Strategy → Code Quality
+#### 關係統計（97 個關係）
+- **技術使用關係**：ng-alain-gighub → Angular 20/NG-ZORRO/@delon/Supabase/TypeScript/Git-like Branch Model/Database Schema
+- **架構實作關係**：Five Layer Architecture → Layered Architecture、Git-like Branch Model → Database Schema
+- **技術整合關係**：Angular 20 → NG-ZORRO/RxJS/OnPush Strategy、@delon → NG-ZORRO/Supabase
+- **安全實作關係**：Supabase → Authentication Flow → Security Principles、Branch Permission Rules → Security Best Practices
+- **品質保證關係**：SOLID Principles/Testing Strategy/Code Review Standards → Code Quality
+- **效能關係**：Performance Optimization Techniques → Performance Benchmarks
+- **支援關係**：Staging Area Mechanism/Issue Synchronization → Git-like Branch Model、Notification System → Todo Center System
+- **組織關係**：Task Tree Structure/Data Analysis System/Activity Logging System → Git-like Branch Model
+- **原則實作**：SRP Enforcement → SOLID Principles、Consistency Principle → Code Quality Checklist
 
 ### 🎯 使用目的
 
 這個記憶檔案幫助 GitHub Copilot 理解：
 
 1. **專案技術棧**：使用的框架、函式庫及其版本
-2. **架構設計**：Git-like 分支模型、51 張資料表架構
-3. **開發規範**：程式碼風格、命名規則、最佳實踐
-4. **安全原則**：認證流程、權限控制、資料保護
-5. **測試策略**：單元測試、E2E 測試要求
-6. **效能優化**：OnPush 策略、Lazy Loading、快取機制
-7. **禁止事項**：不應該做的事情與限制
+2. **架構設計**：Git-like 分支模型、51 張資料表架構、五層架構開發順序
+3. **核心原則**：SOLID、DRY、KISS、YAGNI、一致性原則、可組合性原則、依賴方向原則
+4. **開發規範**：程式碼風格、命名規則、最佳實踐、UI 元件優先級
+5. **功能特性**：暫存區機制（48h 可撤回）、待辦中心（五種狀態）、問題同步、活動記錄、文件管理
+6. **安全原則**：認證流程、權限控制（Owner/Collaborator/Viewer）、資料保護、RLS 策略
+7. **測試策略**：單元測試（≥80% 覆蓋率）、E2E 測試要求
+8. **效能優化**：OnPush 策略、Lazy Loading、快取機制、Bundle 優化、效能基準（LCP < 2.5s）
+9. **開發流程**：驗證序列（lint → lint:style → type-check → build → test）、Git workflow、CI/CD
+10. **禁止事項**：不應該做的事情與限制（Agent 操作約束）
 
 ### 📝 維護建議
 
@@ -97,6 +107,17 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
 - **版本控制**：記憶檔案可以透過 Git 版本控制追蹤變更
 
 ---
+
+**版本歷史**：
+- **v2.0** (2025-11-20): 新增 61 個企業標準實體和 73 個關係，建立完整的企業級開發標準記憶庫
+  - 新增功能特性：暫存區機制、待辦中心、問題同步、活動記錄、文件管理、任務樹、數據分析、通知系統、Bot 系統
+  - 新增核心原則：企業開發原則、UI 元件優先級、一致性原則、可組合性原則、依賴方向原則
+  - 新增標準規範：效能基準、安全最佳實踐、資料庫查詢優化、分支權限規則、驗證序列
+  - 新增開發流程：五層架構、代碼質量檢查清單、SRP 強制執行、現代 Angular 語法、Agent 操作約束
+  - 總計：84 個實體、97 個關係
+- **v1.0** (2025-11-19): 初始版本，基礎專案知識
+  - 基礎技術棧、架構設計、開發原則
+  - 總計：23 個實體、24 個關係
 
 **最後更新**：2025-11-20  
 **維護者**：開發團隊
