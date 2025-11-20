@@ -162,6 +162,82 @@ standards:naming        - 命名規範
 standards:typescript    - TypeScript 規範
 ```
 
+### 常用開發與測試工具
+
+#### 9. Git (Version Control)
+**用途**：版本控制操作 (High Priority)
+**使用場景**：代碼提交、分支管理、合併衝突解決
+**基礎用法**：
+```bash
+# 創建新功能分支
+git checkout -b feature/user-auth
+
+# 提交變更（遵循 Conventional Commits）
+git add .
+git commit -m "feat(auth): implement login logic"
+
+# 推送到遠端
+git push origin feature/user-auth
+```
+
+#### 10. Playwright (E2E Testing)
+**用途**：Angular 端對端測試 (High Priority)
+**使用場景**：關鍵業務流程驗證、自動化回歸測試
+**基礎用法**：
+```bash
+# 運行所有測試
+npx playwright test
+
+# 運行 UI 模式（可視化排錯）
+npx playwright test --ui
+
+# 錄製新測試腳本
+npx playwright codegen http://localhost:4200
+```
+
+#### 11. Time (Data Management)
+**用途**：資料管理系統的時間處理
+**使用場景**：統一資料庫時間戳、跨時區一致性、效能計時
+**基礎用法**：
+```typescript
+// 資料存儲：始終使用 UTC ISO 8601 格式
+const dbTimestamp = new Date().toISOString(); 
+// 輸出：2023-10-27T10:00:00.000Z
+
+// 前端顯示：使用 date-fns 或 Intl 轉換為本地時間
+// format(new Date(dbTimestamp), 'yyyy-MM-dd HH:mm:ss')
+```
+
+#### 12. Fetch (API Testing)
+**用途**：API 測試與資料獲取
+**使用場景**：驗證後端端點、獲取遠端資源
+**基礎用法**：
+```typescript
+// 1. 使用瀏覽器/Node 標準 Fetch API
+const response = await fetch('https://api.example.com/v1/data');
+if (!response.ok) throw new Error('Network response was not ok');
+const data = await response.json();
+
+// 2. 使用 MCP Fetch 工具 (Agent)
+// call_tool: fetch { url: 'https://api.example.com/v1/data' }
+```
+
+#### 13. Puppeteer (Browser Automation)
+**用途**：替代的瀏覽器自動化
+**使用場景**：生成 PDF、後端截圖、複雜爬蟲
+**基礎用法**：
+```typescript
+import puppeteer from 'puppeteer';
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('https://example.com');
+  await page.screenshot({ path: 'example.png' });
+  await browser.close();
+})();
+```
+
 ---
 
 ## 🏗️ 企業架構十大原則（SRP 核心）
