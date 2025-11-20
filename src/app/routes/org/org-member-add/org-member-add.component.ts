@@ -5,27 +5,32 @@ import { AccountService, OrganizationMemberService, SHARED_IMPORTS } from '@shar
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 
-export interface OrganizationMemberAddData {
+export interface OrgMemberAddData {
   organizationId: string;
 }
 
 /**
- * 添加组织成员组件
- * 职责：仅负责添加成员，默认角色为 MEMBER
- * 注意：设置成员角色是单独的功能，不在此组件中
+ * 组织成员添加组件
+ *
+ * 职责：在组织上下文中添加组织成员
+ *
+ * 特点：
+ * - 仅支持 Modal 模式
+ * - 组织ID从 Modal 数据传入
+ * - 默认角色为 MEMBER
  */
 @Component({
-  selector: 'app-organization-member-add',
+  selector: 'app-org-member-add',
   standalone: true,
   imports: [SHARED_IMPORTS, ReactiveFormsModule],
   template: `
     <form nz-form [formGroup]="form" (ngSubmit)="submit()">
       <nz-form-item>
-        <nz-form-label [nzSpan]="6" nzRequired>选择成员</nz-form-label>
-        <nz-form-control [nzSpan]="18" [nzErrorTip]="'请选择成员'">
+        <nz-form-label [nzSpan]="6" nzRequired>選擇成員</nz-form-label>
+        <nz-form-control [nzSpan]="18" [nzErrorTip]="'請選擇成員'">
           <nz-select
             formControlName="accountId"
-            nzPlaceHolder="请选择用户账户"
+            nzPlaceHolder="請選擇用戶帳戶"
             nzShowSearch
             [nzLoading]="accountService.loading()"
             style="width: 100%;"
@@ -40,7 +45,7 @@ export interface OrganizationMemberAddData {
       <nz-alert
         nzType="info"
         nzMessage="提示"
-        nzDescription="添加成员后，该用户将能够访问组织相关的资源和数据。新成员默认角色为普通成员，可在成员列表中修改角色。"
+        nzDescription="添加成員後，該用戶將能夠訪問組織相關的資源和資料。新成員預設角色為普通成員，可在成員列表中修改角色。"
         nzShowIcon
         style="margin-bottom: 16px;"
       ></nz-alert>
@@ -51,20 +56,20 @@ export interface OrganizationMemberAddData {
             取消
           </button>
           <button nz-button nzType="primary" type="submit" [nzLoading]="submitting()" [disabled]="!form.valid || submitting()">
-            添加成员
+            添加成員
           </button>
         </nz-form-control>
       </nz-form-item>
     </form>
   `
 })
-export class OrganizationMemberAddComponent implements OnInit {
+export class OrgMemberAddComponent implements OnInit {
   private organizationMemberService = inject(OrganizationMemberService);
   private modalRef = inject(NzModalRef);
   private message = inject(NzMessageService);
   readonly accountService = inject(AccountService);
 
-  readonly data: OrganizationMemberAddData = inject(NZ_MODAL_DATA);
+  readonly data: OrgMemberAddData = inject(NZ_MODAL_DATA);
   readonly submitting = signal(false);
 
   form = new FormGroup({
@@ -75,7 +80,7 @@ export class OrganizationMemberAddComponent implements OnInit {
     try {
       await this.accountService.loadAccounts();
     } catch (error) {
-      this.message.error('加载用户列表失败');
+      this.message.error('載入用戶列表失敗');
     }
   }
 
@@ -96,10 +101,10 @@ export class OrganizationMemberAddComponent implements OnInit {
         accountId,
         role: OrganizationMemberRole.MEMBER
       });
-      this.message.success('成员添加成功');
+      this.message.success('成員添加成功');
       this.modalRef.close(true);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '添加失败，请重试';
+      const errorMessage = error instanceof Error ? error.message : '添加失敗，請重試';
       this.message.error(errorMessage);
     } finally {
       this.submitting.set(false);

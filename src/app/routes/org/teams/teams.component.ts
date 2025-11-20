@@ -6,9 +6,9 @@ import { SHARED_IMPORTS, TeamService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { TeamCreateComponent } from '../../accounts/teams/team-create/team-create.component';
-import { TeamDeleteComponent, TeamDeleteData } from '../../accounts/teams/team-delete/team-delete.component';
-import { TeamEditComponent, TeamEditData } from '../../accounts/teams/team-edit/team-edit.component';
+import { OrgTeamCreateComponent } from './team-create/team-create.component';
+import { OrgTeamDeleteComponent, OrgTeamDeleteData } from './team-delete/team-delete.component';
+import { OrgTeamEditComponent, OrgTeamEditData } from './team-edit/team-edit.component';
 
 /**
  * 组织团队列表组件
@@ -109,7 +109,7 @@ export class OrgTeamsComponent implements OnInit {
     const orgId = this.route.snapshot.paramMap.get('id');
     if (!orgId) {
       this.message.error('缺少組織 ID');
-      this.router.navigate(['/accounts/organizations']);
+      this.router.navigate(['/org']);
       return;
     }
 
@@ -147,10 +147,10 @@ export class OrgTeamsComponent implements OnInit {
       return;
     }
 
-    // 复用 TeamCreateComponent，传入 organizationId
+    // 使用 OrgTeamCreateComponent，传入 organizationId
     const modalRef = this.modal.create({
       nzTitle: '建立團隊',
-      nzContent: TeamCreateComponent,
+      nzContent: OrgTeamCreateComponent,
       nzData: { organizationId: orgId },
       nzWidth: 800,
       nzFooter: null
@@ -167,11 +167,11 @@ export class OrgTeamsComponent implements OnInit {
    * 编辑团队
    */
   editTeam(team: Team): void {
-    // 复用 TeamEditComponent（支持 Modal 模式）
+    // 使用 OrgTeamEditComponent
     const modalRef = this.modal.create({
       nzTitle: '編輯團隊',
-      nzContent: TeamEditComponent,
-      nzData: { team } as TeamEditData,
+      nzContent: OrgTeamEditComponent,
+      nzData: { team } as OrgTeamEditData,
       nzWidth: 800,
       nzFooter: null
     });
@@ -187,14 +187,14 @@ export class OrgTeamsComponent implements OnInit {
    * 删除团队
    */
   deleteTeam(team: Team): void {
-    // 复用 TeamDeleteComponent
+    // 使用 OrgTeamDeleteComponent
     const modalRef = this.modal.create({
       nzTitle: '刪除團隊',
-      nzContent: TeamDeleteComponent,
+      nzContent: OrgTeamDeleteComponent,
       nzData: {
         teamId: team.id,
         teamName: team.name
-      } as TeamDeleteData,
+      } as OrgTeamDeleteData,
       nzWidth: 500,
       nzFooter: null
     });

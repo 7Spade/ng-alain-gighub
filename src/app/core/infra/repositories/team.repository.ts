@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { BaseRepository, QueryOptions } from './base.repository';
 import { Database } from '../types/common';
+import { BaseRepository, QueryOptions } from './base.repository';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -39,6 +39,19 @@ export class TeamRepository extends BaseRepository<Team, TeamInsert, TeamUpdate>
       filters: {
         ...options?.filters,
         organizationId
+      }
+    });
+  }
+
+  /**
+   * 根据创建者 ID 查询团队列表
+   */
+  findByCreatedBy(createdBy: string, options?: QueryOptions): Observable<Team[]> {
+    return this.findAll({
+      ...options,
+      filters: {
+        ...options?.filters,
+        createdBy
       }
     });
   }

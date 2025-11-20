@@ -6,12 +6,11 @@ import { CreateOrganizationComponent } from './create/create-organization.compon
 import { AccountDetailComponent } from './detail/account-detail.component';
 import { AccountFormComponent } from './form/account-form.component';
 import { AccountListComponent } from './list/account-list.component';
-import { OrganizationListComponent } from './organizations/organization-list/organization-list.component';
 import { ScheduleListComponent } from './schedules/schedule-list.component';
 import { TeamCreateComponent } from './teams/team-create/team-create.component';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
 import { TeamEditComponent } from './teams/team-edit/team-edit.component';
-import { TeamListComponent } from './teams/team-list/team-list.component';
+import { TeamsComponent } from './teams/teams.component';
 import { UserListComponent } from './users/user-list.component';
 
 export const routes: Routes = [
@@ -23,10 +22,9 @@ export const routes: Routes = [
   { path: 'create/bot', component: CreateBotComponent },
   // 具体路径必须放在动态路径（:id）之前，避免路由冲突
   { path: 'users', component: UserListComponent },
-  { path: 'organizations', component: OrganizationListComponent },
   { path: 'bots', component: BotListComponent },
   { path: 'teams/create', component: TeamCreateComponent },
-  { path: 'teams', component: TeamListComponent },
+  { path: 'teams', component: TeamsComponent },
   { path: 'teams/:id/edit', component: TeamEditComponent },
   { path: 'teams/:id', component: TeamDetailComponent },
   { path: 'schedules', component: ScheduleListComponent },

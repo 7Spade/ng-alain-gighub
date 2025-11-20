@@ -416,6 +416,23 @@ export class AccountService {
   }
 
   /**
+   * 获取用户创建的团队
+   * 通过 teams 表的 created_by 字段查询用户创建的团队
+   *
+   * @param userAccountId 用户的账户 ID
+   * @returns Promise<Team[]>
+   */
+  async getUserCreatedTeams(userAccountId: string): Promise<Team[]> {
+    try {
+      const teams = (await firstValueFrom(this.teamRepository.findByCreatedBy(userAccountId))) as Team[];
+      return teams;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '获取用户创建的团队失败');
+      return [];
+    }
+  }
+
+  /**
    * 获取用户所属的团队
    * 通过 team_members 表查询用户作为成员的团队
    *

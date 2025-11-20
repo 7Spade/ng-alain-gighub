@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 
-import { OrgMembersComponent } from './members/members.component';
+import { OrgMembersComponent } from './org-members/members.component';
+import { OrgRoleManageComponent } from './org-role-manage/role-manage.component';
+import { OrgComponent } from './org.component';
 import { OrgTeamMembersComponent } from './teams/members/members.component';
 import { OrgTeamsComponent } from './teams/teams.component';
 
@@ -8,6 +10,7 @@ import { OrgTeamsComponent } from './teams/teams.component';
  * 组织管理路由配置
  *
  * 路由结构：
+ * /org - 组织列表（我的组织、我加入的组织）
  * /org/:id/members - 组织成员列表
  * /org/:id/teams - 组织团队列表
  * /org/teams/:id/members - 团队成员列表
@@ -16,9 +19,19 @@ import { OrgTeamsComponent } from './teams/teams.component';
  */
 export const routes: Routes = [
   {
+    path: '',
+    component: OrgComponent,
+    data: { title: '組織管理', titleI18n: 'menu.org' }
+  },
+  {
     path: ':id/members',
     component: OrgMembersComponent,
     data: { title: '成員管理', titleI18n: 'menu.org.members' }
+  },
+  {
+    path: ':id/roles',
+    component: OrgRoleManageComponent,
+    data: { title: '角色管理', titleI18n: 'menu.org.roles' }
   },
   {
     path: ':id/teams',
