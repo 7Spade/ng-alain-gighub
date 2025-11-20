@@ -37,7 +37,7 @@ export interface ConfirmationConfig {
   imports: [SHARED_IMPORTS],
   template: ''
 })
-export class ConfirmationDialogService {
+export class ConfirmationDialogComponent {
   private modal = inject(NzModalService);
 
   /**

@@ -131,7 +131,7 @@ export class DateRangePickerComponent {
   disabled = input<boolean>(false);
 
   /** 日期范围变化事件 */
-  rangeChange = output<[Date | null, Date | null]>();
+  readonly rangeChange = output<[Date | null, Date | null]>();
 
   // 内部状态
   dateRangeState = signal<[Date, Date] | null>(null);
@@ -165,23 +165,25 @@ export class DateRangePickerComponent {
         endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
         break;
 
-      case 'week':
+      case 'week': {
         const dayOfWeek = now.getDay();
         const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 周一为第一天
         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
         endDate = now;
         break;
+      }
 
       case 'month':
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         endDate = now;
         break;
 
-      case 'quarter':
+      case 'quarter': {
         const quarter = Math.floor(now.getMonth() / 3);
         startDate = new Date(now.getFullYear(), quarter * 3, 1);
         endDate = now;
         break;
+      }
 
       case 'year':
         startDate = new Date(now.getFullYear(), 0, 1);

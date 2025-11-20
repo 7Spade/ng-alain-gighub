@@ -122,10 +122,10 @@ export class FileUploadComponent {
   disabled = input<boolean>(false);
 
   /** 文件列表变化事件 */
-  filesChange = output<NzUploadFile[]>();
+  readonly filesChange = output<NzUploadFile[]>();
 
   /** 上传错误事件 */
-  uploadError = output<{ file: NzUploadFile; error: string }>();
+  readonly uploadError = output<{ file: NzUploadFile; error: string }>();
 
   // 内部状态
   fileListState = signal<NzUploadFile[]>([]);

@@ -208,7 +208,7 @@ export class WorkspaceDataService {
           blueprints = await this.blueprintService.loadBlueprintsByOwnerId(contextId);
           break;
 
-        case 'team':
+        case 'team': {
           // 团队视角：需要找到团队所属的组织，然后加载组织的蓝图
           // 注意：团队本身不创建蓝图，蓝图属于组织
           const team = this.userTeamsState().find(t => t.id === contextId);
@@ -219,6 +219,7 @@ export class WorkspaceDataService {
             }
           }
           break;
+        }
       }
 
       this.contextBlueprintsState.set(blueprints);
