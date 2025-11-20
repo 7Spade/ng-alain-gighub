@@ -1,3 +1,16 @@
+# DevOps 規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 DevOps 規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 建置流程：type check → lint → test → build → deploy。
 
 任何 PR 都必須經過至少 1 reviewer。
@@ -59,3 +72,9 @@ Edge Functions 必須通過測試（含 `branch-merge`、`staging-finalize`）�
 禁止在生產環境直接修改資料。
 
 所有資料變更必須通過遷移腳本。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)

@@ -1,3 +1,16 @@
+# 元件開發規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 元件開發規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 Component 不得直接呼叫 repository（僅透過 facade 或 service）。
 
 Template 禁止使用任何商業邏輯。
@@ -25,3 +38,9 @@ form control name 必須一致命名（kebab-case）。
 UI event 嚴禁塞業務邏輯（轉交 facade）。
 
 所有 reusable component 需有 storybook（企業級強制）。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)

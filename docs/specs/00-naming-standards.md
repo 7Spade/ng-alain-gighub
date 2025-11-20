@@ -1,3 +1,16 @@
+# 命名標準化規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 命名標準化規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 所有檔案一律使用 kebab-case。
 
 Component 名稱必須以 -component 結尾（ex: user-card.component.ts）。
@@ -28,3 +41,9 @@ Signals 使用 prefix：
 RxJS observable 使用 $ 結尾（企業標準）。
 
 Route path 命名使用 kebab-case，不得用 camelCase。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)

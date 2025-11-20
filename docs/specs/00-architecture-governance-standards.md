@@ -1,3 +1,16 @@
+# 架構治理規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 架構治理規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 採用 Standalone Components（禁止建立 NgModule）。
 
 採用 分層架構：routes → shared → core。
@@ -37,3 +50,9 @@ Feature 間的互動必須透過 Application Facade。
 禁止把共用元件放在公共 root（以避免無限增大 shared）。
 
 Feature 模組不可依賴 shared 的 business service。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)

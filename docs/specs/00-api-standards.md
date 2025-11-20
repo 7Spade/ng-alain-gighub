@@ -1,3 +1,16 @@
+# API 開發規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 API 開發規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 使用 HttpInterceptor 管理 token。
 
 API error 必須 model 化（HttpErrorModel）。
@@ -55,3 +68,9 @@ API 端點命名使用 kebab-case。
 實作 API 版本控制（如需要）。
 
 提供 API 文檔（OpenAPI/Swagger）。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)

@@ -1,3 +1,16 @@
+# 可組合性規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 可組合性規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 所有 component 必須為可組合（Composable）的小單元，而不是 monolithic。
 
 Shared component 必須具備 inputs / outputs 明確定義，不可綁定特定業務邏輯。
@@ -21,3 +34,9 @@ Component 設計應盡量「stateless」，狀態放在 facade（signals）。
 API repository 必須可替換（可 mock / 可切後端 / 可切 fake backend）。
 
 所有 Facade 必須可被 stub/mock，用於大型企業測試需求。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)

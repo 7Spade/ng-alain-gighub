@@ -1,3 +1,16 @@
+# 狀態管理規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 狀態管理規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 Signals 為預設 state solution。
 
 RxJS 僅用於 multi-stream event、websocket、long polling。
@@ -59,3 +72,9 @@ Facade 必須可被 stub/mock，用於大型企業測試需求。
 狀態初始化必須在元件或服務的建構函數中完成。
 
 禁止在 `effect()` 中修改依賴的 Signal（會導致循環依賴）。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)

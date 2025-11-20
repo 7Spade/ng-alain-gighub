@@ -1,3 +1,16 @@
+# 一致性規範
+
+> **目的**: 本文檔定義 ng-alain-gighub 專案的 一致性規範，確保開發團隊遵循統一的標準。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- AI Agents
+
+## 規範內容
+
 全專案需統一採用 Angular 官方 Style Guide。
 
 所有 Component / Service / Model 必須使用相同架構模板（Plop / Schematics）。
@@ -17,3 +30,9 @@ Error handling 流程必須統一：Interceptor → ErrorService → Facade → 
 所有 async 作業統一使用 signal / RxJS，不可隨意混用不一致的風格。
 
 Commit message 格式（Conventional Commits）強制統一。
+
+---
+
+**最後更新**: 2025-01-20  
+**維護者**: 開發團隊  
+**相關文檔**: [完整開發規範索引](./README.md)
