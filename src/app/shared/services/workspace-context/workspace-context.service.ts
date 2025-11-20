@@ -124,6 +124,12 @@ export class WorkspaceContextService {
     switch (type) {
       case 'user':
         if (id) {
+          // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
+          const currentAccount = this.currentUserAccount();
+          if (currentAccount && currentAccount.id === id) {
+            return currentAccount.name || '个人账户';
+          }
+          // 否则从 userAccounts 中查找
           const account = this.accountService.userAccounts().find(a => a.id === id);
           return account?.name || '个人账户';
         }
@@ -197,43 +203,49 @@ export class WorkspaceContextService {
   /**
    * 切换到个人用户菜单
    *
-   * @param userId 用户账户 ID（可选，如果不提供则使用当前用户账户）
+   * @param userId 用户账户 ID（必需）
    */
-  switchToUser(userId?: string): void {
+  switchToUser(userId: string): void {
     // 防止重复切换
     if (this.switchingState()) {
       return;
     }
 
-    const targetUserId = userId || this.currentUserAccountId();
-    if (!targetUserId) {
-      console.warn('Cannot switch to user: no user account ID available');
+    if (!userId) {
+      console.warn('Cannot switch to user: user account ID is required');
       return;
     }
 
     // 如果已经是该用户，直接返回
-    if (this.contextTypeState() === 'user' && this.contextIdState() === targetUserId) {
+    if (this.contextTypeState() === 'user' && this.contextIdState() === userId) {
+      return;
+    }
+
+    // 验证用户账户是否存在
+    // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
+    const currentAccount = this.currentUserAccount();
+    let account = currentAccount && currentAccount.id === userId ? currentAccount : null;
+
+    // 如果 currentUserAccount 不匹配，从 userAccounts 中查找
+    if (!account) {
+      account = this.accountService.userAccounts().find(a => a.id === userId) || null;
+    }
+
+    if (!account) {
+      console.warn(`Cannot switch to user: account ${userId} not found`);
       return;
     }
 
     this.switchingState.set(true);
 
     try {
-      // 先查找账户
-      const account = this.accountService.userAccounts().find(a => a.id === targetUserId);
-      if (!account) {
-        console.warn(`Cannot switch to user: account ${targetUserId} not found`);
-        this.switchingState.set(false);
-        return;
-      }
-
       // 先更新状态，再更新账户和持久化
       this.contextTypeState.set('user');
-      this.contextIdState.set(targetUserId);
+      this.contextIdState.set(userId);
 
       // 同步更新账户和持久化
       this.accountService.selectAccount(account);
-      this.persistenceService.saveContext('user', targetUserId);
+      this.persistenceService.saveContext('user', userId);
     } finally {
       // 使用 setTimeout 确保状态更新完成后再重置切换状态
       setTimeout(() => {
@@ -340,7 +352,31 @@ export class WorkspaceContextService {
           break;
         case 'user':
           if (saved.id) {
-            this.switchToUser(saved.id);
+            const userId = saved.id;
+            // 验证用户账户是否存在，如果不存在则延迟重试
+            const currentAccount = this.currentUserAccount();
+            let account = currentAccount && currentAccount.id === userId ? currentAccount : null;
+            if (!account) {
+              account = this.accountService.userAccounts().find(a => a.id === userId) || null;
+            }
+            if (account) {
+              this.switchToUser(userId);
+            } else {
+              console.warn(`Cannot restore user context: account ${userId} not found, data may not be loaded yet`);
+              // 延迟重试一次
+              setTimeout(() => {
+                const retryCurrentAccount = this.currentUserAccount();
+                let retryAccount = retryCurrentAccount && retryCurrentAccount.id === userId ? retryCurrentAccount : null;
+                if (!retryAccount) {
+                  retryAccount = this.accountService.userAccounts().find(a => a.id === userId) || null;
+                }
+                if (retryAccount) {
+                  this.switchToUser(userId);
+                } else {
+                  console.warn(`Failed to restore user context after retry: account ${userId} not found`);
+                }
+              }, 500);
+            }
           }
           break;
         case 'organization':

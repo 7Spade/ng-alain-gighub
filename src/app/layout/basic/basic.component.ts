@@ -93,9 +93,16 @@ import { HeaderUserComponent } from './widgets/user.component';
           <ul nz-menu>
             <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
-            @if (workspaceContext.contextType() !== 'user' && currentUserAccountId()) {
+            @if (currentUserAccountId()) {
               <li nz-menu-divider></li>
-              <li nz-menu-item (click)="workspaceContext.switchToUser()" [nzDisabled]="workspaceContext.switching()">
+              <li
+                nz-menu-item
+                (click)="workspaceContext.switchToUser()"
+                [nzDisabled]="workspaceContext.switching()"
+                [class.ant-menu-item-selected]="
+                  workspaceContext.contextType() === 'user' && workspaceContext.contextId() === currentUserAccountId()
+                "
+              >
                 @if (workspaceContext.switching()) {
                   <i nz-icon nzType="loading" class="mr-sm"></i>
                 } @else {

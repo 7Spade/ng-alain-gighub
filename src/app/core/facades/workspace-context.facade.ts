@@ -220,7 +220,13 @@ export class WorkspaceContextFacade {
    */
   switchToUser(userId?: string): void {
     try {
-      this.contextService.switchToUser(userId);
+      // 如果不提供 userId，使用当前用户账户 ID
+      const targetUserId = userId || this.currentUserAccountId();
+      if (!targetUserId) {
+        console.warn('Cannot switch to user: no user account ID available');
+        return;
+      }
+      this.contextService.switchToUser(targetUserId);
     } catch (error) {
       this.errorStateService.addError({
         category: 'BusinessLogic',
