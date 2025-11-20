@@ -118,22 +118,22 @@ source-map-explorer-report.*
 # ============================================================================
 # Documentation (exclude only oversized or generated files)
 # ============================================================================
-# Exclude archived documentation
+# Exclude all archived documentation (moved 2025-11-20)
+docs/Archive/
 docs/ArchivedDocuments/
-
-# Exclude large generated codebase files (796KB, 23K+ lines)
-docs/fyi-codebase.md
-
-# Exclude large component index directories (200KB+)
-docs/DELON-Index/
-docs/NG-ZORRO-Index/
 
 # Note: Core documentation IS indexed for AI agent access
 # This includes:
-# - Architecture docs (27-完整架構流程圖, 28-架構審查報告, etc.)
-# - Development guides (00-開發作業指引, SHARED_IMPORTS, etc.)
-# - Database schema (30-0-完整SQL表結構定義)
-# - FAQ and best practices
+# - Architecture docs (20-完整架構流程圖, 21-架構審查報告, etc.)
+# - Development guides (37-SHARED_IMPORTS, 42-開發最佳實踐, etc.)
+# - Database schema (22-完整SQL表結構定義, 23-資料表清單)
+# - FAQ and best practices (29-常見問題-FAQ, etc.)
+# 
+# Deprecated files moved to Archive/:
+# - 00-* 規範系列 (replaced by .cursor/rules/)
+# - DELON-Index/ and NG-ZORRO-Index/ (use official docs)
+# - fyi-codebase.md (2.2MB, use Repomix MCP instead)
+# - FINAL-SUMMARY.md, SRP-*.md (completed reports)
 
 # ============================================================================
 # Project scripts and templates (allow for agent access)
