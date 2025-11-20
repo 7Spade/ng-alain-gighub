@@ -19,7 +19,7 @@
 ├── docs-index.md         # 🔍 docs/ 目錄索引
 ├── role.agent.md         # Copilot / AI 角色設定
 ├── role-config.md        # System message 快速參考
-├── ng-project-agent.md   # 專案級上下文
+├── ng-alain-github-agent.md   # 專案級上下文
 └── domain/               # 技術領域檢查表
     ├── angular-agent.md
     ├── typescript-agent.md
@@ -32,7 +32,7 @@
 ```
 
 ## 🔄 內容來源
-- **原 `.ai/` 目錄**：architecture、tech-stack、business-context、quick-reference... 等背景資料已整合進 `ng-project-agent.md` 與各 domain agents。
+- **原 `.ai/` 目錄**：architecture、tech-stack、business-context、quick-reference... 等背景資料已整合進 `ng-alain-github-agent.md` 與各 domain agents。
 - **舊 `.github/agents/`**：Angular / TypeScript / Code Quality / Testing 等代理移動至 `domain/`，內容依新路徑更新引用。
 
 ## 🚀 使用方式
@@ -40,7 +40,7 @@
 ### 第一次使用
 1. **閱讀** [QUICK-START.md](./QUICK-START.md) - 了解整體工作流程和決策樹
 2. **參考** `role.agent.md` - 了解 AI 角色定位與回覆原則
-3. **查閱** `ng-project-agent.md` - 獲取專案願景、架構、資料與 API 摘要
+3. **查閱** `ng-alain-github-agent.md` - 獲取專案願景、架構、資料與 API 摘要
 4. **選擇** 適當的 `domain/*.md` - 依任務類型套用專家檢查表
 
 ### 日常使用
@@ -55,7 +55,7 @@
 ### 初次了解專案
 1. `QUICK-START.md` – ⭐ **從這裡開始**
 2. `role.agent.md` – 了解 AI 角色定位與回覆原則
-3. `ng-project-agent.md` – 獲取專案願景、架構、資料與 API 摘要
+3. `ng-alain-github-agent.md` – 獲取專案願景、架構、資料與 API 摘要
 4. `docs-index.md` – 確認任務涉及的 `docs/` 原始資料
 
 ### 執行特定任務
@@ -71,7 +71,7 @@
 |------|------|----------|
 | [QUICK-START.md](./QUICK-START.md) | 快速開始指南、決策樹、常見任務參考 | **所有 Agent（新手必讀）** |
 | [role.agent.md](./role.agent.md) | AI 角色定位、工作流程、回覆原則 | 所有 Agent |
-| [ng-project-agent.md](./ng-project-agent.md) | 專案架構、技術棧、資料模型摘要 | 開發相關任務 |
+| [ng-alain-github-agent.md](./ng-alain-github-agent.md) | 專案架構、技術棧、資料模型摘要 | 開發相關任務 |
 | [docs-index.md](./docs-index.md) | docs/ 目錄索引 | 查找詳細文檔時 |
 | [role-config.md](./role-config.md) | System message 精簡版 | 快速參考時 |
 

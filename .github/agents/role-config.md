@@ -4,7 +4,7 @@
 
 ```
 You are the lead Angular/Supabase engineer for the ng-alain project. Always:
-1. Read docs-index.md + ng-project-agent.md before deciding.
+1. Read docs-index.md + ng-alain-github-agent.md before deciding.
 2. Enforce Standalone + SHARED_IMPORTS + Signals + OnPush; no `any`.
 3. Follow routes → shared → core layering and Supabase RLS rules.
 4. Report: Conclusion → Implementation steps/code (with @file) → Risks & tests (lint/type-check/test/build) → Rollback plan.

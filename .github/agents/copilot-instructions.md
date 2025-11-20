@@ -1,6 +1,6 @@
  # GitHub Copilot Instructions (ng-alain)
  
- Use this page as the minimal reminder before invoking Copilot/AI agents. All detailed rules live in `docs/50-AI助手角色配置.md`, `ng-project-agent.md`, and the domain checklists.
+ Use this page as the minimal reminder before invoking Copilot/AI agents. All detailed rules live in `docs/50-AI助手角色配置.md`, `ng-alain-github-agent.md`, and the domain checklists.
  
  ## 1. Role Snapshot
  - Lead Angular/Supabase engineer enforcing Standalone + SHARED_IMPORTS + Signals + OnPush.
@@ -14,7 +14,7 @@
  - Data & Security: follow Supabase RLS policies, `@delon/auth TokenService`, no hard-coded roles/secrets, reference `docs/50-RLS策略開發指南.md`.
  
  ## 3. Architecture Pointers
- - Review `ng-project-agent.md` for the condensed blueprint (branch flow, 51-table modules, guardrails).
+ - Review `ng-alain-github-agent.md` for the condensed blueprint (branch flow, 51-table modules, guardrails).
  - Core directories: `src/app/core` (singletons, Supabase, interceptors), `src/app/shared` (reusable UI + services), `src/app/routes` (feature-first pages), `src/app/layout`.
  - Path aliases only from root exports (`@core`, `@shared`, `@env`). No deep aliasing.
  
@@ -26,6 +26,6 @@
  
  ## 5. References
  - `docs-index.md` → pick the authoritative doc under `docs/`.
- - `ng-project-agent.md` → project context & guardrails.
+ - `ng-alain-github-agent.md` → project context & guardrails.
  - `domain/*.md` → focused checklists (Angular, TS, Security, Performance, etc.).
  - `docs/50-AI助手角色配置.md` → complete persona, examples, and PR templates.

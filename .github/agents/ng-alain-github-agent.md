@@ -1,4 +1,4 @@
-# ng-alain Project Agent
+# ng-alain-github Project Agent
 
 ## 1. Project Snapshot
 - **願景**：企業任務協作與審查系統，透過 Git-like Branch 模型與 48h staging 機制確保可追溯。

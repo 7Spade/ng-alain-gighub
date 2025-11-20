@@ -5,7 +5,7 @@
     "development": {
       "description": "Development mode - for daily development work",
         "contextFiles": [
-          ".github/agents/ng-project-agent.md",
+          ".github/agents/ng-alain-github-agent.md",
           ".github/agents/domain/angular-agent.md",
           ".github/agents/domain/typescript-agent.md",
           ".github/agents/domain/code-quality-agent.md",
@@ -25,7 +25,7 @@
     "architecture": {
       "description": "Architecture mode - for architecture design and decisions",
         "contextFiles": [
-          ".github/agents/ng-project-agent.md",
+          ".github/agents/ng-alain-github-agent.md",
           ".github/agents/domain/docs-agent.md",
           ".github/agents/domain/security-agent.md",
           "docs/27-完整架構流程圖.mermaid.md",
@@ -48,7 +48,7 @@
     "testing": {
       "description": "Testing mode - for writing and executing tests",
         "contextFiles": [
-          ".github/agents/ng-project-agent.md",
+          ".github/agents/ng-alain-github-agent.md",
           ".github/agents/domain/testing-agent.md",
           "docs/38-測試指南.md"
         ],
@@ -62,7 +62,7 @@
     "documentation": {
       "description": "Documentation mode - for writing and updating documentation",
         "contextFiles": [
-          ".github/agents/ng-project-agent.md",
+          ".github/agents/ng-alain-github-agent.md",
           ".github/agents/domain/docs-agent.md",
           ".github/agents/domain/accessibility-agent.md",
           "docs/README.md"
@@ -75,7 +75,7 @@
     "api-development": {
       "description": "API development mode - for API and database related development",
         "contextFiles": [
-          ".github/agents/ng-project-agent.md",
+          ".github/agents/ng-alain-github-agent.md",
           ".github/agents/domain/security-agent.md",
           ".github/agents/domain/typescript-agent.md",
           "docs/33-API-接口詳細文檔.md",
