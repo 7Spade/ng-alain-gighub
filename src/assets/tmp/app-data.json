@@ -1,0 +1,53 @@
+{
+  "app": {
+    "name": "NG-ALAIN",
+    "description": "Ng-zorro admin panel front-end framework"
+  },
+  "menu": [
+    {
+      "text": "Main",
+      "i18n": "menu.main",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Dashboard",
+          "i18n": "menu.main.dashboard",
+          "icon": "anticon-dashboard",
+          "link": "/dashboard"
+        },
+        {
+          "text": "Explore",
+          "i18n": "menu.main.explore",
+          "icon": "anticon-search",
+          "link": "/explore"
+        }
+      ]
+    },
+    {
+      "text": "Account",
+      "i18n": "menu.account",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Account System",
+          "i18n": "menu.account.system",
+          "icon": "anticon-user",
+          "children": [
+            {
+              "text": "My Profile",
+              "link": "/accounts/profile",
+              "i18n": "menu.account.profile"
+            },
+            {
+              "text": "My Organizations",
+              "link": "/accounts/org",
+              "i18n": "menu.account.organizations"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

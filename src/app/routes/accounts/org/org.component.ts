@@ -29,80 +29,80 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     @switch (contextType()) {
       @case ('user') {
         <!-- 用户视角：我的组织、我加入的组织 -->
-    <div style="display: flex; gap: 16px; flex-direction: column;">
-      <!-- 我的组织 -->
-      <nz-card [nzBordered]="false">
-        <div class="flex justify-between mb-md">
-          <div>
-            <h2>我的組織</h2>
-            <p class="text-muted">我創建或擁有的組織</p>
-          </div>
-          <button nz-button nzType="primary" (click)="createOrganization()">
-            <span nz-icon nzType="plus"></span>
-            建立組織
-          </button>
-        </div>
+        <div style="display: flex; gap: 16px; flex-direction: column;">
+          <!-- 我的组织 -->
+          <nz-card [nzBordered]="false">
+            <div class="flex justify-between mb-md">
+              <div>
+                <h2>我的組織</h2>
+                <p class="text-muted">我創建或擁有的組織</p>
+              </div>
+              <button nz-button nzType="primary" (click)="createOrganization()">
+                <span nz-icon nzType="plus"></span>
+                建立組織
+              </button>
+            </div>
 
             @if (loadingOrganizations()) {
-          <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+              <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
             } @else if (error()) {
               <nz-alert nzType="error" [nzMessage]="'載入失敗'" [nzDescription]="error()" nzShowIcon style="margin: 16px;"></nz-alert>
-        } @else if (createdOrganizations().length === 0) {
-          <nz-empty nzNotFoundContent="尚無組織">
-            <button nz-button nzType="primary" (click)="createOrganization()">建立第一個組織</button>
-          </nz-empty>
-        } @else {
-          <st
-            #stCreated
-            [columns]="columns"
-            [data]="createdOrganizations()"
+            } @else if (createdOrganizations().length === 0) {
+              <nz-empty nzNotFoundContent="尚無組織">
+                <button nz-button nzType="primary" (click)="createOrganization()">建立第一個組織</button>
+              </nz-empty>
+            } @else {
+              <st
+                #stCreated
+                [columns]="columns"
+                [data]="createdOrganizations()"
                 [loading]="loadingOrganizations()"
-            [page]="{ front: false, show: true, showSize: true }"
-            (change)="stChange($event)"
-          >
-            <ng-template st-row="status" let-record>
-              @switch (record.status) {
-                @case ('active') {
-                  <nz-tag nzColor="success">活躍</nz-tag>
-                }
-                @case ('inactive') {
-                  <nz-tag nzColor="default">非活躍</nz-tag>
-                }
-                @case ('suspended') {
-                  <nz-tag nzColor="error">已暫停</nz-tag>
-                }
-              }
-            </ng-template>
-            <ng-template st-row="action" let-record>
-              <button nz-button nzType="link" nzSize="small" (click)="viewOrganization(record.id)">查看</button>
-              <button nz-button nzType="link" nzSize="small" (click)="manageMembers(record.id)">成員管理</button>
-              <button nz-button nzType="link" nzSize="small" (click)="manageRoles(record.id)">角色管理</button>
-              <button nz-button nzType="link" nzSize="small" (click)="manageTeams(record.id)">團隊管理</button>
-            </ng-template>
-          </st>
-        }
-      </nz-card>
+                [page]="{ front: false, show: true, showSize: true }"
+                (change)="stChange($event)"
+              >
+                <ng-template st-row="status" let-record>
+                  @switch (record.status) {
+                    @case ('active') {
+                      <nz-tag nzColor="success">活躍</nz-tag>
+                    }
+                    @case ('inactive') {
+                      <nz-tag nzColor="default">非活躍</nz-tag>
+                    }
+                    @case ('suspended') {
+                      <nz-tag nzColor="error">已暫停</nz-tag>
+                    }
+                  }
+                </ng-template>
+                <ng-template st-row="action" let-record>
+                  <button nz-button nzType="link" nzSize="small" (click)="viewOrganization(record.id)">查看</button>
+                  <button nz-button nzType="link" nzSize="small" (click)="manageMembers(record.id)">成員管理</button>
+                  <button nz-button nzType="link" nzSize="small" (click)="manageRoles(record.id)">角色管理</button>
+                  <button nz-button nzType="link" nzSize="small" (click)="manageTeams(record.id)">團隊管理</button>
+                </ng-template>
+              </st>
+            }
+          </nz-card>
 
-      <!-- 我加入的组织 -->
-      <nz-card [nzBordered]="false">
-        <div class="flex justify-between mb-md">
-          <div>
-            <h2>我加入的組織</h2>
-            <p class="text-muted">我作為成員加入的組織</p>
-          </div>
-        </div>
+          <!-- 我加入的组织 -->
+          <nz-card [nzBordered]="false">
+            <div class="flex justify-between mb-md">
+              <div>
+                <h2>我加入的組織</h2>
+                <p class="text-muted">我作為成員加入的組織</p>
+              </div>
+            </div>
 
             @if (loadingOrganizations()) {
-          <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+              <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
             } @else if (error()) {
               <nz-alert nzType="error" [nzMessage]="'載入失敗'" [nzDescription]="error()" nzShowIcon style="margin: 16px;"></nz-alert>
-        } @else if (joinedOrganizations().length === 0) {
-          <nz-empty nzNotFoundContent="尚無加入的組織"></nz-empty>
-        } @else {
-          <st
-            #stJoined
-            [columns]="columns"
-            [data]="joinedOrganizations()"
+            } @else if (joinedOrganizations().length === 0) {
+              <nz-empty nzNotFoundContent="尚無加入的組織"></nz-empty>
+            } @else {
+              <st
+                #stJoined
+                [columns]="columns"
+                [data]="joinedOrganizations()"
                 [loading]="loadingOrganizations()"
                 [page]="{ front: false, show: true, showSize: true }"
                 (change)="stChange($event)"
@@ -219,32 +219,32 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                 [columns]="columns"
                 [data]="createdOrganizations()"
                 [loading]="loadingOrganizations()"
-            [page]="{ front: false, show: true, showSize: true }"
-            (change)="stChange($event)"
-          >
-            <ng-template st-row="status" let-record>
-              @switch (record.status) {
-                @case ('active') {
-                  <nz-tag nzColor="success">活躍</nz-tag>
-                }
-                @case ('inactive') {
-                  <nz-tag nzColor="default">非活躍</nz-tag>
-                }
-                @case ('suspended') {
-                  <nz-tag nzColor="error">已暫停</nz-tag>
-                }
-              }
-            </ng-template>
-            <ng-template st-row="action" let-record>
-              <button nz-button nzType="link" nzSize="small" (click)="viewOrganization(record.id)">查看</button>
-              <button nz-button nzType="link" nzSize="small" (click)="manageMembers(record.id)">成員管理</button>
-              <button nz-button nzType="link" nzSize="small" (click)="manageRoles(record.id)">角色管理</button>
-              <button nz-button nzType="link" nzSize="small" (click)="manageTeams(record.id)">團隊管理</button>
-            </ng-template>
-          </st>
-        }
-      </nz-card>
-    </div>
+                [page]="{ front: false, show: true, showSize: true }"
+                (change)="stChange($event)"
+              >
+                <ng-template st-row="status" let-record>
+                  @switch (record.status) {
+                    @case ('active') {
+                      <nz-tag nzColor="success">活躍</nz-tag>
+                    }
+                    @case ('inactive') {
+                      <nz-tag nzColor="default">非活躍</nz-tag>
+                    }
+                    @case ('suspended') {
+                      <nz-tag nzColor="error">已暫停</nz-tag>
+                    }
+                  }
+                </ng-template>
+                <ng-template st-row="action" let-record>
+                  <button nz-button nzType="link" nzSize="small" (click)="viewOrganization(record.id)">查看</button>
+                  <button nz-button nzType="link" nzSize="small" (click)="manageMembers(record.id)">成員管理</button>
+                  <button nz-button nzType="link" nzSize="small" (click)="manageRoles(record.id)">角色管理</button>
+                  <button nz-button nzType="link" nzSize="small" (click)="manageTeams(record.id)">團隊管理</button>
+                </ng-template>
+              </st>
+            }
+          </nz-card>
+        </div>
       }
     }
   `,

@@ -163,7 +163,7 @@ export class WorkspaceMenuService {
    * @param placeholder 占位符名称（默认为 'id'，可以是 'id' 或 'userId'）
    * @returns 处理后的菜单数据
    */
-  private processMenuLinks(menu: NzSafeAny[], id: string, placeholder: string = 'id'): NzSafeAny[] {
+  private processMenuLinks(menu: NzSafeAny[], id: string, placeholder = 'id'): NzSafeAny[] {
     if (!id) return menu;
 
     const placeholderPattern = new RegExp(`:${placeholder}`, 'g');
