@@ -1,0 +1,2 @@
+{"type":"entity","name":"Angular 20","label":"Technology","observations":["Uses Signals for state management","Supports Standalone Components"]}
+{"type":"relation","from":"Angular 20","to":"NG-ZORRO","relationType":"integrates_with"}
