@@ -118,7 +118,7 @@
           "children": [
             {
               "text": "Blueprint List",
-              "link": "/blueprints",
+              "link": "/blueprints?org=:id",
               "i18n": "menu.development.blueprint.list"
             },
             {

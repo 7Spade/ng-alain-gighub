@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, computed, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BlueprintStatus } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, BlueprintService, Blueprint, AccountService, Account, AccountType } from '@shared';
@@ -10,7 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   standalone: true,
   imports: [SHARED_IMPORTS],
   template: `
-    <page-header [title]="'蓝图管理'">
+    <page-header [title]="pageTitle()">
       <ng-template #extra>
         <button nz-button nzType="primary" (click)="createBlueprint()">
           <span nz-icon nzType="plus"></span>
@@ -19,7 +19,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
       </ng-template>
     </page-header>
 
-    <nz-card nzTitle="管理系统中的所有蓝图" style="margin-top: 16px;">
+    <nz-card [nzTitle]="cardTitle()" style="margin-top: 16px;">
       <st
         #st
         [data]="blueprintService.blueprints()"
@@ -83,10 +83,31 @@ export class BlueprintListComponent implements OnInit {
   blueprintService = inject(BlueprintService);
   accountService = inject(AccountService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
   message = inject(NzMessageService);
 
   // 导出枚举供模板使用
   AccountType = AccountType;
+
+  // 组织ID（从查询参数获取）
+  organizationId = signal<string | null>(null);
+  organization = computed(() => {
+    const orgId = this.organizationId();
+    if (!orgId) return null;
+    return this.accountService.accounts().find(a => a.id === orgId && a.type === AccountType.ORGANIZATION) || null;
+  });
+
+  // 页面标题
+  pageTitle = computed(() => {
+    const org = this.organization();
+    return org ? `${org.name} - 蓝图管理` : '蓝图管理';
+  });
+
+  // 卡片标题
+  cardTitle = computed(() => {
+    const org = this.organization();
+    return org ? `${org.name} 的蓝图列表` : '管理系统中的所有蓝图';
+  });
 
   columns: STColumn[] = [
     { title: 'ID', index: 'id', width: 100 },
@@ -127,12 +148,26 @@ export class BlueprintListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadData();
+    // 从查询参数获取组织ID
+    this.route.queryParams.subscribe(params => {
+      const orgId = params['org'] || null;
+      this.organizationId.set(orgId);
+      this.loadData();
+    });
   }
 
   async loadData(): Promise<void> {
     try {
-      await this.blueprintService.loadBlueprints();
+      const orgId = this.organizationId();
+      if (orgId) {
+        // 如果有组织ID，只加载该组织的蓝图
+        await this.blueprintService.loadBlueprintsByOwnerId(orgId);
+        // 加载组织账户信息
+        await this.accountService.loadAccountsByIds([orgId]);
+      } else {
+        // 否则加载所有蓝图
+        await this.blueprintService.loadBlueprints();
+      }
       // 加载拥有者账户信息
       await this.loadOwnerAccounts();
     } catch (error) {
