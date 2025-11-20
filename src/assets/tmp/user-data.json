@@ -5,20 +5,6 @@
   },
   "menu": [
     {
-      "text": "Formal",
-      "i18n": "menu.formal",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
-        {
-          "text": "Explore",
-          "i18n": "menu.formal.explore",
-          "icon": "anticon-search",
-          "link": "/explore"
-        }
-      ]
-    },
-    {
       "text": "Personal",
       "i18n": "menu.personal",
       "group": true,
@@ -65,11 +51,6 @@
               "text": "My Assignments",
               "link": "/tasks/assignments",
               "i18n": "menu.personal.tasks.assignments"
-            },
-            {
-              "text": "My Staging Area",
-              "link": "/tasks/staging",
-              "i18n": "menu.personal.tasks.staging"
             }
           ]
         },
@@ -135,6 +116,20 @@
               "i18n": "menu.personal.settings.preferences"
             }
           ]
+        }
+      ]
+    },
+    {
+      "text": "Formal",
+      "i18n": "menu.formal",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Explore",
+          "i18n": "menu.formal.explore",
+          "icon": "anticon-search",
+          "link": "/explore"
         }
       ]
     }

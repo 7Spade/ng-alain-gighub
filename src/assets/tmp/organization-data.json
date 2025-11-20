@@ -5,20 +5,6 @@
   },
   "menu": [
     {
-      "text": "Formal",
-      "i18n": "menu.formal",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
-        {
-          "text": "Explore",
-          "i18n": "menu.formal.explore",
-          "icon": "anticon-search",
-          "link": "/explore"
-        }
-      ]
-    },
-    {
       "text": "Organization",
       "i18n": "menu.organization",
       "group": true,
@@ -32,14 +18,12 @@
             {
               "text": "Organization Members",
               "link": "/org/:id/members",
-              "i18n": "menu.organization.management.members",
-              "externalLink": true
+              "i18n": "menu.organization.management.members"
             },
             {
               "text": "Organization Teams",
               "link": "/org/:id/teams",
-              "i18n": "menu.organization.management.teams",
-              "externalLink": true
+              "i18n": "menu.organization.management.teams"
             }
           ]
         },
@@ -176,11 +160,6 @@
               "text": "Todo List",
               "link": "/tasks/todo?org=:id",
               "i18n": "menu.organization.tasks.todo"
-            },
-            {
-              "text": "Staging Area",
-              "link": "/tasks/staging?org=:id",
-              "i18n": "menu.organization.tasks.staging"
             },
             {
               "text": "Daily Reports",
@@ -453,6 +432,20 @@
               "i18n": "menu.organization.documents.permissions"
             }
           ]
+        }
+      ]
+    },
+    {
+      "text": "Formal",
+      "i18n": "menu.formal",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Explore",
+          "i18n": "menu.formal.explore",
+          "icon": "anticon-search",
+          "link": "/explore"
         }
       ]
     }

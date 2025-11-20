@@ -5,20 +5,6 @@
   },
   "menu": [
     {
-      "text": "Formal",
-      "i18n": "menu.formal",
-      "group": true,
-      "hideInBreadcrumb": true,
-      "children": [
-        {
-          "text": "Explore",
-          "i18n": "menu.formal.explore",
-          "icon": "anticon-search",
-          "link": "/explore"
-        }
-      ]
-    },
-    {
       "text": "Team",
       "i18n": "menu.team",
       "group": true,
@@ -32,8 +18,7 @@
             {
               "text": "Team Members",
               "link": "/org/teams/:id/members",
-              "i18n": "menu.team.management.members",
-              "externalLink": true
+              "i18n": "menu.team.management.members"
             }
           ]
         },
@@ -66,11 +51,6 @@
               "text": "Todo List",
               "link": "/tasks/todo?team=:id",
               "i18n": "menu.team.tasks.todo"
-            },
-            {
-              "text": "Staging Area",
-              "link": "/tasks/staging?team=:id",
-              "i18n": "menu.team.tasks.staging"
             },
             {
               "text": "Daily Reports",
@@ -144,6 +124,20 @@
               "i18n": "menu.team.documents.upload"
             }
           ]
+        }
+      ]
+    },
+    {
+      "text": "Formal",
+      "i18n": "menu.formal",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Explore",
+          "i18n": "menu.formal.explore",
+          "icon": "anticon-search",
+          "link": "/explore"
         }
       ]
     }

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { WorkspaceContextFacade } from '@core';
-import { I18nPipe, SettingsService, User } from '@delon/theme';
+import { SettingsService, User } from '@delon/theme';
 import { LayoutDefaultModule, LayoutDefaultOptions } from '@delon/theme/layout-default';
 import { SettingDrawerModule } from '@delon/theme/setting-drawer';
 import { ThemeBtnComponent } from '@delon/theme/theme-btn';
@@ -91,8 +91,6 @@ import { HeaderUserComponent } from './widgets/user.component';
         </div>
         <nz-dropdown-menu #userMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item routerLink="/pro/account/center">{{ 'menu.account.center' | i18n }}</li>
-            <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
             @if (currentUserAccountId()) {
               <li nz-menu-divider></li>
               <li
@@ -156,7 +154,6 @@ import { HeaderUserComponent } from './widgets/user.component';
   imports: [
     RouterOutlet,
     RouterLink,
-    I18nPipe,
     LayoutDefaultModule,
     NzIconModule,
     NzMenuModule,

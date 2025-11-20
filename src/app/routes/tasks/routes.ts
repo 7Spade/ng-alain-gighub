@@ -43,10 +43,6 @@ export const TASK_ROUTES: Routes = [
     loadComponent: () => import('./todo/task-todo.component').then(m => m.TaskTodoComponent)
   },
   {
-    path: 'staging',
-    loadComponent: () => import('./staging/task-staging.component').then(m => m.TaskStagingComponent)
-  },
-  {
     path: 'daily-reports',
     loadComponent: () => import('./daily-reports/daily-reports.component').then(m => m.DailyReportsComponent)
   },
