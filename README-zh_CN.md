@@ -7,7 +7,7 @@
 <h1 align="center">NG-ALAIN</h1>
 
 <div align="center">
-  一个基于 Antd 中后台前端解决方案，提供更多通用性业务模块，让开发者更加专注于业务。
+  基於 Antd 的中後台前端解決方案，提供通用業務模組，專注業務開發。
 
   [![CI](https://github.com/ng-alain/ng-alain-gighub/actions/workflows/ci.yml/badge.svg)](https://github.com/ng-alain/ng-alain-gighub/actions/workflows/ci.yml)
   [![GitHub Release Date](https://img.shields.io/github/release-date/ng-alain/ng-alain-gighub.svg?style=flat-square)](https://github.com/ng-alain/ng-alain-gighub/releases)
@@ -22,9 +22,9 @@
 
 [English](README.md) | 简体中文
 
-## 快速入门
+## 快速入門
 
-- [如何开始使用？](https://ng-alain.com/docs/getting-started)
+- [開始使用](https://ng-alain.com/docs/getting-started)
 
 ## 链接
 
@@ -34,24 +34,24 @@
 
 ## 特性
 
-+ 基于 `ng-zorro-antd`
-+ 响应式
-+ 国际化
-+ 基建类库 [@delon](https://github.com/ng-alain/delon)（包括：业务组件、ACL访问控制、缓存、授权、动态表单等）
-+ 延迟加载及良好的启用画面
-+ 良好的UI路由设计
-+ 定制主题
-+ Less预编译
-+ RTL
-+ 良好的目录组织结构
-+ 简单升级
-+ 支持Docker部署
++ 基於 `ng-zorro-antd`
++ 響應式設計
++ 國際化
++ 基建類庫 [@delon](https://github.com/ng-alain/delon)（業務組件、ACL、緩存、授權、動態表單）
++ 延遲加載與啟動畫面
++ UI 路由設計
++ 定制主題
++ Less 預編譯
++ RTL 支持
++ 清晰目錄結構
++ 簡單升級
++ Docker 部署支持
 
 ## Architecture
 
 ![Architecture](https://raw.githubusercontent.com/ng-alain/delon/master/_screenshot/architecture.png)
 
-> [delon](https://github.com/ng-alain/delon) 是基于 Ant Design 设计理念的企业级中后台前端业务型组件库。
+> [delon](https://github.com/ng-alain/delon) 基於 Ant Design 設計理念的企業級中後台業務組件庫。
 
 ## 应用截图
 
@@ -59,24 +59,24 @@
 ![ipad](https://raw.githubusercontent.com/ng-alain/delon/master/_screenshot/ipad.png)
 ![iphone](https://raw.githubusercontent.com/ng-alain/delon/master/_screenshot/iphone.png)
 
-## 如何贡献
+## 貢獻
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ng-alain/ng-alain-gighub/pulls)
 
-在任何形式的参与前，请先阅读 [贡献者文档](https://github.com/ng-alain/ng-alain-gighub/blob/master/CONTRIBUTING.md)。如果你希望参与贡献，欢迎 [Pull Request](https://github.com/ng-alain/ng-alain-gighub/pulls)，或给我们 [报告 Bug](https://ng-alain.com/issue-helper/index.html#zh)。
+參與前請先閱讀 [貢獻者文檔](https://github.com/ng-alain/ng-alain-gighub/blob/master/CONTRIBUTING.md)。歡迎 [Pull Request](https://github.com/ng-alain/ng-alain-gighub/pulls) 或 [報告 Bug](https://ng-alain.com/issue-helper/index.html#zh)。
 
-> 强烈推荐阅读 [《提问的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way)(**本指南不提供此项目的实际支持服务！**)、[《如何向开源社区提问题》](https://github.com/seajs/seajs/issues/545) 和 [《如何有效地报告 Bug》](http://www.chiark.greenend.org.uk/%7Esgtatham/bugs-cn.html)、[《如何向开源项目提交无法解答的问题》](https://zhuanlan.zhihu.com/p/25795393)，更好的问题更容易获得帮助。
+> 推薦閱讀：[《提問的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way)、[《如何向開源社區提問》](https://github.com/seajs/seajs/issues/545)、[《如何有效報告 Bug》](http://www.chiark.greenend.org.uk/%7Esgtatham/bugs-cn.html)、[《如何提交無法解答的問題》](https://zhuanlan.zhihu.com/p/25795393)。
 
-## 赞助
+## 贊助
 
-ng-alain是MIT协议的开源项目。为了项目能够更好的持续的发展，我们期望获得更多的支持者，你可以通过如下任何一种方式支持我们：
+ng-alain 為 MIT 協議開源專案。為持續發展，期望獲得更多支持，可通過以下方式：
 
 - [patreon](https://www.patreon.com/cipchk)
 - [opencollective](https://opencollective.com/ng-alain)
 - [paypal](https://www.paypal.me/cipchk)
-- [支付宝或微信](https://ng-alain.com/assets/donate.png)
+- [支付寶或微信](https://ng-alain.com/assets/donate.png)
 
-或购买我们 [商品主题](https://e.ng-alain.com/)。
+或購買 [商業主題](https://e.ng-alain.com/)。
 
 ## Backers
 
