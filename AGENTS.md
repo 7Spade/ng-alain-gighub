@@ -1,6 +1,7 @@
 > **📌 重要提示**：
 > - 基礎開發規範已遷移至 `.cursor/rules/` 目錄，這些規則會自動應用於 Cursor IDE 的 AI 功能
 > - **VSCode GitHub Copilot 指引**位於根目錄的 `.copilot-*.md` 檔案（與 `.vscode/settings.json` 整合）
+> - **GitHub Copilot 標準指引**位於 `.github/copilot-instructions.md`（GitHub Copilot 自動查找的標準位置）⭐
 > - **GitHub Copilot Agent Mode 指引**位於 `.github/agents/` 目錄（供 Workspace/Agent Mode 使用）
 > - 模組特定規範請參考各模組目錄下的 `AGENTS.md` 文件
 > - 詳細規範請參考對應的規則文件
@@ -8,7 +9,18 @@
 
 ## 📂 AI 助手檔案組織結構
 
-本專案的 AI 助手相關檔案分為三個層級，各有不同的用途和目標受眾：
+本專案的 AI 助手相關檔案分為四個層級，各有不同的用途和目標受眾：
+
+### 0. GitHub Copilot 標準指引 ⭐⭐
+位於 `.github/copilot-instructions.md`，這是 GitHub Copilot 自動查找的標準位置（遵循 [GitHub 最佳實踐](https://gh.io/copilot-coding-agent-tips)）：
+
+- [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) - **GitHub Copilot 標準指引**
+  - 專案願景與架構概述
+  - 開發規範與原則（核心四原則、Angular、TypeScript）
+  - 認證與權限、測試要求、安全規範
+  - 開發工作流程與 Agent 操作限制
+  - 完整的文件索引與快速參考連結
+  - **用途**：GitHub Copilot 在此專案中自動使用的主要指引檔案
 
 ### 1. 根目錄 Copilot 指引（VSCode 整合）⭐
 位於專案根目錄的 `.copilot-*.md` 檔案，由 `.vscode/settings.json` 參照，供 VSCode GitHub Copilot 日常開發使用：
