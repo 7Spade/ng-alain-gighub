@@ -52,6 +52,6 @@ export const ISSUE_ROUTES: Routes = [
   },
   {
     path: 'sync-logs',
-    loadComponent: () => import('./sync-logs/sync-logs').then(m => m.SyncLogs)
+    loadComponent: () => import('./sync-logs/sync-logs').then(m => m.SyncLogsComponent)
   }
 ];
