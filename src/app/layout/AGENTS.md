@@ -1,5 +1,33 @@
 # Layout 模組開發規範（GitHub Copilot Agent 優化版）
 
+## 📑 目錄
+
+- [🎯 Layout 模組職責](#-layout-模組職責)
+- [⚡ 快速參考](#-快速參考)
+  - [依賴關係](#依賴關係)
+  - [關鍵原則](#關鍵原則)
+- [📋 核心規範檢查清單](#-核心規範檢查清單)
+  - [響應式設計](#響應式設計)
+  - [導航結構](#導航結構)
+  - [狀態管理](#狀態管理)
+  - [可訪問性（A11y）](#可訪問性a11y)
+  - [效能優化](#效能優化)
+- [🧪 測試要求](#-測試要求)
+  - [覆蓋率標準](#覆蓋率標準)
+  - [測試重點](#測試重點)
+- [📚 相關 Cursor 規則](#-相關-cursor-規則)
+  - [模組特定規則](#模組特定規則)
+  - [通用規則（自動應用）](#通用規則自動應用)
+- [🔗 相關文檔](#-相關文檔)
+  - [必讀文檔](#必讀文檔)
+  - [參考文檔](#參考文檔)
+- [💡 AI 助手使用建議](#-ai-助手使用建議)
+  - [適合使用的 AI 助手](#適合使用的-ai-助手)
+  - [常見 Prompt 範例](#常見-prompt-範例)
+
+---
+
+
 > 📖 **目的**：為 Layout 模組開發提供 AI 助手友善的規範指引。本模組規範已整合到 Cursor 規則系統（`.cursor/rules/layout-specific.mdc`），規則會自動應用到 `src/app/layout/` 目錄。
 
 ## 🎯 Layout 模組職責
@@ -61,11 +89,11 @@ Layout 模組提供應用程式的**佈局結構**，包括：
 export class BasicLayoutComponent {
   private layoutService = inject(LayoutService);
   collapsed = this.layoutService.sidebarCollapsed;
-  
+
   toggleSidebar(): void {
     this.layoutService.toggleSidebar();
   }
-  
+
   onCollapsedChange(collapsed: boolean): void {
     this.layoutService.setSidebarCollapsed(collapsed);
   }
@@ -121,12 +149,12 @@ export class LayoutService {
     localStorage.getItem('sidebar-collapsed') === 'true'
   );
   readonly sidebarCollapsed = this.collapsedSignal.asReadonly();
-  
+
   toggleSidebar(): void {
     const newState = !this.collapsedSignal();
     this.setSidebarCollapsed(newState);
   }
-  
+
   setSidebarCollapsed(collapsed: boolean): void {
     this.collapsedSignal.set(collapsed);
     localStorage.setItem('sidebar-collapsed', String(collapsed));
@@ -231,9 +259,9 @@ trackByLink(index: number, item: MenuItem): string {
 5. 遵循 .cursor/rules/layout-specific.mdc 規範
 ```
 
----
+- --
 
-**最後更新**：2025-11-20  
-**架構版本**：v2.0  
-**維護者**：開發團隊  
+**最後更新**：2025-11-20
+**架構版本**：v2.0
+**維護者**：開發團隊
 **適用**：GitHub Copilot Agent Mode

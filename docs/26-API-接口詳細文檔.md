@@ -1,11 +1,66 @@
 # API 接口詳細文檔
 
-> 📋 **目的**：提供完整的 API 接口說明，包含請求格式、回應格式、錯誤處理等詳細資訊
+## 📑 目錄
 
-**最後更新**：2025-11-15  
-**維護者**：開發團隊
+- [📋 目錄](#-目錄)
+- [API 概覽](#api-概覽)
+  - [基礎 URL](#基礎-url)
+  - [認證方式](#認證方式)
+- [認證與授權](#認證與授權)
+  - [1. 用戶註冊](#1-用戶註冊)
+  - [2. Email 登入](#2-email-登入)
+  - [3. Token 刷新](#3-token-刷新)
+  - [4. 獲取用戶資訊](#4-獲取用戶資訊)
+  - [5. 登出](#5-登出)
+- [PostgREST API](#postgrest-api)
+  - [Git-like 分支 / Pull Request API](#git-like-分支--pull-request-api)
+    - [1. 建立 Fork 與分支](#1-建立-fork-與分支)
+    - [2. 提交 Pull Request](#2-提交-pull-request)
+    - [3. 查詢分支績效](#3-查詢分支績效)
+  - [暫存區 (staging_submissions) API](#暫存區-staging_submissions-api)
+  - [基本查詢語法](#基本查詢語法)
+    - [1. 查詢列表](#1-查詢列表)
+    - [2. 篩選（Filter）](#2-篩選filter)
+    - [3. 排序（Order）](#3-排序order)
+    - [4. 分頁（Pagination）](#4-分頁pagination)
+    - [5. 關聯查詢（Join）](#5-關聯查詢join)
+    - [6. 插入資料](#6-插入資料)
+    - [7. 更新資料](#7-更新資料)
+    - [8. 刪除資料](#8-刪除資料)
+  - [常用 API 端點](#常用-api-端點)
+    - [藍圖/專案 APIs](#藍圖專案-apis)
+    - [任務管理 APIs](#任務管理-apis)
+    - [每日報表 APIs](#每日報表-apis)
+    - [品質驗收 APIs](#品質驗收-apis)
+    - [問題追蹤 APIs](#問題追蹤-apis)
+    - [協作通訊 APIs](#協作通訊-apis)
+- [Storage API](#storage-api)
+  - [1. 上傳檔案](#1-上傳檔案)
+  - [2. 下載檔案](#2-下載檔案)
+  - [3. 刪除檔案](#3-刪除檔案)
+- [Edge Functions API](#edge-functions-api)
+  - [1. 天氣 API 整合](#1-天氣-api-整合)
+  - [2. 通知處理](#2-通知處理)
+  - [3. 進度計算](#3-進度計算)
+- [Realtime API](#realtime-api)
+  - [1. 訂閱任務變更](#1-訂閱任務變更)
+  - [2. 廣播訊息](#2-廣播訊息)
+  - [3. 線上狀態追蹤](#3-線上狀態追蹤)
+- [錯誤處理](#錯誤處理)
+  - [錯誤回應格式](#錯誤回應格式)
+  - [常見錯誤碼](#常見錯誤碼)
+- [速率限制](#速率限制)
+- [相關文檔](#相關文檔)
 
 ---
+
+
+> 📋 **目的**：提供完整的 API 接口說明，包含請求格式、回應格式、錯誤處理等詳細資訊
+
+**最後更新**：2025-11-15
+**維護者**：開發團隊
+
+- --
 
 ## 📋 目錄
 
@@ -22,7 +77,7 @@
 - [API介面映射圖](./25-API-介面映射圖.mermaid.md) - API 端點總覽
 - [資料模型對照表](./34-資料模型對照表.md) - 資料模型說明
 
----
+- --
 
 ## API 概覽
 
@@ -46,7 +101,7 @@ Authorization: Bearer {access_token}
 2. 使用 `refresh_token` 刷新 `access_token`
 3. Token 有效期：1 小時（可透過 refresh token 延長）
 
----
+- --
 
 ## 認證與授權
 
@@ -96,7 +151,7 @@ Content-Type: application/json
 }
 ```
 
----
+- --
 
 ### 2. Email 登入
 
@@ -124,7 +179,7 @@ Content-Type: application/json
 }
 ```
 
----
+- --
 
 ### 3. Token 刷新
 
@@ -150,7 +205,7 @@ Content-Type: application/json
 }
 ```
 
----
+- --
 
 ### 4. 獲取用戶資訊
 
@@ -174,7 +229,7 @@ Authorization: Bearer {access_token}
 }
 ```
 
----
+- --
 
 ### 5. 登出
 
@@ -191,7 +246,7 @@ Authorization: Bearer {access_token}
 204 No Content
 ```
 
----
+- --
 
 ## PostgREST API
 
@@ -302,7 +357,7 @@ Authorization: Bearer {access_token}
 ]
 ```
 
----
+- --
 
 #### 2. 篩選（Filter）
 
@@ -335,7 +390,7 @@ GET /rest/v1/tasks?title=ilike.*施工*
 GET /rest/v1/blueprints?owner_id=eq.{user_id}
 ```
 
----
+- --
 
 #### 3. 排序（Order）
 
@@ -354,7 +409,7 @@ GET /rest/v1/blueprints?order=created_at.desc
 GET /rest/v1/tasks?order=priority.desc,created_at.asc
 ```
 
----
+- --
 
 #### 4. 分頁（Pagination）
 
@@ -381,7 +436,7 @@ GET /rest/v1/blueprints?limit=20&offset=20
 Content-Range: 0-19/100
 ```
 
----
+- --
 
 #### 5. 關聯查詢（Join）
 
@@ -399,7 +454,7 @@ GET /rest/v1/blueprints?select=*,tasks(count)
 GET /rest/v1/blueprints?select=*,tasks(*,task_assignments(*,accounts(*)))
 ```
 
----
+- --
 
 #### 6. 插入資料
 
@@ -433,7 +488,7 @@ Prefer: return=representation
 }
 ```
 
----
+- --
 
 #### 7. 更新資料
 
@@ -462,7 +517,7 @@ Prefer: return=representation
 }
 ```
 
----
+- --
 
 #### 8. 刪除資料
 
@@ -479,7 +534,7 @@ Authorization: Bearer {access_token}
 204 No Content
 ```
 
----
+- --
 
 ### 常用 API 端點
 
@@ -494,7 +549,7 @@ Authorization: Bearer {access_token}
 | 刪除 | `DELETE` | `/rest/v1/blueprints?id=eq.{id}` | 刪除藍圖 |
 | 查詢我的 | `GET` | `/rest/v1/blueprints?owner_id=eq.{user_id}` | 查詢我的藍圖 |
 
----
+- --
 
 #### 任務管理 APIs
 
@@ -508,7 +563,7 @@ Authorization: Bearer {access_token}
 | 指派 | `POST` | `/rest/v1/task_assignments` | 指派任務 |
 | 篩選狀態 | `GET` | `/rest/v1/tasks?status=in.(pending,in_progress)` | 篩選特定狀態 |
 
----
+- --
 
 #### 每日報表 APIs
 
@@ -519,7 +574,7 @@ Authorization: Bearer {access_token}
 | 更新 | `PATCH` | `/rest/v1/daily_reports?id=eq.{id}` | 更新報表 |
 | 獲取天氣 | `GET` | `/rest/v1/weather_cache?weather_date=eq.{date}` | 獲取天氣快取 |
 
----
+- --
 
 #### 品質驗收 APIs
 
@@ -529,7 +584,7 @@ Authorization: Bearer {access_token}
 | 建立 | `POST` | `/rest/v1/quality_checks` | 建立驗收 |
 | 更新 | `PATCH` | `/rest/v1/quality_checks?id=eq.{id}` | 更新驗收結果 |
 
----
+- --
 
 #### 問題追蹤 APIs
 
@@ -542,7 +597,7 @@ Authorization: Bearer {access_token}
 | 指派 | `POST` | `/rest/v1/issue_assignments` | 指派問題 |
 | 篩選 | `GET` | `/rest/v1/issues?status=eq.open&severity=eq.high` | 篩選高優先級問題 |
 
----
+- --
 
 #### 協作通訊 APIs
 
@@ -556,7 +611,7 @@ Authorization: Bearer {access_token}
 | 標記已讀 | `PATCH` | `/rest/v1/notifications?id=eq.{id}` | 標記已讀 |
 | 查詢待辦 | `GET` | `/rest/v1/todos?account_id=eq.{user_id}` | 查詢待辦 |
 
----
+- --
 
 ## Storage API
 
@@ -599,7 +654,7 @@ await fetch(
 }
 ```
 
----
+- --
 
 ### 2. 下載檔案
 
@@ -620,7 +675,7 @@ Authorization: Bearer {access_token}
 Content-Type: image/jpeg
 ```
 
----
+- --
 
 ### 3. 刪除檔案
 
@@ -639,7 +694,7 @@ Authorization: Bearer {access_token}
 }
 ```
 
----
+- --
 
 ## Edge Functions API
 
@@ -675,7 +730,7 @@ Content-Type: application/json
 }
 ```
 
----
+- --
 
 ### 2. 通知處理
 
@@ -702,7 +757,7 @@ Content-Type: application/json
 }
 ```
 
----
+- --
 
 ### 3. 進度計算
 
@@ -730,7 +785,7 @@ Content-Type: application/json
 }
 ```
 
----
+- --
 
 ## Realtime API
 
@@ -758,7 +813,7 @@ const channel = supabase
   .subscribe();
 ```
 
----
+- --
 
 ### 2. 廣播訊息
 
@@ -778,7 +833,7 @@ channel.on('broadcast', { event: 'cursor-pos' }, (payload) => {
 });
 ```
 
----
+- --
 
 ### 3. 線上狀態追蹤
 
@@ -799,7 +854,7 @@ presenceChannel
   });
 ```
 
----
+- --
 
 ## 錯誤處理
 
@@ -827,7 +882,7 @@ presenceChannel
 | 409 | `23505` | 資料衝突（UNIQUE 約束） | 檢查唯一性約束 |
 | 500 | `PGRST100` | 伺服器錯誤 | 聯繫管理員 |
 
----
+- --
 
 ## 速率限制
 
@@ -842,7 +897,7 @@ HTTP/1.1 429 Too Many Requests
 Retry-After: 60
 ```
 
----
+- --
 
 ## 相關文檔
 
@@ -850,8 +905,8 @@ Retry-After: 60
 - [資料模型對照表](./34-資料模型對照表.md)
 - [開發作業指引](./00-開發作業指引.md)
 
----
+- --
 
-**最後更新**：2025-11-13  
+**最後更新**：2025-11-13
 **維護者**：開發團隊
 

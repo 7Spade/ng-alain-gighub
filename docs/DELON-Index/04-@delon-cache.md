@@ -1,12 +1,59 @@
 # @delon/cache 使用指南
 
-> 📋 **目的**：詳細說明 `@delon/cache` 緩存服務的使用方法、API 和最佳實踐
+## 📑 目錄
 
-**最後更新**：2025-01-15  
-**適用版本**：@delon/cache ^20.1.0  
-**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+- [📋 目錄](#-目錄)
+- [概述](#概述)
+  - [核心特點](#核心特點)
+- [安裝與導入](#安裝與導入)
+  - [安裝](#安裝)
+  - [配置](#配置)
+- [配置](#配置)
+  - [配置選項](#配置選項)
+- [主要功能](#主要功能)
+  - [CacheService - 緩存服務](#cacheservice---緩存服務)
+    - [主要方法](#主要方法)
+    - [使用示例](#使用示例)
+  - [存儲類型](#存儲類型)
+    - ['m' - 內存緩存（默認）](#m---內存緩存默認)
+    - ['s' - sessionStorage](#s---sessionstorage)
+    - ['l' - localStorage](#l---localstorage)
+  - [過期時間](#過期時間)
+    - [1. 秒數（推薦）](#1-秒數推薦)
+    - [2. Date 對象](#2-date-對象)
+- [實際使用示例](#實際使用示例)
+  - [示例 1：基本用法](#示例-1基本用法)
+  - [示例 2：用戶數據緩存](#示例-2用戶數據緩存)
+  - [示例 3：列表數據緩存](#示例-3列表數據緩存)
+  - [示例 4：Promise 模式](#示例-4promise-模式)
+  - [示例 5：緩存管理](#示例-5緩存管理)
+- [最佳實踐](#最佳實踐)
+  - [1. 根據數據特性選擇存儲類型](#1-根據數據特性選擇存儲類型)
+  - [2. 設置合理的過期時間](#2-設置合理的過期時間)
+  - [3. 檢查緩存是否存在](#3-檢查緩存是否存在)
+  - [4. 使用 Signals 管理緩存狀態](#4-使用-signals-管理緩存狀態)
+  - [5. 處理緩存過期](#5-處理緩存過期)
+- [常見問題](#常見問題)
+  - [Q1: 如何清除所有緩存？](#q1-如何清除所有緩存)
+  - [Q2: 如何檢查緩存是否過期？](#q2-如何檢查緩存是否過期)
+  - [Q3: 如何獲取所有緩存鍵？](#q3-如何獲取所有緩存鍵)
+  - [Q4: 如何設置不同的過期時間？](#q4-如何設置不同的過期時間)
+  - [Q5: Promise 模式和同步模式有什麼區別？](#q5-promise-模式和同步模式有什麼區別)
+- [🔗 相關文檔](#-相關文檔)
+- [📚 參考資源](#-參考資源)
+  - [官方文檔](#官方文檔)
+  - [相關組件](#相關組件)
 
 ---
+
+
+> 📋 **目的**：詳細說明 `@delon/cache` 緩存服務的使用方法、API 和最佳實踐
+
+**最後更新**：2025-01-15
+**適用版本**：@delon/cache ^20.1.0
+**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+
+- --
 
 ## 📋 目錄
 
@@ -21,7 +68,7 @@
 - [最佳實踐](#最佳實踐)
 - [常見問題](#常見問題)
 
----
+- --
 
 ## 概述
 
@@ -34,7 +81,7 @@
 - **Promise 模式**：支持 Promise 模式的異步獲取
 - **類型安全**：完整的 TypeScript 類型定義
 
----
+- --
 
 ## 安裝與導入
 
@@ -69,7 +116,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
----
+- --
 
 ## 配置
 
@@ -81,7 +128,7 @@ export const appConfig: ApplicationConfig = {
 | `reName` | 重命名前綴 | `string` | `''` |
 | `type` | 默認存儲類型 | `'m' \| 's' \| 'l'` | `'m'` |
 
----
+- --
 
 ## 主要功能
 
@@ -152,9 +199,9 @@ export class ExampleComponent {
   saveData(): void {
     const data = { name: 'John', age: 30 };
     // 保存到 localStorage，過期時間 1 小時
-    this.cache.set('userData', data, { 
-      type: 'l', 
-      expire: 3600 
+    this.cache.set('userData', data, {
+      type: 'l',
+      expire: 3600
     });
   }
 
@@ -169,7 +216,7 @@ export class ExampleComponent {
 }
 ```
 
----
+- --
 
 ### 存儲類型
 
@@ -200,7 +247,7 @@ this.cache.set('key', 'value', { type: 's' });
 this.cache.set('key', 'value', { type: 'l' });
 ```
 
----
+- --
 
 ### 過期時間
 
@@ -217,12 +264,12 @@ this.cache.set('key', 'value', { expire: 3600 });
 
 ```typescript
 // 過期時間為指定日期
-this.cache.set('key', 'value', { 
-  expire: new Date('2025-12-31') 
+this.cache.set('key', 'value', {
+  expire: new Date('2025-12-31')
 });
 ```
 
----
+- --
 
 ## 實際使用示例
 
@@ -286,13 +333,13 @@ export class UserProfileComponent implements OnInit {
   loadUser(): void {
     // 模擬 API 調用
     const userData = { name: 'John', email: 'john@example.com' };
-    
+
     // 保存到緩存，過期時間 1 小時
-    this.cache.set('userProfile', userData, { 
-      type: 'l', 
-      expire: 3600 
+    this.cache.set('userProfile', userData, {
+      type: 'l',
+      expire: 3600
     });
-    
+
     this.user.set(userData);
   }
 
@@ -346,9 +393,9 @@ export class ListComponent {
     ];
 
     // 保存到緩存，過期時間 30 分鐘
-    this.cache.set('listData', data, { 
-      type: 's', 
-      expire: 1800 
+    this.cache.set('listData', data, {
+      type: 's',
+      expire: 1800
     });
 
     this.items.set(data);
@@ -450,7 +497,7 @@ export class CacheManagerComponent {
 }
 ```
 
----
+- --
 
 ## 最佳實踐
 
@@ -471,21 +518,21 @@ this.cache.set('userData', data, { type: 'l' });
 
 ```typescript
 // ✅ 用戶數據：1 小時
-this.cache.set('userProfile', data, { 
-  type: 'l', 
-  expire: 3600 
+this.cache.set('userProfile', data, {
+  type: 'l',
+  expire: 3600
 });
 
 // ✅ 列表數據：30 分鐘
-this.cache.set('listData', data, { 
-  type: 's', 
-  expire: 1800 
+this.cache.set('listData', data, {
+  type: 's',
+  expire: 1800
 });
 
 // ✅ 臨時數據：5 分鐘
-this.cache.set('tempData', data, { 
-  type: 'm', 
-  expire: 300 
+this.cache.set('tempData', data, {
+  type: 'm',
+  expire: 300
 });
 ```
 
@@ -539,9 +586,9 @@ export class ExampleComponent {
 
 ```typescript
 // ✅ 推薦：設置過期時間並檢查
-this.cache.set('data', value, { 
-  type: 'l', 
-  expire: 3600 
+this.cache.set('data', value, {
+  type: 'l',
+  expire: 3600
 });
 
 // 獲取時會自動檢查過期
@@ -551,7 +598,7 @@ if (!data) {
 }
 ```
 
----
+- --
 
 ## 常見問題
 
@@ -599,8 +646,8 @@ import { CacheService } from '@delon/cache';
 this.cache.set('key', 'value', { expire: 3600 }); // 1 小時
 
 // 使用 Date 對象
-this.cache.set('key', 'value', { 
-  expire: new Date('2025-12-31') 
+this.cache.set('key', 'value', {
+  expire: new Date('2025-12-31')
 });
 ```
 
@@ -620,7 +667,7 @@ this.cache.get('key', { mode: 'promise' }).then(data => {
 
 Promise 模式適用於需要異步處理的場景，但大多數情況下同步模式已經足夠。
 
----
+- --
 
 ## 🔗 相關文檔
 
@@ -628,7 +675,7 @@ Promise 模式適用於需要異步處理的場景，但大多數情況下同步
 - [開發作業指引](../00-開發作業指引.md) - 開發規範
 - [返回索引](./README.md)
 
----
+- --
 
 ## 📚 參考資源
 
@@ -642,8 +689,8 @@ Promise 模式適用於需要異步處理的場景，但大多數情況下同步
 - [@delon/auth](https://ng-alain.com/auth) - 認證服務
 - [@delon/util](https://ng-alain.com/util) - 工具函數庫
 
----
+- --
 
-**最後更新**：2025-01-15  
-**維護者**：開發團隊  
+**最後更新**：2025-01-15
+**維護者**：開發團隊
 **下次審查**：2025-02-15

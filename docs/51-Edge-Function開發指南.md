@@ -1,13 +1,51 @@
 # Edge Function 開發指南
 
-> **目的**：定義 Supabase Edge Functions 的開發規範、測試流程和部署方法
+## 📑 目錄
 
-**最後更新**：2025-11-16  
-**版本**：v1.0  
-**維護者**：開發團隊  
-**技術棧**：Deno + Supabase Edge Functions
+- [📋 目錄](#-目錄)
+- [Edge Function 基礎](#edge-function-基礎)
+  - [什麼是 Edge Function？](#什麼是-edge-function)
+  - [使用場景](#使用場景)
+  - [基本結構](#基本結構)
+- [開發流程](#開發流程)
+  - [1. 建立新函數](#1-建立新函數)
+  - [2. 函數模板](#2-函數模板)
+  - [3. CORS 配置](#3-cors-配置)
+  - [4. 共用 Supabase 客戶端](#4-共用-supabase-客戶端)
+- [本地測試](#本地測試)
+  - [1. 啟動本地開發](#1-啟動本地開發)
+  - [2. 測試請求](#2-測試請求)
+  - [3. 查看日誌](#3-查看日誌)
+  - [4. 單元測試](#4-單元測試)
+- [部署與監控](#部署與監控)
+  - [1. 部署函數](#1-部署函數)
+  - [2. 環境變數管理](#2-環境變數管理)
+  - [3. 函數配置](#3-函數配置)
+  - [4. 監控與日誌](#4-監控與日誌)
+  - [5. 效能監控](#5-效能監控)
+- [最佳實踐](#最佳實踐)
+  - [1. 錯誤處理](#1-錯誤處理)
+  - [2. 輸入驗證](#2-輸入驗證)
+  - [3. 超時處理](#3-超時處理)
+  - [4. 快取策略](#4-快取策略)
+  - [5. 分批處理](#5-分批處理)
+- [安全性](#安全性)
+  - [1. JWT 驗證](#1-jwt-驗證)
+  - [2. 權限檢查](#2-權限檢查)
+  - [3. 速率限制](#3-速率限制)
+- [相關文檔](#相關文檔)
 
 ---
+
+
+> **目的**：定義 Supabase Edge Functions 的開發規範、測試流程和部署方法
+
+**最後更新**：2025-11-16
+**版本**：v1.0
+**維護者**：開發團隊
+**技術棧**：Deno + Supabase Edge Functions
+
+- --
 
 ## 📋 目錄
 
@@ -16,7 +54,7 @@
 3. [本地測試](#本地測試)
 4. [部署與監控](#部署與監控)
 
----
+- --
 
 ## Edge Function 基礎
 
@@ -42,13 +80,13 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 Deno.serve(async (req: Request) => {
   const { name } = await req.json();
-  
+
   const data = {
     message: `Hello ${name}!`,
   };
 
   return new Response(JSON.stringify(data), {
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
       "Connection": "keep-alive"
     },
@@ -56,7 +94,7 @@ Deno.serve(async (req: Request) => {
 });
 ```
 
----
+- --
 
 ## 開發流程
 
@@ -108,7 +146,7 @@ Deno.serve(async (req: Request) => {
 
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
+
     if (authError || !user) {
       throw new Error("Invalid token");
     }
@@ -133,7 +171,7 @@ Deno.serve(async (req: Request) => {
 
   } catch (error) {
     console.error("Error:", error);
-    
+
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
       {
@@ -151,14 +189,14 @@ async function handleCreate(supabase: any, user: any, data: any) {
     .insert({ ...data, user_id: user.id })
     .select()
     .single();
-    
+
   if (error) throw error;
   return result;
 }
 
 async function handleUpdate(supabase: any, user: any, data: any) {
   const { id, ...updates } = data;
-  
+
   const { data: result, error } = await supabase
     .from("my_table")
     .update(updates)
@@ -166,7 +204,7 @@ async function handleUpdate(supabase: any, user: any, data: any) {
     .eq("user_id", user.id)
     .select()
     .single();
-    
+
   if (error) throw error;
   return result;
 }
@@ -178,7 +216,7 @@ async function handleUpdate(supabase: any, user: any, data: any) {
 // supabase/functions/_shared/cors.ts
 export const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": 
+  "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
 ```
@@ -192,12 +230,12 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 export function createSupabaseClient(authToken?: string) {
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const supabaseKey = authToken || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  
+
   return createClient(supabaseUrl, supabaseKey);
 }
 ```
 
----
+- --
 
 ## 本地測試
 
@@ -264,7 +302,7 @@ Deno.test("should return hello message", async () => {
 deno test supabase/functions/my-function/index.test.ts
 ```
 
----
+- --
 
 ## 部署與監控
 
@@ -329,14 +367,14 @@ supabase functions logs my-function --level error
 // 在函數中加入計時
 Deno.serve(async (req: Request) => {
   const startTime = Date.now();
-  
+
   try {
     // 處理邏輯
     const result = await processRequest(req);
-    
+
     const duration = Date.now() - startTime;
     console.log(`Request processed in ${duration}ms`);
-    
+
     return new Response(JSON.stringify(result), {
       headers: {
         "Content-Type": "application/json",
@@ -350,7 +388,7 @@ Deno.serve(async (req: Request) => {
 });
 ```
 
----
+- --
 
 ## 最佳實踐
 
@@ -363,11 +401,11 @@ try {
   return successResponse(result);
 } catch (error) {
   console.error("Operation failed:", error);
-  
+
   if (error.code === "PGRST116") {
     return errorResponse("Resource not found", 404);
   }
-  
+
   return errorResponse(error.message, 500);
 }
 
@@ -375,11 +413,11 @@ try {
 function errorResponse(message: string, status = 400) {
   return new Response(
     JSON.stringify({ error: message }),
-    { 
+    {
       status,
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        ...corsHeaders 
+        ...corsHeaders
       }
     }
   );
@@ -417,7 +455,7 @@ async function withTimeout<T>(
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error("Operation timed out")), timeoutMs);
   });
-  
+
   return Promise.race([promise, timeoutPromise]);
 }
 
@@ -442,17 +480,17 @@ const cache = new Map<string, { data: any; expires: number }>();
 
 async function getCachedData(key: string, fetchFn: () => Promise<any>) {
   const cached = cache.get(key);
-  
+
   if (cached && cached.expires > Date.now()) {
     return cached.data;
   }
-  
+
   const data = await fetchFn();
   cache.set(key, {
     data,
     expires: Date.now() + 5 * 60 * 1000  // 5 分鐘
   });
-  
+
   return data;
 }
 ```
@@ -477,7 +515,7 @@ await processBatch(tasks, 100, async (batch) => {
 });
 ```
 
----
+- --
 
 ## 安全性
 
@@ -486,18 +524,18 @@ await processBatch(tasks, 100, async (batch) => {
 ```typescript
 async function verifyUser(req: Request, supabase: any) {
   const authHeader = req.headers.get("Authorization");
-  
+
   if (!authHeader?.startsWith("Bearer ")) {
     throw new Error("Missing or invalid authorization header");
   }
-  
+
   const token = authHeader.substring(7);
   const { data: { user }, error } = await supabase.auth.getUser(token);
-  
+
   if (error || !user) {
     throw new Error("Invalid or expired token");
   }
-  
+
   return user;
 }
 ```
@@ -516,9 +554,9 @@ async function checkPermission(
     p_resource: resource,
     p_action: action
   });
-  
+
   if (error) throw error;
-  
+
   if (!data) {
     throw new Error("Permission denied");
   }
@@ -533,20 +571,20 @@ const rateLimiter = new Map<string, number[]>();
 function checkRateLimit(userId: string, maxRequests = 100, windowMs = 60000) {
   const now = Date.now();
   const userRequests = rateLimiter.get(userId) || [];
-  
+
   // 移除過期的請求記錄
   const validRequests = userRequests.filter(time => now - time < windowMs);
-  
+
   if (validRequests.length >= maxRequests) {
     throw new Error("Rate limit exceeded");
   }
-  
+
   validRequests.push(now);
   rateLimiter.set(userId, validRequests);
 }
 ```
 
----
+- --
 
 ## 相關文檔
 
@@ -554,8 +592,8 @@ function checkRateLimit(userId: string, maxRequests = 100, windowMs = 60000) {
 - [監控與告警配置指南](./56-監控與告警配置指南.md)
 - [安全檢查清單](./41-安全檢查清單.md)
 
----
+- --
 
-**維護者**：開發團隊  
-**最後更新**：2025-11-16  
+**維護者**：開發團隊
+**最後更新**：2025-11-16
 **下次審查**：2026-02-16

@@ -80,7 +80,7 @@
 
 **詳細說明**：[.cursor/rules/README.md](./.cursor/rules/README.md)
 
----
+- --
 
 ## 📋 快速參考
 
@@ -94,7 +94,7 @@
 
 包含專案開發代理、角色定位、領域專家 Agents（Angular、TypeScript、代碼質量、安全、效能、測試、可訪問性、文件）。
 
----
+- --
 
 ## 🔧 VSCode 設定檔整合
 
@@ -107,14 +107,14 @@
 
 詳細配置：[.vscode/settings.json](./.vscode/settings.json)
 
----
+- --
 
 ## 📝 模板文件
 
 - [Component 模板](./.cursor/templates/component.mdc) - Angular Standalone Component 模板
 - [Service 模板](./.cursor/templates/service.mdc) - Angular Service 模板（使用 Signals）
 
----
+- --
 
 ## 🔄 保留在 AGENTS.md 的內容
 
@@ -137,7 +137,7 @@
   - **符合常理**：功能真正可用、用戶體驗優先、避免過度設計、及時驗證
   - 詳細說明：[代碼質量規範](./.cursor/rules/code-quality.mdc#core-development-principles-)
 
----
+- --
 
 ## 📚 相關文檔
 
@@ -157,8 +157,8 @@
 - **日常開發**：SHARED_IMPORTS 使用指南、開發最佳實踐指南
 - **詳細資料**：docs/README.md
 
----
+- --
 
-**最後更新**：2025-01-15  
-**架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
+**最後更新**：2025-01-15
+**架構版本**：v2.0（Git-like 分支模型，51 張資料表）
 **維護者**：開發團隊

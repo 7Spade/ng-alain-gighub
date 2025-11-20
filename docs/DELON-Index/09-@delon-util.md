@@ -1,12 +1,86 @@
 # @delon/util 使用指南
 
-> 📋 **目的**：詳細說明 `@delon/util` 工具庫的使用方法、API 和最佳實踐
+## 📑 目錄
 
-**最後更新**：2025-01-15  
-**適用版本**：@delon/util ^20.1.0  
-**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+- [📋 目錄](#-目錄)
+- [概述](#概述)
+  - [核心特點](#核心特點)
+- [安裝與導入](#安裝與導入)
+  - [安裝](#安裝)
+  - [導入方式](#導入方式)
+  - [或使用 SHARED_IMPORTS](#或使用-shared_imports)
+- [模組說明](#模組說明)
+  - [@delon/util/array - 數組與樹操作](#delonutilarray---數組與樹操作)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/browser - 瀏覽器相關](#delonutilbrowser---瀏覽器相關)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/date-time - 日期時間轉換](#delonutildate-time---日期時間轉換)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/decorator - 裝飾器](#delonutildecorator---裝飾器)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/form - 響應式表單校驗](#delonutilform---響應式表單校驗)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/format - 字符格式化](#delonutilformat---字符格式化)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/math - 數學運算](#delonutilmath---數學運算)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/token - Token 管理](#delonutiltoken---token-管理)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/other - 其他工具](#delonutilother---其他工具)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+  - [@delon/util/pipes - 管道](#delonutilpipes---管道)
+    - [主要功能](#主要功能)
+    - [常用 API](#常用-api)
+    - [使用示例](#使用示例)
+- [實際使用示例](#實際使用示例)
+  - [示例 1：複製功能](#示例-1複製功能)
+  - [示例 2：日期範圍選擇](#示例-2日期範圍選擇)
+  - [示例 3：表單驗證](#示例-3表單驗證)
+- [最佳實踐](#最佳實踐)
+  - [1. 按需導入](#1-按需導入)
+  - [2. 使用 Signals 管理狀態](#2-使用-signals-管理狀態)
+  - [3. 錯誤處理](#3-錯誤處理)
+  - [4. 類型安全](#4-類型安全)
+  - [5. 與 SHARED_IMPORTS 配合使用](#5-與-shared_imports-配合使用)
+- [常見問題](#常見問題)
+  - [Q1: 如何導入多個工具函數？](#q1-如何導入多個工具函數)
+  - [Q2: `copy` 函數在哪些瀏覽器中可用？](#q2-copy-函數在哪些瀏覽器中可用)
+  - [Q3: `deepCopy` 和 Angular 的 `structuredClone` 有什麼區別？](#q3-deepcopy-和-angular-的-structuredclone-有什麼區別)
+  - [Q4: 如何在服務中使用 @delon/util？](#q4-如何在服務中使用-delonutil)
+  - [Q5: 管道如何與 Signals 配合使用？](#q5-管道如何與-signals-配合使用)
+- [🔗 相關文檔](#-相關文檔)
+- [📚 參考資源](#-參考資源)
+  - [官方文檔](#官方文檔)
+  - [相關組件](#相關組件)
 
 ---
+
+
+> 📋 **目的**：詳細說明 `@delon/util` 工具庫的使用方法、API 和最佳實踐
+
+**最後更新**：2025-01-15
+**適用版本**：@delon/util ^20.1.0
+**相關文檔**：[SHARED_IMPORTS 使用指南](../45-SHARED_IMPORTS-使用指南.md)
+
+- --
 
 ## 📋 目錄
 
@@ -27,7 +101,7 @@
 - [最佳實踐](#最佳實踐)
 - [常見問題](#常見問題)
 
----
+- --
 
 ## 概述
 
@@ -40,7 +114,7 @@
 - **Angular 集成**：與 Angular 框架深度集成
 - **性能優化**：Tree-shaking 友好
 
----
+- --
 
 ## 安裝與導入
 
@@ -86,7 +160,7 @@ import { SHARED_IMPORTS } from '@shared/shared-imports';
 export class ExampleComponent {}
 ```
 
----
+- --
 
 ## 模組說明
 
@@ -169,7 +243,7 @@ export class TreeExampleComponent {
 }
 ```
 
----
+- --
 
 ### @delon/util/browser - 瀏覽器相關
 
@@ -250,7 +324,7 @@ export class BrowserExampleComponent {
   }
 ```
 
----
+- --
 
 ### @delon/util/date-time - 日期時間轉換
 
@@ -323,7 +397,7 @@ export class DatetimeExampleComponent {
   }
 ```
 
----
+- --
 
 ### @delon/util/decorator - 裝飾器
 
@@ -379,7 +453,7 @@ export class DecoratorExampleComponent {
 }
 ```
 
----
+- --
 
 ### @delon/util/form - 響應式表單校驗
 
@@ -470,7 +544,7 @@ export class FormExampleComponent {
   );
 ```
 
----
+- --
 
 ### @delon/util/format - 字符格式化
 
@@ -547,7 +621,7 @@ export class FormatExampleComponent {
   }
 ```
 
----
+- --
 
 ### @delon/util/math - 數學運算
 
@@ -603,7 +677,7 @@ export class MathExampleComponent {
 }
 ```
 
----
+- --
 
 ### @delon/util/token - Token 管理
 
@@ -651,7 +725,7 @@ export class TokenExampleComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.windowWidth.set(this.window.innerWidth);
-    
+
     // 監聽窗口大小變化
     this.resizeSub = fromEvent(this.window, 'resize').subscribe(() => {
       this.windowWidth.set(this.window.innerWidth);
@@ -664,7 +738,7 @@ export class TokenExampleComponent implements OnInit, OnDestroy {
 }
 ```
 
----
+- --
 
 ### @delon/util/other - 其他工具
 
@@ -742,7 +816,7 @@ export class OtherExampleComponent {
       });
 ```
 
----
+- --
 
 ### @delon/util/pipes - 管道
 
@@ -803,7 +877,7 @@ import { CurrencyPricePipe } from '@delon/util';
 
 `CurrencyPricePipe` 已包含在 `SHARED_DELON_MODULES` 中，可直接使用。
 
----
+- --
 
 ## 實際使用示例
 
@@ -934,7 +1008,7 @@ export class FormValidationExampleComponent {
 }
 ```
 
----
+- --
 
 ## 最佳實踐
 
@@ -966,7 +1040,7 @@ import { deepCopy } from '@delon/util/other';
 })
 export class ExampleComponent {
   data = signal({ name: 'John', age: 30 });
-  
+
   // 使用深拷貝創建新狀態
   updateData(): void {
     const newData = deepCopy(this.data());
@@ -1019,7 +1093,7 @@ import { SHARED_IMPORTS } from '@shared';
 export class ExampleComponent {}
 ```
 
----
+- --
 
 ## 常見問題
 
@@ -1089,7 +1163,7 @@ export class ExampleComponent {
 }
 ```
 
----
+- --
 
 ## 🔗 相關文檔
 
@@ -1098,7 +1172,7 @@ export class ExampleComponent {
 - [Angular 20 最佳實踐](../../.cursor/rules/angular.mdc) - Angular 20 最佳實踐
 - [返回索引](./README.md)
 
----
+- --
 
 ## 📚 參考資源
 
@@ -1113,8 +1187,8 @@ export class ExampleComponent {
 - [@delon/form](https://ng-alain.com/form) - 動態表單
 - [@delon/theme](https://ng-alain.com/theme) - 主題系統
 
----
+- --
 
-**最後更新**：2025-01-15  
-**維護者**：開發團隊  
+**最後更新**：2025-01-15
+**維護者**：開發團隊
 **下次審查**：2025-02-15

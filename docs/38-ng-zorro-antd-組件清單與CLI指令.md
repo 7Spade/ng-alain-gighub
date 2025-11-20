@@ -1,13 +1,134 @@
 # NG-ZORRO-ANTD 組件清單與 CLI 指令
 
-> 📋 **目的**：提供 ng-zorro-antd 組件清單和 CLI Schematics 指令參考
+## 📑 目錄
 
-**最後更新**：2025-11-15  
-**維護者**：開發團隊  
-**版本**：基於 ng-zorro-antd 最新版本  
-**驗證來源**：Context7 官方文檔、專案 `shared-zorro.module.ts`
+- [📋 目錄](#-目錄)
+- [組件清單](#組件清單)
+  - [反饋類組件 (Feedback)](#反饋類組件-feedback)
+    - [[Alert - 警告提示](./NG-ZORRO-Index/01-Alert.md)](#alert---警告提示ng-zorro-index01-alertmd)
+    - [[Result - 結果頁面](./NG-ZORRO-Index/04-Result.md)](#result---結果頁面ng-zorro-index04-resultmd)
+    - [[Skeleton - 骨架屏](./NG-ZORRO-Index/05-Skeleton.md)](#skeleton---骨架屏ng-zorro-index05-skeletonmd)
+    - [[Spin - 加載中](./NG-ZORRO-Index/06-Spin.md)](#spin---加載中ng-zorro-index06-spinmd)
+    - [[Progress - 進度條](./NG-ZORRO-Index/07-Progress.md)](#progress---進度條ng-zorro-index07-progressmd)
+    - [[Drawer - 抽屜](./NG-ZORRO-Index/08-Drawer.md)](#drawer---抽屜ng-zorro-index08-drawermd)
+    - [[Modal - 對話框](./NG-ZORRO-Index/09-Modal.md)](#modal---對話框ng-zorro-index09-modalmd)
+    - [[Popconfirm - 氣泡確認框](./NG-ZORRO-Index/10-Popconfirm.md)](#popconfirm---氣泡確認框ng-zorro-index10-popconfirmmd)
+    - [[Message - 全局提示（服務）](./NG-ZORRO-Index/11-Message.md)](#message---全局提示服務ng-zorro-index11-messagemd)
+    - [[Notification - 通知提醒框（服務）](./NG-ZORRO-Index/12-Notification.md)](#notification---通知提醒框服務ng-zorro-index12-notificationmd)
+  - [數據展示類組件 (Data Display)](#數據展示類組件-data-display)
+    - [[Avatar - 頭像](./NG-ZORRO-Index/13-Avatar.md)](#avatar---頭像ng-zorro-index13-avatarmd)
+    - [[Badge - 徽標數](./NG-ZORRO-Index/14-Badge.md)](#badge---徽標數ng-zorro-index14-badgemd)
+    - [[Calendar - 日曆](./NG-ZORRO-Index/15-Calendar.md)](#calendar---日曆ng-zorro-index15-calendarmd)
+    - [[Card - 卡片](./NG-ZORRO-Index/16-Card.md)](#card---卡片ng-zorro-index16-cardmd)
+    - [[Carousel - 走馬燈](./NG-ZORRO-Index/17-Carousel.md)](#carousel---走馬燈ng-zorro-index17-carouselmd)
+    - [[Collapse - 折疊面板](./NG-ZORRO-Index/18-Collapse.md)](#collapse---折疊面板ng-zorro-index18-collapsemd)
+    - [[Comment - 評論](./NG-ZORRO-Index/19-Comment.md)](#comment---評論ng-zorro-index19-commentmd)
+    - [[Descriptions - 描述列表](./NG-ZORRO-Index/20-Descriptions.md)](#descriptions---描述列表ng-zorro-index20-descriptionsmd)
+    - [[Empty - 空狀態](./NG-ZORRO-Index/21-Empty.md)](#empty---空狀態ng-zorro-index21-emptymd)
+    - [[Image - 圖片](./NG-ZORRO-Index/22-Image.md)](#image---圖片ng-zorro-index22-imagemd)
+    - [[List - 列表](./NG-ZORRO-Index/23-List.md)](#list---列表ng-zorro-index23-listmd)
+    - [[Popover - 氣泡卡片](./NG-ZORRO-Index/24-Popover.md)](#popover---氣泡卡片ng-zorro-index24-popovermd)
+    - [[QRCode - 二維碼](./NG-ZORRO-Index/25-QRCode.md)](#qrcode---二維碼ng-zorro-index25-qrcodemd)
+    - [[Segmented - 分段控制器](./NG-ZORRO-Index/26-Segmented.md)](#segmented---分段控制器ng-zorro-index26-segmentedmd)
+    - [[Statistic - 統計數值](./NG-ZORRO-Index/27-Statistic.md)](#statistic---統計數值ng-zorro-index27-statisticmd)
+    - [[Table - 表格](./NG-ZORRO-Index/28-Table.md)](#table---表格ng-zorro-index28-tablemd)
+    - [[Tag - 標籤](./NG-ZORRO-Index/29-Tag.md)](#tag---標籤ng-zorro-index29-tagmd)
+    - [[Timeline - 時間軸](./NG-ZORRO-Index/30-Timeline.md)](#timeline---時間軸ng-zorro-index30-timelinemd)
+    - [[Tooltip - 文字提示](./NG-ZORRO-Index/31-Tooltip.md)](#tooltip---文字提示ng-zorro-index31-tooltipmd)
+    - [[Tree - 樹形控件](./NG-ZORRO-Index/03-Tree.md)](#tree---樹形控件ng-zorro-index03-treemd)
+    - [[TreeView - 樹視圖](./NG-ZORRO-Index/32-TreeView.md)](#treeview---樹視圖ng-zorro-index32-treeviewmd)
+  - [數據錄入類組件 (Data Entry)](#數據錄入類組件-data-entry)
+    - [[AutoComplete - 自動完成](./NG-ZORRO-Index/33-AutoComplete.md)](#autocomplete---自動完成ng-zorro-index33-autocompletemd)
+    - [[Cascader - 級聯選擇](./NG-ZORRO-Index/34-Cascader.md)](#cascader---級聯選擇ng-zorro-index34-cascadermd)
+    - [[Checkbox - 多選框](./NG-ZORRO-Index/35-Checkbox.md)](#checkbox---多選框ng-zorro-index35-checkboxmd)
+    - [[ColorPicker - 顏色選擇器](./NG-ZORRO-Index/36-ColorPicker.md)](#colorpicker---顏色選擇器ng-zorro-index36-colorpickermd)
+    - [[DatePicker - 日期選擇框](./NG-ZORRO-Index/37-DatePicker.md)](#datepicker---日期選擇框ng-zorro-index37-datepickermd)
+    - [[Form - 表單](./NG-ZORRO-Index/02-Form.md)](#form---表單ng-zorro-index02-formmd)
+    - [[Input - 輸入框](./NG-ZORRO-Index/38-Input.md)](#input---輸入框ng-zorro-index38-inputmd)
+    - [[InputNumber - 數字輸入框](./NG-ZORRO-Index/39-InputNumber.md)](#inputnumber---數字輸入框ng-zorro-index39-inputnumbermd)
+    - [[Mention - 提及](./NG-ZORRO-Index/40-Mention.md)](#mention---提及ng-zorro-index40-mentionmd)
+    - [[Radio - 單選框](./NG-ZORRO-Index/41-Radio.md)](#radio---單選框ng-zorro-index41-radiomd)
+    - [[Rate - 評分](./NG-ZORRO-Index/42-Rate.md)](#rate---評分ng-zorro-index42-ratemd)
+    - [[Select - 選擇器](./NG-ZORRO-Index/43-Select.md)](#select---選擇器ng-zorro-index43-selectmd)
+    - [[Slider - 滑動輸入條](./NG-ZORRO-Index/44-Slider.md)](#slider---滑動輸入條ng-zorro-index44-slidermd)
+    - [[Switch - 開關](./NG-ZORRO-Index/45-Switch.md)](#switch---開關ng-zorro-index45-switchmd)
+    - [[TimePicker - 時間選擇框](./NG-ZORRO-Index/46-TimePicker.md)](#timepicker---時間選擇框ng-zorro-index46-timepickermd)
+    - [[Transfer - 穿梭框](./NG-ZORRO-Index/47-Transfer.md)](#transfer---穿梭框ng-zorro-index47-transfermd)
+    - [[TreeSelect - 樹選擇](./NG-ZORRO-Index/48-TreeSelect.md)](#treeselect---樹選擇ng-zorro-index48-treeselectmd)
+    - [[Upload - 上傳](./NG-ZORRO-Index/49-Upload.md)](#upload---上傳ng-zorro-index49-uploadmd)
+  - [佈局類組件 (Layout)](#佈局類組件-layout)
+    - [[Divider - 分割線](./NG-ZORRO-Index/50-Divider.md)](#divider---分割線ng-zorro-index50-dividermd)
+    - [[Flex - 彈性佈局](./NG-ZORRO-Index/51-Flex.md)](#flex---彈性佈局ng-zorro-index51-flexmd)
+    - [[Grid - 柵格](./NG-ZORRO-Index/52-Grid.md)](#grid---柵格ng-zorro-index52-gridmd)
+    - [[Layout - 佈局](./NG-ZORRO-Index/53-Layout.md)](#layout---佈局ng-zorro-index53-layoutmd)
+    - [[Space - 間距](./NG-ZORRO-Index/54-Space.md)](#space---間距ng-zorro-index54-spacemd)
+    - [[Splitter - 分隔面板](./NG-ZORRO-Index/55-Splitter.md)](#splitter---分隔面板ng-zorro-index55-splittermd)
+  - [通用類組件 (General)](#通用類組件-general)
+    - [[Button - 按鈕](./NG-ZORRO-Index/56-Button.md)](#button---按鈕ng-zorro-index56-buttonmd)
+    - [[FloatButton - 懸浮按鈕](./NG-ZORRO-Index/57-FloatButton.md)](#floatbutton---懸浮按鈕ng-zorro-index57-floatbuttonmd)
+    - [[Icon - 圖標](./NG-ZORRO-Index/58-Icon.md)](#icon---圖標ng-zorro-index58-iconmd)
+    - [[Typography - 排版](./NG-ZORRO-Index/59-Typography.md)](#typography---排版ng-zorro-index59-typographymd)
+  - [導航類組件 (Navigation)](#導航類組件-navigation)
+    - [[Anchor - 錨點](./NG-ZORRO-Index/60-Anchor.md)](#anchor---錨點ng-zorro-index60-anchormd)
+    - [[Breadcrumb - 麵包屑](./NG-ZORRO-Index/61-Breadcrumb.md)](#breadcrumb---麵包屑ng-zorro-index61-breadcrumbmd)
+    - [[Dropdown - 下拉菜單](./NG-ZORRO-Index/62-Dropdown.md)](#dropdown---下拉菜單ng-zorro-index62-dropdownmd)
+    - [[Menu - 導航菜單](./NG-ZORRO-Index/63-Menu.md)](#menu---導航菜單ng-zorro-index63-menumd)
+    - [[PageHeader - 頁頭](./NG-ZORRO-Index/64-PageHeader.md)](#pageheader---頁頭ng-zorro-index64-pageheadermd)
+    - [[Pagination - 分頁](./NG-ZORRO-Index/65-Pagination.md)](#pagination---分頁ng-zorro-index65-paginationmd)
+    - [[Steps - 步驟條](./NG-ZORRO-Index/66-Steps.md)](#steps---步驟條ng-zorro-index66-stepsmd)
+    - [[Tabs - 標籤頁](./NG-ZORRO-Index/67-Tabs.md)](#tabs---標籤頁ng-zorro-index67-tabsmd)
+  - [其他類組件 (Other)](#其他類組件-other)
+    - [[Affix - 固釘](./NG-ZORRO-Index/68-Affix.md)](#affix---固釘ng-zorro-index68-affixmd)
+    - [[BackTop - 返回頂部](./NG-ZORRO-Index/69-BackTop.md)](#backtop---返回頂部ng-zorro-index69-backtopmd)
+    - [[WaterMark - 水印](./NG-ZORRO-Index/70-WaterMark.md)](#watermark---水印ng-zorro-index70-watermarkmd)
+  - [特色組件 (Special)](#特色組件-special)
+    - [[CheckList - 任務清單](./NG-ZORRO-Index/71-CheckList.md)](#checklist---任務清單ng-zorro-index71-checklistmd)
+    - [[HashCode - 哈希碼](./NG-ZORRO-Index/72-HashCode.md)](#hashcode---哈希碼ng-zorro-index72-hashcodemd)
+- [CLI Schematics 指令](#cli-schematics-指令)
+  - [基本安裝指令](#基本安裝指令)
+    - [1. 安裝 NG-ZORRO 到現有專案](#1-安裝-ng-zorro-到現有專案)
+    - [2. 安裝選項](#2-安裝選項)
+  - [應用模板生成指令](#應用模板生成指令)
+    - [1. 生成側邊欄菜單應用](#1-生成側邊欄菜單應用)
+    - [2. 生成頂部導航應用](#2-生成頂部導航應用)
+    - [3. 生成空白應用模板](#3-生成空白應用模板)
+    - [4. 生成組件（帶 NG-ZORRO 設置）](#4-生成組件帶-ng-zorro-設置)
+  - [組件模板生成指令](#組件模板生成指令)
+    - [基本語法](#基本語法)
+    - [完整 Schematics 命令列表](#完整-schematics-命令列表)
+  - [開發與調試指令](#開發與調試指令)
+    - [1. 構建 Schematics](#1-構建-schematics)
+    - [2. 鏈接 Schematics 用於調試](#2-鏈接-schematics-用於調試)
+    - [3. 運行開發命令](#3-運行開發命令)
+  - [其他依賴安裝](#其他依賴安裝)
+    - [Graph 組件依賴](#graph-組件依賴)
+    - [自定義 Webpack Builder](#自定義-webpack-builder)
+- [使用指南](#使用指南)
+  - [在專案中使用組件](#在專案中使用組件)
+    - [1. 使用 SHARED_IMPORTS（推薦）](#1-使用-shared_imports推薦)
+    - [2. 個別導入組件模組](#2-個別導入組件模組)
+    - [3. 使用服務（Message、Notification）](#3-使用服務messagenotification)
+  - [組件分類統計](#組件分類統計)
+- [參考文檔](#參考文檔)
+  - [官方文檔](#官方文檔)
+  - [專案相關文檔](#專案相關文檔)
+  - [驗證來源](#驗證來源)
+- [更新日誌](#更新日誌)
+  - [v1.2 (2025-01-15)](#v12-2025-01-15)
+  - [v1.1 (2025-01-15)](#v11-2025-01-15)
+  - [v1.0 (2025-01-15)](#v10-2025-01-15)
 
 ---
+
+
+> 📋 **目的**：提供 ng-zorro-antd 組件清單和 CLI Schematics 指令參考
+
+**最後更新**：2025-11-15
+**維護者**：開發團隊
+**版本**：基於 ng-zorro-antd 最新版本
+**驗證來源**：Context7 官方文檔、專案 `shared-zorro.module.ts`
+
+- --
 
 ## 📋 目錄
 
@@ -16,7 +137,7 @@
 - [使用指南](#使用指南)
 - [參考文檔](#參考文檔)
 
----
+- --
 
 ## 組件清單
 
@@ -749,7 +870,7 @@ ng g ng-zorro-antd:form-dynamic-form-rule <name>
 | **Schematics 命令** | 暫無專用 schematics |
 | **詳細文檔** | [查看詳細文檔](./NG-ZORRO-Index/72-HashCode.md) |
 
----
+- --
 
 ## CLI Schematics 指令
 
@@ -954,7 +1075,7 @@ npm install dagre-compound dagre d3-transition d3-zoom d3-selection d3-shape d3-
 npm i -D @angular-builders/custom-webpack
 ```
 
----
+- --
 
 ## 使用指南
 
@@ -1032,7 +1153,7 @@ export class ExampleComponent {
 
 **總計**：**72 個組件/模組**
 
----
+- --
 
 ## 參考文檔
 
@@ -1056,13 +1177,13 @@ export class ExampleComponent {
 - **專案代碼**：`src/app/shared/shared-zorro.module.ts`
 - **MCP 工具**：`mcp-server-ngzorro`
 
----
+- --
 
-**最後更新**：2025-01-15  
-**維護者**：開發團隊  
+**最後更新**：2025-01-15
+**維護者**：開發團隊
 **版本**：v1.2
 
----
+- --
 
 ## 更新日誌
 

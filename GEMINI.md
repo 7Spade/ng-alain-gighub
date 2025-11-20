@@ -1,5 +1,66 @@
 # Google Gemini AI 助手配置指南
 
+## 📑 目錄
+
+- [🎯 Gemini 角色定位](#-gemini-角色定位)
+- [📚 核心文檔結構](#-核心文檔結構)
+  - [1. 快速入門](#1-快速入門)
+  - [2. 開發規範（按優先級）](#2-開發規範按優先級)
+  - [3. 領域專家指引](#3-領域專家指引)
+- [🏗️ 專案架構關鍵點](#-專案架構關鍵點)
+  - [Git-like 分支模型](#git-like-分支模型)
+  - [51 張資料表架構](#51-張資料表架構)
+  - [五層架構開發順序](#五層架構開發順序)
+- [💡 Gemini 使用建議](#-gemini-使用建議)
+  - [1. 利用 Gemini 的多模態能力](#1-利用-gemini-的多模態能力)
+  - [2. 利用 Code Execution 功能](#2-利用-code-execution-功能)
+  - [3. 利用 Grounding with Google Search](#3-利用-grounding-with-google-search)
+  - [4. Function Calling 整合](#4-function-calling-整合)
+- [✅ 核心開發原則](#-核心開發原則)
+  - [1. 常見做法（Industry Standards）](#1-常見做法industry-standards)
+  - [2. 企業標準（Enterprise Standards）](#2-企業標準enterprise-standards)
+  - [3. 符合邏輯（Logical Consistency）](#3-符合邏輯logical-consistency)
+  - [4. 符合常理（Common Sense）](#4-符合常理common-sense)
+- [🔒 安全與權限](#-安全與權限)
+  - [Row Level Security (RLS)](#row-level-security-rls)
+  - [Token 管理](#token-管理)
+- [🎨 UI 開發規範](#-ui-開發規範)
+  - [優先使用 SHARED_IMPORTS](#優先使用-shared_imports)
+  - [現代 Angular 語法](#現代-angular-語法)
+- [🧪 測試策略](#-測試策略)
+  - [測試覆蓋率要求](#測試覆蓋率要求)
+  - [測試框架](#測試框架)
+- [📝 提交與 PR 規範](#-提交與-pr-規範)
+  - [Conventional Commits](#conventional-commits)
+  - [PR 檢查清單](#pr-檢查清單)
+- [🚀 常用指令](#-常用指令)
+  - [開發環境](#開發環境)
+  - [代碼檢查](#代碼檢查)
+  - [測試與建構](#測試與建構)
+  - [Supabase](#supabase)
+- [🔗 關鍵文檔快速連結](#-關鍵文檔快速連結)
+  - [必讀文檔 ⭐⭐⭐⭐⭐](#必讀文檔-)
+  - [日常開發 ⭐](#日常開發-)
+  - [完整索引](#完整索引)
+- [💬 回覆格式](#-回覆格式)
+  - [1. 結論（Conclusion）](#1-結論conclusion)
+  - [2. 實作步驟（Implementation）](#2-實作步驟implementation)
+  - [3. 風險與測試（Risks & Tests）](#3-風險與測試risks--tests)
+  - [4. 人工覆核（Manual Follow-up）](#4-人工覆核manual-follow-up)
+- [🎓 Gemini 特定提示](#-gemini-特定提示)
+  - [善用 Gemini 優勢](#善用-gemini-優勢)
+  - [Gemini 最佳實踐](#gemini-最佳實踐)
+  - [避免常見陷阱](#避免常見陷阱)
+- [🔧 Gemini API 整合範例](#-gemini-api-整合範例)
+  - [使用 Gemini API 生成代碼](#使用-gemini-api-生成代碼)
+  - [使用 Function Calling](#使用-function-calling)
+- [📊 效能優化建議](#-效能優化建議)
+  - [Gemini 提示優化](#gemini-提示優化)
+  - [成本控制](#成本控制)
+
+---
+
+
 > **適用對象**：使用 Google Gemini (Gemini 1.5 Pro, Gemini 2.0 Flash 等) 進行專案開發的開發者
 
 ## 🎯 Gemini 角色定位
@@ -170,8 +231,8 @@ CREATE POLICY "Users can view branches in their organizations"
   FOR SELECT
   USING (
     organization_id IN (
-      SELECT organization_id 
-      FROM blueprint_organization_users 
+      SELECT organization_id
+      FROM blueprint_organization_users
       WHERE user_id = auth.uid()
     )
   );
@@ -352,7 +413,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function generateComponent(componentName: string) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-  
+
   const prompt = `
 根據以下專案規範生成 Angular Standalone Component：
 
@@ -422,9 +483,9 @@ const model = genAI.getGenerativeModel({
 - **控制上下文長度**：只傳遞必要的文檔內容
 - **使用快取**：重複的系統提示可以快取（降低 90% 成本）
 
----
+- --
 
-**版本**：v1.0.0  
-**最後更新**：2025-11-20  
-**維護者**：開發團隊  
+**版本**：v1.0.0
+**最後更新**：2025-11-20
+**維護者**：開發團隊
 **適用 Gemini 版本**：Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 2.0 Flash

@@ -1,13 +1,112 @@
 # 完整 SQL 表結構定義 v2.0
 
+## 📑 目錄
+
+- [📊 資料表分類統計](#-資料表分類統計)
+- [📋 完整資料表清單與結構](#-完整資料表清單與結構)
+  - [🔐 帳戶與身份系統 (4 張)](#-帳戶與身份系統-4-張)
+    - [1. accounts (帳戶主表)](#1-accounts-帳戶主表)
+    - [2. teams (團隊表)](#2-teams-團隊表)
+    - [3. team_members (團隊成員表)](#3-team_members-團隊成員表)
+    - [4. organization_schedules (組織排班表)](#4-organization_schedules-組織排班表)
+  - [🤝 組織協作系統 (3 張)](#-組織協作系統-3-張)
+    - [5. organization_collaborations (組織協作關係表)](#5-organization_collaborations-組織協作關係表)
+    - [6. collaboration_invitations (協作邀請表)](#6-collaboration_invitations-協作邀請表)
+    - [7. collaboration_members (協作成員表)](#7-collaboration_members-協作成員表)
+  - [🔒 權限系統 (5 張)](#-權限系統-5-張)
+    - [8. roles (角色定義表)](#8-roles-角色定義表)
+    - [9. user_roles (用戶角色關聯表)](#9-user_roles-用戶角色關聯表)
+    - [10. permissions (權限定義表)](#10-permissions-權限定義表)
+    - [11. role_permissions (角色權限關聯表)](#11-role_permissions-角色權限關聯表)
+    - [12. branch_permissions (分支權限表)](#12-branch_permissions-分支權限表)
+  - [🎯 藍圖/專案系統 (5 張)](#-藍圖專案系統-5-張)
+    - [13. blueprints (藍圖主表 - 主分支)](#13-blueprints-藍圖主表---主分支)
+    - [14. blueprint_configs (藍圖設定表)](#14-blueprint_configs-藍圖設定表)
+    - [15. blueprint_branches (組織分支表)](#15-blueprint_branches-組織分支表)
+    - [16. branch_forks (分支 Fork 記錄表)](#16-branch_forks-分支-fork-記錄表)
+    - [17. pull_requests (PR 提交記錄表)](#17-pull_requests-pr-提交記錄表)
+  - [📋 任務執行系統 (9 張)](#-任務執行系統-9-張)
+    - [18. tasks (任務主表 - 樹狀結構)](#18-tasks-任務主表---樹狀結構)
+    - [19. task_assignments (任務指派表)](#19-task_assignments-任務指派表)
+    - [20. task_lists (任務列表表)](#20-task_lists-任務列表表)
+    - [21. task_staging (暫存區表)](#21-task_staging-暫存區表)
+    - [22. daily_reports (施工日誌表)](#22-daily_reports-施工日誌表)
+    - [23. report_photos (報表照片表)](#23-report_photos-報表照片表)
+    - [24. weather_cache (天氣快取表)](#24-weather_cache-天氣快取表)
+    - [25. task_dependencies (任務依賴關係表)](#25-task_dependencies-任務依賴關係表)
+    - [26. task_templates (任務模板表)](#26-task_templates-任務模板表)
+  - [✅ 品質驗收系統 (4 張)](#-品質驗收系統-4-張)
+    - [27. quality_checks (品質管理表)](#27-quality_checks-品質管理表)
+    - [28. qc_photos (品管照片表)](#28-qc_photos-品管照片表)
+    - [29. inspections (驗收表 - 責任切割)](#29-inspections-驗收表---責任切割)
+    - [30. inspection_photos (驗收照片表)](#30-inspection_photos-驗收照片表)
+  - [⚠️ 問題追蹤系統 (4 張)](#-問題追蹤系統-4-張)
+    - [31. issues (問題主表)](#31-issues-問題主表)
+    - [32. issue_assignments (問題指派表)](#32-issue_assignments-問題指派表)
+    - [33. issue_photos (問題照片表)](#33-issue_photos-問題照片表)
+    - [34. issue_sync_logs (問題同步記錄表)](#34-issue_sync_logs-問題同步記錄表)
+  - [💬 協作溝通系統 (6 張)](#-協作溝通系統-6-張)
+    - [35. comments (留言表)](#35-comments-留言表)
+    - [36. notifications (通知表)](#36-notifications-通知表)
+    - [37. notification_rules (通知規則表)](#37-notification_rules-通知規則表)
+    - [38. notification_subscriptions (通知訂閱表)](#38-notification_subscriptions-通知訂閱表)
+    - [39. personal_todos (個人待辦中心表)](#39-personal_todos-個人待辦中心表)
+    - [40. todo_status_tracking (待辦狀態追蹤表)](#40-todo_status_tracking-待辦狀態追蹤表)
+  - [📊 資料分析系統 (6 張)](#-資料分析系統-6-張)
+    - [41. documents (文件元資料表)](#41-documents-文件元資料表)
+    - [42. document_versions (文件版本控制表)](#42-document_versions-文件版本控制表)
+    - [43. document_thumbnails (圖片縮圖表)](#43-document_thumbnails-圖片縮圖表)
+    - [44. progress_tracking (進度追蹤表)](#44-progress_tracking-進度追蹤表)
+    - [45. activity_logs (活動記錄表)](#45-activity_logs-活動記錄表)
+    - [46. analytics_cache (數據分析快取表)](#46-analytics_cache-數據分析快取表)
+  - [🤖 機器人系統 (3 張)](#-機器人系統-3-張)
+    - [47. bots (機器人定義表)](#47-bots-機器人定義表)
+    - [48. bot_tasks (機器人任務表)](#48-bot_tasks-機器人任務表)
+    - [49. bot_execution_logs (機器人執行日誌表)](#49-bot_execution_logs-機器人執行日誌表)
+  - [⚙️ 系統管理 (2 張)](#-系統管理-2-張)
+    - [50. settings (系統設定表)](#50-settings-系統設定表)
+    - [51. feature_flags (功能開關表)](#51-feature_flags-功能開關表)
+- [🔗 關鍵關聯關係圖](#-關鍵關聯關係圖)
+  - [藍圖 → 分支 → PR 流程](#藍圖--分支--pr-流程)
+  - [任務執行流程](#任務執行流程)
+  - [問題同步機制](#問題同步機制)
+- [📝 表格數量確認](#-表格數量確認)
+- [🎯 核心設計原則總結](#-核心設計原則總結)
+  - [1. Git-like 分支模型](#1-git-like-分支模型)
+  - [2. 權限分離架構](#2-權限分離架構)
+  - [3. 數據同步機制](#3-數據同步機制)
+  - [4. 暫存區設計](#4-暫存區設計)
+  - [5. 待辦中心分類](#5-待辦中心分類)
+- [🔧 索引優化建議](#-索引優化建議)
+  - [高頻查詢表的額外索引](#高頻查詢表的額外索引)
+- [🚀 分區表建議（未來優化）](#-分區表建議未來優化)
+  - [適合分區的大型表](#適合分區的大型表)
+- [📊 資料庫大小預估](#-資料庫大小預估)
+  - [小型專案（10 個藍圖）](#小型專案10-個藍圖)
+  - [中型專案（100 個藍圖）](#中型專案100-個藍圖)
+  - [大型專案（1,000 個藍圖）](#大型專案1000-個藍圖)
+- [⚡ 效能優化檢查清單](#-效能優化檢查清單)
+- [🔐 安全性檢查清單](#-安全性檢查清單)
+- [📚 相關文件連結](#-相關文件連結)
+  - [Supabase 參考](#supabase-參考)
+  - [PostgreSQL 參考](#postgresql-參考)
+- [🎨 ERD 視覺化建議](#-erd-視覺化建議)
+- [✅ 資料表結構驗證](#-資料表結構驗證)
+  - [命名規範檢查](#命名規範檢查)
+  - [資料完整性檢查](#資料完整性檢查)
+- [🎯 下一步建議](#-下一步建議)
+
+---
+
+
 > 📋 **目的**：提供 51 張資料表的完整 SQL 定義，作為資料庫遷移和開發的權威參考
 
 根據最新架構設計，系統共需要 **51 張資料表**（不包括 Supabase Auth 內建的 `auth.users` 表）。
 
-**最後更新**：2025-11-15  
+**最後更新**：2025-11-15
 **維護者**：開發團隊
 
----
+- --
 
 ## 📊 資料表分類統計
 
@@ -26,7 +125,7 @@
 | ⚙️ 系統管理 | 2 張 | 系統設定、功能開關 |
 | **總計** | **51 張** | |
 
----
+- --
 
 ## 📋 完整資料表清單與結構
 
@@ -47,7 +146,7 @@ CREATE TABLE accounts (
   metadata JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(auth_user_id),
   UNIQUE(email)
 );
@@ -70,7 +169,7 @@ CREATE TABLE teams (
   created_by UUID NOT NULL REFERENCES accounts(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_org_type CHECK (
     EXISTS (SELECT 1 FROM accounts WHERE id = organization_id AND type = 'Organization')
   )
@@ -90,7 +189,7 @@ CREATE TABLE team_members (
   account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   role VARCHAR(50) DEFAULT 'member' CHECK (role IN ('leader', 'member')),
   joined_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(team_id, account_id)
 );
 
@@ -117,7 +216,7 @@ CREATE TABLE organization_schedules (
   created_by UUID NOT NULL REFERENCES accounts(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_assign_target CHECK (
     (account_id IS NOT NULL AND team_id IS NULL) OR
     (account_id IS NULL AND team_id IS NOT NULL)
@@ -130,7 +229,7 @@ CREATE INDEX idx_org_schedules_blueprint ON organization_schedules(blueprint_id)
 CREATE INDEX idx_org_schedules_branch ON organization_schedules(branch_id);
 ```
 
----
+- --
 
 ### 🤝 組織協作系統 (3 張)
 
@@ -152,7 +251,7 @@ CREATE TABLE organization_collaborations (
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(blueprint_id, collaborator_org_id),
   CONSTRAINT chk_different_orgs CHECK (owner_org_id != collaborator_org_id)
 );
@@ -176,7 +275,7 @@ CREATE TABLE collaboration_invitations (
   expires_at TIMESTAMPTZ NOT NULL,
   responded_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_different_orgs_inv CHECK (from_org_id != to_org_id)
 );
 
@@ -196,7 +295,7 @@ CREATE TABLE collaboration_members (
   role VARCHAR(50) DEFAULT 'member',
   permissions JSONB DEFAULT '{}',
   joined_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(collaboration_id, account_id)
 );
 
@@ -204,7 +303,7 @@ CREATE INDEX idx_collab_members_collab ON collaboration_members(collaboration_id
 CREATE INDEX idx_collab_members_account ON collaboration_members(account_id);
 ```
 
----
+- --
 
 ### 🔒 權限系統 (5 張)
 
@@ -243,7 +342,7 @@ CREATE TABLE user_roles (
   branch_id UUID REFERENCES blueprint_branches(id) ON DELETE CASCADE,
   granted_by UUID REFERENCES accounts(id),
   granted_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(account_id, role_id, blueprint_id, branch_id)
 );
 
@@ -296,7 +395,7 @@ CREATE TABLE role_permissions (
   role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
   permission_id UUID NOT NULL REFERENCES permissions(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(role_id, permission_id)
 );
 
@@ -317,7 +416,7 @@ CREATE TABLE branch_permissions (
   ),
   granted_by UUID NOT NULL REFERENCES accounts(id),
   granted_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(branch_id, account_id)
 );
 
@@ -325,7 +424,7 @@ CREATE INDEX idx_branch_perms_branch ON branch_permissions(branch_id);
 CREATE INDEX idx_branch_perms_account ON branch_permissions(account_id);
 ```
 
----
+- --
 
 ### 🎯 藍圖/專案系統 (5 張)
 
@@ -349,7 +448,7 @@ CREATE TABLE blueprints (
   metadata JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_owner_is_org CHECK (
     EXISTS (SELECT 1 FROM accounts WHERE id = owner_id AND type = 'Organization')
   )
@@ -371,7 +470,7 @@ CREATE TABLE blueprint_configs (
   config_value JSONB NOT NULL,
   updated_by UUID REFERENCES accounts(id),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(blueprint_id, config_key)
 );
 
@@ -396,7 +495,7 @@ CREATE TABLE blueprint_branches (
   forked_at TIMESTAMPTZ DEFAULT NOW(),
   last_sync_at TIMESTAMPTZ,
   notes TEXT,
-  
+
   UNIQUE(blueprint_id, organization_id),
   CONSTRAINT chk_org_type_branch CHECK (
     EXISTS (SELECT 1 FROM accounts WHERE id = organization_id AND type = 'Organization')
@@ -447,7 +546,7 @@ CREATE TABLE pull_requests (
   submitted_at TIMESTAMPTZ DEFAULT NOW(),
   reviewed_at TIMESTAMPTZ,
   merged_at TIMESTAMPTZ,
-  
+
   CONSTRAINT chk_pr_status_dates CHECK (
     (status IN ('open', 'reviewing') AND reviewed_at IS NULL AND merged_at IS NULL) OR
     (status = 'approved' AND reviewed_at IS NOT NULL AND merged_at IS NULL) OR
@@ -461,7 +560,7 @@ CREATE INDEX idx_prs_status ON pull_requests(status);
 CREATE INDEX idx_prs_submitted_by ON pull_requests(submitted_by);
 ```
 
----
+- --
 
 ### 📋 任務執行系統 (9 張)
 
@@ -499,9 +598,9 @@ CREATE TABLE tasks (
   created_by UUID NOT NULL REFERENCES accounts(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_task_dates CHECK (
-    planned_start_date IS NULL OR planned_end_date IS NULL OR 
+    planned_start_date IS NULL OR planned_end_date IS NULL OR
     planned_start_date <= planned_end_date
   )
 );
@@ -529,7 +628,7 @@ CREATE TABLE task_assignments (
   assignment_note TEXT,
   assigned_at TIMESTAMPTZ DEFAULT NOW(),
   accepted_at TIMESTAMPTZ,
-  
+
   UNIQUE(task_id, assignee_id)
 );
 
@@ -550,7 +649,7 @@ CREATE TABLE task_lists (
     list_type IN ('assigned', 'watching', 'archived')
   ),
   added_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(task_id, account_id, list_type)
 );
 
@@ -574,7 +673,7 @@ CREATE TABLE task_staging (
   submitted_at TIMESTAMPTZ DEFAULT NOW(),
   confirmed_at TIMESTAMPTZ,
   withdrawn_at TIMESTAMPTZ,
-  
+
   CONSTRAINT chk_staging_status CHECK (
     (confirmed_at IS NULL AND withdrawn_at IS NULL) OR
     (confirmed_at IS NOT NULL AND withdrawn_at IS NULL) OR
@@ -607,7 +706,7 @@ CREATE TABLE daily_reports (
   reported_by UUID NOT NULL REFERENCES accounts(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(task_id, report_date, branch_id)
 );
 
@@ -650,7 +749,7 @@ CREATE TABLE weather_cache (
   api_source VARCHAR(100) DEFAULT 'cwb_api',
   fetched_at TIMESTAMPTZ DEFAULT NOW(),
   expires_at TIMESTAMPTZ NOT NULL,
-  
+
   UNIQUE(location, forecast_date)
 );
 
@@ -672,7 +771,7 @@ CREATE TABLE task_dependencies (
   ),
   lag_days INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(task_id, depends_on_task_id),
   CONSTRAINT chk_no_self_dependency CHECK (task_id != depends_on_task_id)
 );
@@ -702,7 +801,7 @@ CREATE INDEX idx_task_templates_org ON task_templates(organization_id);
 CREATE INDEX idx_task_templates_public ON task_templates(is_public) WHERE is_public = TRUE;
 ```
 
----
+- --
 
 ### ✅ 品質驗收系統 (4 張)
 
@@ -726,7 +825,7 @@ CREATE TABLE quality_checks (
   recommendations TEXT,
   checked_at TIMESTAMPTZ DEFAULT NOW(),
   completed_at TIMESTAMPTZ,
-  
+
   CONSTRAINT chk_qc_completion CHECK (
     (status IN ('pending', 'in_progress') AND completed_at IS NULL) OR
     (status IN ('passed', 'failed', 'conditional_pass') AND completed_at IS NOT NULL)
@@ -783,7 +882,7 @@ CREATE TABLE inspections (
   transfer_date DATE,
   inspected_at TIMESTAMPTZ DEFAULT NOW(),
   completed_at TIMESTAMPTZ,
-  
+
   CONSTRAINT chk_inspection_completion CHECK (
     (status IN ('pending', 'in_progress') AND completed_at IS NULL) OR
     (status IN ('accepted', 'rejected', 'conditional_accept') AND completed_at IS NOT NULL)
@@ -821,7 +920,7 @@ CREATE INDEX idx_inspection_photos_inspection ON inspection_photos(inspection_id
 CREATE INDEX idx_inspection_photos_type ON inspection_photos(photo_type);
 ```
 
----
+- --
 
 ### ⚠️ 問題追蹤系統 (4 張)
 
@@ -854,7 +953,7 @@ CREATE TABLE issues (
   closed_at TIMESTAMPTZ,
   resolution_note TEXT,
   synced_to_main BOOLEAN DEFAULT TRUE,
-  
+
   CONSTRAINT chk_issue_resolution CHECK (
     (status IN ('open', 'in_progress') AND resolved_at IS NULL) OR
     (status IN ('resolved', 'closed', 'wont_fix') AND resolved_at IS NOT NULL)
@@ -880,7 +979,7 @@ CREATE TABLE issue_assignments (
   assigned_by UUID NOT NULL REFERENCES accounts(id),
   assignment_note TEXT,
   assigned_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(issue_id, assignee_id)
 );
 
@@ -932,7 +1031,7 @@ CREATE INDEX idx_issue_sync_target ON issue_sync_logs(target_blueprint_id);
 CREATE INDEX idx_issue_sync_date ON issue_sync_logs(synced_at);
 ```
 
----
+- --
 
 ### 💬 協作溝通系統 (6 張)
 
@@ -954,7 +1053,7 @@ CREATE TABLE comments (
   is_edited BOOLEAN DEFAULT FALSE,
   edited_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_comment_edit CHECK (
     (is_edited = FALSE AND edited_at IS NULL) OR
     (is_edited = TRUE AND edited_at IS NOT NULL)
@@ -994,7 +1093,7 @@ CREATE TABLE notifications (
   is_read BOOLEAN DEFAULT FALSE,
   read_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_notification_read CHECK (
     (is_read = FALSE AND read_at IS NULL) OR
     (is_read = TRUE AND read_at IS NOT NULL)
@@ -1026,7 +1125,7 @@ CREATE TABLE notification_rules (
   quiet_hours_end TIME,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(account_id, notification_type, channel)
 );
 
@@ -1049,7 +1148,7 @@ CREATE TABLE notification_subscriptions (
     subscription_level IN ('all', 'mentions_only', 'none')
   ),
   subscribed_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(account_id, subscribable_type, subscribable_id)
 );
 
@@ -1107,7 +1206,7 @@ CREATE INDEX idx_todo_tracking_todo ON todo_status_tracking(todo_id);
 CREATE INDEX idx_todo_tracking_date ON todo_status_tracking(changed_at);
 ```
 
----
+- --
 
 ### 📊 資料分析系統 (6 張)
 
@@ -1133,10 +1232,10 @@ CREATE TABLE documents (
   uploaded_at TIMESTAMPTZ DEFAULT NOW(),
   soft_deleted_at TIMESTAMPTZ,
   permanent_delete_at TIMESTAMPTZ,
-  
+
   CONSTRAINT chk_soft_delete CHECK (
     (soft_deleted_at IS NULL AND permanent_delete_at IS NULL) OR
-    (soft_deleted_at IS NOT NULL AND permanent_delete_at IS NOT NULL AND 
+    (soft_deleted_at IS NOT NULL AND permanent_delete_at IS NOT NULL AND
      permanent_delete_at >= soft_deleted_at + INTERVAL '30 days')
   )
 );
@@ -1162,7 +1261,7 @@ CREATE TABLE document_versions (
   change_description TEXT,
   created_by UUID NOT NULL REFERENCES accounts(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(document_id, version_number)
 );
 
@@ -1185,7 +1284,7 @@ CREATE TABLE document_thumbnails (
   storage_path TEXT NOT NULL,
   file_size BIGINT NOT NULL,
   generated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(document_id, thumbnail_size)
 );
 
@@ -1213,7 +1312,7 @@ CREATE TABLE progress_tracking (
   quality_score DECIMAL(5, 2),
   safety_incidents INTEGER DEFAULT 0,
   calculated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(blueprint_id, branch_id, tracking_date)
 );
 
@@ -1240,9 +1339,9 @@ CREATE TABLE activity_logs (
   ip_address INET,
   user_agent TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_activity_blueprint_or_branch CHECK (
-    (branch_id IS NULL) OR 
+    (branch_id IS NULL) OR
     (branch_id IS NOT NULL AND EXISTS (
       SELECT 1 FROM blueprint_branches WHERE id = branch_id AND blueprint_id = activity_logs.blueprint_id
     ))
@@ -1274,7 +1373,7 @@ CREATE TABLE analytics_cache (
   data JSONB NOT NULL,
   generated_at TIMESTAMPTZ DEFAULT NOW(),
   expires_at TIMESTAMPTZ NOT NULL,
-  
+
   CONSTRAINT chk_cache_scope CHECK (
     (cache_type = 'main_branch' AND blueprint_id IS NOT NULL AND branch_id IS NULL) OR
     (cache_type = 'single_branch' AND branch_id IS NOT NULL) OR
@@ -1289,7 +1388,7 @@ CREATE INDEX idx_analytics_cache_branch ON analytics_cache(branch_id);
 CREATE INDEX idx_analytics_cache_expires ON analytics_cache(expires_at);
 ```
 
----
+- --
 
 ### 🤖 機器人系統 (3 張)
 
@@ -1310,7 +1409,7 @@ CREATE TABLE bots (
   created_by UUID NOT NULL REFERENCES accounts(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_bot_account CHECK (
     EXISTS (SELECT 1 FROM accounts WHERE id = account_id AND type = 'Bot')
   )
@@ -1372,7 +1471,7 @@ CREATE INDEX idx_bot_logs_task ON bot_execution_logs(bot_task_id);
 CREATE INDEX idx_bot_logs_executed ON bot_execution_logs(executed_at);
 ```
 
----
+- --
 
 ### ⚙️ 系統管理 (2 張)
 
@@ -1418,7 +1517,7 @@ CREATE TABLE feature_flags (
   created_by UUID REFERENCES accounts(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   CONSTRAINT chk_feature_dates CHECK (
     start_date IS NULL OR end_date IS NULL OR start_date <= end_date
   )
@@ -1428,7 +1527,7 @@ CREATE INDEX idx_feature_flags_key ON feature_flags(flag_key);
 CREATE INDEX idx_feature_flags_enabled ON feature_flags(is_enabled);
 ```
 
----
+- --
 
 ## 🔗 關鍵關聯關係圖
 
@@ -1469,7 +1568,7 @@ issue_sync_logs
 blueprints (主分支統一掌控)
 ```
 
----
+- --
 
 ## 📝 表格數量確認
 
@@ -1529,7 +1628,7 @@ blueprints (主分支統一掌控)
 
 **總計：51 張資料表**
 
----
+- --
 
 ## 🎯 核心設計原則總結
 
@@ -1574,7 +1673,7 @@ blueprints (主分支統一掌控)
 └── ⚠️ 問題追蹤 (issues)
 ```
 
----
+- --
 
 ## 🔧 索引優化建議
 
@@ -1599,7 +1698,7 @@ CREATE INDEX idx_activity_logs_blueprint_created ON activity_logs(blueprint_id, 
 CREATE INDEX idx_prs_branch_status ON pull_requests(branch_id, status);
 ```
 
----
+- --
 
 ## 🚀 分區表建議（未來優化）
 
@@ -1625,7 +1724,7 @@ CREATE TABLE bot_execution_logs (
 ) PARTITION BY RANGE (executed_at);
 ```
 
----
+- --
 
 ## 📊 資料庫大小預估
 
@@ -1644,7 +1743,7 @@ CREATE TABLE bot_execution_logs (
 - 用戶數：~10,000
 - 預估大小：~500 GB
 
----
+- --
 
 ## ⚡ 效能優化檢查清單
 
@@ -1659,7 +1758,7 @@ CREATE TABLE bot_execution_logs (
 - [ ] 連線池配置（應用層設定）
 - [ ] 查詢快取策略（應用層設定）
 
----
+- --
 
 ## 🔐 安全性檢查清單
 
@@ -1672,7 +1771,7 @@ CREATE TABLE bot_execution_logs (
 - [ ] API 層權限驗證（應用層實作）
 - [ ] 敏感資料加密（應用層實作）
 
----
+- --
 
 ## 📚 相關文件連結
 
@@ -1686,7 +1785,7 @@ CREATE TABLE bot_execution_logs (
 - [JSONB 類型](https://www.postgresql.org/docs/current/datatype-json.html)
 - [分區表](https://www.postgresql.org/docs/current/ddl-partitioning.html)
 
----
+- --
 
 ## 🎨 ERD 視覺化建議
 
@@ -1696,7 +1795,7 @@ CREATE TABLE bot_execution_logs (
 - **pgAdmin**：PostgreSQL 官方工具
 - **Supabase Studio**：內建 Schema Visualizer
 
----
+- --
 
 ## ✅ 資料表結構驗證
 
@@ -1715,7 +1814,7 @@ CREATE TABLE bot_execution_logs (
 - ✅ 日期欄位有邏輯驗證約束
 - ✅ 軟刪除欄位有完整性約束
 
----
+- --
 
 ## 🎯 下一步建議
 
@@ -1746,8 +1845,8 @@ CREATE TABLE bot_execution_logs (
    - 查詢優化
    - 索引調整
 
----
+- --
 
-**文件版本**: v2.0  
-**最後更新**: 2025-11-15  
+**文件版本**: v2.0
+**最後更新**: 2025-11-15
 **維護者**: 系統架構團隊
