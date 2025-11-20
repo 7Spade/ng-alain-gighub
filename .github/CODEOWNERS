@@ -1,0 +1,28 @@
+# 根（倉庫總負責人）
+/    @repo-maintainer
+
+# 文件
+/docs/    @doc-team
+/README.md    @doc-team
+
+# 前端程式碼（ng-alain / Angular）
+/src/    @frontend-team
+/src/app/auth/    @auth-owner
+/src/app/core/    @core-owner
+
+# 測試與 mock
+/mock/    @qa-team
+/e2e/    @qa-team
+
+# 腳本與 CI/CD
+/scripts/    @devops
+/.github/    @maintainers
+/.husky/    @developer-experience
+
+# 配置與發行管理
+/package.json    @release-engineer
+/yarn.lock    @release-engineer
+/repomix.config.json    @release-engineer
+
+# 靜態資源
+/public/    @frontend-team

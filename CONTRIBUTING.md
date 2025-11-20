@@ -6,6 +6,7 @@ today! As a contributor, here are the guidelines we would like you to follow:
  - [Issues and Bugs](#issue)
  - [Feature Requests](#feature)
  - [Submission Guidelines](#submit)
+ - [Maintainer Responsibilities](#maintainers)
  - [Coding Rules](#rules)
  - [Commit Message Guidelines](#commit)
 
@@ -117,6 +118,91 @@ from the main (upstream) repository:
   ```shell
   git pull --ff upstream master
   ```
+
+## <a name="maintainers"></a> Maintainer Responsibilities
+
+This section outlines the ownership and responsibilities for different parts of the repository. When contributing, please tag the relevant maintainers for review.
+
+### Repository Structure Ownership
+
+**根目錄/ (Root Directory)**  
+倉庫總負責人：@repo-maintainer  
+負責版本策略、發行與授權（MIT）。
+
+**README.md, docs/**  
+文件維護：@doc-team  
+負責教學、快速啟動與中文/英文同步。
+
+**src/**  
+前端應用程式維護：@frontend-team  
+負責所有 Angular/ng-alain 相關程式碼與介面變更。
+
+**src/app/routes/**  
+應用功能模組所有者（按模組細分）：
+- `src/app/routes/accounts/` → @auth-owner
+- `src/app/routes/blueprints/` → @blueprint-owner
+- `src/app/routes/tasks/` → @task-owner
+- `src/app/routes/issues/` → @issue-owner
+- `src/app/routes/quality/` → @quality-owner
+- `src/app/routes/documents/` → @document-owner
+- `src/app/routes/analytics/` → @analytics-owner
+- `src/app/routes/collaboration/` → @collaboration-owner
+- `src/app/routes/communication/` → @communication-owner
+- `src/app/routes/bots/` → @bot-owner
+- `src/app/routes/dashboard/` → @dashboard-owner
+- `src/app/routes/system/` → @system-owner
+- 其他模組請參考實際目錄結構
+
+**src/app/shared/**  
+共用模組維護：@shared-owner  
+負責共用元件、服務、工具函數與 SHARED_IMPORTS。
+
+**src/app/core/**  
+核心模組維護：@core-owner  
+負責基礎設施、HTTP 攔截器、路由守衛、國際化服務。
+
+**src/app/layout/**  
+佈局模組維護：@layout-owner  
+負責整體佈局、導航、側邊欄、主題切換。
+
+**_mock/**  
+假資料與測試資料：@qa-team  
+負責同步 mock 與 API contract。
+
+**e2e/**  
+e2e 測試：@qa-team  
+負責覆蓋率與 CI e2e 流程。
+
+**scripts/**  
+開發/部署腳本：@devops  
+負責 CI/CD 腳本與自動化工具。
+
+**.github/, CONTRIBUTING.md, ISSUE_TEMPLATE.md, PULL_REQUEST_TEMPLATE.md**  
+社群貢獻與流程：@maintainers  
+負責 PR 流程與審核政策。
+
+**public/**  
+靜態資源（favicon、manifest）：@frontend-team  
+負責資源變更與版本管理。
+
+**package.json, yarn.lock, repomix.config.json 等配置檔**  
+相依與發行管理：@release-engineer  
+負責相依更新、發佈與 breaking change 註記。
+
+**docs/*.md（像 BUILD_ERRORS.md, AGENTS.md）**  
+專門文件作者：@tech-writer  
+負責內容準確性與範例。
+
+**.vscode, .husky**  
+開發環境與 pre-commit hooks：@developer-experience  
+負責開發者體驗設定。
+
+### Contacting Maintainers
+
+When submitting PRs or issues, please:
+1. Tag the relevant maintainer(s) based on the affected area
+2. Wait for maintainer review before merging
+3. For cross-module changes, tag all affected maintainers
 
 ## <a name="rules"></a> Coding Rules
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
