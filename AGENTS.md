@@ -2,6 +2,43 @@
 
 > **📌 重要提示**：本文件是所有 AI 助手的入口文檔，提供專案概覽與文檔組織結構。
 
+## 🧠 專案記憶庫（所有 AI 助手必讀）
+
+**⚠️ 重要：所有 AI 助手在執行任務前，都應該先查閱專案記憶庫**
+
+### 記憶庫位置
+- **主檔案**：[.github/copilot/memory.jsonl](./.github/copilot/memory.jsonl)
+- **使用指南**：[.github/copilot/README.md](./.github/copilot/README.md)
+- **摘要說明**：[.github/copilot/MEMORY_SUMMARY.md](./.github/copilot/MEMORY_SUMMARY.md)
+
+### 記憶庫內容（v4.0）
+- **實體數量**：149 個（架構、規範、模式、功能）
+- **關係數量**：170 個（連接實體之間的關聯）
+- **涵蓋領域**：
+  - 📐 架構設計（Git-like Branch Model、51 張資料表、五層架構）
+  - 🛡️ 安全與權限（RLS 策略、認證流程、分支權限規則）
+  - 📝 開發標準（SOLID、DRY、KISS、四大核心開發原則）
+  - 🚀 效能優化（OnPush 策略、Lazy Loading、Bundle 優化）
+  - 🧪 測試策略（單元測試、E2E 測試、覆蓋率要求）
+  - 📚 文檔結構（232 個文檔的組織架構和閱讀路徑）
+
+### 使用方式
+1. **任務開始前**：查閱相關實體，了解現有規範和模式
+2. **設計決策時**：參考記憶庫中的架構原則和最佳實踐
+3. **代碼實作時**：遵循記憶庫中定義的開發標準和檢查清單
+4. **完成任務後**：如發現新的模式或規範，建議更新記憶庫
+
+### 關鍵記憶實體範例
+- `Five Layer Development Order` - 五層架構開發順序
+- `Git-like Branch Model` - Git-like 分支模型架構
+- `Four Core Development Principles` - 四大核心開發原則
+- `Security Best Practices` - 安全最佳實踐
+- `UI Component Priority` - UI 元件優先級規範
+- `OnPush Strategy` - Angular 變更檢測策略
+- `Documentation Structure` - 232 個文檔的完整結構
+
+---
+
 ## 🤖 支援的 AI 助手
 
 本專案針對以下 AI 助手提供專門配置：

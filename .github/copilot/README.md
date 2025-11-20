@@ -2,6 +2,77 @@
 
 此目錄包含 GitHub Copilot Memory MCP（Model Context Protocol）的配置文件。
 
+## 🚀 快速開始：如何讓 Agents 自動查看 memory.jsonl
+
+### 自動加載機制
+
+**所有 Agent 配置文件都已經包含對 memory.jsonl 的引用**，確保每次執行任務時都會提醒查閱記憶庫：
+
+1. **根目錄配置文件**
+   - `AGENTS.md` - 所有 AI 助手的入口文檔（包含記憶庫章節）
+   - `.copilot-instructions.md` - VSCode Copilot 主要指引（開頭包含記憶庫提示）
+
+2. **GitHub Agents 配置**
+   - `.github/agents/ng-alain-github-agent.md` - 主要 Agent 配置（開頭包含記憶庫章節）
+   - `.github/agents/copilot-instructions.md` - Copilot Agent 簡要指引（開頭包含記憶庫提示）
+
+3. **領域專家 Agents**
+   - 所有領域 Agent（`domain/*.md`）都會繼承主配置中的記憶庫引用
+
+### Agent 使用記憶庫的標準流程
+
+```
+1. 任務開始
+   ↓
+2. 閱讀 Agent 配置文件（自動提示查閱 memory.jsonl）
+   ↓
+3. 查詢記憶庫相關實體
+   - 架構設計原則
+   - 開發標準和規範
+   - 已知模式和最佳實踐
+   ↓
+4. 基於記憶庫知識執行任務
+   ↓
+5. 任務完成後建議更新記憶庫（如有新發現）
+```
+
+### 記憶庫查詢範例
+
+**範例 1：開發新功能**
+```
+任務：實作用戶管理功能
+
+Agent 應查閱的記憶實體：
+- Five Layer Development Order（開發順序）
+- Repository Pattern（數據訪問模式）
+- Security Best Practices（安全規範）
+- UI Component Priority（UI 元件優先級）
+```
+
+**範例 2：代碼審查**
+```
+任務：審查 PR 中的代碼變更
+
+Agent 應查閱的記憶實體：
+- Code Review Standards（審查標準）
+- Four Core Development Principles（核心開發原則）
+- Testing Strategy（測試策略）
+- Linting Standards（代碼檢查標準）
+```
+
+**範例 3：架構設計**
+```
+任務：設計新模組架構
+
+Agent 應查閱的記憶實體：
+- Git-like Branch Model（分支模型）
+- Five Layer Architecture（五層架構）
+- Dependency Direction Principle（依賴方向原則）
+- Low Coupling High Cohesion（低耦合高內聚）
+```
+
+---
+
 ## 📄 memory.jsonl
 
 記憶檔案採用 JSONL (JSON Lines) 格式，每一行都是一個 JSON 物件，用於定義專案的知識圖譜。
