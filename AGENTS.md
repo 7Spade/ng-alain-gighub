@@ -1,41 +1,84 @@
-> **📌 重要提示**：
-> - 基礎開發規範：`.cursor/rules/` 目錄（Cursor IDE 自動應用）
-> - VSCode Copilot 指引：根目錄 `.copilot-*.md`（與 `.vscode/settings.json` 整合）
-> - Agent Mode 指引：`.github/agents/` 目錄
-> - 模組規範：各模組目錄下的 `AGENTS.md`
-> - ⭐ [Agent 開發指南](./docs/43-Agent開發指南與限制說明.md)
+# AI 助手配置總覽（AGENTS.md）
 
-## 📂 AI 助手檔案組織
+> **📌 重要提示**：本文件是所有 AI 助手的入口文檔，提供專案概覽與文檔組織結構。
 
-專案 AI 助手檔案分為三個層級：
+## 🤖 支援的 AI 助手
 
-### 1. 根目錄 Copilot 指引（VSCode 整合）⭐
-根目錄 `.copilot-*.md` 檔案，由 `.vscode/settings.json` 參照，供 VSCode GitHub Copilot 使用：
+本專案針對以下 AI 助手提供專門配置：
 
-- [`.copilot-instructions.md`](./.copilot-instructions.md) - **主要開發指引**
-  專案概述、技術架構、核心開發原則、Angular 20 + Signals 規範、開發工作流程
+- **GitHub Copilot**：`.copilot-*.md`（VSCode 整合）+ `.github/agents/`（Agent Mode）
+- **Claude AI**：[CLAUDE.md](./CLAUDE.md) - Anthropic Claude 專用配置
+- **Google Gemini**：[GEMINI.md](./GEMINI.md) - Google Gemini 專用配置
+- **Cursor IDE**：`.cursor/rules/` 目錄（自動應用）
+- **通用 AI**：本文件（AGENTS.md）提供通用指引
 
-- [`.copilot-review-instructions.md`](./.copilot-review-instructions.md) - **程式碼審查指引**
-  10 大審查檢查清單、審查流程、建議格式、最佳實踐範例
+## 📂 文檔組織結構
 
-- [`.copilot-commit-message-instructions.md`](./.copilot-commit-message-instructions.md) - **Commit 訊息規範**
-  Conventional Commits 1.0.0 標準、Type/Scope/Subject 規範、正體中文撰寫
+### 三層文檔架構
+1. **根目錄 Copilot 指引**：`.copilot-*.md`（VSCode GitHub Copilot）
+2. **GitHub Agents 目錄**：`.github/agents/`（GitHub Copilot Agent Mode）
+3. **Cursor 規則目錄**：`.cursor/rules/`（Cursor IDE 自動載入）
+4. **AI 助手專用配置**：`CLAUDE.md`, `GEMINI.md`（各 AI 助手）
+5. **模組規範**：各模組目錄下的 `AGENTS.md`
 
-- [`.copilot-pull-request-description-instructions.md`](./.copilot-pull-request-description-instructions.md) - **PR 描述規範**
-  PR 模板結構、不同類型範例、檢查清單
+### 快速連結
+- ⭐ [Agent 開發指南](./docs/43-Agent開發指南與限制說明.md)
+- 📚 [GitHub Agents 使用說明](./.github/agents/README.md)
+- 🎯 [快速開始指南](./.github/agents/QUICK-START.md)
 
-- [`.copilot-test-instructions.md`](./.copilot-test-instructions.md) - **測試產生指引**
-  Jasmine/Karma 框架、元件/服務/整合測試、Signals API 測試、覆蓋率 ≥ 80%
+## 📖 各 AI 助手使用指南
 
-### 2. GitHub Agents 目錄（Agent Mode）
-`.github/agents/` 目錄，供 GitHub Copilot Workspace 和 Agent Mode 使用。
+### GitHub Copilot（推薦用於日常開發）
+**VSCode 整合**：
+- [`.copilot-instructions.md`](./.copilot-instructions.md) - 主要開發指引
+- [`.copilot-review-instructions.md`](./.copilot-review-instructions.md) - 程式碼審查
+- [`.copilot-commit-message-instructions.md`](./.copilot-commit-message-instructions.md) - Commit 規範
+- [`.copilot-pull-request-description-instructions.md`](./.copilot-pull-request-description-instructions.md) - PR 描述
+- [`.copilot-test-instructions.md`](./.copilot-test-instructions.md) - 測試產生
 
-詳細說明：[.github/agents/README.md](./.github/agents/README.md)
+**Agent Mode**：
+- [`.github/agents/`](./.github/agents/) - 完整 Agent 配置
+- [`.github/agents/QUICK-START.md`](./.github/agents/QUICK-START.md) - 快速開始
+- [`.github/agents/copilot-instructions.md`](./.github/agents/copilot-instructions.md) - Agent 簡要指引
 
-### 3. Cursor 規則目錄（Cursor IDE）
-`.cursor/rules/` 目錄，Cursor IDE 自動載入。
+### Claude AI（推薦用於架構設計與深度分析）
+**配置文件**：[CLAUDE.md](./CLAUDE.md)
 
-詳細說明：[.cursor/rules/README.md](./.cursor/rules/README.md)
+**適用場景**：
+- 長上下文分析（200K tokens）
+- 完整模組架構設計
+- 大型 PR 審查
+- 複雜業務邏輯梳理
+
+**特色功能**：
+- Artifacts：生成完整可運行代碼
+- Projects：專案級知識庫
+- 思考鏈：深度邏輯分析
+
+### Google Gemini（推薦用於多模態任務）
+**配置文件**：[GEMINI.md](./GEMINI.md)
+
+**適用場景**：
+- UI 設計圖轉代碼
+- 流程圖理解與實作
+- 錯誤截圖分析
+- 即時搜尋最新資訊
+
+**特色功能**：
+- 多模態輸入（圖片、影片）
+- Grounding：即時 Google 搜尋
+- Code Execution：代碼執行驗證
+- 長上下文（1M tokens）
+
+### Cursor IDE（推薦用於代碼編輯）
+**配置目錄**：[`.cursor/rules/`](./.cursor/rules/)
+
+**自動應用規則**：
+- 28 個規則文件自動載入
+- 按目錄自動應用對應規則
+- 即時代碼建議與補全
+
+**詳細說明**：[.cursor/rules/README.md](./.cursor/rules/README.md)
 
 ---
 
