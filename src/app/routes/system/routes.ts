@@ -52,6 +52,6 @@ export const SYSTEM_ROUTES: Routes = [
   },
   {
     path: 'backup',
-    loadComponent: () => import('./backup/backup').then(m => m.Backup)
+    loadComponent: () => import('./backup/backup').then(m => m.BackupComponent)
   }
 ];

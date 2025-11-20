@@ -24,7 +24,7 @@ export const COMMUNICATION_ROUTES: Routes = [
   },
   {
     path: 'notifications/detail',
-    loadComponent: () => import('./notifications/detail/notification-detail').then(m => m.NotificationDetail)
+    loadComponent: () => import('./notifications/detail/notification-detail').then(m => m.NotificationDetailComponent)
   },
   {
     path: 'notifications/rules',
