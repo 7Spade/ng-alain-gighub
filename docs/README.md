@@ -2,8 +2,8 @@
 
 > 📚 **目的**：提供完整的文檔導航和快速查找功能，幫助開發者快速找到所需文檔
 
-**最後更新**：2025-11-16  
-**總文檔數**：53+ 個（不包括 README.md、CHANGELOG.md、PRD.md 和 fyi.md）  
+**最後更新**：2025-11-20  
+**總文檔數**：54+ 個（不包括 README.md、CHANGELOG.md、PRD.md 和 fyi.md）  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
 **技術棧版本**：Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.1.x + Supabase  
 **認證系統**：✅ Supabase Auth + @delon/auth 已實現整合
@@ -24,6 +24,7 @@
 
 - [AI 助手角色配置](./50-AI助手角色配置.md) - 🆕 工程師級 AI 助手角色定義（含系統架構導圖遵循規則）
 - [Agent 開發指南與限制說明](./52-Agent開發指南與限制說明.md) - 了解 AI Agent 開發的限制和最佳實踐
+- [Agent 自主性與防護規範](./agent/AGENT_AUTONOMY_SPEC.md) - 🆕 Agent 自主性等級、決策流程、安全防護與分階段推出策略
 - [AGENTS.md](../AGENTS.md) - Agent 指引總覽
 - [GitHub Copilot Instructions](../.github/agents/copilot-instructions.md) - 完整指引
 
@@ -35,7 +36,12 @@
 - [🧪 測試人員](#測試人員路徑)
 - [📊 資料庫管理員](#資料庫管理員路徑)
 
-### 🆕 最新更新（2025-11-16）
+### 🆕 最新更新（2025-11-20）
+
+- **Agent 自主性規範**：🆕 新增 Agent 自主性與防護完整規範
+  - [agent/AGENT_AUTONOMY_SPEC.md](./agent/AGENT_AUTONOMY_SPEC.md) - Agent 自主性等級、決策輸入/輸出、Prompt 模板、安全防護、分階段推出計劃、KPI 指標、工作流程範例
+
+### 📅 最近更新（2025-11-16）
 
 - **AI 助手角色文檔**：🆕 新增完整的 AI 助手角色定義
   - [50-AI助手角色配置.md](./50-AI助手角色配置.md) - 工程師級 AI 助手角色 prompt（含系統架構導圖遵循規則）
