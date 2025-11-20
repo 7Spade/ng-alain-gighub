@@ -3,7 +3,7 @@
 > 📚 **目的**：提供完整的文檔導航和快速查找功能，幫助開發者快速找到所需文檔
 
 **最後更新**：2025-11-20  
-**總文檔數**：55+ 個（不包括 README.md、CHANGELOG.md、PRD.md 和 fyi.md）  
+**總文檔數**：58+ 個（不包括 README.md、CHANGELOG.md、PRD.md 和 fyi.md）  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
 **技術棧版本**：Angular 20.3.x + NG-ZORRO 20.3.x + NG-ALAIN 20.1.x + Supabase  
 **認證系統**：✅ Supabase Auth + @delon/auth 已實現整合
@@ -145,6 +145,9 @@
 |------|------|--------|
 | [工作區上下文使用與規劃指南.md](./工作區上下文使用與規劃指南.md) | 🆕 **工作區上下文完整指南**（user/org/team 三個數據文件的功能規劃與 UX 設計） | ⭐⭐⭐⭐⭐ |
 | [工作區上下文切換流程圖.mermaid.md](./工作區上下文切換流程圖.mermaid.md) | 🆕 **上下文切換流程視覺化**（10 個詳細流程圖） | ⭐⭐⭐⭐⭐ |
+| [個人上下文菜單功能說明-user-data.md](./個人上下文菜單功能說明-user-data.md) | 🆕 **個人上下文功能詳解**（user-data.json 的 15 個功能說明） | ⭐⭐⭐⭐⭐ |
+| [組織上下文菜單功能說明-organization-data.md](./組織上下文菜單功能說明-organization-data.md) | 🆕 **組織上下文功能詳解**（organization-data.json 的 70+ 個功能說明） | ⭐⭐⭐⭐⭐ |
+| [團隊上下文菜單功能說明-team-data.md](./團隊上下文菜單功能說明-team-data.md) | 🆕 **團隊上下文功能詳解**（team-data.json 的 20 個功能說明） | ⭐⭐⭐⭐⭐ |
 | [工作區上下文系統架構審查.md](./工作區上下文系統架構審查.md) | 技術架構詳細審查（Types/Repositories/Models/Services/Facades） | ⭐⭐⭐⭐ |
 | [工作區系統-快速參考指南.md](./工作區系統-快速參考指南.md) | 開發者快速參考（代碼示例與使用模式） | ⭐⭐⭐⭐ |
 
