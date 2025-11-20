@@ -1,8 +1,8 @@
 import { CdkDragDrop, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
-import { SHARED_IMPORTS, Task, TaskTreeNode, TaskStatus } from '@shared';
 import { BranchContextService } from '@core';
+import { SHARED_IMPORTS, Task, TaskTreeNode, TaskStatus } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 
@@ -326,5 +326,4 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
       children: node.children ? node.children.map(child => this.taskNodeToTreeNode(child)) : []
     };
   }
-
 }

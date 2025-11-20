@@ -139,5 +139,4 @@ export class DocumentVersionComponent implements OnInit {
     // TODO: 实现对比版本逻辑
     this.message.info('对比版本功能开发中');
   }
-
 }

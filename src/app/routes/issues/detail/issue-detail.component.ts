@@ -1,8 +1,7 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS, IssueService, IssueDetail } from '@shared';
+import { SHARED_IMPORTS, IssueService, IssueDetail, AccountService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AccountService } from '@shared';
 
 interface TimelineItem {
   readonly title: string;

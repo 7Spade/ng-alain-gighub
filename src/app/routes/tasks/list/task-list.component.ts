@@ -1,17 +1,8 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { STColumn } from '@delon/abc/st';
-import {
-  SHARED_IMPORTS,
-  TaskService,
-  Task,
-  TaskStatus,
-  TaskType,
-  TaskPriority,
-  TaskStagingService,
-  AuthStateService
-} from '@shared';
 import { BranchContextService } from '@core';
+import { STColumn } from '@delon/abc/st';
+import { SHARED_IMPORTS, TaskService, Task, TaskStatus, TaskType, TaskPriority, TaskStagingService, AuthStateService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({

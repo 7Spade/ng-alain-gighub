@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
-import { SHARED_IMPORTS, TaskService, Task, TaskStatus } from '@shared';
 import { BranchContextService } from '@core';
+import { SHARED_IMPORTS, TaskService, Task, TaskStatus } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({

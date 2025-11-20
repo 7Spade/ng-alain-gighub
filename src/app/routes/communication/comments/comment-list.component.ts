@@ -54,7 +54,13 @@ interface CommentListItem {
         <nz-form-item style="margin-bottom: 0;">
           <nz-form-label>作者</nz-form-label>
           <nz-form-control>
-            <input nz-input [ngModel]="filterAuthor()" (ngModelChange)="filterAuthor.set($event)" placeholder="搜索作者" style="width: 200px;" />
+            <input
+              nz-input
+              [ngModel]="filterAuthor()"
+              (ngModelChange)="filterAuthor.set($event)"
+              placeholder="搜索作者"
+              style="width: 200px;"
+            />
           </nz-form-control>
         </nz-form-item>
       </div>

@@ -34,15 +34,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
       } @else {
         <!-- 文档信息 -->
         <div style="margin-bottom: 16px; padding: 16px; background: #f5f5f5; border-radius: 4px;">
-          <div style="margin-bottom: 8px;">
-            <strong>文档名称：</strong>{{ documentName() }}
-          </div>
-          <div style="margin-bottom: 8px;">
-            <strong>文件类型：</strong>{{ fileType() }}
-          </div>
-          <div>
-            <strong>文件大小：</strong>{{ fileSize() }}
-          </div>
+          <div style="margin-bottom: 8px;"> <strong>文档名称：</strong>{{ documentName() }} </div>
+          <div style="margin-bottom: 8px;"> <strong>文件类型：</strong>{{ fileType() }} </div>
+          <div> <strong>文件大小：</strong>{{ fileSize() }} </div>
         </div>
 
         <!-- 预览区域 -->

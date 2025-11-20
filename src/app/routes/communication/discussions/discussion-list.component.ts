@@ -53,7 +53,13 @@ interface DiscussionItem {
         <nz-form-item style="margin-bottom: 0;">
           <nz-form-label>搜索</nz-form-label>
           <nz-form-control>
-            <input nz-input [ngModel]="searchKeyword()" (ngModelChange)="searchKeyword.set($event)" placeholder="搜索讨论标题" style="width: 250px;" />
+            <input
+              nz-input
+              [ngModel]="searchKeyword()"
+              (ngModelChange)="searchKeyword.set($event)"
+              placeholder="搜索讨论标题"
+              style="width: 250px;"
+            />
           </nz-form-control>
         </nz-form-item>
       </div>
