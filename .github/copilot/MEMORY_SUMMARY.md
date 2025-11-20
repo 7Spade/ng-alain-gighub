@@ -1,9 +1,11 @@
 # GitHub Copilot Memory Summary
 
-> **Last Updated**: 2025-01-20  
+> **Last Updated**: 2025-11-20  
+> **Version**: v4.0.1 (整合版本)  
 > **Total Entities**: 149  
 > **Total Relations**: 170  
-> **Total Lines**: 319
+> **Total Lines**: 319  
+> **Status**: ✅ 已整合 - 現只有一個 memory.jsonl 檔案
 
 ## 📊 Overview
 

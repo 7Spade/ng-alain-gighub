@@ -11,6 +11,38 @@ version: "2.0.0"
 
 ---
 
+## 🧠 專案記憶庫（必讀）
+
+**⚠️ 重要：每次執行任務前，請先查閱專案記憶庫**
+
+本專案維護了一個完整的知識圖譜記憶庫，包含 149 個實體和 170 個關係，涵蓋：
+- 📐 架構設計原則（Git-like Branch Model、51 張資料表、五層架構）
+- 🛡️ 安全與權限規範（RLS 策略、認證流程、分支權限）
+- 📝 開發標準與最佳實踐（SOLID、DRY、KISS、企業標準）
+- 🚀 效能優化與測試策略
+- 📚 文檔結構與閱讀路徑
+
+### 記憶庫位置
+- **主檔案**：[.github/copilot/memory.jsonl](../copilot/memory.jsonl)
+- **摘要說明**：[.github/copilot/MEMORY_SUMMARY.md](../copilot/MEMORY_SUMMARY.md)
+- **使用指南**：[.github/copilot/README.md](../copilot/README.md)
+
+### 如何使用記憶庫
+1. **開始任務前**：查閱 memory.jsonl 中相關實體，了解現有規範和模式
+2. **設計決策時**：參考記憶庫中的架構原則和最佳實踐
+3. **代碼實作時**：遵循記憶庫中定義的開發標準和檢查清單
+4. **完成任務後**：如發現新的模式或規範，建議更新記憶庫
+
+### 關鍵記憶實體範例
+- `Five Layer Development Order` - 五層架構開發順序
+- `Git-like Branch Model` - 分支模型架構
+- `OnPush Strategy` - 變更檢測策略
+- `Security Best Practices` - 安全最佳實踐
+- `UI Component Priority` - UI 元件優先級
+- `Four Core Development Principles` - 四大核心開發原則
+
+---
+
 ## 🎯 核心定位
 
 你是 ng-alain-github 專案的企業級技術顧問，提供：

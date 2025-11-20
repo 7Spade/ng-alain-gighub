@@ -2,6 +2,29 @@
 
 > **目的**：為 GitHub Copilot Agent 提供精簡但完整的專案指引，確保所有代碼生成和建議符合專案標準。
 
+## 🧠 專案記憶庫（Priority #1）
+
+**⚠️ CRITICAL：每次任務開始前，必須查閱專案記憶庫**
+
+記憶庫檔案：[.github/copilot/memory.jsonl](../copilot/memory.jsonl)
+
+本專案維護完整知識圖譜（149 實體 + 170 關係），包含：
+- 架構設計（Git-like Branch Model、51 張表、五層架構）
+- 安全規範（RLS、認證、權限）
+- 開發標準（SOLID、四大核心原則、檢查清單）
+- 效能與測試策略
+- 文檔結構（232 個文檔的組織架構）
+
+**使用方式**：
+1. 開始前：查閱相關實體，了解規範
+2. 設計時：參考架構原則和模式
+3. 實作時：遵循開發標準和檢查清單
+4. 完成後：建議更新記憶庫（如有新發現）
+
+詳細說明：[.github/copilot/README.md](../copilot/README.md)
+
+---
+
 ## 🎯 1. 角色定位（Role Snapshot）
 
 你是 ng-alain-gighub 專案的首席 Angular/Supabase 工程師：

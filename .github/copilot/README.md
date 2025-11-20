@@ -2,6 +2,77 @@
 
 此目錄包含 GitHub Copilot Memory MCP（Model Context Protocol）的配置文件。
 
+## 🚀 快速開始：如何讓 Agents 自動查看 memory.jsonl
+
+### 自動加載機制
+
+**所有 Agent 配置文件都已經包含對 memory.jsonl 的引用**，確保每次執行任務時都會提醒查閱記憶庫：
+
+1. **根目錄配置文件**
+   - `AGENTS.md` - 所有 AI 助手的入口文檔（包含記憶庫章節）
+   - `.copilot-instructions.md` - VSCode Copilot 主要指引（開頭包含記憶庫提示）
+
+2. **GitHub Agents 配置**
+   - `.github/agents/ng-alain-github-agent.md` - 主要 Agent 配置（開頭包含記憶庫章節）
+   - `.github/agents/copilot-instructions.md` - Copilot Agent 簡要指引（開頭包含記憶庫提示）
+
+3. **領域專家 Agents**
+   - 所有領域 Agent（`domain/*.md`）都會繼承主配置中的記憶庫引用
+
+### Agent 使用記憶庫的標準流程
+
+```
+1. 任務開始
+   ↓
+2. 閱讀 Agent 配置文件（自動提示查閱 memory.jsonl）
+   ↓
+3. 查詢記憶庫相關實體
+   - 架構設計原則
+   - 開發標準和規範
+   - 已知模式和最佳實踐
+   ↓
+4. 基於記憶庫知識執行任務
+   ↓
+5. 任務完成後建議更新記憶庫（如有新發現）
+```
+
+### 記憶庫查詢範例
+
+**範例 1：開發新功能**
+```
+任務：實作用戶管理功能
+
+Agent 應查閱的記憶實體：
+- Five Layer Development Order（開發順序）
+- Repository Pattern（數據訪問模式）
+- Security Best Practices（安全規範）
+- UI Component Priority（UI 元件優先級）
+```
+
+**範例 2：代碼審查**
+```
+任務：審查 PR 中的代碼變更
+
+Agent 應查閱的記憶實體：
+- Code Review Standards（審查標準）
+- Four Core Development Principles（核心開發原則）
+- Testing Strategy（測試策略）
+- Linting Standards（代碼檢查標準）
+```
+
+**範例 3：架構設計**
+```
+任務：設計新模組架構
+
+Agent 應查閱的記憶實體：
+- Git-like Branch Model（分支模型）
+- Five Layer Architecture（五層架構）
+- Dependency Direction Principle（依賴方向原則）
+- Low Coupling High Cohesion（低耦合高內聚）
+```
+
+---
+
 ## 📄 memory.jsonl
 
 記憶檔案採用 JSONL (JSON Lines) 格式，每一行都是一個 JSON 物件，用於定義專案的知識圖譜。
@@ -154,12 +225,16 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
 ---
 
 **版本歷史**：
+- **v4.0.1** (2025-11-20): 版本整合 - 移除舊備份檔案 🧹
+  - **整合完成**：移除 memory.jsonl.v3.0-backup（已合併至主檔案）
+  - **統一版本**：現在只有一個 memory.jsonl 檔案（149 實體 + 170 關係）
+  - **清理目的**：避免版本混淆，確保所有 AI 助手使用相同的知識庫
 - **v4.0** (2025-11-20): 文檔整合與組織化 - 添加文檔導航知識 ✨
   - 新增 12 個文檔實體：Documentation Structure、Documentation Priority System、Reading Paths、NG-ZORRO Component Index、DELON Package Index、Core Documentation Files、Quick Reference Documents、Architecture Diagrams、Module Documentation、Workspace Context Documentation、Cursor IDE Rules、GitHub Agents Configuration
   - 新增 14 個文檔關係：連接文檔系統與專案核心
   - 組織化：移除 9 個重複實體、6 個重複關係
   - 按類別重新組織所有實體：提高可讀性
-  - 總計：138 個實體、159 個關係（+6.9% 實體、+16.1% 關係）
+  - 總計：149 個實體、170 個關係（從 v3.0 的 129/143 增加）
   - 重點：幫助 AI 助手理解專案的 232 個文檔結構和閱讀路徑
 - **v3.0** (2025-11-20): Phase 5 完成 - 擴展詳細實作規範與 UI/DevOps 標準
   - 新增 45 個實體：涵蓋完整開發生命週期
@@ -172,6 +247,6 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
   - 基礎技術棧、架構設計、開發原則
   - 總計：23 個實體、24 個關係
 
-**最後更新**：2025-11-20（v4.0 文檔整合完成）  
+**最後更新**：2025-11-20（v4.0.1 版本整合完成 - 現只有一個 memory.jsonl 檔案）  
 **維護者**：開發團隊  
 **下次檢視**：專案重大架構變更時
