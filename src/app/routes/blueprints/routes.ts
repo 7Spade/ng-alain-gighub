@@ -32,7 +32,7 @@ export const BLUEPRINT_ROUTES: Routes = [
   },
   {
     path: 'branches/detail',
-    loadComponent: () => import('./branches/branch-detail/branch-detail').then(m => m.BranchDetail)
+    loadComponent: () => import('./branches/branch-detail/branch-detail').then(m => m.BranchDetailComponent)
   },
   {
     path: 'fork',
