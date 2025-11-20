@@ -22,36 +22,76 @@
 
 ### 📊 目前包含的知識
 
-#### 實體統計（23 個實體）
-- **專案**：ng-alain-gighub
+**版本 v3.0** - 完整企業級開發標準 + 詳細實作規範（Phase 5 完成）
+
+#### 實體統計（129 個實體，+45 from v2.0）
+- **專案**：ng-alain-gighub（企業級資源中心）
 - **技術棧**：Angular 20、NG-ZORRO、@delon、TypeScript、Supabase、RxJS
-- **架構設計**：Git-like Branch Model、Database Schema、Layered Architecture
-- **開發原則**：OnPush Strategy、SOLID Principles、Code Quality
-- **設計模式**：SHARED_IMPORTS、Repository Pattern
-- **安全性**：Authentication Flow、Security Principles
-- **標準規範**：Testing Strategy、Commit Convention、Accessibility、Documentation
-- **效能優化**：Performance Optimization
+- **架構設計**：Git-like Branch Model、Database Schema、Layered Architecture、Five Layer Architecture
+- **核心原則**：OnPush Strategy、SOLID Principles、Code Quality、Enterprise Development Principles、UI Component Priority、Consistency Principle、Composability Principle、Dependency Direction Principle、Low Coupling High Cohesion
+- **功能特性**：Staging Area Mechanism（48h 可撤回）、Todo Center System（五種狀態）、Issue Synchronization、Activity Logging System、Document Management System、Task Tree Structure、Data Analysis System、Notification System、Bot System、Workspace Context System、File Upload Standards、Search Functionality、Pagination Standards
+- **設計模式**：SHARED_IMPORTS、Repository Pattern、Component Design Patterns、Modal Design Patterns、Table Design Patterns、Form Design Patterns、Layout Patterns
+- **安全性**：Authentication Flow、Security Principles、Security Best Practices、Branch Permission Rules、RLS Policy Patterns、Security Scanning
+- **標準規範**（+18 新增）：
+  - API Design Standards ⭐
+  - State Management Rules ⭐
+  - Error Handling Standards ⭐
+  - Form Validation Standards ⭐
+  - Routing Standards ⭐
+  - Service Design Standards ⭐
+  - Naming Conventions ⭐
+  - CSS/LESS Standards ⭐
+  - Import Order Standards ⭐
+  - Database Table Structure ⭐
+  - Migration Standards ⭐
+  - Environment Configuration ⭐
+  - Internationalization (i18n) ⭐
+  - Theme Customization ⭐
+  - Responsive Design ⭐
+  - Keyboard Shortcuts ⭐
+  - Loading States ⭐
+  - Empty States ⭐
+- **效能優化**：Performance Optimization、Performance Benchmarks、Performance Optimization Techniques、Database Query Optimization、Build Optimization、Caching Strategy、Performance Monitoring
+- **開發流程**（+12 新增）：
+  - Code Review Checklist ⭐
+  - Git Workflow ⭐
+  - CI/CD Pipeline ⭐
+  - Monitoring & Analytics ⭐
+  - Backup & Recovery ⭐
+  - Dependency Management ⭐
+  - Logging Standards ⭐
+  - Documentation Maintenance ⭐
+  - Team Collaboration ⭐
+  - Onboarding Process ⭐
 - **約束條件**：Forbidden Practices
 
-#### 關係統計（24 個關係）
-- 技術使用關係：ng-alain-gighub → Angular 20/NG-ZORRO/@delon/Supabase/TypeScript
-- 架構實作關係：ng-alain-gighub → Git-like Branch Model/Database Schema
-- 技術整合關係：Angular 20 → NG-ZORRO/RxJS/OnPush Strategy
-- 擴展關係：@delon → NG-ZORRO
-- 安全實作關係：Supabase → Authentication Flow → Security Principles
-- 品質保證關係：SOLID Principles/Testing Strategy → Code Quality
+#### 關係統計（137 個關係，+40 from v2.0）
+- **技術使用關係**：ng-alain-gighub → Angular 20/NG-ZORRO/@delon/Supabase/TypeScript/Git-like Branch Model/Database Schema
+- **架構實作關係**：Five Layer Architecture → Layered Architecture、Git-like Branch Model → Database Schema
+- **技術整合關係**：Angular 20 → NG-ZORRO/RxJS/OnPush Strategy、@delon → NG-ZORRO/Supabase
+- **安全實作關係**：Supabase → Authentication Flow → Security Principles、Branch Permission Rules → Security Best Practices、RLS Policy Patterns → Security Principles
+- **品質保證關係**：SOLID Principles/Testing Strategy/Code Review Standards → Code Quality、Code Review Checklist → Code Quality
+- **效能關係**：Performance Optimization Techniques → Performance Benchmarks、Performance Monitoring → Performance Benchmarks
+- **支援關係**：Staging Area Mechanism/Issue Synchronization → Git-like Branch Model、Notification System → Todo Center System
+- **組織關係**：Task Tree Structure/Data Analysis System/Activity Logging System → Git-like Branch Model、Workspace Context System → Git-like Branch Model
+- **原則實作**：SRP Enforcement → SOLID Principles、Consistency Principle → Code Quality Checklist
+- **UI 模式關係**（+15 新增）：Modal/Table/Form/Layout Design Patterns → NG-ZORRO/@delon、Theme Customization → NG-ZORRO、Responsive Design → NG-ZORRO
+- **DevOps 關係**（+10 新增）：Git Workflow → CI/CD Pipeline、CI/CD Pipeline → Migration Standards、Monitoring & Analytics → Performance Monitoring、Security Scanning → Security Principles、Team Collaboration → Git Workflow、Onboarding Process → Documentation
 
 ### 🎯 使用目的
 
 這個記憶檔案幫助 GitHub Copilot 理解：
 
 1. **專案技術棧**：使用的框架、函式庫及其版本
-2. **架構設計**：Git-like 分支模型、51 張資料表架構
-3. **開發規範**：程式碼風格、命名規則、最佳實踐
-4. **安全原則**：認證流程、權限控制、資料保護
-5. **測試策略**：單元測試、E2E 測試要求
-6. **效能優化**：OnPush 策略、Lazy Loading、快取機制
-7. **禁止事項**：不應該做的事情與限制
+2. **架構設計**：Git-like 分支模型、51 張資料表架構、五層架構開發順序
+3. **核心原則**：SOLID、DRY、KISS、YAGNI、一致性原則、可組合性原則、依賴方向原則
+4. **開發規範**：程式碼風格、命名規則、最佳實踐、UI 元件優先級
+5. **功能特性**：暫存區機制（48h 可撤回）、待辦中心（五種狀態）、問題同步、活動記錄、文件管理
+6. **安全原則**：認證流程、權限控制（Owner/Collaborator/Viewer）、資料保護、RLS 策略
+7. **測試策略**：單元測試（≥80% 覆蓋率）、E2E 測試要求
+8. **效能優化**：OnPush 策略、Lazy Loading、快取機制、Bundle 優化、效能基準（LCP < 2.5s）
+9. **開發流程**：驗證序列（lint → lint:style → type-check → build → test）、Git workflow、CI/CD
+10. **禁止事項**：不應該做的事情與限制（Agent 操作約束）
 
 ### 📝 維護建議
 
@@ -98,5 +138,21 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
 
 ---
 
-**最後更新**：2025-11-20  
+**版本歷史**：
+- **v3.0** (2025-11-20): Phase 5 完成 - 擴展詳細實作規範與 UI/DevOps 標準
+  - 新增 45 個實體：API Design Standards、Component Design Patterns、State Management Rules、Error Handling Standards、Form Validation Standards、Routing Standards、Service Design Standards、Naming Conventions、CSS/LESS Standards、Import Order Standards、Database Table Structure、RLS Policy Patterns、Migration Standards、Environment Configuration、Build Optimization、Caching Strategy、Logging Standards、Internationalization (i18n)、Workspace Context System、Bot System、Data Analysis System、Notification System、File Upload Standards、Search Functionality、Pagination Standards、Modal Design Patterns、Table Design Patterns、Form Design Patterns、Layout Patterns、Theme Customization、Responsive Design、Keyboard Shortcuts、Loading States、Empty States、Code Review Checklist、Git Workflow、CI/CD Pipeline、Monitoring & Analytics、Backup & Recovery、Dependency Management、Security Scanning、Performance Monitoring、Documentation Maintenance、Team Collaboration、Onboarding Process
+  - 新增 40 個關係：串連所有新實體與現有核心原則
+  - 涵蓋完整開發生命週期：設計 → 開發 → 測試 → 部署 → 監控 → 維護
+  - 總計：129 個實體、137 個關係（+53.6% 實體、+41.2% 關係）
+- **v2.0** (2025-11-20): 新增 61 個企業標準實體和 73 個關係，建立完整的企業級開發標準記憶庫
+  - 新增功能特性：暫存區機制、待辦中心、問題同步、活動記錄、文件管理、任務樹、數據分析、通知系統、Bot 系統
+  - 新增核心原則：企業開發原則、UI 元件優先級、一致性原則、可組合性原則、依賴方向原則
+  - 新增標準規範：效能基準、安全最佳實踐、資料庫查詢優化、分支權限規則、驗證序列
+  - 新增開發流程：五層架構、代碼質量檢查清單、SRP 強制執行、現代 Angular 語法、Agent 操作約束
+  - 總計：84 個實體、97 個關係
+- **v1.0** (2025-11-19): 初始版本，基礎專案知識
+  - 基礎技術棧、架構設計、開發原則
+  - 總計：23 個實體、24 個關係
+
+**最後更新**：2025-11-20（Phase 5 完成）  
 **維護者**：開發團隊

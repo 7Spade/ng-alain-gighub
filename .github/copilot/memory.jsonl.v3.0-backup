@@ -270,17 +270,3 @@
 {"type":"relation","from":"Documentation Maintenance","to":"Documentation","relationType":"implements"}
 {"type":"relation","from":"Team Collaboration","to":"Git Workflow","relationType":"organizes"}
 {"type":"relation","from":"Onboarding Process","to":"Documentation","relationType":"requires"}
-{"type":"entity","name":"Workspace Context System","label":"Architecture","observations":["系統實作三層工作區上下文：個人（User）、組織（Organization）、團隊（Team）","使用 Facade Pattern：WorkspaceContextFacade → WorkspaceContextService/WorkspaceMenuService → WorkspaceDataService → Repository → Supabase","WorkspaceContextService 管理上下文狀態（使用 Signals）","WorkspaceMenuService 處理菜單切換與路由參數替換","WorkspacePersistenceService 持久化上下文到 localStorage","三個菜單數據文件：user-data.json (15頁)、organization-data.json (70+頁)、team-data.json (20頁)","StartupService 在應用啟動時加載三個菜單文件並初始化 WorkspaceContextFacade"]}
-{"type":"entity","name":"Route Parameter Replacement","label":"Pattern","observations":["WorkspaceMenuService.processMenuLinks() 自動替換菜單路由中的參數佔位符","個人上下文：:userId 替換為當前用戶 ID","組織上下文：:id 或 ?org=:id 替換為組織 ID","團隊上下文：:id 或 ?team=:id 替換為團隊 ID","參數替換在上下文切換時自動執行"]}
-{"type":"entity","name":"Component Export Naming","label":"Convention","observations":["所有 Angular 組件必須使用完整的類名導出","懶加載路由必須使用正確的組件類名：loadComponent: () => import('./path').then(m => m.ComponentName)","常見錯誤：使用簡寫名稱而非完整類名（如 BranchDetail 而非 BranchDetailComponent）","TypeScript 編譯會在導出名稱不匹配時報錯","已修復的組件：BranchDetailComponent、NotificationDetailComponent、SyncLogsComponent、BackupComponent"]}
-{"type":"entity","name":"User Context","label":"Workspace","observations":["個人上下文包含 6 大模組、15 個頁面","帳戶系統：個人資料、組織列表","我的任務：待辦清單、指派任務","我的藍圖：藍圖列表、創建藍圖","我的文檔：文檔列表、上傳文檔","我的溝通：通知、待辦","個人設置：偏好設置","設計理念：輕量級個人生產力中心，跨組織聚合視圖"]}
-{"type":"entity","name":"Organization Context","label":"Workspace","observations":["組織上下文包含 9 大模組、70+ 個頁面","組織管理：成員、團隊","組織協作：協作列表、創建、邀請","組織藍圖：完整 Git-like 分支管理（11 個頁面）","組織任務：看板、日曆、列表、樹狀圖等（13 個頁面）","組織品質：品質檢查、驗收管理（7 個頁面）","組織問題：問題追蹤、處理、同步（8 個頁面）","組織溝通：討論區、評論、通知（9 個頁面）","組織分析：統計、進度、報表、圖表（11 個頁面）","組織文檔：文檔管理、版本控制（8 個頁面）","設計理念：組織全功能管理中心，功能最完整"]}
-{"type":"entity","name":"Team Context","label":"Workspace","observations":["團隊上下文包含 5 大模組、20 個頁面","團隊管理：團隊成員","團隊任務：看板、日曆、列表、樹狀圖、日報等（8 個頁面）","團隊問題：問題列表、指派（2 個頁面）","團隊溝通：討論區、評論、團隊通知（3 個頁面）","團隊文檔：文檔列表、上傳（2 個頁面）","設計理念：團隊協作與任務執行中心，聚焦執行而非管理"]}
-{"type":"relation","from":"Workspace Context System","to":"Angular 20","relationType":"uses"}
-{"type":"relation","from":"Workspace Context System","to":"@delon","relationType":"uses"}
-{"type":"relation","from":"Workspace Context System","to":"Supabase","relationType":"integrates"}
-{"type":"relation","from":"User Context","to":"Workspace Context System","relationType":"partOf"}
-{"type":"relation","from":"Organization Context","to":"Workspace Context System","relationType":"partOf"}
-{"type":"relation","from":"Team Context","to":"Workspace Context System","relationType":"partOf"}
-{"type":"relation","from":"Route Parameter Replacement","to":"Workspace Context System","relationType":"implements"}
-{"type":"relation","from":"Component Export Naming","to":"TypeScript","relationType":"enforces"}
