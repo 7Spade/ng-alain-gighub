@@ -41,6 +41,27 @@
 - [`.github/agents/QUICK-START.md`](./.github/agents/QUICK-START.md) - 快速開始
 - [`.github/agents/copilot-instructions.md`](./.github/agents/copilot-instructions.md) - Agent 簡要指引
 
+**MCP 伺服器整合** 🆕：
+- [`.github/copilot/mcp.json`](./.github/copilot/mcp.json) - MCP 配置檔（13 個伺服器）
+- [`.github/copilot/README.md`](./.github/copilot/README.md) - 完整配置說明
+- [`.github/copilot/QUICKSTART.md`](./.github/copilot/QUICKSTART.md) - 5 分鐘快速上手
+- [`.github/copilot/SECURITY.md`](./.github/copilot/SECURITY.md) - 安全性注意事項
+
+**支援的 MCP 伺服器**：
+- 🗄️ **Redis**：資料快取與儲存
+- 🔗 **Supabase**：資料庫、Edge Functions、分支管理
+- 🐙 **GitHub**：Repository、Issues、PR 操作
+- 🧠 **Memory**：持久化記憶體儲存
+- 🤔 **Sequential Thinking**：結構化思考與問題分解
+- 📋 **Software Planning**：開發規劃與任務管理
+- 📁 **Filesystem**：檔案系統存取
+- 🌿 **Git**：版本控制操作
+- 🎭 **Puppeteer**：Chrome 瀏覽器自動化
+- 🎬 **Playwright**：跨瀏覽器測試
+- ⏰ **Time**：時間相關操作
+- 🌐 **Fetch**：HTTP 請求
+- 🛠️ **Everything**：功能示範
+
 ### Claude AI（推薦用於架構設計與深度分析）
 **配置文件**：[CLAUDE.md](./CLAUDE.md)
 
@@ -159,6 +180,7 @@
 
 ---
 
-**最後更新**：2025-01-15  
+**最後更新**：2025-11-20  
 **架構版本**：v2.0（Git-like 分支模型，51 張資料表）  
+**配置版本**：v2.3（新增 MCP 伺服器整合）  
 **維護者**：開發團隊
