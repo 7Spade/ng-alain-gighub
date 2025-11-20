@@ -61,18 +61,6 @@
               "i18n": "menu.development.account.organizations"
             },
             {
-              "text": "Organization Members",
-              "link": "/org/:id/members",
-              "i18n": "menu.development.account.organizationMembers",
-              "externalLink": true
-            },
-            {
-              "text": "Team Management",
-              "link": "/org/:id/teams",
-              "i18n": "menu.development.account.organizationTeams",
-              "externalLink": true
-            },
-            {
               "text": "Bot Management",
               "link": "/accounts/bots",
               "i18n": "menu.development.account.bots"
@@ -96,7 +84,7 @@
           "children": [
             {
               "text": "Collaboration List",
-              "link": "/collaboration/list",
+              "link": "/collaboration/list?org=:id",
               "i18n": "menu.development.collaboration.list"
             },
             {
@@ -106,7 +94,7 @@
             },
             {
               "text": "Collaboration Invitations",
-              "link": "/collaboration/invitations",
+              "link": "/collaboration/invitations?org=:id",
               "i18n": "menu.development.collaboration.invitations"
             }
           ]
@@ -180,22 +168,22 @@
           "children": [
             {
               "text": "Task Board",
-              "link": "/tasks/board",
+              "link": "/tasks/board?org=:id",
               "i18n": "menu.development.task.board"
             },
             {
               "text": "Task Calendar",
-              "link": "/tasks/calendar",
+              "link": "/tasks/calendar?org=:id",
               "i18n": "menu.development.task.calendar"
             },
             {
               "text": "Task List",
-              "link": "/tasks/list",
+              "link": "/tasks/list?org=:id",
               "i18n": "menu.development.task.list"
             },
             {
               "text": "Task Tree View",
-              "link": "/tasks/tree",
+              "link": "/tasks/tree?org=:id",
               "i18n": "menu.development.task.tree"
             },
             {
@@ -215,37 +203,37 @@
             },
             {
               "text": "Task Assignment",
-              "link": "/tasks/assignments",
+              "link": "/tasks/assignments?org=:id",
               "i18n": "menu.development.task.assignments"
             },
             {
               "text": "Todo List",
-              "link": "/tasks/todo",
+              "link": "/tasks/todo?org=:id",
               "i18n": "menu.development.task.todo"
             },
             {
               "text": "Staging Area",
-              "link": "/tasks/staging",
+              "link": "/tasks/staging?org=:id",
               "i18n": "menu.development.task.staging"
             },
             {
               "text": "Daily Reports",
-              "link": "/tasks/daily-reports",
+              "link": "/tasks/daily-reports?org=:id",
               "i18n": "menu.development.task.dailyReports"
             },
             {
               "text": "Construction Photos",
-              "link": "/tasks/photos",
+              "link": "/tasks/photos?org=:id",
               "i18n": "menu.development.task.photos"
             },
             {
               "text": "Weather Records",
-              "link": "/tasks/weather",
+              "link": "/tasks/weather?org=:id",
               "i18n": "menu.development.task.weather"
             },
             {
               "text": "Task Progress",
-              "link": "/tasks/progress",
+              "link": "/tasks/progress?org=:id",
               "i18n": "menu.development.task.progress"
             }
           ]
@@ -257,7 +245,7 @@
           "children": [
             {
               "text": "Quality Check",
-              "link": "/quality/checks",
+              "link": "/quality/checks?org=:id",
               "i18n": "menu.development.quality.checks"
             },
             {
@@ -272,7 +260,7 @@
             },
             {
               "text": "Acceptance Management",
-              "link": "/quality/inspections",
+              "link": "/quality/inspections?org=:id",
               "i18n": "menu.development.quality.inspections"
             },
             {
@@ -282,12 +270,12 @@
             },
             {
               "text": "Acceptance Photos",
-              "link": "/quality/photos",
+              "link": "/quality/photos?org=:id",
               "i18n": "menu.development.quality.photos"
             },
             {
               "text": "Acceptance Results",
-              "link": "/quality/results",
+              "link": "/quality/results?org=:id",
               "i18n": "menu.development.quality.results"
             }
           ]
@@ -299,7 +287,7 @@
           "children": [
             {
               "text": "Issue List",
-              "link": "/issues",
+              "link": "/issues?org=:id",
               "i18n": "menu.development.issue.list"
             },
             {
@@ -314,7 +302,7 @@
             },
             {
               "text": "Issue Assignment",
-              "link": "/issues/assignments",
+              "link": "/issues/assignments?org=:id",
               "i18n": "menu.development.issue.assignments"
             },
             {
@@ -334,7 +322,7 @@
             },
             {
               "text": "Issue Sync Logs",
-              "link": "/issues/sync-logs",
+              "link": "/issues/sync-logs?org=:id",
               "i18n": "menu.development.issue.syncLogs"
             }
           ]
@@ -346,12 +334,12 @@
           "children": [
             {
               "text": "Discussion Area",
-              "link": "/communication/discussions",
+              "link": "/communication/discussions?org=:id",
               "i18n": "menu.development.communication.discussions"
             },
             {
               "text": "Comment Management",
-              "link": "/communication/comments",
+              "link": "/communication/comments?org=:id",
               "i18n": "menu.development.communication.comments"
             },
             {
@@ -361,7 +349,7 @@
             },
             {
               "text": "Notification Center",
-              "link": "/communication/notifications",
+              "link": "/communication/notifications?org=:id",
               "i18n": "menu.development.communication.notifications"
             },
             {
@@ -381,12 +369,12 @@
             },
             {
               "text": "Todo Center",
-              "link": "/communication/todos",
+              "link": "/communication/todos?org=:id",
               "i18n": "menu.development.communication.todos"
             },
             {
               "text": "Team Notifications",
-              "link": "/communication/team-notify",
+              "link": "/communication/team-notify?org=:id",
               "i18n": "menu.development.communication.teamNotify"
             }
           ]
@@ -398,12 +386,12 @@
           "children": [
             {
               "text": "Statistics",
-              "link": "/analytics/statistics",
+              "link": "/analytics/statistics?org=:id",
               "i18n": "menu.development.analytics.statistics"
             },
             {
               "text": "Progress Tracking",
-              "link": "/analytics/progress",
+              "link": "/analytics/progress?org=:id",
               "i18n": "menu.development.analytics.progress"
             },
             {
@@ -413,12 +401,12 @@
             },
             {
               "text": "Main Branch Reports",
-              "link": "/analytics/main-reports",
+              "link": "/analytics/main-reports?org=:id",
               "i18n": "menu.development.analytics.mainReports"
             },
             {
               "text": "Branch Reports",
-              "link": "/analytics/branch-reports",
+              "link": "/analytics/branch-reports?org=:id",
               "i18n": "menu.development.analytics.branchReports"
             },
             {
@@ -428,7 +416,7 @@
             },
             {
               "text": "Activity Logs",
-              "link": "/analytics/activity-logs",
+              "link": "/analytics/activity-logs?org=:id",
               "i18n": "menu.development.analytics.activityLogs"
             },
             {
@@ -438,7 +426,7 @@
             },
             {
               "text": "Data Reports",
-              "link": "/analytics/reports",
+              "link": "/analytics/reports?org=:id",
               "i18n": "menu.development.analytics.reports"
             },
             {
@@ -460,7 +448,7 @@
           "children": [
             {
               "text": "Document List",
-              "link": "/documents",
+              "link": "/documents?org=:id",
               "i18n": "menu.development.document.list"
             },
             {
