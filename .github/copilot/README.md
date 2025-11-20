@@ -225,12 +225,16 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
 ---
 
 **版本歷史**：
+- **v4.0.1** (2025-11-20): 版本整合 - 移除舊備份檔案 🧹
+  - **整合完成**：移除 memory.jsonl.v3.0-backup（已合併至主檔案）
+  - **統一版本**：現在只有一個 memory.jsonl 檔案（149 實體 + 170 關係）
+  - **清理目的**：避免版本混淆，確保所有 AI 助手使用相同的知識庫
 - **v4.0** (2025-11-20): 文檔整合與組織化 - 添加文檔導航知識 ✨
   - 新增 12 個文檔實體：Documentation Structure、Documentation Priority System、Reading Paths、NG-ZORRO Component Index、DELON Package Index、Core Documentation Files、Quick Reference Documents、Architecture Diagrams、Module Documentation、Workspace Context Documentation、Cursor IDE Rules、GitHub Agents Configuration
   - 新增 14 個文檔關係：連接文檔系統與專案核心
   - 組織化：移除 9 個重複實體、6 個重複關係
   - 按類別重新組織所有實體：提高可讀性
-  - 總計：138 個實體、159 個關係（+6.9% 實體、+16.1% 關係）
+  - 總計：149 個實體、170 個關係（從 v3.0 的 129/143 增加）
   - 重點：幫助 AI 助手理解專案的 232 個文檔結構和閱讀路徑
 - **v3.0** (2025-11-20): Phase 5 完成 - 擴展詳細實作規範與 UI/DevOps 標準
   - 新增 45 個實體：涵蓋完整開發生命週期
@@ -243,6 +247,6 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
   - 基礎技術棧、架構設計、開發原則
   - 總計：23 個實體、24 個關係
 
-**最後更新**：2025-11-20（v4.0 文檔整合完成）  
+**最後更新**：2025-11-20（v4.0.1 版本整合完成 - 現只有一個 memory.jsonl 檔案）  
 **維護者**：開發團隊  
 **下次檢視**：專案重大架構變更時
