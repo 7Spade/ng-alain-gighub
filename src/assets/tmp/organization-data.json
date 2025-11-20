@@ -19,568 +19,438 @@
       ]
     },
     {
-      "text": "Development",
-      "i18n": "menu.development",
+      "text": "Organization",
+      "i18n": "menu.organization",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "Account System",
-          "i18n": "menu.development.account",
-          "icon": "anticon-user",
+          "text": "Organization Management",
+          "i18n": "menu.organization.management",
+          "icon": "anticon-team",
           "children": [
             {
-              "text": "Account List",
-              "link": "/accounts/list",
-              "i18n": "menu.development.account.list"
+              "text": "Organization Members",
+              "link": "/org/:id/members",
+              "i18n": "menu.organization.management.members",
+              "externalLink": true
             },
             {
-              "text": "Create Account",
-              "i18n": "menu.development.account.create",
-              "children": [
-                {
-                  "text": "Create Organization",
-                  "link": "/accounts/create/organization",
-                  "i18n": "menu.development.account.create.organization"
-                },
-                {
-                  "text": "Create Bot",
-                  "link": "/accounts/create/bot",
-                  "i18n": "menu.development.account.create.bot"
-                }
-              ]
-            },
-            {
-              "text": "User Management",
-              "link": "/accounts/users",
-              "i18n": "menu.development.account.users"
-            },
-            {
-              "text": "Organization Management",
-              "link": "/accounts/organizations",
-              "i18n": "menu.development.account.organizations"
-            },
-            {
-              "text": "Bot Management",
-              "link": "/accounts/bots",
-              "i18n": "menu.development.account.bots"
-            },
-            {
-              "text": "Team Management",
-              "link": "/accounts/teams",
-              "i18n": "menu.development.account.teams"
-            },
-            {
-              "text": "Schedule Management",
-              "link": "/accounts/schedules",
-              "i18n": "menu.development.account.schedules"
+              "text": "Organization Teams",
+              "link": "/org/:id/teams",
+              "i18n": "menu.organization.management.teams",
+              "externalLink": true
             }
           ]
         },
         {
           "text": "Organization Collaboration",
-          "i18n": "menu.development.collaboration",
+          "i18n": "menu.organization.collaboration",
           "icon": "anticon-team",
           "children": [
             {
               "text": "Collaboration List",
               "link": "/collaboration/list?org=:id",
-              "i18n": "menu.development.collaboration.list"
+              "i18n": "menu.organization.collaboration.list"
             },
             {
               "text": "Create Collaboration",
               "link": "/collaboration/create",
-              "i18n": "menu.development.collaboration.create"
+              "i18n": "menu.organization.collaboration.create"
             },
             {
               "text": "Collaboration Invitations",
               "link": "/collaboration/invitations?org=:id",
-              "i18n": "menu.development.collaboration.invitations"
+              "i18n": "menu.organization.collaboration.invitations"
             }
           ]
         },
         {
-          "text": "Blueprint System",
-          "i18n": "menu.development.blueprint",
+          "text": "Organization Blueprints",
+          "i18n": "menu.organization.blueprints",
           "icon": "anticon-file-text",
           "children": [
             {
               "text": "Blueprint List",
               "link": "/blueprints?org=:id",
-              "i18n": "menu.development.blueprint.list"
+              "i18n": "menu.organization.blueprints.list"
             },
             {
               "text": "Create Blueprint",
               "link": "/blueprints/create",
-              "i18n": "menu.development.blueprint.create"
+              "i18n": "menu.organization.blueprints.create"
             },
             {
               "text": "Blueprint Detail",
               "link": "/blueprints/detail",
-              "i18n": "menu.development.blueprint.detail"
+              "i18n": "menu.organization.blueprints.detail"
             },
             {
               "text": "Blueprint Settings",
               "link": "/blueprints/settings",
-              "i18n": "menu.development.blueprint.settings"
+              "i18n": "menu.organization.blueprints.settings"
             },
             {
               "text": "Main Branch",
               "link": "/blueprints/main-branch",
-              "i18n": "menu.development.blueprint.mainBranch"
+              "i18n": "menu.organization.blueprints.mainBranch"
             },
             {
               "text": "Branch Management",
               "link": "/blueprints/branches",
-              "i18n": "menu.development.blueprint.branches"
+              "i18n": "menu.organization.blueprints.branches"
             },
             {
               "text": "Branch Detail",
               "link": "/blueprints/branch-detail",
-              "i18n": "menu.development.blueprint.branchDetail"
+              "i18n": "menu.organization.blueprints.branchDetail"
             },
             {
               "text": "Fork Task",
               "link": "/blueprints/fork",
-              "i18n": "menu.development.blueprint.fork"
+              "i18n": "menu.organization.blueprints.fork"
             },
             {
               "text": "Pull Request",
               "link": "/blueprints/pull-requests",
-              "i18n": "menu.development.blueprint.pullRequests"
+              "i18n": "menu.organization.blueprints.pullRequests"
             },
             {
               "text": "PR Detail",
               "link": "/blueprints/pull-requests/detail",
-              "i18n": "menu.development.blueprint.pullRequestDetail"
+              "i18n": "menu.organization.blueprints.pullRequestDetail"
             },
             {
               "text": "PR Review",
               "link": "/blueprints/review",
-              "i18n": "menu.development.blueprint.review"
+              "i18n": "menu.organization.blueprints.review"
             }
           ]
         },
         {
-          "text": "Task Execution",
-          "i18n": "menu.development.task",
+          "text": "Organization Tasks",
+          "i18n": "menu.organization.tasks",
           "icon": "anticon-check-square",
           "children": [
             {
               "text": "Task Board",
               "link": "/tasks/board?org=:id",
-              "i18n": "menu.development.task.board"
+              "i18n": "menu.organization.tasks.board"
             },
             {
               "text": "Task Calendar",
               "link": "/tasks/calendar?org=:id",
-              "i18n": "menu.development.task.calendar"
+              "i18n": "menu.organization.tasks.calendar"
             },
             {
               "text": "Task List",
               "link": "/tasks/list?org=:id",
-              "i18n": "menu.development.task.list"
+              "i18n": "menu.organization.tasks.list"
             },
             {
               "text": "Task Tree View",
               "link": "/tasks/tree?org=:id",
-              "i18n": "menu.development.task.tree"
+              "i18n": "menu.organization.tasks.tree"
             },
             {
               "text": "Create Task",
               "link": "/tasks/create",
-              "i18n": "menu.development.task.create"
+              "i18n": "menu.organization.tasks.create"
             },
             {
               "text": "Task Detail",
               "link": "/tasks/detail",
-              "i18n": "menu.development.task.detail"
+              "i18n": "menu.organization.tasks.detail"
             },
             {
               "text": "Task Form",
               "link": "/tasks/form",
-              "i18n": "menu.development.task.form"
+              "i18n": "menu.organization.tasks.form"
             },
             {
               "text": "Task Assignment",
               "link": "/tasks/assignments?org=:id",
-              "i18n": "menu.development.task.assignments"
+              "i18n": "menu.organization.tasks.assignments"
             },
             {
               "text": "Todo List",
               "link": "/tasks/todo?org=:id",
-              "i18n": "menu.development.task.todo"
+              "i18n": "menu.organization.tasks.todo"
             },
             {
               "text": "Staging Area",
               "link": "/tasks/staging?org=:id",
-              "i18n": "menu.development.task.staging"
+              "i18n": "menu.organization.tasks.staging"
             },
             {
               "text": "Daily Reports",
               "link": "/tasks/daily-reports?org=:id",
-              "i18n": "menu.development.task.dailyReports"
+              "i18n": "menu.organization.tasks.dailyReports"
             },
             {
               "text": "Construction Photos",
               "link": "/tasks/photos?org=:id",
-              "i18n": "menu.development.task.photos"
+              "i18n": "menu.organization.tasks.photos"
             },
             {
               "text": "Weather Records",
               "link": "/tasks/weather?org=:id",
-              "i18n": "menu.development.task.weather"
+              "i18n": "menu.organization.tasks.weather"
             },
             {
               "text": "Task Progress",
               "link": "/tasks/progress?org=:id",
-              "i18n": "menu.development.task.progress"
+              "i18n": "menu.organization.tasks.progress"
             }
           ]
         },
         {
-          "text": "Quality Acceptance",
-          "i18n": "menu.development.quality",
+          "text": "Organization Quality",
+          "i18n": "menu.organization.quality",
           "icon": "anticon-check-circle",
           "children": [
             {
               "text": "Quality Check",
               "link": "/quality/checks?org=:id",
-              "i18n": "menu.development.quality.checks"
+              "i18n": "menu.organization.quality.checks"
             },
             {
               "text": "Quality Check Detail",
               "link": "/quality/checks/detail",
-              "i18n": "menu.development.quality.checkDetail"
+              "i18n": "menu.organization.quality.checkDetail"
             },
             {
               "text": "Submit Acceptance",
               "link": "/quality/submit",
-              "i18n": "menu.development.quality.submit"
+              "i18n": "menu.organization.quality.submit"
             },
             {
               "text": "Acceptance Management",
               "link": "/quality/inspections?org=:id",
-              "i18n": "menu.development.quality.inspections"
+              "i18n": "menu.organization.quality.inspections"
             },
             {
               "text": "Inspection Detail",
               "link": "/quality/inspections/detail",
-              "i18n": "menu.development.quality.inspectionDetail"
+              "i18n": "menu.organization.quality.inspectionDetail"
             },
             {
               "text": "Acceptance Photos",
               "link": "/quality/photos?org=:id",
-              "i18n": "menu.development.quality.photos"
+              "i18n": "menu.organization.quality.photos"
             },
             {
               "text": "Acceptance Results",
               "link": "/quality/results?org=:id",
-              "i18n": "menu.development.quality.results"
+              "i18n": "menu.organization.quality.results"
             }
           ]
         },
         {
-          "text": "Issue Tracking",
-          "i18n": "menu.development.issue",
+          "text": "Organization Issues",
+          "i18n": "menu.organization.issues",
           "icon": "anticon-exclamation-circle",
           "children": [
             {
               "text": "Issue List",
               "link": "/issues?org=:id",
-              "i18n": "menu.development.issue.list"
+              "i18n": "menu.organization.issues.list"
             },
             {
               "text": "Create Issue",
               "link": "/issues/create",
-              "i18n": "menu.development.issue.create"
+              "i18n": "menu.organization.issues.create"
             },
             {
               "text": "Issue Detail",
               "link": "/issues/detail",
-              "i18n": "menu.development.issue.detail"
+              "i18n": "menu.organization.issues.detail"
             },
             {
               "text": "Issue Assignment",
               "link": "/issues/assignments?org=:id",
-              "i18n": "menu.development.issue.assignments"
+              "i18n": "menu.organization.issues.assignments"
             },
             {
               "text": "Issue Handling",
               "link": "/issues/handle",
-              "i18n": "menu.development.issue.handle"
+              "i18n": "menu.organization.issues.handle"
             },
             {
               "text": "Handling Photos",
               "link": "/issues/photos",
-              "i18n": "menu.development.issue.photos"
+              "i18n": "menu.organization.issues.photos"
             },
             {
               "text": "Close Issue",
               "link": "/issues/close",
-              "i18n": "menu.development.issue.close"
+              "i18n": "menu.organization.issues.close"
             },
             {
               "text": "Issue Sync Logs",
               "link": "/issues/sync-logs?org=:id",
-              "i18n": "menu.development.issue.syncLogs"
+              "i18n": "menu.organization.issues.syncLogs"
             }
           ]
         },
         {
-          "text": "Collaboration & Communication",
-          "i18n": "menu.development.communication",
+          "text": "Organization Communication",
+          "i18n": "menu.organization.communication",
           "icon": "anticon-message",
           "children": [
             {
               "text": "Discussion Area",
               "link": "/communication/discussions?org=:id",
-              "i18n": "menu.development.communication.discussions"
+              "i18n": "menu.organization.communication.discussions"
             },
             {
               "text": "Comment Management",
               "link": "/communication/comments?org=:id",
-              "i18n": "menu.development.communication.comments"
+              "i18n": "menu.organization.communication.comments"
             },
             {
               "text": "Post Comment",
               "link": "/communication/comments/create",
-              "i18n": "menu.development.communication.commentsCreate"
+              "i18n": "menu.organization.communication.commentsCreate"
             },
             {
               "text": "Notification Center",
               "link": "/communication/notifications?org=:id",
-              "i18n": "menu.development.communication.notifications"
+              "i18n": "menu.organization.communication.notifications"
             },
             {
               "text": "Notification Detail",
               "link": "/communication/notifications/detail",
-              "i18n": "menu.development.communication.notificationDetail"
+              "i18n": "menu.organization.communication.notificationDetail"
             },
             {
               "text": "Notification Rules",
               "link": "/communication/notifications/rules",
-              "i18n": "menu.development.communication.notificationRules"
+              "i18n": "menu.organization.communication.notificationRules"
             },
             {
               "text": "Realtime Notifications",
               "link": "/communication/realtime",
-              "i18n": "menu.development.communication.realtime"
+              "i18n": "menu.organization.communication.realtime"
             },
             {
               "text": "Todo Center",
               "link": "/communication/todos?org=:id",
-              "i18n": "menu.development.communication.todos"
+              "i18n": "menu.organization.communication.todos"
             },
             {
               "text": "Team Notifications",
               "link": "/communication/team-notify?org=:id",
-              "i18n": "menu.development.communication.teamNotify"
+              "i18n": "menu.organization.communication.teamNotify"
             }
           ]
         },
         {
-          "text": "Data Analytics",
-          "i18n": "menu.development.analytics",
+          "text": "Organization Analytics",
+          "i18n": "menu.organization.analytics",
           "icon": "anticon-bar-chart",
           "children": [
             {
               "text": "Statistics",
               "link": "/analytics/statistics?org=:id",
-              "i18n": "menu.development.analytics.statistics"
+              "i18n": "menu.organization.analytics.statistics"
             },
             {
               "text": "Progress Tracking",
               "link": "/analytics/progress?org=:id",
-              "i18n": "menu.development.analytics.progress"
+              "i18n": "menu.organization.analytics.progress"
             },
             {
               "text": "Progress Update",
               "link": "/analytics/progress-update",
-              "i18n": "menu.development.analytics.progressUpdate"
+              "i18n": "menu.organization.analytics.progressUpdate"
             },
             {
               "text": "Main Branch Reports",
               "link": "/analytics/main-reports?org=:id",
-              "i18n": "menu.development.analytics.mainReports"
+              "i18n": "menu.organization.analytics.mainReports"
             },
             {
               "text": "Branch Reports",
               "link": "/analytics/branch-reports?org=:id",
-              "i18n": "menu.development.analytics.branchReports"
+              "i18n": "menu.organization.analytics.branchReports"
             },
             {
               "text": "Cross-Branch Overview",
               "link": "/analytics/cross-branch",
-              "i18n": "menu.development.analytics.crossBranch"
+              "i18n": "menu.organization.analytics.crossBranch"
             },
             {
               "text": "Activity Logs",
               "link": "/analytics/activity-logs?org=:id",
-              "i18n": "menu.development.analytics.activityLogs"
+              "i18n": "menu.organization.analytics.activityLogs"
             },
             {
               "text": "Activity Log Detail",
               "link": "/analytics/activity-logs/detail",
-              "i18n": "menu.development.analytics.activityLogDetail"
+              "i18n": "menu.organization.analytics.activityLogDetail"
             },
             {
               "text": "Data Reports",
               "link": "/analytics/reports?org=:id",
-              "i18n": "menu.development.analytics.reports"
+              "i18n": "menu.organization.analytics.reports"
             },
             {
               "text": "Export Reports",
               "link": "/analytics/export",
-              "i18n": "menu.development.analytics.export"
+              "i18n": "menu.organization.analytics.export"
             },
             {
               "text": "Chart Generation",
               "link": "/analytics/charts",
-              "i18n": "menu.development.analytics.charts"
+              "i18n": "menu.organization.analytics.charts"
             }
           ]
         },
         {
-          "text": "Document Management",
-          "i18n": "menu.development.document",
+          "text": "Organization Documents",
+          "i18n": "menu.organization.documents",
           "icon": "anticon-file",
           "children": [
             {
               "text": "Document List",
               "link": "/documents?org=:id",
-              "i18n": "menu.development.document.list"
+              "i18n": "menu.organization.documents.list"
             },
             {
               "text": "Upload Document",
               "link": "/documents/upload",
-              "i18n": "menu.development.document.upload"
+              "i18n": "menu.organization.documents.upload"
             },
             {
               "text": "Document Browser",
               "link": "/documents/browser",
-              "i18n": "menu.development.document.browser"
+              "i18n": "menu.organization.documents.browser"
             },
             {
               "text": "Document Preview",
               "link": "/documents/preview",
-              "i18n": "menu.development.document.preview"
+              "i18n": "menu.organization.documents.preview"
             },
             {
               "text": "Drawing Viewer",
               "link": "/documents/drawings",
-              "i18n": "menu.development.document.drawings"
+              "i18n": "menu.organization.documents.drawings"
             },
             {
               "text": "Document Metadata",
               "link": "/documents/metadata",
-              "i18n": "menu.development.document.metadata"
+              "i18n": "menu.organization.documents.metadata"
             },
             {
               "text": "Version Management",
               "link": "/documents/versions",
-              "i18n": "menu.development.document.versions"
+              "i18n": "menu.organization.documents.versions"
             },
             {
               "text": "Permission Settings",
               "link": "/documents/permissions",
-              "i18n": "menu.development.document.permissions"
-            }
-          ]
-        },
-        {
-          "text": "Bot System",
-          "i18n": "menu.development.bot",
-          "icon": "anticon-robot",
-          "children": [
-            {
-              "text": "Bot List",
-              "link": "/bots",
-              "i18n": "menu.development.bot.list"
-            },
-            {
-              "text": "Bot Configuration",
-              "link": "/bots/config",
-              "i18n": "menu.development.bot.config"
-            },
-            {
-              "text": "Execution Logs",
-              "link": "/bots/executions",
-              "i18n": "menu.development.bot.executions"
-            },
-            {
-              "text": "Bot Tasks",
-              "link": "/bots/tasks",
-              "i18n": "menu.development.bot.tasks"
-            }
-          ]
-        },
-        {
-          "text": "System Management",
-          "i18n": "menu.development.system",
-          "icon": "anticon-setting",
-          "children": [
-            {
-              "text": "System Settings",
-              "link": "/system/settings",
-              "i18n": "menu.development.system.settings",
-              "children": [
-                {
-                  "text": "Global Settings",
-                  "link": "/system/settings/global",
-                  "i18n": "menu.development.system.settings.global"
-                },
-                {
-                  "text": "Project Settings",
-                  "link": "/system/settings/project",
-                  "i18n": "menu.development.system.settings.project"
-                },
-                {
-                  "text": "Personal Preferences",
-                  "link": "/system/settings/personal",
-                  "i18n": "menu.development.system.settings.personal"
-                }
-              ]
-            },
-            {
-              "text": "Feature Flags",
-              "link": "/system/feature-flags",
-              "i18n": "menu.development.system.featureFlags"
-            },
-            {
-              "text": "Role Management",
-              "link": "/system/roles",
-              "i18n": "menu.development.system.roles"
-            },
-            {
-              "text": "Permission Assignment",
-              "link": "/system/permissions",
-              "i18n": "menu.development.system.permissions"
-            },
-            {
-              "text": "Permission Matrix",
-              "link": "/system/permission-matrix",
-              "i18n": "menu.development.system.permissionMatrix"
-            },
-            {
-              "text": "Branch Permission Management",
-              "link": "/system/branch-permissions",
-              "i18n": "menu.development.system.branchPermissions"
-            },
-            {
-              "text": "Weather API Configuration",
-              "link": "/system/weather-api",
-              "i18n": "menu.development.system.weatherApi"
-            },
-            {
-              "text": "Activity Logs View",
-              "link": "/system/activity-logs",
-              "i18n": "menu.development.system.activityLogs"
-            },
-            {
-              "text": "Backup & Restore",
-              "link": "/system/backup",
-              "i18n": "menu.development.system.backup"
+              "i18n": "menu.organization.documents.permissions"
             }
           ]
         }

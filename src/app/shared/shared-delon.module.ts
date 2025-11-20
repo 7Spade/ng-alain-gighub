@@ -108,6 +108,125 @@ import {
 // 設置抽屜 — https://ng-alain.com/theme/setting-drawer
 // 主題切換按鈕 — https://ng-alain.com/theme/theme-btn
 
+// ========== @delon/cache 緩存服務 ==========
+// 緩存服務 — https://ng-alain.com/cache
+// 注意：provideDelonCache 需要從 @delon/cache 直接導入，因為它不在類型定義中
+export { CACHE, CacheService, httpCacheInterceptor } from '@delon/cache';
+export type { CacheNotifyResult, CacheNotifyType, CacheOptions, ICache, ICacheStore } from '@delon/cache';
+
+// ========== @delon/abc/st 智能表格類型 ==========
+// ST 表格列配置類型 — https://ng-alain.com/components/st
+export type {
+  STChange,
+  STChangeType,
+  STClickRowClassNameType,
+  STColumn,
+  STColumnButton,
+  STColumnSelection,
+  STData,
+  STExportOptions,
+  STIcon,
+  STMultiSort,
+  STPage,
+  STReq,
+  STRes,
+  STRowClassName,
+  STSingleSort,
+  STStatistical,
+  STWidthMode
+} from '@delon/abc/st';
+
+// ========== @delon/theme 服務和類型 ==========
+// 主題服務和類型 — https://ng-alain.com/theme
+export { DatePipe as DelonDatePipe, I18nPipe, MenuService, SettingsService } from '@delon/theme';
+export type { Menu, MenuIcon, MenuInner, SettingsNotify, User } from '@delon/theme';
+export type { LayoutDefaultOptions } from '@delon/theme/layout-default';
+
+// ========== @delon/auth 認證服務和類型 ==========
+// 認證服務和類型 — https://ng-alain.com/auth
+export {
+  ALLOW_ANONYMOUS,
+  authJWTCanActivate,
+  authJWTCanActivateChild,
+  authJWTCanMatch,
+  authJWTInterceptor,
+  authSimpleCanActivate,
+  authSimpleCanActivateChild,
+  authSimpleCanMatch,
+  authSimpleInterceptor,
+  DA_SERVICE_TOKEN,
+  provideAuth,
+  SocialService,
+  TokenService,
+  withCookie,
+  withLocalStorage,
+  withMemoryStorage,
+  withSessionStorage
+} from '@delon/auth';
+export type { AuthReferrer, IStore, ITokenModel, ITokenService, JWT, JWTTokenModel, SimpleTokenModel, SocialOpenType } from '@delon/auth';
+
+// ========== @delon/acl 訪問控制服務和類型 ==========
+// ACL 服務和類型 — https://ng-alain.com/acl
+export { aclCanActivate, aclCanActivateChild, aclCanMatch, ACLGuardService, ACLService } from '@delon/acl';
+export type { ACLCanType, ACLGuardData, ACLGuardFunctionType, ACLGuardType, ACLType } from '@delon/acl';
+
+// ========== @delon/util 工具類型 ==========
+// 工具類型 — https://ng-alain.com/util
+export type { AlainConfig } from '@delon/util/config';
+
+// ========== @delon/abc/lodop 打印服務 ==========
+// 打印服務 — https://ng-alain.com/components/lodop
+export { LodopModule, LodopService } from '@delon/abc/lodop';
+export type { CLodop, Lodop, LodopPrintResult, LodopResult, LodopStyleValue } from '@delon/abc/lodop';
+
+// ========== @delon/abc/zip 壓縮服務 ==========
+// 壓縮服務 — https://ng-alain.com/components/zip
+export { ZipService } from '@delon/abc/zip';
+export type { ZipSaveOptions, ZipWriteOptions } from '@delon/abc/zip';
+
+// ========== @delon/abc/cell 和 @delon/abc/st Provider 函數 ==========
+// Provider 函數 — 用於配置 Widget
+export { provideCellWidgets } from '@delon/abc/cell';
+export { provideSTWidgets } from '@delon/abc/st';
+
+// ========== @delon/form 動態表單類型和函數 ==========
+// 動態表單類型和函數 — https://ng-alain.com/form
+export { ControlWidget, provideSFConfig, SFComponent } from '@delon/form';
+export type {
+  ControlUIWidget,
+  ErrorData,
+  ErrorSchema,
+  SFCustomWidgetSchema,
+  SFFormValueChange,
+  SFGridSchema,
+  SFGridSizeSchema,
+  SFHorizontalLayoutSchema,
+  SFLayout,
+  SFMode,
+  SFObjectWidgetRenderType,
+  SFObjectWidgetSchema,
+  SFOptionalHelp,
+  SFPlacement,
+  SFRenderButton,
+  SFRenderSchema,
+  SFSchema,
+  SFSchemaDefinition,
+  SFSchemaEnum,
+  SFSchemaEnumType,
+  SFSchemaI18n,
+  SFSchemaType,
+  SFTrigger,
+  SFUISchema,
+  SFUISchemaItem,
+  SFUISchemaItemRun,
+  SFUpdateValueAndValidity,
+  SFValue,
+  SFValueChange,
+  SFVisibleIf,
+  SFVisibleIfReturn,
+  SFWidgetProvideConfig
+} from '@delon/form';
+
 export const SHARED_DELON_MODULES = [
   // ========== @delon/form 動態表單 ==========
   DelonFormModule, // 動態表單（基於 JSON Schema） — https://ng-alain.com/form

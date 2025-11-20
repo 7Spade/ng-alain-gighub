@@ -19,21 +19,129 @@
       ]
     },
     {
-      "text": "Development",
-      "i18n": "menu.development",
+      "text": "Team",
+      "i18n": "menu.team",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "Account System",
-          "i18n": "menu.development.account",
+          "text": "Team Management",
+          "i18n": "menu.team.management",
           "icon": "anticon-user",
           "children": [
             {
               "text": "Team Members",
               "link": "/org/teams/:id/members",
-              "i18n": "menu.development.account.teamMembers",
+              "i18n": "menu.team.management.members",
               "externalLink": true
+            }
+          ]
+        },
+        {
+          "text": "Team Tasks",
+          "i18n": "menu.team.tasks",
+          "icon": "anticon-check-square",
+          "children": [
+            {
+              "text": "Task Board",
+              "link": "/tasks/board?team=:id",
+              "i18n": "menu.team.tasks.board"
+            },
+            {
+              "text": "Task Calendar",
+              "link": "/tasks/calendar?team=:id",
+              "i18n": "menu.team.tasks.calendar"
+            },
+            {
+              "text": "Task List",
+              "link": "/tasks/list?team=:id",
+              "i18n": "menu.team.tasks.list"
+            },
+            {
+              "text": "Task Tree View",
+              "link": "/tasks/tree?team=:id",
+              "i18n": "menu.team.tasks.tree"
+            },
+            {
+              "text": "Todo List",
+              "link": "/tasks/todo?team=:id",
+              "i18n": "menu.team.tasks.todo"
+            },
+            {
+              "text": "Staging Area",
+              "link": "/tasks/staging?team=:id",
+              "i18n": "menu.team.tasks.staging"
+            },
+            {
+              "text": "Daily Reports",
+              "link": "/tasks/daily-reports?team=:id",
+              "i18n": "menu.team.tasks.dailyReports"
+            },
+            {
+              "text": "Construction Photos",
+              "link": "/tasks/photos?team=:id",
+              "i18n": "menu.team.tasks.photos"
+            },
+            {
+              "text": "Task Progress",
+              "link": "/tasks/progress?team=:id",
+              "i18n": "menu.team.tasks.progress"
+            }
+          ]
+        },
+        {
+          "text": "Team Issues",
+          "i18n": "menu.team.issues",
+          "icon": "anticon-exclamation-circle",
+          "children": [
+            {
+              "text": "Issue List",
+              "link": "/issues?team=:id",
+              "i18n": "menu.team.issues.list"
+            },
+            {
+              "text": "Issue Assignment",
+              "link": "/issues/assignments?team=:id",
+              "i18n": "menu.team.issues.assignments"
+            }
+          ]
+        },
+        {
+          "text": "Team Communication",
+          "i18n": "menu.team.communication",
+          "icon": "anticon-message",
+          "children": [
+            {
+              "text": "Discussion Area",
+              "link": "/communication/discussions?team=:id",
+              "i18n": "menu.team.communication.discussions"
+            },
+            {
+              "text": "Comment Management",
+              "link": "/communication/comments?team=:id",
+              "i18n": "menu.team.communication.comments"
+            },
+            {
+              "text": "Team Notifications",
+              "link": "/communication/team-notify?team=:id",
+              "i18n": "menu.team.communication.teamNotify"
+            }
+          ]
+        },
+        {
+          "text": "Team Documents",
+          "i18n": "menu.team.documents",
+          "icon": "anticon-file",
+          "children": [
+            {
+              "text": "Document List",
+              "link": "/documents?team=:id",
+              "i18n": "menu.team.documents.list"
+            },
+            {
+              "text": "Upload Document",
+              "link": "/documents/upload",
+              "i18n": "menu.team.documents.upload"
             }
           ]
         }

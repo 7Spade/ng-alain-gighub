@@ -17,7 +17,126 @@
           "link": "/explore"
         }
       ]
+    },
+    {
+      "text": "Personal",
+      "i18n": "menu.personal",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Account System",
+          "i18n": "menu.personal.account",
+          "icon": "anticon-user",
+          "children": [
+            {
+              "text": "My Profile",
+              "link": "/accounts/users",
+              "i18n": "menu.personal.account.profile"
+            },
+            {
+              "text": "My Organizations",
+              "link": "/accounts/organizations",
+              "i18n": "menu.personal.account.organizations"
+            },
+            {
+              "text": "My Teams",
+              "link": "/accounts/teams",
+              "i18n": "menu.personal.account.teams"
+            },
+            {
+              "text": "My Schedules",
+              "link": "/accounts/schedules",
+              "i18n": "menu.personal.account.schedules"
+            }
+          ]
+        },
+        {
+          "text": "My Tasks",
+          "i18n": "menu.personal.tasks",
+          "icon": "anticon-check-square",
+          "children": [
+            {
+              "text": "My Todo List",
+              "link": "/tasks/todo",
+              "i18n": "menu.personal.tasks.todo"
+            },
+            {
+              "text": "My Assignments",
+              "link": "/tasks/assignments",
+              "i18n": "menu.personal.tasks.assignments"
+            },
+            {
+              "text": "My Staging Area",
+              "link": "/tasks/staging",
+              "i18n": "menu.personal.tasks.staging"
+            }
+          ]
+        },
+        {
+          "text": "My Blueprints",
+          "i18n": "menu.personal.blueprints",
+          "icon": "anticon-file-text",
+          "children": [
+            {
+              "text": "My Blueprint List",
+              "link": "/blueprints",
+              "i18n": "menu.personal.blueprints.list"
+            },
+            {
+              "text": "Create Blueprint",
+              "link": "/blueprints/create",
+              "i18n": "menu.personal.blueprints.create"
+            }
+          ]
+        },
+        {
+          "text": "My Documents",
+          "i18n": "menu.personal.documents",
+          "icon": "anticon-file",
+          "children": [
+            {
+              "text": "My Document List",
+              "link": "/documents",
+              "i18n": "menu.personal.documents.list"
+            },
+            {
+              "text": "Upload Document",
+              "link": "/documents/upload",
+              "i18n": "menu.personal.documents.upload"
+            }
+          ]
+        },
+        {
+          "text": "My Communication",
+          "i18n": "menu.personal.communication",
+          "icon": "anticon-message",
+          "children": [
+            {
+              "text": "My Notifications",
+              "link": "/communication/notifications",
+              "i18n": "menu.personal.communication.notifications"
+            },
+            {
+              "text": "My Todos",
+              "link": "/communication/todos",
+              "i18n": "menu.personal.communication.todos"
+            }
+          ]
+        },
+        {
+          "text": "Personal Settings",
+          "i18n": "menu.personal.settings",
+          "icon": "anticon-setting",
+          "children": [
+            {
+              "text": "Personal Preferences",
+              "link": "/system/settings/personal",
+              "i18n": "menu.personal.settings.preferences"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
-

@@ -31,3 +31,7 @@ export * from './cell-widget/index';
 export * from './json-schema/index';
 export * from './shared-imports';
 export * from './st-widget/index';
+
+// Delon 統一導出（類型、服務、模組）
+// 注意：SHARED_DELON_MODULES 已包含在 SHARED_IMPORTS 中
+export * from './shared-delon.module';
