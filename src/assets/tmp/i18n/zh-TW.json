@@ -1,19 +1,15 @@
 {
-  "menu": {
-    "dashboard": {
-      "": "儀錶盤",
-      "v1": "默認頁",
-      "analysis": "分析頁",
-      "monitor": "監控頁",
-      "workplace": "工作臺"
-    }
-  },
   "menu.search.placeholder": "搜索：員工、文件、照片等，按 F1 可觸發",
   "menu.fullscreen": "全屏",
   "menu.fullscreen.exit": "退出全屏",
   "menu.clear.local.storage": "清理在地緩存",
   "menu.lang": "語言",
   "menu.main": "主導航",
+  "menu.dashboard": "儀錶盤",
+  "menu.dashboard.v1": "默認頁",
+  "menu.dashboard.analysis": "分析頁",
+  "menu.dashboard.monitor": "監控頁",
+  "menu.dashboard.workplace": "工作臺",
   "menu.shortcut": "快捷菜單",
   "menu.widgets": "小部件",
   "menu.alain": "NG-ALAIN",
