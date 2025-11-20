@@ -92,8 +92,10 @@ export class WorkspaceMenuService {
 
   /**
    * 切换到个人用户菜单
+   *
+   * @param userId 当前用户账户 ID（可选，用于替换菜单链接中的 :userId 占位符）
    */
-  switchToUser(): void {
+  switchToUser(userId?: string): void {
     // 如果菜单数据未初始化，跳过菜单切换
     if (!this.initializedState()) {
       console.warn('[WorkspaceMenuService] Menu data not initialized, skipping switchToUser');
@@ -101,7 +103,9 @@ export class WorkspaceMenuService {
     }
 
     this.menuService.clear();
-    this.menuService.add(this.userMenuData);
+    // 如果有用户 ID，处理菜单链接中的动态 ID 替换
+    const processedMenu = userId ? this.processMenuLinks(this.userMenuData, userId, 'userId') : this.userMenuData;
+    this.menuService.add(processedMenu);
     this.menuService.resume();
   }
 
@@ -155,23 +159,30 @@ export class WorkspaceMenuService {
    * 处理菜单链接，替换动态 ID 占位符
    *
    * @param menu 菜单数据
-   * @param id 要替换的 ID（组织ID或团队ID）
+   * @param id 要替换的 ID（组织ID、团队ID或用户ID）
+   * @param placeholder 占位符名称（默认为 'id'，可以是 'id' 或 'userId'）
    * @returns 处理后的菜单数据
    */
-  private processMenuLinks(menu: NzSafeAny[], id: string): NzSafeAny[] {
+  private processMenuLinks(menu: NzSafeAny[], id: string, placeholder: string = 'id'): NzSafeAny[] {
     if (!id) return menu;
+
+    const placeholderPattern = new RegExp(`:${placeholder}`, 'g');
 
     return menu.map(item => {
       const processed: NzSafeAny = { ...item };
 
-      // 处理链接中的 :id 占位符
+      // 处理链接中的占位符（:id 或 :userId）
       if (processed.link && typeof processed.link === 'string') {
-        processed.link = processed.link.replace(/:id/g, id);
+        processed.link = processed.link.replace(placeholderPattern, id);
+        // 同时处理通用的 :id 占位符（向后兼容）
+        if (placeholder !== 'id') {
+          processed.link = processed.link.replace(/:id/g, id);
+        }
       }
 
       // 递归处理子菜单
       if (processed.children && Array.isArray(processed.children)) {
-        processed.children = this.processMenuLinks(processed.children, id);
+        processed.children = this.processMenuLinks(processed.children, id, placeholder);
       }
 
       return processed;

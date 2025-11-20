@@ -1,10 +1,10 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { TaskAssignmentRepository } from '@core';
+import { TaskAssignmentRepository, WorkspaceContextFacade } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, TaskService, Task, TaskStatus, BlueprintService } from '@shared';
+import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { BlueprintService, SHARED_IMPORTS, Task, TaskAssignmentService, TaskService, TaskStatus } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-task-todo',
@@ -13,26 +13,30 @@ import { firstValueFrom } from 'rxjs';
   template: `
     <page-header [title]="'待办列表'">
       <ng-template #extra>
-        <nz-select
-          [ngModel]="selectedBlueprintId()"
-          (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
-          nzPlaceHolder="请选择蓝图"
-          style="width: 300px; margin-right: 8px;"
-        >
-          @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
-            <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
-          }
-        </nz-select>
+        @if (!isUserContext()) {
+          <nz-select
+            [ngModel]="selectedBlueprintId()"
+            (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
+            nzPlaceHolder="请选择蓝图"
+            style="width: 300px; margin-right: 8px;"
+          >
+            @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
+              <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
+            }
+          </nz-select>
+        }
       </ng-template>
     </page-header>
 
     <nz-card style="margin-top: 16px;">
-      @if (!selectedBlueprintId()) {
+      @if (!isUserContext() && !selectedBlueprintId()) {
         <nz-empty nzNotFoundContent="请先选择蓝图"></nz-empty>
       } @else if (taskService.loading()) {
         <div style="text-align: center; padding: 40px;">
           <nz-spin nzSize="large"></nz-spin>
         </div>
+      } @else if (todoTasks().length === 0) {
+        <nz-empty nzNotFoundContent="暂无待办任务"></nz-empty>
       } @else {
         <st
           #st
@@ -94,12 +98,15 @@ import { firstValueFrom } from 'rxjs';
 export class TaskTodoComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
+  readonly taskAssignmentService = inject(TaskAssignmentService);
   private readonly taskAssignmentRepository = inject(TaskAssignmentRepository);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
+  private readonly tokenService = inject(DA_SERVICE_TOKEN);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
-  readonly currentUserId = signal<string>('current-user-id'); // TODO: 从认证服务获取
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
 
   readonly todoTasks = computed(() => {
     const tasks = this.taskService.tasks();
@@ -130,7 +137,47 @@ export class TaskTodoComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadBlueprints();
+    // 如果是个人视角，自动加载用户的待办任务
+    if (this.isUserContext()) {
+      this.loadUserTodos();
+    } else {
+      // 其他视角需要选择蓝图
+      this.loadBlueprints();
+    }
+  }
+
+  /**
+   * 加载用户的待办任务（个人视角）
+   */
+  async loadUserTodos(): Promise<void> {
+    const currentUserAccountId = this.contextFacade.currentUserAccountId();
+    if (!currentUserAccountId) {
+      this.message.warning('无法获取当前用户信息');
+      return;
+    }
+
+    try {
+      // 加载用户的所有任务分配（assignee_type = 'user'）
+      await this.taskAssignmentService.loadByAssigneeId(currentUserAccountId);
+      const assignments = this.taskAssignmentService.assignments();
+
+      // 获取所有任务 ID
+      const taskIds = assignments.map(a => a.task_id);
+
+      if (taskIds.length === 0) {
+        // 没有任务分配，清空任务列表
+        await this.taskService.loadTasksByIds([]);
+        return;
+      }
+
+      // 批量加载所有任务
+      await this.taskService.loadTasksByIds(taskIds);
+
+      // 过滤逻辑在 computed todoTasks 中处理
+    } catch (error) {
+      console.error('加载用户待办任务失败:', error);
+      this.message.error('加载待办列表失败');
+    }
   }
 
   async loadBlueprints(): Promise<void> {

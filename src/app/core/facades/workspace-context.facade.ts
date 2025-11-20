@@ -127,7 +127,9 @@ export class WorkspaceContextFacade {
           this.menuService.switchToApp();
           break;
         case 'user':
-          this.menuService.switchToUser();
+          // 传递当前用户账户 ID，用于替换菜单链接中的 :userId 占位符
+          const userId = this.currentUserAccountId();
+          this.menuService.switchToUser(userId || undefined);
           break;
         case 'organization':
           if (contextId) {

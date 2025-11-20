@@ -1,9 +1,9 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { TaskRepository, TaskInsert, TaskUpdate, TaskAssignmentRepository, TaskListRepository } from '@core';
-import { Task, TaskStatus, TaskPriority, TaskDetail, TaskTreeNode } from '@shared';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { TaskAssignmentRepository, TaskInsert, TaskListRepository, TaskRepository, TaskUpdate } from '@core';
+import { Task, TaskDetail, TaskPriority, TaskStatus, TaskTreeNode } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
-import { validateStateTransition, getAllowedTransitions, getNextStatus, isFinalStatus, isWithdrawableStatus } from './task-state-machine';
+import { getAllowedTransitions, getNextStatus, isFinalStatus, isWithdrawableStatus, validateStateTransition } from './task-state-machine';
 
 /**
  * Task Service
@@ -68,6 +68,31 @@ export class TaskService {
 
     try {
       const tasks = await firstValueFrom(this.taskRepository.findByBlueprintId(blueprintId));
+      this.tasksState.set(tasks);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '加载任务列表失败');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根据任务 ID 列表批量加载任务
+   *
+   * @param taskIds 任务 ID 列表
+   */
+  async loadTasksByIds(taskIds: string[]): Promise<void> {
+    if (taskIds.length === 0) {
+      this.tasksState.set([]);
+      return;
+    }
+
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const tasks = await firstValueFrom(this.taskRepository.findByIds(taskIds));
       this.tasksState.set(tasks);
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '加载任务列表失败');

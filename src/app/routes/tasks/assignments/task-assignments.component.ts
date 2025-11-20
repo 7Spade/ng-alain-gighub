@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { TaskAssignmentRepository } from '@core';
+import { TaskAssignmentRepository, WorkspaceContextFacade } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS, TaskService, Task, TaskAssignment, BlueprintService } from '@shared';
+import { BlueprintService, SHARED_IMPORTS, TaskAssignment, TaskAssignmentService, TaskService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { firstValueFrom } from 'rxjs';
 
@@ -13,28 +13,38 @@ import { firstValueFrom } from 'rxjs';
   template: `
     <page-header [title]="'任务分配'">
       <ng-template #extra>
-        <nz-select
-          [ngModel]="selectedBlueprintId()"
-          (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
-          nzPlaceHolder="请选择蓝图"
-          style="width: 300px; margin-right: 8px;"
-        >
-          @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
-            <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
-          }
-        </nz-select>
+        @if (!isUserContext()) {
+          <nz-select
+            [ngModel]="selectedBlueprintId()"
+            (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
+            nzPlaceHolder="请选择蓝图"
+            style="width: 300px; margin-right: 8px;"
+          >
+            @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
+              <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
+            }
+          </nz-select>
+        }
       </ng-template>
     </page-header>
 
     <nz-card style="margin-top: 16px;">
-      @if (!selectedBlueprintId()) {
+      @if (!isUserContext() && !selectedBlueprintId()) {
         <nz-empty nzNotFoundContent="请先选择蓝图"></nz-empty>
-      } @else if (loading()) {
+      } @else if (loading() || (isUserContext() && taskAssignmentService.loading())) {
         <div style="text-align: center; padding: 40px;">
           <nz-spin nzSize="large"></nz-spin>
         </div>
+      } @else if (assignments().length === 0) {
+        <nz-empty nzNotFoundContent="暂无任务分配"></nz-empty>
       } @else {
-        <st #st [data]="assignments()" [columns]="columns" [loading]="loading()" [page]="{ front: false, show: true, showSize: true }">
+        <st
+          #st
+          [data]="assignments()"
+          [columns]="columns"
+          [loading]="loading() || (isUserContext() && taskAssignmentService.loading())"
+          [page]="{ front: false, show: true, showSize: true }"
+        >
           <ng-template #assigneeType let-record>
             @switch (record.assignee_type) {
               @case ('user') {
@@ -59,13 +69,24 @@ import { firstValueFrom } from 'rxjs';
 export class TaskAssignmentsComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
+  readonly taskAssignmentService = inject(TaskAssignmentService);
   private readonly taskAssignmentRepository = inject(TaskAssignmentRepository);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
-  readonly assignments = signal<TaskAssignment[]>([]);
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
+  readonly assignments = computed(() => {
+    if (this.isUserContext()) {
+      // 个人视角：使用 TaskAssignmentService 的状态
+      return this.taskAssignmentService.assignments();
+    }
+    // 其他视角：使用本地状态
+    return this.localAssignments();
+  });
+  private readonly localAssignments = signal<TaskAssignment[]>([]);
 
   columns: STColumn[] = [
     { title: '任务ID', index: 'task_id', width: 120 },
@@ -87,7 +108,39 @@ export class TaskAssignmentsComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadBlueprints();
+    // 如果是个人视角，自动加载用户的任务分配
+    if (this.isUserContext()) {
+      this.loadUserAssignments();
+    } else {
+      // 其他视角需要选择蓝图
+      this.loadBlueprints();
+    }
+  }
+
+  /**
+   * 加载用户的任务分配（个人视角）
+   */
+  async loadUserAssignments(): Promise<void> {
+    const currentUserAccountId = this.contextFacade.currentUserAccountId();
+    if (!currentUserAccountId) {
+      this.message.warning('无法获取当前用户信息');
+      return;
+    }
+
+    try {
+      // 加载用户的所有任务分配
+      await this.taskAssignmentService.loadByAssigneeId(currentUserAccountId);
+
+      // 加载相关任务信息（用于显示任务标题）
+      const assignments = this.taskAssignmentService.assignments();
+      const taskIds = assignments.map(a => a.task_id);
+      if (taskIds.length > 0) {
+        await this.taskService.loadTasksByIds(taskIds);
+      }
+    } catch (error) {
+      console.error('加载用户任务分配失败:', error);
+      this.message.error('加载任务分配失败');
+    }
   }
 
   async loadBlueprints(): Promise<void> {
@@ -113,7 +166,7 @@ export class TaskAssignmentsComponent implements OnInit {
       const assignmentArrays = await Promise.all(assignmentPromises);
       const allAssignments = assignmentArrays.flat();
 
-      this.assignments.set(allAssignments);
+      this.localAssignments.set(allAssignments);
     } catch (error) {
       this.message.error('加载任务分配失败');
     } finally {

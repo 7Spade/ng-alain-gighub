@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseRepository, QueryOptions } from './base.repository';
+import { handleSupabaseResponse } from '../errors/supabase-error.transformer';
 import { Database } from '../types/common';
 import { TaskPriority, TaskStatus, TaskType } from '../types/task';
+import { toCamelCaseData } from '../utils/transformers';
+import { BaseRepository, QueryOptions } from './base.repository';
 
 /**
  * Task 实体类型（camelCase）
@@ -229,5 +232,44 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
     // 需要使用递归查询或 ltree 操作符
     // 当前先返回单个任务作为临时方案
     return this.findById(taskId).pipe(map(task => (task ? [task] : [])));
+  }
+
+  /**
+   * 根据任务 ID 列表批量查询任务
+   *
+   * @param taskIds 任务 ID 列表
+   * @param options 查询选项
+   * @returns Observable<Task[]>
+   */
+  findByIds(taskIds: string[], options?: QueryOptions): Observable<Task[]> {
+    if (taskIds.length === 0) {
+      return from(Promise.resolve([]));
+    }
+
+    // 使用 Supabase 的 in 操作符批量查询
+    let query = this.supabase
+      .from(this.tableName as any)
+      .select(options?.select || '*')
+      .in('id', taskIds) as any;
+
+    // 应用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      query = query.order(snakeOrderBy, { ascending: options.orderDirection !== 'desc' });
+    }
+
+    // 应用分页
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      query = query.range(fromIndex, toIndex);
+    }
+
+    return from(Promise.resolve(query) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findByIds`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Task>(item)) : [toCamelCaseData<Task>(data)];
+      })
+    );
   }
 }

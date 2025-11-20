@@ -17,23 +17,13 @@
           "children": [
             {
               "text": "My Profile",
-              "link": "/accounts/users",
+              "link": "/accounts/:userId",
               "i18n": "menu.personal.account.profile"
             },
             {
               "text": "My Organizations",
               "link": "/accounts/org",
               "i18n": "menu.personal.account.organizations"
-            },
-            {
-              "text": "My Teams",
-              "link": "/accounts/org?view=teams",
-              "i18n": "menu.personal.account.teams"
-            },
-            {
-              "text": "My Schedules",
-              "link": "/accounts/org?view=schedules",
-              "i18n": "menu.personal.account.schedules"
             }
           ]
         },
