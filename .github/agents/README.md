@@ -10,25 +10,43 @@
 - 🔍 重要文件速查表
 - 💡 最佳實踐和回覆檢查清單
 
+**選擇你的 AI 助手**：
+- 📘 [GitHub Copilot](./copilot-instructions.md) - 日常開發與代碼補全（推薦）
+- 🤖 [Claude AI](../../CLAUDE.md) - 架構設計與深度分析
+- 🌟 [Google Gemini](../../GEMINI.md) - 多模態任務與即時搜尋
+- 💻 [Cursor IDE](../../.cursor/rules/) - 即時規則檢查（28 個規則自動應用）
+
 ## 📁 目錄結構
 
 ```
-.github/agents/
-├── README.md             # 本文件
-├── QUICK-START.md        # 🚀 快速開始指南（新手必讀）
-├── docs-index.md         # 🔍 docs/ 目錄索引
-├── role.agent.md         # Copilot / AI 角色設定
-├── role-config.md        # System message 快速參考
-├── ng-alain-github-agent.md   # 專案級上下文
-└── domain/               # 技術領域檢查表
-    ├── angular-agent.md
-    ├── typescript-agent.md
-    ├── code-quality-agent.md
-    ├── testing-agent.md
-    ├── security-agent.md
-    ├── performance-agent.md
-    ├── accessibility-agent.md
-    └── docs-agent.md
+專案根目錄
+├── AGENTS.md                 # ⭐ 所有 AI 助手的入口文檔
+├── CLAUDE.md                 # 🤖 Claude AI 專用配置（7KB）
+├── GEMINI.md                 # 🌟 Google Gemini 專用配置（9KB）
+├── .copilot-*.md             # 📘 GitHub Copilot（VSCode 整合）
+├── .cursor/rules/            # 💻 Cursor IDE 規則（28 個）
+├── .github/agents/           # 📂 GitHub Agents 目錄
+│   ├── README.md             # 本文件
+│   ├── QUICK-START.md        # 🚀 快速開始指南（新手必讀）
+│   ├── copilot-instructions.md # ⭐ GitHub Copilot Agent 優化版
+│   ├── docs-index.md         # 🔍 docs/ 目錄索引
+│   ├── role.agent.md         # Copilot / AI 角色設定
+│   ├── role-config.md        # System message 快速參考
+│   ├── ng-alain-github-agent.md   # 專案級上下文
+│   └── domain/               # 技術領域檢查表
+│       ├── angular-agent.md
+│       ├── typescript-agent.md
+│       ├── code-quality-agent.md
+│       ├── testing-agent.md
+│       ├── security-agent.md
+│       ├── performance-agent.md
+│       ├── accessibility-agent.md
+│       └── docs-agent.md
+└── src/app/                  # 模組特定規範
+    ├── core/AGENTS.md        # ✨ Core 模組規範（優化版）
+    ├── shared/AGENTS.md      # ✨ Shared 模組規範（優化版）
+    ├── layout/AGENTS.md      # ✨ Layout 模組規範（優化版）
+    └── routes/AGENTS.md      # ✨ Routes 模組規範（優化版）
 ```
 
 ## 🔄 內容來源
@@ -92,7 +110,83 @@
 - 每個項目都附 `@file` 標籤與說明，方便在回覆中引用。
 - 若新增或修改 `docs/` 內容，請同步更新 `docs-index.md` 並於 PR 描述記錄。
 
+## 🤖 AI 助手專用配置
+
+### 新增檔案（2025-11-20）
+專案現已提供針對不同 AI 助手的專門配置：
+
+| AI 助手 | 配置檔案 | 大小 | 特色 | 適用場景 |
+|---------|---------|------|------|----------|
+| **GitHub Copilot** | [copilot-instructions.md](./copilot-instructions.md) | 4.5KB | Agent Mode 優化 | 日常開發、代碼補全 |
+| **Claude AI** | [CLAUDE.md](../../CLAUDE.md) | 7KB | 長上下文（200K tokens） | 架構設計、深度分析 |
+| **Google Gemini** | [GEMINI.md](../../GEMINI.md) | 9KB | 多模態、即時搜尋 | UI 設計圖轉代碼 |
+| **Cursor IDE** | [.cursor/rules/](../../.cursor/rules/) | - | 28 個規則自動應用 | 即時規則檢查 |
+
+### 使用建議
+
+**Claude AI** 適合：
+- 一次性閱讀多個相關文件（支援 200K tokens）
+- 完整模組架構設計
+- 大型 PR 審查
+- 複雜業務邏輯梳理
+- 使用 Artifacts 生成完整代碼
+- Projects 功能整合專案知識庫
+
+**Google Gemini** 適合：
+- 上傳 UI 設計圖生成 Component 代碼
+- 解析流程圖並實作業務邏輯
+- 審查錯誤截圖
+- 使用 Grounding 搜尋最新 API 資訊
+- Code Execution 驗證邏輯
+- 超長上下文（1M tokens）
+
+**GitHub Copilot** 適合：
+- VSCode 內代碼補全
+- Chat 功能快速問答
+- Agent Mode 執行複雜任務
+- 自動引用專案文檔（`@workspace`）
+
+**Cursor IDE** 適合：
+- 即時代碼建議
+- 按目錄自動應用規則
+- 代碼重構建議
+- 即時錯誤檢查
+
+## 📂 模組特定規範（2025-11-20 優化）
+
+所有模組的 AGENTS.md 文件已全面優化，現在包含：
+
+| 模組 | 檔案 | 大小 | 新增內容 |
+|------|------|------|----------|
+| **Core** | [src/app/core/AGENTS.md](../../src/app/core/AGENTS.md) | 5KB | HTTP 攔截器、錯誤處理範例 |
+| **Shared** | [src/app/shared/AGENTS.md](../../src/app/shared/AGENTS.md) | 5KB | SHARED_IMPORTS、工具函數範例 |
+| **Layout** | [src/app/layout/AGENTS.md](../../src/app/layout/AGENTS.md) | 5KB | 響應式設計、可訪問性範例 |
+| **Routes** | [src/app/routes/AGENTS.md](../../src/app/routes/AGENTS.md) | 6.5KB | 路由配置、Facade 模式範例 |
+
+### 模組規範統一結構
+- 📖 目的說明與模組職責
+- ⚡ 快速參考（依賴關係、關鍵原則）
+- 📋 核心規範檢查清單（附完整代碼範例）
+- 🧪 測試要求（覆蓋率標準、測試重點）
+- 📚 相關 Cursor 規則
+- 🔗 相關文檔（必讀、參考）
+- 💡 AI 助手使用建議（適合的 AI、Prompt 範例）
+
 ## 🎯 文件改進重點
+
+### v2.2（2025-11-20）更新 🆕
+**新增 AI 助手專用配置**：
+- ✅ `CLAUDE.md` - Claude AI 配置（7KB）
+- ✅ `GEMINI.md` - Google Gemini 配置（9KB）
+- ✅ Root `AGENTS.md` - AI 助手總覽入口
+- ✅ `copilot-instructions.md` - GitHub Copilot Agent 優化版（4.5KB）
+
+**優化所有模組規範**：
+- ✅ 統一文檔結構與格式
+- ✅ 新增完整代碼範例（✅ 正確 / ❌ 錯誤）
+- ✅ 新增檢查清單格式
+- ✅ 新增 AI 助手使用建議與 Prompt 範例
+- ✅ GitHub Copilot Agent 友善格式
 
 ### v2.1（2025-11-20）更新
 所有 domain agent 文件現已包含：
@@ -132,6 +226,6 @@
 
 ---
 **最後更新**：2025-11-20  
-**版本**：v2.1  
+**版本**：v2.2  
 **維護者**：開發團隊  
-**主要改進**：新增 QUICK-START.md、大幅增強 domain agents 內容
+**主要改進**：新增 AI 助手專用配置（CLAUDE.md, GEMINI.md），優化所有模組 AGENTS.md，GitHub Copilot Agent 全面優化
