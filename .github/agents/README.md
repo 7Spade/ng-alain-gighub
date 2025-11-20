@@ -25,23 +25,28 @@
 ├── GEMINI.md                 # 🌟 Google Gemini 專用配置（9KB）
 ├── .copilot-*.md             # 📘 GitHub Copilot（VSCode 整合）
 ├── .cursor/rules/            # 💻 Cursor IDE 規則（28 個）
-├── .github/agents/           # 📂 GitHub Agents 目錄
-│   ├── README.md             # 本文件
-│   ├── QUICK-START.md        # 🚀 快速開始指南（新手必讀）
-│   ├── copilot-instructions.md # ⭐ GitHub Copilot Agent 優化版
-│   ├── docs-index.md         # 🔍 docs/ 目錄索引
-│   ├── role.agent.md         # Copilot / AI 角色設定
-│   ├── role-config.md        # System message 快速參考
-│   ├── ng-alain-github-agent.md   # 專案級上下文
-│   └── domain/               # 技術領域檢查表
-│       ├── angular-agent.md
-│       ├── typescript-agent.md
-│       ├── code-quality-agent.md
-│       ├── testing-agent.md
-│       ├── security-agent.md
-│       ├── performance-agent.md
-│       ├── accessibility-agent.md
-│       └── docs-agent.md
+├── .github/
+│   ├── copilot/              # 🔧 GitHub Copilot 配置
+│   │   ├── mcp.json          # ⭐ MCP 伺服器配置（新增）
+│   │   ├── README.md         # 📘 MCP 配置說明（新增）
+│   │   └── memory.jsonl      # 記憶體儲存
+│   └── agents/               # 📂 GitHub Agents 目錄
+│       ├── README.md         # 本文件
+│       ├── QUICK-START.md    # 🚀 快速開始指南（新手必讀）
+│       ├── copilot-instructions.md # ⭐ GitHub Copilot Agent 優化版
+│       ├── docs-index.md     # 🔍 docs/ 目錄索引
+│       ├── role.agent.md     # Copilot / AI 角色設定
+│       ├── role-config.md    # System message 快速參考
+│       ├── ng-alain-github-agent.md   # 專案級上下文
+│       └── domain/           # 技術領域檢查表
+│           ├── angular-agent.md
+│           ├── typescript-agent.md
+│           ├── code-quality-agent.md
+│           ├── testing-agent.md
+│           ├── security-agent.md
+│           ├── performance-agent.md
+│           ├── accessibility-agent.md
+│           └── docs-agent.md
 └── src/app/                  # 模組特定規範
     ├── core/AGENTS.md        # ✨ Core 模組規範（優化版）
     ├── shared/AGENTS.md      # ✨ Shared 模組規範（優化版）
@@ -145,12 +150,74 @@
 - Chat 功能快速問答
 - Agent Mode 執行複雜任務
 - 自動引用專案文檔（`@workspace`）
+- ⭐ **MCP 伺服器整合**：支援 13 個 MCP 伺服器（詳見 [MCP 配置說明](../copilot/README.md)）
+  - Redis、Supabase、GitHub API
+  - Sequential Thinking、Software Planning
+  - Filesystem、Git、Puppeteer/Playwright
+  - Memory、Time、Fetch 等
 
 **Cursor IDE** 適合：
 - 即時代碼建議
 - 按目錄自動應用規則
 - 代碼重構建議
 - 即時錯誤檢查
+
+## 🔧 MCP (Model Context Protocol) 配置
+
+### 概覽
+專案已配置 13 個 MCP 伺服器，讓 GitHub Copilot Agent 能夠：
+- 連接外部資料來源（Redis、Supabase）
+- 使用結構化思考工具
+- 整合專案規劃與記憶體管理
+- 執行瀏覽器自動化測試
+- 存取檔案系統和 Git 操作
+
+### 配置檔案
+📁 **位置**：[.github/copilot/mcp.json](../copilot/mcp.json)  
+📘 **說明**：[.github/copilot/README.md](../copilot/README.md)
+
+### 已配置的 MCP 伺服器
+
+| 伺服器 | 類型 | 用途 | 主要工具 |
+|--------|------|------|----------|
+| **Redis** | Local | 資料快取 | set, get, delete, list |
+| **Supabase** | HTTP | 資料庫整合 | execute_sql, list_tables, deploy_edge_function |
+| **GitHub** | HTTP | GitHub API | repositories, issues, pull_requests, commits |
+| **Memory** | Local | 持久化記憶 | create_entities, add_observations |
+| **Sequential Thinking** | Local | 結構化思考 | 思考鏈工具 |
+| **Software Planning** | Local | 開發規劃 | start_planning, add_todo, update_todo_status |
+| **Filesystem** | Local | 檔案操作 | 讀寫、瀏覽 |
+| **Git** | Local | 版本控制 | commit, branch, merge, diff |
+| **Puppeteer** | Local | Chrome 自動化 | navigate, screenshot, click, fill |
+| **Playwright** | Local | 跨瀏覽器測試 | 類似 Puppeteer |
+| **Time** | Local | 時間操作 | 取得時間、時區轉換 |
+| **Fetch** | Local | HTTP 請求 | GET, POST, PUT, DELETE |
+| **Everything** | Local | 功能示範 | echo, add, sampleLLM |
+
+### 使用範例
+
+```markdown
+# 查詢 Supabase 資料庫表
+@copilot 請列出所有資料庫表
+
+# 使用結構化思考分析問題
+@copilot 請使用 Sequential Thinking 分析認證流程
+
+# 建立開發規劃
+@copilot 請建立使用者管理功能的開發計畫
+
+# 執行 UI 測試
+@copilot 請使用 Puppeteer 測試登入頁面
+```
+
+### 安全注意事項
+⚠️ `mcp.json` 包含 API Tokens，請注意：
+- 不要提交到公開 Repository
+- 定期輪換 Tokens
+- 使用最小權限原則
+- 考慮使用環境變數
+
+詳見：[MCP 配置說明](../copilot/README.md)
 
 ## 📂 模組特定規範（2025-11-20 優化）
 
@@ -226,6 +293,10 @@
 
 ---
 **最後更新**：2025-11-20  
-**版本**：v2.2  
+**版本**：v2.3  
 **維護者**：開發團隊  
-**主要改進**：新增 AI 助手專用配置（CLAUDE.md, GEMINI.md），優化所有模組 AGENTS.md，GitHub Copilot Agent 全面優化
+**主要改進**：
+- 新增 MCP (Model Context Protocol) 配置支援（13 個伺服器）
+- 新增 AI 助手專用配置（CLAUDE.md, GEMINI.md）
+- 優化所有模組 AGENTS.md
+- GitHub Copilot Agent 全面優化

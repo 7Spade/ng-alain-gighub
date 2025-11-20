@@ -1,0 +1,150 @@
+{
+  "mcpServers": {
+    "redis": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-redis",
+        "redis://default:YOUR_REDIS_PASSWORD@YOUR_REDIS_HOST:YOUR_REDIS_PORT"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "software-planning-tool": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:NightTrek/Software-planning-mcp"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "everything": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "filesystem": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer YOUR_GITHUB_PERSONAL_ACCESS_TOKEN"
+      },
+      "tools": [
+        "*"
+      ]
+    },
+    "memory": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "./.github/copilot/memory.jsonl"
+      },
+      "tools": [
+        "*"
+      ]
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=YOUR_SUPABASE_PROJECT_REF",
+      "headers": {
+        "Authorization": "Bearer YOUR_SUPABASE_SERVICE_BEARER_TOKEN"
+      },
+      "tools": [
+        "*"
+      ]
+    },
+    "git": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "time": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-time"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "fetch": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "puppeteer": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "playwright": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-playwright"
+      ],
+      "tools": [
+        "*"
+      ]
+    }
+  }
+}
