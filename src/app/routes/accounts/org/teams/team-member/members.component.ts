@@ -122,7 +122,8 @@ export class OrgTeamMembersComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.message.error('缺少團隊 ID');
-      this.router.navigate(['/accounts/teams']);
+      // 导航到组织列表
+      this.router.navigate(['/accounts/org']);
       return;
     }
 

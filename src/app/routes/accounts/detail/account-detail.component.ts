@@ -123,7 +123,7 @@ import { OrgRoleManageComponent } from '../org/org-role-manage/role-manage.compo
                       <td>{{ team.description || '-' }}</td>
                       <td>{{ team.created_at | date: 'yyyy-MM-dd' }}</td>
                       <td>
-                        <button nz-button nzType="link" nzSize="small" (click)="viewTeam(team.id)"> 查看 </button>
+                        <button nz-button nzType="link" nzSize="small" (click)="viewTeam(team.id, team.organization_id)"> 查看 </button>
                       </td>
                     </tr>
                   }
@@ -265,7 +265,8 @@ export class AccountDetailComponent implements OnInit {
     }
   }
 
-  viewTeam(teamId: string): void {
-    this.router.navigate(['/accounts/teams', teamId]);
+  viewTeam(teamId: string, organizationId: string): void {
+    // 导航到组织上下文下的团队管理页面
+    this.router.navigate(['/accounts/org', organizationId, 'teams']);
   }
 }

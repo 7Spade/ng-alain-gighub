@@ -17,12 +17,12 @@
           "children": [
             {
               "text": "Organization Members",
-              "link": "/org/:id/members",
+              "link": "/accounts/org/:id/members",
               "i18n": "menu.organization.management.members"
             },
             {
               "text": "Organization Teams",
-              "link": "/org/:id/teams",
+              "link": "/accounts/org/:id/teams",
               "i18n": "menu.organization.management.teams"
             }
           ]

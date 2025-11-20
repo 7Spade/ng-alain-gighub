@@ -17,7 +17,7 @@
           "children": [
             {
               "text": "Team Members",
-              "link": "/org/teams/:id/members",
+              "link": "/accounts/org/teams/:id/members",
               "i18n": "menu.team.management.members"
             }
           ]

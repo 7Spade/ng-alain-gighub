@@ -27,7 +27,7 @@
             },
             {
               "text": "My Teams",
-              "link": "/accounts/teams",
+              "link": "/accounts/org",
               "i18n": "menu.personal.account.teams"
             },
             {

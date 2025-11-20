@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, input, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { OrganizationMember, TeamMember } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { OrganizationMember, OrganizationMemberRole, TeamMember, TeamMemberRole } from '@core';
 import { AccountService, OrganizationMemberService, SHARED_IMPORTS, TeamMemberService, TeamService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { OrgRoleEditComponent } from '../org-role-edit/org-role-edit.component';
-import { OrgTeamRoleEditComponent } from '../teams/members/team-role-edit/team-role-edit.component';
+import { OrgTeamRoleEditComponent } from '../teams/team-member/team-role-edit/team-role-edit.component';
 
 /**
  * 角色管理组件
@@ -40,7 +40,13 @@ import { OrgTeamRoleEditComponent } from '../teams/members/team-role-edit/team-r
         @if (organizationMemberService.loading()) {
           <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
         } @else if (organizationMemberService.error()) {
-          <nz-alert nzType="error" [nzMessage]="'載入失敗'" [nzDescription]="organizationMemberService.error()" nzShowIcon style="margin: 16px;"></nz-alert>
+          <nz-alert
+            nzType="error"
+            [nzMessage]="'載入失敗'"
+            [nzDescription]="organizationMemberService.error()"
+            nzShowIcon
+            style="margin: 16px;"
+          ></nz-alert>
         } @else if (organizationMemberService.members().length === 0) {
           <nz-empty nzNotFoundContent="尚無成員"></nz-empty>
         } @else {
@@ -150,8 +156,8 @@ export class OrgRoleManageComponent implements OnInit {
   readonly organizationMemberService = inject(OrganizationMemberService);
 
   // 支持通过 input 或路由参数获取 organizationId
-  readonly organizationIdInput = input<string | null>(null);
-  readonly organizationId = signal<string | null>(null);
+  readonly organizationId = input<string | null>(null);
+  readonly organizationIdSignal = signal<string | null>(null);
   readonly teamRoles = signal<TeamMember[]>([]);
   readonly loadingTeamRoles = signal<boolean>(false);
 
@@ -172,7 +178,7 @@ export class OrgRoleManageComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     // 优先使用 input，如果没有则从路由参数获取组织 ID
-    const idFromInput = this.organizationIdInput();
+    const idFromInput = this.organizationId();
     const idFromRoute = this.route.snapshot.paramMap.get('id');
     const id = idFromInput || idFromRoute;
 
@@ -182,7 +188,7 @@ export class OrgRoleManageComponent implements OnInit {
       return;
     }
 
-    this.organizationId.set(id);
+    this.organizationIdSignal.set(id);
 
     // 先清空状态，确保加载的是当前组织的数据
     this.organizationMemberService.clearState();
@@ -198,7 +204,7 @@ export class OrgRoleManageComponent implements OnInit {
    * 加载数据
    */
   async loadData(): Promise<void> {
-    const orgId = this.organizationId();
+    const orgId = this.organizationIdSignal();
     if (!orgId) {
       return;
     }
@@ -260,7 +266,7 @@ export class OrgRoleManageComponent implements OnInit {
 
     modalRef.afterClose.subscribe(result => {
       if (result) {
-        const orgId = this.organizationId();
+        const orgId = this.organizationIdSignal();
         if (orgId) {
           this.loadOrgMembers(orgId);
         }
@@ -282,7 +288,7 @@ export class OrgRoleManageComponent implements OnInit {
 
     modalRef.afterClose.subscribe(result => {
       if (result) {
-        const orgId = this.organizationId();
+        const orgId = this.organizationIdSignal();
         if (orgId) {
           this.loadTeamRoles(orgId);
         }
@@ -316,4 +322,3 @@ export class OrgRoleManageComponent implements OnInit {
     // 处理表格变化事件（分页、排序等）
   }
 }
-
