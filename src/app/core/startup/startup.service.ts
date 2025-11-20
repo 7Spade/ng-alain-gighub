@@ -85,7 +85,7 @@ export class StartupService {
             // this.httpClient.get('/app', { context: new HttpContext().set(ALLOW_ANONYMOUS, this.tokenService.get()?.token ? false : true) })
             return zip(
               this.i18n.loadLangData(defaultLang),
-              this.httpClient.get<NzSafeAny>('./assets/tmp/user-data.json'),
+              this.httpClient.get<NzSafeAny>('./assets/tmp/app-data.json').pipe(catchError(() => of({ menu: [] }))),
               this.httpClient.get<NzSafeAny>('./assets/tmp/user-data.json').pipe(catchError(() => of({ menu: [] }))),
               this.httpClient.get<NzSafeAny>('./assets/tmp/organization-data.json').pipe(catchError(() => of({ menu: [] }))),
               this.httpClient.get<NzSafeAny>('./assets/tmp/team-data.json').pipe(catchError(() => of({ menu: [] }))),
