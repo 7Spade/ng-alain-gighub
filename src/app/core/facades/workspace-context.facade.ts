@@ -56,6 +56,8 @@ export class WorkspaceContextFacade {
   readonly switching = this.contextService.switching;
   readonly contextLabel = this.contextService.contextLabel;
   readonly contextIcon = this.contextService.contextIcon;
+  readonly contextAvatar = this.contextService.contextAvatar;
+  readonly contextEmail = this.contextService.contextEmail;
 
   // 暴露数据服务的状态（通过 Facade）
   readonly currentUserAccount = this.dataService.currentUserAccount;

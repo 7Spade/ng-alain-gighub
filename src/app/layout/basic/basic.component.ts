@@ -83,10 +83,10 @@ import { HeaderUserComponent } from './widgets/user.component';
       </layout-default-header-item>
       <ng-template #asideUserTpl>
         <div nz-dropdown nzTrigger="click" nzPlacement="topLeft" [nzDropdownMenu]="userMenu" class="alain-default__aside-user">
-          <nz-avatar class="alain-default__aside-user-avatar" [nzSrc]="user.avatar" />
+          <nz-avatar class="alain-default__aside-user-avatar" [nzSrc]="contextAvatar() || user.avatar" />
           <div class="alain-default__aside-user-info">
-            <strong>{{ user.name }}</strong>
-            <p class="mb0">{{ user.email }}</p>
+            <strong>{{ contextLabel() || user.name }}</strong>
+            <p class="mb0">{{ contextEmail() || user.email }}</p>
           </div>
         </div>
         <nz-dropdown-menu #userMenu="nzDropdownMenu">
@@ -187,6 +187,9 @@ export class LayoutBasicComponent implements OnInit {
   readonly teamsByOrganization = this.workspaceContext.teamsByOrganization;
   readonly currentUserAccountId = this.workspaceContext.currentUserAccountId;
   readonly currentUserAccount = this.workspaceContext.currentUserAccount;
+  readonly contextAvatar = this.workspaceContext.contextAvatar;
+  readonly contextLabel = this.workspaceContext.contextLabel;
+  readonly contextEmail = this.workspaceContext.contextEmail;
 
   options: LayoutDefaultOptions = {
     logoExpanded: `./assets/logo-full.svg`,

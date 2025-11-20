@@ -169,6 +169,94 @@ export class WorkspaceContextService {
   });
 
   /**
+   * 当前上下文头像（用于显示）
+   */
+  readonly contextAvatar = computed(() => {
+    const type = this.contextType();
+    const id = this.contextId();
+
+    switch (type) {
+      case 'user':
+        if (id) {
+          // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
+          const currentAccount = this.currentUserAccount();
+          if (currentAccount && currentAccount.id === id) {
+            // 优先使用 camelCase 格式，向后兼容 snake_case
+            return (currentAccount as any).avatarUrl || (currentAccount as any).avatar_url || null;
+          }
+          // 否则从 userAccounts 中查找
+          const account = this.accountService.userAccounts().find(a => a.id === id);
+          if (account) {
+            return (account as any).avatarUrl || (account as any).avatar_url || null;
+          }
+        }
+        // 如果没有找到，返回当前用户账户的头像
+        const currentAccount = this.currentUserAccount();
+        if (currentAccount) {
+          return (currentAccount as any).avatarUrl || (currentAccount as any).avatar_url || null;
+        }
+        return null;
+      case 'organization':
+        if (id) {
+          const account = this.allOrganizations().find(a => a.id === id);
+          if (account) {
+            return (account as any).avatarUrl || (account as any).avatar_url || null;
+          }
+        }
+        return null;
+      case 'team':
+        if (id) {
+          const team = this.userTeams().find(t => t.id === id);
+          if (team) {
+            // Team 模型也有 avatar_url 字段
+            return (team as any).avatarUrl || (team as any).avatar_url || null;
+          }
+        }
+        return null;
+      default:
+        // app 类型返回 null，使用默认用户头像
+        return null;
+    }
+  });
+
+  /**
+   * 当前上下文邮箱（用于显示）
+   */
+  readonly contextEmail = computed(() => {
+    const type = this.contextType();
+    const id = this.contextId();
+
+    switch (type) {
+      case 'user':
+        if (id) {
+          // 优先使用 currentUserAccount（已加载的数据），如果 ID 匹配
+          const currentAccount = this.currentUserAccount();
+          if (currentAccount && currentAccount.id === id) {
+            return currentAccount.email || null;
+          }
+          // 否则从 userAccounts 中查找
+          const account = this.accountService.userAccounts().find(a => a.id === id);
+          return account?.email || null;
+        }
+        // 如果没有找到，返回当前用户账户的邮箱
+        const currentAccount = this.currentUserAccount();
+        return currentAccount?.email || null;
+      case 'organization':
+        if (id) {
+          const account = this.allOrganizations().find(a => a.id === id);
+          return account?.email || null;
+        }
+        return null;
+      case 'team':
+        // 团队没有邮箱字段，返回 null
+        return null;
+      default:
+        // app 类型返回 null
+        return null;
+    }
+  });
+
+  /**
    * 切换到应用菜单（默认菜单）
    */
   switchToApp(): void {
