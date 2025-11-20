@@ -12,12 +12,12 @@ import {
 } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { OrganizationRoleManageComponent } from '../organizations/organization-role-manage/organization-role-manage.component';
+import { OrgRoleManageComponent } from '../org/org-role-manage/role-manage.component';
 
 @Component({
   selector: 'app-account-detail',
   standalone: true,
-  imports: [SHARED_IMPORTS, OrganizationRoleManageComponent],
+  imports: [SHARED_IMPORTS, OrgRoleManageComponent],
   template: `
     <page-header [title]="'账户详情'">
       <ng-template #extra>
@@ -99,7 +99,7 @@ import { OrganizationRoleManageComponent } from '../organizations/organization-r
         @if (account()!.type === AccountType.ORGANIZATION) {
           <!-- 组织成员和角色管理 -->
           @if (account()?.id) {
-            <app-organization-role-manage [organizationId]="account()!.id"></app-organization-role-manage>
+            <app-org-role-manage [organizationId]="account()!.id"></app-org-role-manage>
           }
 
           <!-- 组织账户：显示团队信息 -->

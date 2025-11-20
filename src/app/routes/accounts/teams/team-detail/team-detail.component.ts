@@ -4,7 +4,7 @@ import { SHARED_IMPORTS, TeamService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { TeamDeleteComponent, TeamDeleteData } from '../team-delete/team-delete.component';
+import { OrgTeamDeleteComponent, OrgTeamDeleteData } from '../../org/teams/team-delete/team-delete.component';
 import { TeamRoleManageComponent } from '../team-role-manage/team-role-manage.component';
 
 @Component({
@@ -102,7 +102,8 @@ export class TeamDetailComponent implements OnInit {
 
   edit(): void {
     if (this.team()) {
-      this.router.navigate(['/accounts/teams', this.team()!.id, 'edit']);
+      // 导航到组织团队管理页面进行编辑
+      this.router.navigate(['/accounts/org', this.team()!.organization_id, 'teams']);
     }
   }
 
@@ -113,11 +114,11 @@ export class TeamDetailComponent implements OnInit {
 
     const modalRef = this.modal.create({
       nzTitle: '删除团队',
-      nzContent: TeamDeleteComponent,
+      nzContent: OrgTeamDeleteComponent,
       nzData: {
         teamId: this.team()!.id,
         teamName: this.team()!.name
-      } as TeamDeleteData,
+      } as OrgTeamDeleteData,
       nzWidth: 500,
       nzFooter: null
     });

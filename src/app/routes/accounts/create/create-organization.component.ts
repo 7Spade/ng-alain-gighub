@@ -125,6 +125,6 @@ export class CreateOrganizationComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/org']);
+    this.router.navigate(['/accounts/org']);
   }
 }

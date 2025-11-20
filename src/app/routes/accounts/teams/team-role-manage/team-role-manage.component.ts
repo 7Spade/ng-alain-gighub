@@ -113,7 +113,7 @@ export class TeamRoleManageComponent implements OnInit {
    * 前往团队管理页面（完整功能）
    */
   goToTeamManagement(): void {
-    this.router.navigate(['/org/teams', this.teamId(), 'members']);
+    this.router.navigate(['/accounts/org/teams', this.teamId(), 'members']);
   }
 
   /**

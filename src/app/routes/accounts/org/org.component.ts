@@ -247,21 +247,21 @@ export class OrgComponent implements OnInit {
    * 管理组织成员
    */
   manageMembers(organizationId: string): void {
-    this.router.navigate(['/org', organizationId, 'members']);
+    this.router.navigate(['/accounts/org', organizationId, 'members']);
   }
 
   /**
    * 管理组织角色
    */
   manageRoles(organizationId: string): void {
-    this.router.navigate(['/org', organizationId, 'roles']);
+    this.router.navigate(['/accounts/org', organizationId, 'roles']);
   }
 
   /**
    * 管理组织团队
    */
   manageTeams(organizationId: string): void {
-    this.router.navigate(['/org', organizationId, 'teams']);
+    this.router.navigate(['/accounts/org', organizationId, 'teams']);
   }
 
   /**

@@ -7,9 +7,7 @@ import { AccountDetailComponent } from './detail/account-detail.component';
 import { AccountFormComponent } from './form/account-form.component';
 import { AccountListComponent } from './list/account-list.component';
 import { ScheduleListComponent } from './schedules/schedule-list.component';
-import { TeamCreateComponent } from './teams/team-create/team-create.component';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
-import { TeamEditComponent } from './teams/team-edit/team-edit.component';
 import { TeamsComponent } from './teams/teams.component';
 import { UserListComponent } from './users/user-list.component';
 
@@ -23,11 +21,14 @@ export const routes: Routes = [
   // 具体路径必须放在动态路径（:id）之前，避免路由冲突
   { path: 'users', component: UserListComponent },
   { path: 'bots', component: BotListComponent },
-  { path: 'teams/create', component: TeamCreateComponent },
   { path: 'teams', component: TeamsComponent },
-  { path: 'teams/:id/edit', component: TeamEditComponent },
   { path: 'teams/:id', component: TeamDetailComponent },
   { path: 'schedules', component: ScheduleListComponent },
+  // 组织管理路由（从 /org 迁移过来）
+  {
+    path: 'org',
+    loadChildren: () => import('./org/routes').then(m => m.routes)
+  },
   // 动态路径放在最后
   { path: ':id', component: AccountDetailComponent },
   { path: ':id/edit', component: AccountFormComponent }

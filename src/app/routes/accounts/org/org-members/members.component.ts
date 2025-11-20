@@ -125,7 +125,7 @@ export class OrgMembersComponent implements OnInit {
     const orgId = this.route.snapshot.paramMap.get('id');
     if (!orgId) {
       this.message.error('缺少組織 ID');
-      this.router.navigate(['/org']);
+      this.router.navigate(['/accounts/org']);
       return;
     }
 

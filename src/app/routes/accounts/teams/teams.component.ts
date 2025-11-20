@@ -237,7 +237,7 @@ export class TeamsComponent implements OnInit {
       // 导航到组织上下文下的团队成员管理页面
       const orgId = (team as any).organization_id || (team as any).organizationId;
       if (orgId) {
-        this.router.navigate(['/org/teams', teamId, 'members']);
+        this.router.navigate(['/accounts/org/teams', teamId, 'members']);
       } else {
         this.message.warning('無法獲取團隊所屬組織');
       }

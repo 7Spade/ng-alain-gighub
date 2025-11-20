@@ -109,7 +109,7 @@ export class OrgTeamsComponent implements OnInit {
     const orgId = this.route.snapshot.paramMap.get('id');
     if (!orgId) {
       this.message.error('缺少組織 ID');
-      this.router.navigate(['/org']);
+      this.router.navigate(['/accounts/org']);
       return;
     }
 
@@ -211,7 +211,7 @@ export class OrgTeamsComponent implements OnInit {
    */
   manageMembers(teamId: string): void {
     // 跳转到团队成员管理
-    this.router.navigate(['/org/teams', teamId, 'members']);
+    this.router.navigate(['/accounts/org/teams', teamId, 'members']);
   }
 
   /**

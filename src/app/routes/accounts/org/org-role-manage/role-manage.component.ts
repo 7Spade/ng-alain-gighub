@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { STColumn } from '@delon/abc/st';
 import { OrganizationMember, OrganizationMemberRole, TeamMember, TeamMemberRole } from '@core';
@@ -149,6 +149,8 @@ export class OrgRoleManageComponent implements OnInit {
   private readonly teamMemberService = inject(TeamMemberService);
   readonly organizationMemberService = inject(OrganizationMemberService);
 
+  // 支持通过 input 或路由参数获取 organizationId
+  readonly organizationIdInput = input<string | null>(null);
   readonly organizationId = signal<string | null>(null);
   readonly teamRoles = signal<TeamMember[]>([]);
   readonly loadingTeamRoles = signal<boolean>(false);
@@ -169,11 +171,14 @@ export class OrgRoleManageComponent implements OnInit {
   ];
 
   async ngOnInit(): Promise<void> {
-    // 从路由参数获取组织 ID
-    const id = this.route.snapshot.paramMap.get('id');
+    // 优先使用 input，如果没有则从路由参数获取组织 ID
+    const idFromInput = this.organizationIdInput();
+    const idFromRoute = this.route.snapshot.paramMap.get('id');
+    const id = idFromInput || idFromRoute;
+
     if (!id) {
       this.message.error('缺少組織 ID');
-      this.router.navigate(['/org']);
+      this.router.navigate(['/accounts/org']);
       return;
     }
 

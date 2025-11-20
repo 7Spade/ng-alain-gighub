@@ -22,7 +22,7 @@
             },
             {
               "text": "My Organizations",
-              "link": "/org",
+              "link": "/accounts/org",
               "i18n": "menu.personal.account.organizations"
             },
             {
