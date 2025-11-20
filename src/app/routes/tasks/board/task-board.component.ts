@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
-import { SHARED_IMPORTS, TaskService, Task, TaskStatus, BlueprintService } from '@shared';
+import { SHARED_IMPORTS, TaskService, Task, TaskStatus } from '@shared';
+import { BranchContextService } from '@core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -10,16 +11,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   template: `
     <page-header [title]="'任务看板'" [extra]="extraTemplate">
       <ng-template #extraTemplate>
-        <nz-select
-          [ngModel]="selectedBlueprintId()"
-          (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
-          nzPlaceHolder="请选择蓝图"
-          style="width: 300px; margin-right: 8px;"
-        >
-          @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
-            <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
-          }
-        </nz-select>
         <button nz-button nzType="primary" (click)="createTask()">
           <span nz-icon nzType="plus"></span>
           新建任务
@@ -28,7 +19,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     </page-header>
 
     <nz-card style="margin-top: 16px;">
-      @if (!selectedBlueprintId()) {
+      @if (!currentBlueprintId()) {
         <nz-empty nzNotFoundContent="请先选择蓝图"></nz-empty>
       } @else if (taskService.loading()) {
         <div style="text-align: center; padding: 40px;">
@@ -85,11 +76,12 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class TaskBoardComponent implements OnInit {
   readonly taskService = inject(TaskService);
-  readonly blueprintService = inject(BlueprintService);
+  private readonly branchContext = inject(BranchContextService);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
 
-  readonly selectedBlueprintId = signal<string | null>(null);
+  // 從 BranchContextService 獲取當前藍圖 ID
+  readonly currentBlueprintId = this.branchContext.currentBlueprintId;
 
   readonly boardColumns = [
     {
@@ -114,26 +106,25 @@ export class TaskBoardComponent implements OnInit {
     }
   ];
 
-  ngOnInit(): void {
-    this.loadBlueprints();
-  }
-
-  async loadBlueprints(): Promise<void> {
-    try {
-      await this.blueprintService.loadBlueprints();
-    } catch (error) {
-      this.message.error('加载蓝图列表失败');
-    }
-  }
-
-  async onBlueprintChange(): Promise<void> {
-    const blueprintId = this.selectedBlueprintId();
-    if (blueprintId) {
-      try {
-        await this.taskService.loadTasksByBlueprint(blueprintId);
-      } catch (error) {
-        this.message.error('加载任务列表失败');
+  constructor() {
+    // 監聽藍圖變更，自動載入任務
+    effect(() => {
+      const blueprintId = this.currentBlueprintId();
+      if (blueprintId) {
+        this.loadTasks(blueprintId);
       }
+    });
+  }
+
+  ngOnInit(): void {
+    // ngOnInit 保持空實現，任務載入由 effect 處理
+  }
+
+  async loadTasks(blueprintId: string): Promise<void> {
+    try {
+      await this.taskService.loadTasksByBlueprint(blueprintId);
+    } catch (error) {
+      this.message.error('加载任务列表失败');
     }
   }
 
