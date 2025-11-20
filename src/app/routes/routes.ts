@@ -18,12 +18,12 @@ export const routes: Routes = [
       },
       {
         path: 'widgets',
-        loadChildren: () => import('./widgets/routes').then(m => m.routes)
+        loadChildren: () => import('./demo/widgets/routes').then(m => m.routes)
       },
-      { path: 'style', loadChildren: () => import('./style/routes').then(m => m.routes) },
-      { path: 'delon', loadChildren: () => import('./delon/routes').then(m => m.routes) },
-      { path: 'extras', loadChildren: () => import('./extras/routes').then(m => m.routes) },
-      { path: 'pro', loadChildren: () => import('./pro/routes').then(m => m.routes) },
+      { path: 'style', loadChildren: () => import('./demo/style/routes').then(m => m.routes) },
+      { path: 'delon', loadChildren: () => import('./demo/delon/routes').then(m => m.routes) },
+      { path: 'extras', loadChildren: () => import('./demo/extras/routes').then(m => m.routes) },
+      { path: 'pro', loadChildren: () => import('./demo/pro/routes').then(m => m.routes) },
       { path: 'accounts', loadChildren: () => import('./accounts/routes').then(m => m.routes) },
       {
         path: 'collaboration',
@@ -75,7 +75,7 @@ export const routes: Routes = [
   {
     path: 'data-v',
     component: LayoutBlankComponent,
-    children: [{ path: '', loadChildren: () => import('./data-v/routes').then(m => m.routes) }]
+    children: [{ path: '', loadChildren: () => import('./demo/data-v/routes').then(m => m.routes) }]
   },
   // passport - 必须在根路径配置之后，避免路径冲突
   { path: 'passport', loadChildren: () => import('./passport/routes').then(m => m.routes) },
