@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { SHARED_IMPORTS, TaskService, Task, TaskStatus, BlueprintService } from '@shared';
+import { WorkspaceContextFacade } from '@core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -10,16 +11,18 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   template: `
     <page-header [title]="'任务看板'" [extra]="extraTemplate">
       <ng-template #extraTemplate>
-        <nz-select
-          [ngModel]="selectedBlueprintId()"
-          (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
-          nzPlaceHolder="请选择蓝图"
-          style="width: 300px; margin-right: 8px;"
-        >
-          @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
-            <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
-          }
-        </nz-select>
+        @if (currentBlueprintIds().length > 1) {
+          <nz-select
+            [ngModel]="selectedBlueprintId()"
+            (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
+            nzPlaceHolder="切换蓝图"
+            style="width: 300px; margin-right: 8px;"
+          >
+            @for (blueprint of workspaceContext.contextBlueprints(); track blueprint.id) {
+              <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
+            }
+          </nz-select>
+        }
         <button nz-button nzType="primary" (click)="createTask()">
           <span nz-icon nzType="plus"></span>
           新建任务
@@ -28,11 +31,23 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     </page-header>
 
     <nz-card style="margin-top: 16px;">
-      @if (!selectedBlueprintId()) {
-        <nz-empty nzNotFoundContent="请先选择蓝图"></nz-empty>
+      @if (workspaceContext.contextType() === 'app') {
+        <nz-empty nzNotFoundContent="请先切换到用户、组织或团队视角"></nz-empty>
+      } @else if (workspaceContext.loadingBlueprints()) {
+        <div style="text-align: center; padding: 40px;">
+          <nz-spin nzSize="large" nzTip="加载蓝图中..."></nz-spin>
+        </div>
+      } @else if (currentBlueprintIds().length === 0) {
+        <nz-empty nzNotFoundContent="当前视角下没有蓝图">
+          <ng-container nz-empty-footer>
+            <button nz-button nzType="primary" (click)="createBlueprint()">
+              创建蓝图
+            </button>
+          </ng-container>
+        </nz-empty>
       } @else if (taskService.loading()) {
         <div style="text-align: center; padding: 40px;">
-          <nz-spin nzSize="large"></nz-spin>
+          <nz-spin nzSize="large" nzTip="加载任务中..."></nz-spin>
         </div>
       } @else {
         <div nz-row [nzGutter]="16">
@@ -86,10 +101,12 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class TaskBoardComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
+  readonly workspaceContext = inject(WorkspaceContextFacade);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
 
   readonly selectedBlueprintId = signal<string | null>(null);
+  readonly currentBlueprintIds = this.workspaceContext.currentBlueprintIds;
 
   readonly boardColumns = [
     {
@@ -114,31 +131,53 @@ export class TaskBoardComponent implements OnInit {
     }
   ];
 
-  ngOnInit(): void {
-    this.loadBlueprints();
+  constructor() {
+    // 自动加载：监听视角变化和蓝图变化
+    effect(() => {
+      const blueprintIds = this.currentBlueprintIds();
+      const contextType = this.workspaceContext.contextType();
+
+      if (contextType !== 'app' && blueprintIds.length > 0) {
+        // 自动选择第一个蓝图（如果还没有选择）
+        if (!this.selectedBlueprintId() || !blueprintIds.includes(this.selectedBlueprintId()!)) {
+          this.selectedBlueprintId.set(blueprintIds[0]);
+        }
+
+        // 自动加载任务
+        const blueprintId = this.selectedBlueprintId();
+        if (blueprintId) {
+          this.loadTasksForBlueprint(blueprintId);
+        }
+      }
+      // 注意：app 视角下不清空任务，保持上次加载的状态
+    });
   }
 
-  async loadBlueprints(): Promise<void> {
+  ngOnInit(): void {
+    // 初始化不需要做任何事，effect 会自动处理
+  }
+
+  async loadTasksForBlueprint(blueprintId: string): Promise<void> {
     try {
-      await this.blueprintService.loadBlueprints();
+      await this.taskService.loadTasksByBlueprint(blueprintId);
     } catch (error) {
-      this.message.error('加载蓝图列表失败');
+      this.message.error('加载任务列表失败');
     }
   }
 
   async onBlueprintChange(): Promise<void> {
     const blueprintId = this.selectedBlueprintId();
     if (blueprintId) {
-      try {
-        await this.taskService.loadTasksByBlueprint(blueprintId);
-      } catch (error) {
-        this.message.error('加载任务列表失败');
-      }
+      await this.loadTasksForBlueprint(blueprintId);
     }
   }
 
   createTask(): void {
     this.router.navigate(['/tasks/create']);
+  }
+
+  createBlueprint(): void {
+    this.router.navigate(['/blueprints/create']);
   }
 
   viewTask(id: string): void {

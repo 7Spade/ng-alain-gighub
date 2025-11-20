@@ -1,16 +1,17 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Account, AccountService, Team, TeamService } from '@shared';
+import { Account, AccountService, Team, TeamService, BlueprintService, Blueprint } from '@shared';
 
 /**
  * Workspace Data Service
  *
  * 工作区数据加载服务
- * 负责加载和缓存用户可访问的组织和团队列表
+ * 负责加载和缓存用户可访问的组织、团队和蓝图列表
  *
  * 职责：
  * - 加载用户创建的组织列表
  * - 加载用户加入的组织列表
  * - 加载用户可访问的团队列表（作为成员 + 组织下的团队）
+ * - 加载当前视角下的蓝图列表
  * - 管理数据加载状态
  *
  * @example
@@ -23,6 +24,7 @@ import { Account, AccountService, Team, TeamService } from '@shared';
  * // 获取数据
  * const orgs = dataService.allOrganizations();
  * const teams = dataService.userTeams();
+ * const blueprints = dataService.contextBlueprints();
  * ```
  */
 @Injectable({
@@ -31,6 +33,7 @@ import { Account, AccountService, Team, TeamService } from '@shared';
 export class WorkspaceDataService {
   private readonly accountService = inject(AccountService);
   private readonly teamService = inject(TeamService);
+  private readonly blueprintService = inject(BlueprintService);
 
   // 用户账户信息
   private currentUserAccountState = signal<Account | null>(null);
@@ -45,6 +48,10 @@ export class WorkspaceDataService {
   private userTeamsState = signal<Team[]>([]);
   private loadingTeamsState = signal<boolean>(false);
 
+  // 蓝图列表状态（当前视角下的蓝图）
+  private contextBlueprintsState = signal<Blueprint[]>([]);
+  private loadingBlueprintsState = signal<boolean>(false);
+
   // 错误状态
   private errorState = signal<string | null>(null);
 
@@ -56,6 +63,8 @@ export class WorkspaceDataService {
   readonly loadingOrganizations = this.loadingOrganizationsState.asReadonly();
   readonly userTeams = this.userTeamsState.asReadonly();
   readonly loadingTeams = this.loadingTeamsState.asReadonly();
+  readonly contextBlueprints = this.contextBlueprintsState.asReadonly();
+  readonly loadingBlueprints = this.loadingBlueprintsState.asReadonly();
   readonly error = this.errorState.asReadonly();
 
   /**
@@ -170,6 +179,61 @@ export class WorkspaceDataService {
   }
 
   /**
+   * 根据视角加载蓝图列表
+   *
+   * @param contextType 视角类型
+   * @param contextId 视角ID（可选，app视角不需要）
+   */
+  async loadBlueprintsByContext(contextType: 'app' | 'user' | 'organization' | 'team', contextId: string | null): Promise<void> {
+    // app 视角不加载蓝图
+    if (contextType === 'app' || !contextId) {
+      this.contextBlueprintsState.set([]);
+      return;
+    }
+
+    this.loadingBlueprintsState.set(true);
+    this.errorState.set(null);
+
+    try {
+      let blueprints: Blueprint[] = [];
+
+      switch (contextType) {
+        case 'user':
+          // 加载用户创建的蓝图
+          blueprints = await this.blueprintService.loadBlueprintsByOwnerId(contextId);
+          break;
+
+        case 'organization':
+          // 加载组织创建的蓝图
+          blueprints = await this.blueprintService.loadBlueprintsByOwnerId(contextId);
+          break;
+
+        case 'team':
+          // 团队视角：需要找到团队所属的组织，然后加载组织的蓝图
+          // 注意：团队本身不创建蓝图，蓝图属于组织
+          const team = this.userTeamsState().find(t => t.id === contextId);
+          if (team) {
+            const orgId = (team as any).organizationId || (team as any).organization_id;
+            if (orgId) {
+              blueprints = await this.blueprintService.loadBlueprintsByOwnerId(orgId);
+            }
+          }
+          break;
+      }
+
+      this.contextBlueprintsState.set(blueprints);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '加载蓝图列表失败';
+      console.error('[WorkspaceDataService] 加载蓝图列表失败:', error);
+      // 不抛出错误，只记录日志和设置错误状态
+      this.errorState.set(errorMessage);
+      this.contextBlueprintsState.set([]);
+    } finally {
+      this.loadingBlueprintsState.set(false);
+    }
+  }
+
+  /**
    * 重置所有状态
    */
   reset(): void {
@@ -178,8 +242,10 @@ export class WorkspaceDataService {
     this.createdOrganizationsState.set([]);
     this.joinedOrganizationsState.set([]);
     this.userTeamsState.set([]);
+    this.contextBlueprintsState.set([]);
     this.errorState.set(null);
     this.loadingOrganizationsState.set(false);
     this.loadingTeamsState.set(false);
+    this.loadingBlueprintsState.set(false);
   }
 }
