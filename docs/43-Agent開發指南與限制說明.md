@@ -172,11 +172,7 @@ bash(command: 'grep -n "pattern" /path/to/file')
 ├── .github/
 │   ├── agents/
 │   │   ├── copilot-instructions.md (完整指引)
-<<<<<<< HEAD
 │   │   └── role-config.md (角色配置)
-=======
-│   │   └── .copilot-role-config-agent.md (角色配置)
->>>>>>> new-main
 │   └── instructions/ (模組特定)
 ├── .cursor/
 │   ├── rules/ (Cursor 規則)
@@ -199,7 +195,6 @@ bash(command: 'grep -n "pattern" /path/to/file')
 | `docs/Archive/fyi-codebase.md` | 796KB | ❌ | 歷史檔案 |
 | `docs/NG-ZORRO-Index/` | 344KB | ❌ | 參考官方文檔 |
 | `docs/DELON-Index/` | 204KB | ❌ | 參考官方文檔 |
-| `docs/PRD.md` | 68KB | ✅ | 產品需求文檔 |
 | `docs/30-0-完整SQL表結構定義.md` | 60KB | ✅ | 資料庫架構 |
 | `docs/44-專案路線圖.md` | 52KB | ✅ | 專案規劃 |
 | 其他文檔 | <50KB | ✅ | 全部索引 |
