@@ -95,7 +95,7 @@ import { HeaderUserComponent } from './widgets/user.component';
             <li nz-menu-item routerLink="/pro/account/settings">{{ 'menu.account.settings' | i18n }}</li>
             @if (workspaceContext.contextType() !== 'user' && currentUserAccountId()) {
               <li nz-menu-divider></li>
-              <li nz-menu-item (click)="switchToUser()" [nzDisabled]="workspaceContext.switching()">
+              <li nz-menu-item (click)="workspaceContext.switchToUser()" [nzDisabled]="workspaceContext.switching()">
                 @if (workspaceContext.switching()) {
                   <i nz-icon nzType="loading" class="mr-sm"></i>
                 } @else {
@@ -107,7 +107,7 @@ import { HeaderUserComponent } from './widgets/user.component';
             @if (allOrganizations().length > 0) {
               <li nz-menu-divider></li>
               @for (org of allOrganizations(); track org.id) {
-                <li nz-menu-item (click)="switchToOrganization(org.id)" [nzDisabled]="workspaceContext.switching()">
+                <li nz-menu-item (click)="workspaceContext.switchToOrganization(org.id)" [nzDisabled]="workspaceContext.switching()">
                   @if (workspaceContext.switching()) {
                     <i nz-icon nzType="loading" class="mr-sm"></i>
                   } @else {
@@ -119,7 +119,7 @@ import { HeaderUserComponent } from './widgets/user.component';
                   @for (team of teamsByOrganization().get(org.id)!; track team.id) {
                     <li
                       nz-menu-item
-                      (click)="switchToTeam(team.id)"
+                      (click)="workspaceContext.switchToTeam(team.id)"
                       [nzDisabled]="workspaceContext.switching()"
                       style="padding-left: 32px;"
                     >
@@ -194,27 +194,5 @@ export class LayoutBasicComponent implements OnInit {
 
   ngOnInit(): void {
     // WorkspaceContextFacade 会自动加载数据，无需手动调用
-    // 此方法保留以满足 OnInit 接口要求
-  }
-
-  /**
-   * 切换到组织菜单
-   */
-  switchToOrganization(organizationId: string): void {
-    this.workspaceContext.switchToOrganization(organizationId);
-  }
-
-  /**
-   * 切换到团队菜单
-   */
-  switchToTeam(teamId: string): void {
-    this.workspaceContext.switchToTeam(teamId);
-  }
-
-  /**
-   * 切换到用户视角
-   */
-  switchToUser(): void {
-    this.workspaceContext.switchToUser();
   }
 }

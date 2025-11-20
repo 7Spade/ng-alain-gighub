@@ -1,6 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Account, AccountService, Team, TeamService } from '@shared';
-import { firstValueFrom } from 'rxjs';
 
 /**
  * Workspace Data Service

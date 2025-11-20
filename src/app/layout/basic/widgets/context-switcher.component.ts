@@ -33,7 +33,11 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     <nz-dropdown-menu #contextMenu="nzDropdownMenu">
       <div nz-menu class="width-sm">
         <!-- 应用菜单 -->
-        <div nz-menu-item (click)="switchToApp()" [class.ant-menu-item-selected]="workspaceContext.contextType() === 'app'">
+        <div
+          nz-menu-item
+          (click)="workspaceContext.switchToApp()"
+          [class.ant-menu-item-selected]="workspaceContext.contextType() === 'app'"
+        >
           <i nz-icon nzType="appstore" class="mr-sm"></i>
           <span>应用菜单</span>
         </div>
@@ -46,7 +50,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
               @for (account of userAccounts(); track account.id) {
                 <li
                   nz-menu-item
-                  (click)="switchToUser(account.id)"
+                  (click)="workspaceContext.switchToUser(account.id)"
                   [class.ant-menu-item-selected]="workspaceContext.contextType() === 'user' && workspaceContext.contextId() === account.id"
                 >
                   <i nz-icon nzType="user" class="mr-sm"></i>
@@ -64,7 +68,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
               @for (account of organizationAccounts(); track account.id) {
                 <li
                   nz-menu-item
-                  (click)="switchToOrganization(account.id)"
+                  (click)="workspaceContext.switchToOrganization(account.id)"
                   [class.ant-menu-item-selected]="
                     workspaceContext.contextType() === 'organization' && workspaceContext.contextId() === account.id
                   "
@@ -88,7 +92,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
                       @for (team of teamsByOrganization().get(org.id)!; track team.id) {
                         <li
                           nz-menu-item
-                          (click)="switchToTeam(team.id)"
+                          (click)="workspaceContext.switchToTeam(team.id)"
                           [class.ant-menu-item-selected]="
                             workspaceContext.contextType() === 'team' && workspaceContext.contextId() === team.id
                           "
@@ -131,36 +135,7 @@ export class HeaderContextSwitcherComponent implements OnInit {
   readonly contextIcon = this.workspaceContext.contextIcon;
   readonly switching = this.workspaceContext.switching;
 
-  /**
-   * 切换到应用菜单
-   */
-  switchToApp(): void {
-    this.workspaceContext.switchToApp();
-  }
-
-  /**
-   * 切换到个人用户菜单
-   */
-  switchToUser(userId: string): void {
-    this.workspaceContext.switchToUser(userId);
-  }
-
-  /**
-   * 切换到组织菜单
-   */
-  switchToOrganization(organizationId: string): void {
-    this.workspaceContext.switchToOrganization(organizationId);
-  }
-
-  /**
-   * 切换到团队菜单
-   */
-  switchToTeam(teamId: string): void {
-    this.workspaceContext.switchToTeam(teamId);
-  }
-
   ngOnInit(): void {
     // WorkspaceContextFacade 会自动加载数据，无需手动调用
-    // 此方法保留以满足 OnInit 接口要求
   }
 }

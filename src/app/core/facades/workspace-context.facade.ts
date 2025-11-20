@@ -1,6 +1,5 @@
-import { computed, effect, inject, Injectable, OnDestroy } from '@angular/core';
+import { computed, effect, inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
-import { AccountService } from '@shared';
 import { WorkspaceContextService, WorkspaceDataService } from '@shared/services/workspace-context';
 
 import { ErrorStateService } from '../services/error-state.service';
@@ -44,13 +43,12 @@ import { WorkspaceMenuService } from '../services/workspace-menu.service';
 @Injectable({
   providedIn: 'root'
 })
-export class WorkspaceContextFacade implements OnDestroy {
+export class WorkspaceContextFacade {
   private readonly contextService = inject(WorkspaceContextService);
   private readonly dataService = inject(WorkspaceDataService);
   private readonly menuService = inject(WorkspaceMenuService);
   private readonly errorStateService = inject(ErrorStateService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
-  private readonly accountService = inject(AccountService);
 
   // 暴露上下文服务的状态（通过 Facade）
   readonly contextType = this.contextService.contextType;
@@ -261,9 +259,5 @@ export class WorkspaceContextFacade implements OnDestroy {
    */
   reset(): void {
     this.contextService.reset();
-  }
-
-  ngOnDestroy(): void {
-    // 清理资源（如需要）
   }
 }
