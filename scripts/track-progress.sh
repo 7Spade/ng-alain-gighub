@@ -47,30 +47,33 @@ count_tests() {
     find "$dir" -name "*.spec.ts" | wc -l
 }
 
-# Function to get ESLint errors count
-get_eslint_errors() {
-    yarn lint --format json 2>/dev/null | jq '[.[] | .errorCount] | add' 2>/dev/null || echo "N/A"
-}
+# Note: ESLint and test coverage metrics are skipped for performance reasons
+# To enable, uncomment the following functions and update the collection section below
 
-# Function to get ESLint warnings count
-get_eslint_warnings() {
-    yarn lint --format json 2>/dev/null | jq '[.[] | .warningCount] | add' 2>/dev/null || echo "N/A"
-}
+# # Function to get ESLint errors count
+# get_eslint_errors() {
+#     yarn lint --format json 2>/dev/null | jq '[.[] | .errorCount] | add' 2>/dev/null || echo "0"
+# }
 
-# Function to get test coverage
-get_test_coverage() {
-    if [ -f "$PROJECT_ROOT/coverage/lcov.info" ]; then
-        local total_lines=$(grep -c "^DA:" "$PROJECT_ROOT/coverage/lcov.info" 2>/dev/null || echo "0")
-        local covered_lines=$(grep "^DA:" "$PROJECT_ROOT/coverage/lcov.info" | grep -cv ",0$" 2>/dev/null || echo "0")
-        if [ "$total_lines" -gt 0 ]; then
-            echo "scale=2; ($covered_lines / $total_lines) * 100" | bc
-        else
-            echo "0"
-        fi
-    else
-        echo "N/A"
-    fi
-}
+# # Function to get ESLint warnings count
+# get_eslint_warnings() {
+#     yarn lint --format json 2>/dev/null | jq '[.[] | .warningCount] | add' 2>/dev/null || echo "0"
+# }
+
+# # Function to get test coverage
+# get_test_coverage() {
+#     if [ -f "$PROJECT_ROOT/coverage/lcov.info" ]; then
+#         local total_lines=$(grep -c "^DA:" "$PROJECT_ROOT/coverage/lcov.info" 2>/dev/null || echo "0")
+#         local covered_lines=$(grep "^DA:" "$PROJECT_ROOT/coverage/lcov.info" | grep -cv ",0$" 2>/dev/null || echo "0")
+#         if [ "$total_lines" -gt 0 ]; then
+#             echo "scale=2; ($covered_lines / $total_lines) * 100" | bc
+#         else
+#             echo "0"
+#         fi
+#     else
+#         echo "N/A"
+#     fi
+# }
 
 echo -e "${YELLOW}⏳${NC} Collecting metrics..."
 echo ""
@@ -92,11 +95,11 @@ DOCUMENT_FACADE_COUNT=$(find "$FACADES_DIR/document" -name "*.ts" -not -name "*.
 BLUEPRINT_FACADE_COUNT=$(find "$FACADES_DIR/blueprint" -name "*.ts" -not -name "*.spec.ts" 2>/dev/null | wc -l)
 
 echo "  → Checking code quality..."
-ESLINT_ERRORS="Skipped" # $(get_eslint_errors)
-ESLINT_WARNINGS="Skipped" # $(get_eslint_warnings)
+ESLINT_ERRORS="N/A (Enable in script to collect)"
+ESLINT_WARNINGS="N/A (Enable in script to collect)"
 
 echo "  → Checking test coverage..."
-TEST_COVERAGE="Skipped" # $(get_test_coverage)
+TEST_COVERAGE="N/A (Enable in script to collect)"
 
 echo ""
 echo -e "${GREEN}✓${NC} Metrics collected successfully"
@@ -144,8 +147,8 @@ cat > "$REPORT_FILE" << EOF
 
 | Metric | Count | Target | Status |
 |--------|-------|--------|--------|
-| ESLint Errors | $ESLINT_ERRORS | 0 | $([ "$ESLINT_ERRORS" == "0" ] && echo "✅" || echo "⚠️") |
-| ESLint Warnings | $ESLINT_WARNINGS | <10 | $([ "$ESLINT_WARNINGS" -lt 10 ] 2>/dev/null && echo "✅" || echo "⚠️") |
+| ESLint Errors | $ESLINT_ERRORS | 0 | ℹ️ |
+| ESLint Warnings | $ESLINT_WARNINGS | <10 | ℹ️ |
 
 ---
 
