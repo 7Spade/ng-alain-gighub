@@ -100,8 +100,7 @@
 ## 🏗️ 專案架構關鍵點
 
 ### Git-like 分支模型
-```
-主分支（Main Branch）
+```text
   ├─ 組織分支（Organization Branches）
   │   ├─ 暫存區（Staging Area - 48h 可撤回）
   │   └─ PR 機制（Pull Request System）
@@ -125,9 +124,8 @@
 詳細資料表定義：`docs/22-完整SQL表結構定義.md` ⭐⭐⭐⭐⭐
 
 ### 五層架構開發順序
-```
 第 1 步：Types 層（database.types.ts）
-  ↓
+```text
 第 2 步：Repositories 層（資料存取）
   ↓
 第 3 步：Models 層（業務模型，可並行）
@@ -151,10 +149,9 @@ Gemini 支援文字、圖片、影片、音訊，適合：
 - 理解架構圖並提供實作建議
 
 **範例工作流程**：
-```
 1. 上傳 UI 設計圖（Figma 截圖）
 2. 要求：「根據這個設計圖生成 Angular Component，使用 NG-ZORRO 元件」
-3. Gemini 分析圖片並生成對應代碼
+```typescript
 4. 根據 .github/agents/domain/angular-agent.md 規範優化代碼
 ```
 
@@ -286,11 +283,10 @@ import { SHARED_IMPORTS } from '@shared';
 ## 📝 提交與 PR 規範
 
 ### Conventional Commits
-```
 feat(scope): 新增功能描述
 fix(scope): 修復問題描述
 docs(scope): 文檔更新描述
-style(scope): 代碼格式調整
+```mermaid
 refactor(scope): 重構描述
 test(scope): 測試相關
 chore(scope): 建構工具或輔助工具變動

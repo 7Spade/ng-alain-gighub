@@ -563,8 +563,7 @@ describe('BlueprintDetailComponent', () => {
 
 ## 路由結構範例
 
-```
-/                           # 根路徑 → /dashboard
+```text
 ├── /dashboard              # 儀表板
 ├── /auth
 │   ├── /login             # 登入

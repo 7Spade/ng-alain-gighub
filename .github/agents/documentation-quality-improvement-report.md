@@ -68,8 +68,7 @@ ng-alain-gighub 是一個企業級 Angular 20 專案，採用 ng-alain 框架，
 #### 問題描述
 所有 **80+ 個文檔**集中在 `docs/` 根目錄，沒有分類：
 
-```
-docs/
+```text
 ├── 00-現代化語法規範.md
 ├── 01-系統架構思維導圖.mermaid.md
 ├── 25-快速開始指南.md
@@ -161,9 +160,8 @@ docs/
 
 **建立新目錄**：
 
-```
 docs/
-├── specs/           # 新增：開發規範 (15 個檔案)
+```text
 ├── architecture/    # 新增：架構設計 (19 個檔案)
 ├── guides/          # 新增：開發指南 (27 個檔案)
 ├── reference/       # 新增：參考文檔 (11 個檔案)
@@ -309,20 +307,18 @@ Phase 7: 移動歸檔文檔 ✓
 ### 案例 1：規範文檔重組
 
 **改善前**：
-```
 docs/
 ├── 00-現代化語法規範.md
-├── 00-API規範.md
+```text
 ├── 00-Component規範.md
 ... (15 個檔案散落根目錄)
 ```
 
 **改善後**：
-```
 docs/specs/
 ├── README.md (完整索引)
 ├── 00-modern-syntax-standards.md
-├── 00-api-standards.md
+```text
 ├── 00-component-standards.md
 ... (15 個檔案有組織)
 ```
@@ -335,22 +331,20 @@ docs/specs/
 ### 案例 2：架構文檔整合
 
 **改善前**：
-```
 docs/
 ├── 01-系統架構思維導圖.mermaid.md
 ├── 02-專案結構流程圖.mermaid.md
 ├── 20-完整架構流程圖.mermaid.md
-... (19 個架構圖混雜)
+```text
 ```
 
 **改善後**：
-```
 docs/architecture/
 ├── README.md (架構總覽 + 使用指引)
 ├── 01-system-architecture-mindmap.mermaid.md
 ├── 02-project-structure-flowchart.mermaid.md
 ├── 20-complete-architecture-flowchart.mermaid.md
-... (19 個架構圖分類)
+```text
 ```
 
 **效益**：
@@ -361,22 +355,22 @@ docs/architecture/
 ### 案例 3：開發指南優化
 
 **改善前**：
-```
 docs/
 ├── 25-快速開始指南.md
 ├── 42-開發最佳實踐指南.md
 ├── 50-RLS策略開發指南.md
 ... (27 個指南散落)
+
+```text
 ```
 
 **改善後**：
-```
 docs/guides/
 ├── README.md (入門路徑 + 優先級)
 ├── getting-started.md (⭐)
 ├── development-best-practices.md (⭐)
 ├── rls-policy-development-guide.md
-... (27 個指南分類)
+```text
 ```
 
 **效益**：
@@ -387,22 +381,22 @@ docs/guides/
 ### 案例 4：工作區系統專題
 
 **改善前**：
-```
 docs/
 ├── 58-工作區上下文功能總覽.md
 ├── 工作區上下文使用與規劃指南.md
 ├── 個人上下文菜單功能說明-user-data.md
 ... (8 個檔案命名不一致)
+
+```text
 ```
 
 **改善後**：
-```
 docs/workspace/
 ├── README.md (系統概述 + 技術實現)
 ├── workspace-context-overview.md
 ├── workspace-context-usage-guide.md
 ├── user-context-menu-documentation.md
-... (8 個檔案統一命名)
+```text
 ```
 
 **效益**：

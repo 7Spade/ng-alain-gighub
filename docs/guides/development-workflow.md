@@ -313,8 +313,7 @@ yarn e2e
 ### 2. 建立 Pull Request
 
 **PR 標題格式**：
-```
-[feat] 新增功能名稱
+```mermaid
 [fix] 修復問題描述
 [refactor] 重構說明
 [docs] 文檔更新說明
@@ -407,9 +406,8 @@ yarn e2e
 
 遵循 [Conventional Commits](https://www.conventionalcommits.org/) 格式：
 
-```
 <type>(<scope>): <subject>
-
+```mermaid
 <body>
 
 <footer>

@@ -432,8 +432,7 @@ GET /rest/v1/blueprints?limit=20&offset=20
 ```
 
 **回應 Header**：
-```
-Content-Range: 0-19/100
+```text
 ```
 
 - --
@@ -670,9 +669,8 @@ Authorization: Bearer {access_token}
 ```
 
 **回應**（成功）：
-```
 (binary file data)
-Content-Type: image/jpeg
+```text
 ```
 
 - --

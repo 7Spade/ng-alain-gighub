@@ -156,8 +156,7 @@
 
 ### 新增目錄
 
-```
-docs/
+```text
 ├── specs/              # 新增：開發規範
 ├── architecture/       # 新增：架構文檔
 ├── guides/            # 新增：開發指南

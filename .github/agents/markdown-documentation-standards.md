@@ -24,8 +24,7 @@
 **強制使用 kebab-case（小寫加連字符）**
 
 ✅ **正確範例**:
-```
-getting-started.md
+```text
 api-specifications.md
 deployment-guide.md
 code-review-standards.md
@@ -33,9 +32,8 @@ ng-zorro-component-list.md
 ```
 
 ❌ **錯誤範例**:
-```
 Getting-Started.md          # 大寫字母
-API_Specifications.md       # 底線
+```text
 deploymentGuide.md          # camelCase
 CodeReview規範.md           # 混合中英文
 01-系統架構思維導圖.md       # 數字前綴+中文（例外情況見下文）
@@ -44,25 +42,24 @@ CodeReview規範.md           # 混合中英文
 ### 1.2 特殊情況例外
 
 **序號文檔**：允許使用數字前綴，但主檔名仍需 kebab-case
-```
 00-modern-syntax-standards.md
 01-system-architecture-mindmap.mermaid.md
-20-complete-architecture-flowchart.mermaid.md
+```text
 ```
 
 **索引目錄**：統一使用小寫
-```
 delon-index/
 ng-zorro-index/
+
+```text
 ```
 
 ### 1.3 目錄命名
 
 所有目錄名稱使用 kebab-case：
-```
 .github/agents/
 docs/specs/
-docs/architecture/
+```mermaid
 docs/guides/
 docs/reference/
 ```
@@ -276,11 +273,10 @@ npm start
 
 根目錄僅保留關鍵文檔：
 
-```
 README.md                    # 專案主說明
 README-zh_CN.md              # 簡體中文版
 CONTRIBUTING.md              # 貢獻指南
-CHANGELOG.md                 # 變更日誌
+```text
 AGENTS.md                    # AI Agent 總覽
 CLAUDE.md                    # Claude AI 配置
 GEMINI.md                    # Gemini AI 配置
@@ -289,12 +285,11 @@ LICENSE                      # 授權條款
 
 ### 5.2 docs/ 目錄結構
 
-```
 docs/
 ├── README.md                         # 文檔索引（主要導航）
 ├── CHANGELOG.md                      # 文檔變更記錄
 │
-├── specs/                            # 規範文檔
+```yaml
 │   ├── 00-modern-syntax-standards.md
 │   ├── 00-api-standards.md
 │   ├── 00-component-standards.md
@@ -501,13 +496,12 @@ AI Agent 可自動修正：
 
 ### 9.3 處理原則
 
-```
 1. 分析文檔當前狀態
 2. 識別需要修正的問題
 3. 按優先順序修正：
    a. 檔案命名與結構
    b. 標題層級
-   c. 必要章節補充
+```markdown
    d. 格式與列表
    e. 語言與術語
    f. 內容質量提升

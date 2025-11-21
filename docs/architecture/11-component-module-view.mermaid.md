@@ -254,8 +254,7 @@ C4Component
 ## 設計模式應用
 
 ### Repository → Service → Signal Facade
-```
-Component → Facade (ReadonlySignal) → Service (業務邏輯) → Repository (資料存取) → Supabase
+```text
 ```
 
 ### Workflow Pattern
@@ -279,8 +278,8 @@ Component → Facade (ReadonlySignal) → Service (業務邏輯) → Repository 
 
 ## 資料流指引
 
-```
 User Action → Component (Routes) → Facade/Service (Shared/Core) → Repository → SupabaseService → Supabase
+```text
 ```
 - Component 透過 facade 取得 `ReadonlySignal`
 - Service 驗證規則、記錄活動、呼叫 Repository

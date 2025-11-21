@@ -144,8 +144,7 @@
 
 ### 四層上下文結構
 
-```
-個人上下文 (User Context)
+```sql
     ↓ 加入
 團隊上下文 (Team Context)
     ↓ 隸屬

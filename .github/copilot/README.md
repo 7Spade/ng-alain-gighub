@@ -21,8 +21,7 @@
 
 ### Agent 使用記憶庫的標準流程
 
-```
-1. 任務開始
+```text
    ↓
 2. 閱讀 Agent 配置文件（自動提示查閱 memory.jsonl）
    ↓
@@ -39,9 +38,8 @@
 ### 記憶庫查詢範例
 
 **範例 1：開發新功能**
-```
 任務：實作用戶管理功能
-
+```diff
 Agent 應查閱的記憶實體：
 - Five Layer Development Order（開發順序）
 - Repository Pattern（數據訪問模式）
@@ -50,10 +48,9 @@ Agent 應查閱的記憶實體：
 ```
 
 **範例 2：代碼審查**
-```
 任務：審查 PR 中的代碼變更
 
-Agent 應查閱的記憶實體：
+```diff
 - Code Review Standards（審查標準）
 - Four Core Development Principles（核心開發原則）
 - Testing Strategy（測試策略）
@@ -61,11 +58,10 @@ Agent 應查閱的記憶實體：
 ```
 
 **範例 3：架構設計**
-```
 任務：設計新模組架構
 
 Agent 應查閱的記憶實體：
-- Git-like Branch Model（分支模型）
+```mermaid
 - Five Layer Architecture（五層架構）
 - Dependency Direction Principle（依賴方向原則）
 - Low Coupling High Cohesion（低耦合高內聚）

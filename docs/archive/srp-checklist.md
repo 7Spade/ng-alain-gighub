@@ -307,8 +307,7 @@ export class UserService {
 
 **我應該在哪裡寫這段代碼？**
 
-```
-是否是 UI 邏輯（點擊、顯示、表單）？
+```text
   └─ 是 → Component
   └─ 否 ↓
 

@@ -42,8 +42,7 @@ Routes 模組是應用程式的**路由層**，包含所有功能頁面：
 ## ⚡ 快速參考
 
 ### 依賴關係
-```
-✅ 可依賴：routes 可依賴 shared 和 core
+```mermaid
 ❌ 禁止依賴：routes 子模組之間不可互相依賴
 ```
 
@@ -292,9 +291,8 @@ async deleteUser(id: string): Promise<void> {
 - **Gemini**：UI 設計圖轉頁面代碼、流程圖轉業務邏輯
 
 ### 常見 Prompt 範例
-```
 請創建一個用戶管理功能，要求：
-1. 列表頁：顯示用戶列表，只能查看
+```text
 2. 詳情頁：顯示用戶詳情，可編輯和刪除
 3. 使用 UserFacade 管理狀態
 4. 實現完整的錯誤處理

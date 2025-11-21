@@ -151,8 +151,7 @@
 簡短可執行的建議（1-2 句話）
 
 **範例**：
-```
-建議將 profile.component.ts 重構為 standalone component 並使用 Signals
+```diff
 ```
 
 #### 2️⃣ 實作
@@ -212,14 +211,14 @@ export class UserProfileComponent {
 若需要人工審查，標示「**需要人工審查**」並說明原因
 
 **範例**：
-```
 ✅ 不需要人工審查 - 純前端組件重構
+```text
 ```
 
 或
 
-```
 ⚠️ 需要人工審查 - 涉及資料庫 schema 變更，需確認 migration 策略
+```text
 ```
 
 ### 假設聲明（若適用）
@@ -227,8 +226,8 @@ export class UserProfileComponent {
 若有所假設（因無法讀取導圖或缺少上下文），在結論前以一行列出
 
 **範例**：
-```
 已採用假設：UserService 已存在、使用 Supabase 作為後端、遵循現有認證流程
+```mermaid
 ```
 
 - --

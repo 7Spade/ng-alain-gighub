@@ -9,17 +9,15 @@
 ## 🎯 核心規則（Agent 必讀）
 
 ### 1. 命名規範 **[強制]**
-```
-✅ MUST: 使用 kebab-case
+```text
 ✅ 範例: getting-started.md, api-standards.md
 ❌ 禁止: 中文檔名、camelCase、snake_case
 ❌ 禁止: Getting-Started.md, API_Standards.md
 ```
 
 ### 2. 目錄結構 **[強制]**
-```
 docs/
-├── specs/          # 開發規範（00-*.md）
+```mermaid
 ├── architecture/   # 架構設計（01-21-*.mermaid.md）
 ├── guides/         # 開發指南（*.md）
 ├── reference/      # 參考文檔（*.md）
@@ -84,10 +82,9 @@ docs/
 
 ### 常用文檔路徑
 
-```
 docs/guides/getting-started.md                    # 快速開始
 docs/guides/development-best-practices.md         # 最佳實踐
-docs/reference/shared-imports-guide.md            # SHARED_IMPORTS
+```shell
 docs/architecture/20-complete-architecture-flowchart.mermaid.md  # 完整架構
 docs/reference/sql-schema-definition.md           # 資料表結構
 ```

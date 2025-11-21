@@ -623,8 +623,7 @@ export class TaskService {
 
 #### 問題陳述
 當前 URL 結構可能不清晰，無法直觀體現 workspace context：
-```
-當前：/tasks/list?org=abc123
+```text
 建議：/@myorg/tasks/list 或 /workspace/org/abc123/tasks/list
 ```
 

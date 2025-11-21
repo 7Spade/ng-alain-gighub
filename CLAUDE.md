@@ -93,8 +93,7 @@
 ## 🏗️ 專案架構關鍵點
 
 ### Git-like 分支模型
-```
-主分支（Main Branch）
+```text
   ├─ 組織分支（Organization Branches）
   │   ├─ 暫存區（Staging Area - 48h 可撤回）
   │   └─ PR 機制（Pull Request System）
@@ -118,9 +117,8 @@
 詳細資料表定義：`docs/22-完整SQL表結構定義.md` ⭐⭐⭐⭐⭐
 
 ### 五層架構開發順序
-```
 第 1 步：Types 層（database.types.ts）
-  ↓
+```text
 第 2 步：Repositories 層（資料存取）
   ↓
 第 3 步：Models 層（業務模型，可並行）
@@ -144,10 +142,9 @@ Claude 3.5 Sonnet 支援 200K tokens 上下文，適合：
 - 理解複雜的業務邏輯流程
 
 **範例工作流程**：
-```
 1. 閱讀架構文檔：@docs/20-完整架構流程圖.mermaid.md
 2. 閱讀資料模型：@docs/22-完整SQL表結構定義.md
-3. 閱讀相關規範：@.github/agents/domain/angular-agent.md
+```text
 4. 開始實作：遵循五層架構開發順序
 ```
 
@@ -160,11 +157,10 @@ Claude 的 Artifacts 功能適合：
 
 ### 3. 利用思考鏈（Chain of Thought）
 對於複雜任務，使用 Claude 的思考鏈：
-```
 請使用思考鏈方式分析以下需求：
 1. 理解業務需求
 2. 確認資料模型
-3. 設計 API 介面
+```typescript
 4. 規劃實作步驟
 5. 考慮邊界條件
 6. 提出測試策略
@@ -273,12 +269,11 @@ import { SHARED_IMPORTS } from '@shared';
 ## 📝 提交與 PR 規範
 
 ### Conventional Commits
-```
 feat(scope): 新增功能描述
 fix(scope): 修復問題描述
 docs(scope): 文檔更新描述
 style(scope): 代碼格式調整
-refactor(scope): 重構描述
+```text
 test(scope): 測試相關
 chore(scope): 建構工具或輔助工具變動
 ```

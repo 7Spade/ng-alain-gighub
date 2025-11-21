@@ -120,8 +120,7 @@ export class ExampleComponent {
 ## 🏗️ 3. 架構指引（Architecture Pointers）
 
 ### 專案結構
-```
-src/app/
+```text
 ├── core/          # 核心服務（singletons, Supabase, interceptors）
 ├── shared/        # 可重用 UI 組件與服務
 ├── routes/        # 功能頁面（feature-first）
@@ -129,8 +128,8 @@ src/app/
 ```
 
 ### 五層架構開發順序
-```
 Types 層 → Repositories 層 → Models 層 → Services 層 → Facades 層 → Routes/Components 層
+```text
 ```
 
 ### 路徑別名規範

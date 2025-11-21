@@ -60,8 +60,7 @@
 
 ### 2.1 五層架構概覽
 
-```
-┌─────────────────────────────────────────────────────────┐
+```text
 │                    Component Layer                       │
 │                   (Presentation)                         │
 └──────────────────────┬──────────────────────────────────┘
@@ -93,9 +92,8 @@
 
 ### 2.2 目錄結構
 
-```
 src/app/
-├── core/                           # 核心基礎設施層
+```typescript
 │   ├── infra/
 │   │   ├── types/                  # ⭐ Types 層（高原子化）
 │   │   │   ├── bot/
@@ -1215,10 +1213,9 @@ export type TaskInsert = Database['public']['Tables']['tasks']['Insert'];
 
 ### 8.2 資料流向
 
-```
 Component
     ↓ inject TaskFacade
-TaskFacade (協調)
+```text
     ↓ inject TaskService, TaskAssignmentService, ActivityService
 TaskService (業務邏輯)
     ↓ inject TaskRepository
@@ -1233,11 +1230,10 @@ Supabase (資料庫)
 
 ### 9.1 原子化決策樹
 
-```
 需要定義型別/枚舉？
     ├─ 是 → Types 層（高原子化，每個 entity 一個文件）
     └─ 否 ↓
-
+```typescript
 需要封裝資料結構？
     ├─ 是 → Models 層（中度原子化，相關 entity 可放一起）
     └─ 否 ↓

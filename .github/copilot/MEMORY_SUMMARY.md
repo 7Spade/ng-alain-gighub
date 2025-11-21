@@ -150,8 +150,7 @@ To maintain this memory:
 
 ## 📊 Statistics
 
-```
-Total lines: 319
+```text
 ├── Entities: 149 (46.7%)
 └── Relations: 170 (53.3%)
 

@@ -54,8 +54,7 @@
 
 本次 SRP (Single Responsibility Principle) 重構已成功完成核心服務和組件的改造，消除了主要的架構違規，建立了正確的依賴鏈：
 
-```
-Component → Facade/Service → Repository → SupabaseService → Supabase
+```typescript
 ```
 
 ### 完成度評估

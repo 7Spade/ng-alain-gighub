@@ -39,8 +39,7 @@
 重新命名 80 個檔案：
 
 #### ng-zorro-index/ (72 個檔案)
-```
-01-Alert.md → 01-alert.md
+```text
 25-QRCode.md → 25-qrcode.md
 36-ColorPicker.md → 36-color-picker.md
 37-DatePicker.md → 37-date-picker.md
@@ -48,9 +47,8 @@
 ```
 
 #### archive/ (7 個檔案)
-```
 開發順序.md → development-order.md
-SRP-檢查清單.md → srp-checklist.md
+```text
 MCP伺服器驗證總結.md → mcp-server-verification-summary.md
 16-API-介面映射圖.mermaid.md → 16-api-interface-mapping-diagram.mermaid.md
 19-可觀測性與CI-CD管道圖.mermaid.md → 19-observability-and-ci-cd-pipeline-diagram.mermaid.md
@@ -59,8 +57,9 @@ SRP-重構完成報告.md → srp-refactoring-completion-report.md
 ```
 
 #### workspace/ (1 個檔案)
-```
 ANALYSIS-SUMMARY-ZH.md → analysis-summary-zh.md
+
+```markdown
 ```
 
 **影響**: 所有檔案遵循 kebab-case 命名規範

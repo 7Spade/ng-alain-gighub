@@ -64,8 +64,7 @@
 - **修復**：更新 `.cursorindexignore` 為選擇性排除
 
 #### 當前狀態 ✅
-```
-# 僅排除以下內容：
+```mermaid
 - docs/Archive/          # 歷史文檔
 - docs/fyi-codebase.md   # 大型生成檔案 (796KB)
 - docs/DELON-Index/      # 組件索引 (204KB)
@@ -208,9 +207,8 @@ bash(command: 'grep -n "pattern" /path/to/file')
 
 ### 4. 理解專案結構
 
-```
 專案結構層次：
-├── AGENTS.md (入口)
+```mermaid
 ├── .github/
 │   ├── agents/
 │   │   ├── copilot-instructions.md (完整指引)

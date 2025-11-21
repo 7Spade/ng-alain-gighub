@@ -275,8 +275,7 @@ export class I18nService {
 
 ### 1. 翻譯檔案結構
 
-```
-src/
+```javascript
 ├── assets/
 │   └── i18n/
 │       ├── zh-TW/

@@ -56,8 +56,7 @@
 - 其他目錄: 0 個文件
 
 **範例**:
-```
-❌ 錯誤: docs/ng-zorro-index/01-Alert.md
+```text
 ✅ 正確: docs/ng-zorro-index/01-alert.md
 
 ❌ 錯誤: docs/ng-zorro-index/36-ColorPicker.md
@@ -154,9 +153,8 @@
 - `docs/guides/`: 20 個指南缺少完整結構
 
 **受影響文件範例**:
-```
 docs/specs/:
-- 00-component-standards.md
+```text
 - 00-modern-syntax-standards.md
 - 00-security-standards.md
 - 00-single-responsibility-principle.md
@@ -251,8 +249,9 @@ docs/guides/:
 **範例問題**:
 ````markdown
 ❌ 錯誤範例:
-```
 export class ExampleComponent {}
+
+```json
 ```
 
 ✅ 正確範例:
@@ -632,9 +631,8 @@ npx husky add .husky/pre-commit "npx lint-staged"
 ### 命名問題文件（79 個）
 
 #### ng-zorro-index/ (72 個)
-```
 01-Alert.md, 02-Form.md, 03-Tree.md, 04-Result.md, 05-Skeleton.md,
-06-Spin.md, 07-Progress.md, 08-Drawer.md, 09-Modal.md, 10-Popconfirm.md,
+```text
 11-Message.md, 12-Notification.md, 13-Avatar.md, 14-Badge.md, 15-Calendar.md,
 16-Card.md, 17-Carousel.md, 18-Collapse.md, 19-Comment.md, 20-Descriptions.md,
 21-Empty.md, 22-Image.md, 23-List.md, 24-Popover.md, 25-QRCode.md,
@@ -651,10 +649,9 @@ npx husky add .husky/pre-commit "npx lint-staged"
 ```
 
 #### archive/ (7 個)
-```
 16-API-介面映射圖.mermaid.md
 19-可觀測性與CI-CD管道圖.mermaid.md
-62-專案開發改善實施總結報告.md
+```text
 MCP伺服器驗證總結.md
 SRP-檢查清單.md
 SRP-重構完成報告.md
