@@ -1,4 +1,4 @@
-import { Database } from '@core';
+import { Database, BranchPermissionLevel } from '@core';
 
 /**
  * 權限系統模型類型定義
@@ -48,14 +48,7 @@ export type BranchPermissionUpdate = Database['public']['Tables']['branch_permis
 
 /**
  * 分支權限級別枚舉
+ * 統一從 core/types 重新導出，避免重複定義
+ * @see core/infra/types/permission/permission.types.ts
  */
-export enum BranchPermissionLevel {
-  /** 擁有者：全權控制 */
-  OWNER = 'owner',
-  /** 管理員：管理權限 */
-  ADMIN = 'admin',
-  /** 寫入：可以修改承攬欄位 */
-  WRITE = 'write',
-  /** 讀取：唯讀 */
-  READ = 'read'
-}
+export { BranchPermissionLevel };

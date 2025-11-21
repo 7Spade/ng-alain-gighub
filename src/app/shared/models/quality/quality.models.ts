@@ -1,4 +1,4 @@
-import { Database } from '@core';
+import { Database, QualityCheckStatus } from '@core';
 
 /**
  * 品质验收系统数据模型
@@ -99,15 +99,10 @@ export enum QualityCheckType {
 
 /**
  * 檢查狀態
- * 保留原有枚举定义以保持向后兼容
+ * 統一從 core/types 重新導出，避免重複定義
+ * @see core/infra/types/quality/quality.types.ts
  */
-export enum QualityCheckStatus {
-  PENDING = 'pending', // 待檢查
-  IN_PROGRESS = 'in_progress', // 檢查中
-  PASSED = 'passed', // 通過
-  FAILED = 'failed', // 未通過
-  CONDITIONAL_PASS = 'conditional_pass' // 條件通過
-}
+export { QualityCheckStatus };
 
 /**
  * 檢查項目
