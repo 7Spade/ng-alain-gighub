@@ -1,38 +1,37 @@
 /**
- * 数据模型统一导出
+ * 數據模型統一導出
  *
- * 按 11 个业务模块分类：
- * - account: 账户与身份系统（4 张表）
- * - collaboration: 组织协作系统（3 张表）
- * - permission: 权限系统（5 张表）
- * - blueprint: 蓝图/专案系统（5 张表）
- * - task: 任务执行系统（9 张表）
- * - quality: 品质验收系统（4 张表）
- * - issue: 问题追踪系统（4 张表）
- * - communication: 协作沟通系统（6 张表）
- * - data: 资料分析系统（6 张表）
- * - bot: 机器人系统（3 张表）
- * - system: 系统管理（2 张表）
+ * 按業務模組分類：
+ * - account: 帳戶與身份系統（4 張表）
+ * - collaboration: 組織協作系統（3 張表）
+ * - permission: 權限系統（5 張表）
+ * - blueprint: 藍圖/專案系統（5 張表）
+ * - task: 任務執行系統（9 張表）
+ * - quality: 品質驗收系統（4 張表）
+ * - issue: 問題追蹤系統（4 張表）
+ * - communication: 協作溝通系統（6 張表）
+ * - data: 資料分析系統（6 張表）
+ * - bot: 機器人系統（3 張表）
+ * - system: 系統管理（2 張表）
+ * - explore: 探索系統
  *
  * @module shared/models
  */
 
-// 按模块导出（按依赖顺序）
-export * from './account.models';
-export * from './blueprint/blueprint.models';
-export * from './bot.models';
-export * from './collaboration.models';
-export * from './communication.models';
-export * from './data.models';
-export * from './explore.models';
-export type { AccountWithAvatar, BlueprintWithDescription } from './explore.models';
-export * from './issue.models';
-export * from './permission.models';
-export * from './quality.models';
-export * from './system.models';
-export * from './task.models';
+// 按模組導出（按依賴順序）
+export * from './account';
+export * from './blueprint';
+export * from './bot';
+export * from './collaboration';
+export * from './communication';
+export * from './data';
+export * from './explore';
+export * from './issue';
+export * from './permission';
+export * from './quality';
+export * from './system';
+export * from './task';
 
-// 注意：quality-check.model.ts 和 activity-log.model.ts 已迁移到模块目录并删除
-// 请使用 @shared/models/quality 和 @shared/models/data 导入
-// - QualityCheck 相关类型：从 @shared/models/quality 导入
-// - ActivityLog 相关类型：从 @shared/models/data 导入
+// 特定類型重新導出（保持向後兼容）
+export type { AccountWithAvatar, BlueprintWithDescription } from './explore';
+

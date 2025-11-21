@@ -1,62 +1,52 @@
 /**
- * Repository 模块导出
+ * Repository 模組統一導出
+ *
+ * 按業務模組分類導出：
+ * - account: 帳戶與身份系統
+ * - analytics: 資料分析系統
+ * - auth: 認證系統
+ * - blueprint: 藍圖/專案系統
+ * - bot: 機器人系統
+ * - collaboration: 組織協作系統
+ * - communication: 協作溝通系統
+ * - document: 文件管理系統
+ * - issue: 問題追蹤系統
+ * - notification: 通知系統
+ * - permission: 權限系統
+ * - quality: 品質驗收系統
+ * - task: 任務執行系統
+ * - todo: 待辦中心系統
+ * - system: 系統管理
  *
  * 注意：Permission, Role, UserRole 類型已在 @core/permissions 中定義
  * 此處只導出 Repository 類，不導出類型以避免衝突
+ *
+ * @module core/infra/repositories
  */
-export * from './account.repository';
-export * from './activity-log.repository';
+
+// 基礎 Repository
 export * from './base.repository';
+
+// 按模組導出
+export * from './account';
+export * from './analytics';
+export * from './auth';
 export * from './blueprint';
-export * from './bot-execution-log.repository';
-export * from './bot-task.repository';
-export * from './bot.repository';
-export * from './branch-permission.repository';
-export * from './collaboration-invitation.repository';
-export * from './collaboration-member.repository';
-export * from './comment.repository';
-export * from './daily-report.repository';
-export * from './document-thumbnail.repository';
-export * from './document-version.repository';
-export * from './document.repository';
-export * from './feature-flag.repository';
-export * from './inspection-photo.repository';
-export * from './inspection.repository';
-export * from './issue-assignment.repository';
-export * from './issue-photo.repository';
-export * from './issue-sync-log.repository';
-export * from './issue.repository';
-export * from './notification-rule.repository';
-export * from './notification-subscription.repository';
-export * from './notification.repository';
-export * from './organization-collaboration.repository';
-export * from './organization-member.repository';
-export * from './organization-schedule.repository';
-export * from './personal-todo.repository';
-// 只導出 Repository 類，不導出類型（避免與 @core/permissions 衝突）
-export * from './analytics-cache.repository';
-export * from './auth.repository';
-export { PermissionRepository } from './permission.repository';
-export type { PermissionInsert, PermissionUpdate } from './permission.repository';
-export * from './progress-tracking.repository';
-export * from './qc-photo.repository';
-export * from './quality-check.repository';
-export * from './report-photo.repository';
-export * from './role-permission.repository';
-export * from './setting.repository';
-// 只導出 Repository 類，不導出類型（避免與 @core/permissions 衝突）
-export { RoleRepository } from './role.repository';
-export type { RoleInsert, RoleUpdate } from './role.repository';
-export * from './task-assignment.repository';
-export * from './task-dependency.repository';
-export * from './task-list.repository';
-export * from './task-staging.repository';
-export * from './task-template.repository';
-export * from './task.repository';
-export * from './team-member.repository';
-export * from './team.repository';
-export * from './todo-status-tracking.repository';
-// 只導出 Repository 類，不導出類型（避免與 @core/permissions 衝突）
-export { UserRoleRepository } from './user-role.repository';
-export type { UserRoleInsert, UserRoleUpdate } from './user-role.repository';
-export * from './weather-cache.repository';
+export * from './bot';
+export * from './collaboration';
+export * from './communication';
+export * from './document';
+export * from './issue';
+export * from './notification';
+export * from './quality';
+export * from './task';
+export * from './todo';
+export * from './system';
+
+// Permission 模組特殊處理（避免與 @core/permissions 衝突）
+export { PermissionRepository } from './permission/permission.repository';
+export type { PermissionInsert, PermissionUpdate } from './permission/permission.repository';
+export { RoleRepository } from './permission/role.repository';
+export type { RoleInsert, RoleUpdate } from './permission/role.repository';
+export { UserRoleRepository } from './permission/user-role.repository';
+export type { UserRoleInsert, UserRoleUpdate } from './permission/user-role.repository';
