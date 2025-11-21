@@ -114,10 +114,11 @@ docs/architecture/01-system-architecture-mindmap.mermaid.md
 2. **檢查架構圖**（必須）：`docs/architecture/01-system-architecture-mindmap.mermaid.md` 理解系統架構
 3. **完成檢查清單**（必須）：`agent-startup-checklist.md` 確認所有必須項目
 4. **新功能開發**（必須）：`development-sequence-guide.md` 遵循五層架構順序
-5. `QUICK-START.md` - 使用決策樹找到對應文件
-6. `domain/*.md` – 依任務類型套用專家檢查表
-7. `docs-index.md` - 查找詳細文檔
-8. `role-config.md` – 需要快速複製的 system message 時使用
+5. **Workspace 增強任務**（必須）：`workspace-enhancement-execution-guide.md` 使用 @S7 + @SPT 工具
+6. `QUICK-START.md` - 使用決策樹找到對應文件
+7. `domain/*.md` – 依任務類型套用專家檢查表
+8. `docs-index.md` - 查找詳細文檔
+9. `role-config.md` – 需要快速複製的 system message 時使用
 
 ## 📚 核心文件說明
 
@@ -127,6 +128,7 @@ docs/architecture/01-system-architecture-mindmap.mermaid.md
 | [agent-startup-checklist.md](./agent-startup-checklist.md) | 企業標準啟動檢查清單、強制執行流程 | **所有 Agent（必讀）** |
 | [memory-usage-guide.md](./memory-usage-guide.md) | 記憶庫使用指南、查詢方法、常見場景 | **所有 Agent（必讀）** |
 | [development-sequence-guide.md](./development-sequence-guide.md) | 五層架構開發順序指南（Agent 專用版）| **開發任務 Agent（必讀）** |
+| [workspace-enhancement-execution-guide.md](./workspace-enhancement-execution-guide.md) | **Workspace 增強任務執行指南（@S7 + @SPT）** | **Workspace 任務 Agent（必讀）** |
 | [enterprise-compliance-checklist.md](./enterprise-compliance-checklist.md) | 企業標準合規檢查清單（五級檢查）| **所有 Agent（必讀）** |
 | [.github/copilot/memory.jsonl](../copilot/memory.jsonl) | 專案記憶庫（149 實體 + 170 關係） | **所有 Agent（必讀）** |
 

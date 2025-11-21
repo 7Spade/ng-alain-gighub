@@ -250,6 +250,15 @@
 
 需要增強 Facades 層和 Repositories 層的開發者：
 
+**⭐⭐⭐⭐⭐ 執行指南（GitHub Copilot Agents 必讀）**:
+1. **[.github/agents/workspace-enhancement-execution-guide.md](../../.github/agents/workspace-enhancement-execution-guide.md)** - **Workspace 增強任務執行指南**
+   - 強制使用 Sequential Thinking (@S7) + Software Planning Tool (@SPT)
+   - Supabase MCP 工具使用模式
+   - 五層架構執行順序與驗證門檻
+   - 階段性進度報告要求
+   - 企業標準檢查清單
+   - ⚠️ **執行任何 workspace 增強任務前必讀**
+
 **快速開始路徑**:
 1. **facades-getting-started.md** ⭐⭐⭐⭐⭐ - **5 分鐘開始** - 最快理解整體概念和如何開始
 2. **facades-quick-reference.md** ⭐⭐⭐⭐ - **快速參考** - 代碼模板和常用命令
