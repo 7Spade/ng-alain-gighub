@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
+import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
@@ -45,18 +49,47 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
   /**
    * 根據藍圖 ID 查詢暫存記錄（透過 JOIN tasks 表）
    *
-   * 注意：此方法需要在 BaseRepository 支援 JOIN，或使用 RPC
-   * 目前簡化為透過所有記錄過濾
+   * 使用 Supabase 的關聯查詢功能，透過 task_id 關聯到 tasks 表
    *
    * @param blueprintId 藍圖 ID
    * @param options 查詢選項
    * @returns Observable<TaskStaging[]>
    */
   findByBlueprintId(blueprintId: string, options?: QueryOptions): Observable<TaskStaging[]> {
-    // TODO: 實現更高效的查詢（使用 JOIN 或 RPC）
-    // 目前簡化為返回所有記錄，由 Service 層過濾
-    // 或者在 Supabase 創建一個 View 或 Function 來處理
-    return this.findAll(options);
+    // 使用 Supabase 的 inner join 語法
+    // 透過 task_id 關聯 tasks 表，並篩選 blueprint_id
+    let query = this.supabase
+      .from(this.tableName as any)
+      .select(options?.select || '*')
+      .eq('tasks.blueprint_id', blueprintId) as any;
+
+    // 應用額外的篩選條件
+    if (options?.filters) {
+      for (const [key, value] of Object.entries(options.filters)) {
+        const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        query = query.eq(snakeKey, value);
+      }
+    }
+
+    // 應用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      query = query.order(snakeOrderBy, { ascending: options.orderDirection !== 'desc' });
+    }
+
+    // 應用分頁
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      query = query.range(fromIndex, toIndex);
+    }
+
+    return from(Promise.resolve(query) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findByBlueprintId`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<TaskStaging>(item)) : [toCamelCaseData<TaskStaging>(data)];
+      })
+    );
   }
 
   /**
