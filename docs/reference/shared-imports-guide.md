@@ -561,7 +561,8 @@ export class ExampleComponent {}
 ### 錯誤 1：忘記導入 SHARED_IMPORTS
 
 **錯誤訊息**：
-```typescript
+```text
+Error: NG0304: Can't bind to 'nzButton' since it isn't a known property of 'button'.
 ```
 
 **解決方案**：
@@ -608,8 +609,8 @@ import { SHARED_IMPORTS } from '@shared/shared-imports';
 ### 錯誤 3：使用未導入的管道
 
 **錯誤訊息**：
+```text
 Error: NG0304: The pipe 'i18n' could not be found.
-```bash
 ```
 
 **解決方案**：

@@ -644,7 +644,8 @@ WITH CHECK (
 
 ## JWT 聲明傳播流程
 
-```yaml
+```text
+用戶登入
   ↓
 Supabase Auth 生成 JWT
   ↓
