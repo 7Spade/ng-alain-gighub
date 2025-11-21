@@ -45,6 +45,19 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 - ✅ 任務範圍與目標確認
 - ✅ 執行順序規劃完成
 
+### 🔴 第 4 步：新功能開發必讀（開發任務必須）✅
+**位置**：[development-sequence-guide.md](./development-sequence-guide.md) ⭐⭐⭐⭐⭐
+
+**強制遵循五層架構開發順序**：
+```
+Types → Repositories → Models → Services → Facades → Components → Tests
+```
+
+**關鍵原則**：
+- 嚴格依賴方向：只能依賴下層
+- P0 優先級：所有層級都必須完成
+- 企業級檢查：每個層級都有完成標準
+
 ---
 
 ## 🧠 專案記憶庫（必讀）
