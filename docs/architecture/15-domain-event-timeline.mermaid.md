@@ -493,8 +493,7 @@ async function replayEvents(eventIds: string[]) {
 ## Workflow Pattern 事件流程
 
 ### 任務建立流程
-```
-用戶建立任務
+```mermaid
   ↓
 TaskService.create()
   ↓
@@ -510,9 +509,8 @@ Realtime 推送 → 前端自動更新
 ```
 
 ### 任務狀態變更流程
-```
 用戶更新任務狀態
-  ↓
+```mermaid
 TaskService.update()
   ↓
 TaskRepository.update() → 更新 tasks
@@ -568,10 +566,9 @@ AggregationRefreshService.emit(blueprintId, ['tasks', 'progress'])
 ## 事件時間軸範例
 
 ### 完整任務生命週期
-```
 T0: 專案經理建立任務
 T1: 系統記錄活動（task.created）
-T2: 系統發送通知（Email/Slack）
+```text
 T3: 前端 Realtime 接收更新
 T4: 施工人員接受任務
 T5: 系統記錄活動（task.assigned）

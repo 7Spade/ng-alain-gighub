@@ -148,8 +148,7 @@
 
 ### 狀態流轉
 
-```
-pending → assigned → in_progress → staging → in_qa → in_inspection → completed
+```typescript
   ↓         ↓            ↓            ↓
 cancelled ← cancelled ← cancelled ← cancelled
 ```
@@ -203,9 +202,8 @@ export type TaskStatus =
 
 ### 狀態流轉
 
-```
 planning → active → completed → archived
-            ↓
+```typescript
          on_hold
             ↓
          active
@@ -256,10 +254,9 @@ export type BlueprintStatus =
 
 ### 狀態流轉
 
-```
 open → reviewing → approved → merged
               ↓
-          rejected → closed
+```typescript
               ↓
           open (請求修改)
 ```
@@ -310,11 +307,10 @@ export type PRStatus =
 
 ### 狀態流轉
 
-```
 pending → accepted (建立協作關係)
        ↓
     rejected (邀請終止)
-       ↓
+```typescript
     expired (邀請失效)
 ```
 
@@ -362,10 +358,11 @@ export type InvitationStatus =
 
 ### 狀態流轉
 
-```
 pending → active → suspended → active (恢復)
                   ↓
                ended (協作終止)
+
+```typescript
 ```
 
 **注意**：協作關係支援多種協作類型（contractor, subcontractor, consultant, partner），並可暫停和恢復。
@@ -415,10 +412,10 @@ export type CollaborationStatus =
 
 ### 狀態流轉
 
-```
 pending → in_progress → staging → in_qa → in_inspection → completed
   ↓           ↓            ↓
 cancelled ← cancelled ← cancelled
+```typescript
 ```
 
 **注意**：待辦中心聚合多種來源的待辦事項（tasks, issues, review_pr, qa_check, inspection），狀態與來源實體同步。
@@ -479,10 +476,10 @@ export type TodoStatus =
 
 ### 狀態流轉
 
-```
 open → in_progress → resolved → closed
                       ↓
                    wont_fix → closed
+```typescript
 ```
 
 **注意**：根據 Git-like 分支模型，所有分支問題會即時同步至主分支（`issue_sync_logs` 表）。
@@ -544,21 +541,19 @@ export type IssueStatus =
 ### 狀態流轉
 
 **品質檢查流程**：
-```
 pending → in_progress → passed → [進入驗收]
                       ↓
                    failed
-                      ↓
+```mermaid
               conditional_pass
 ```
 
 **驗收流程**（責任切割）：
-```
 pending → in_progress → accepted (責任轉移 = TRUE)
                       ↓
                    rejected
                       ↓
-              conditional_accept
+```typescript
 ```
 
 ### 資料庫定義
@@ -615,8 +610,12 @@ export type InspectionStatus =
 
 ### 狀態流轉
 
-```
 draft → submitted → reviewed
+
+
+
+
+```typescript
 ```
 
 ### 資料庫定義
@@ -657,8 +656,8 @@ export type DailyReportStatus =
 
 ### 狀態流轉
 
-```
 未讀 (is_read = false) → 已讀 (is_read = true, read_at = NOW())
+```typescript
 ```
 
 ### 資料庫定義
@@ -700,9 +699,8 @@ export interface Notification {
 
 ### 狀態流轉
 
-```
 initialized → updating → complete
-                ↓
+```typescript
             updating (循環更新)
 ```
 
@@ -733,8 +731,9 @@ export type ProgressTrackingStatus =
 
 ### 狀態流轉
 
-```
 uploading → active → archived
+
+```typescript
 ```
 
 ### TypeScript 類型
@@ -765,9 +764,8 @@ export type DocumentStatus =
 
 ### 狀態流轉
 
-```
 authenticated → active → idle → expired
-                ↑        ↓
+```typescript
                 └────────┘
 ```
 

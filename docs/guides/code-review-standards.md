@@ -128,8 +128,7 @@ PR 建立後自動觸發：
 
 ### PR 標題格式
 
-```
-<type>(<scope>): <subject>
+```mermaid
 
 範例：
 feat(tasks): add todo widget component

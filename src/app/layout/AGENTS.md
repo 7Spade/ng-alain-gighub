@@ -40,8 +40,7 @@ Layout 模組提供應用程式的**佈局結構**，包括：
 ## ⚡ 快速參考
 
 ### 依賴關係
-```
-✅ 可依賴：layout 可依賴 shared 和 core
+```typescript
 ❌ 禁止依賴：layout 不可依賴 routes
 ```
 
@@ -250,9 +249,8 @@ trackByLink(index: number, item: MenuItem): string {
 - **Gemini**：UI 設計圖轉佈局代碼、A11y 檢查
 
 ### 常見 Prompt 範例
-```
 請創建一個響應式的 Basic Layout，要求：
-1. 使用 NG-ZORRO Layout 組件
+```text
 2. 側邊欄在手機版自動收起
 3. 狀態持久化到 localStorage
 4. 實現鍵盤導航

@@ -659,5 +659,4 @@ presenceChannel
 | **Blueprint Module** | `/rest/v1/blueprints`、`/rest/v1/tasks`、`/rest/v1/documents` | 藍圖、任務、文件管理 |
 | **Dashboard Module** | `/rest/v1/rpc/get_blueprint_stats` | 統計資料 |
 | **Org Module** | `/rest/v1/accounts?account_type=eq.organization`、`/rest/v1/teams`、`/rest/v1/team_members` | 組織與成員管理 |
-```
 

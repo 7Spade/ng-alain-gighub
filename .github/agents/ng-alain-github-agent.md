@@ -79,8 +79,7 @@ UI庫: NG-ZORRO ^20.3.x + ng-alain 20.x
 - 依賴關係的分析
 
 **標準思考流程**：
-```
-1. 需求分析 → 識別核心問題
+```markdown
 2. 架構規劃 → 確定層級與依賴
 3. 邏輯拆解 → 分步驟實現
 4. 檢查驗證 → 確保符合企業標準
@@ -183,9 +182,8 @@ supabase db test
 - 存儲錯誤處理流程
 
 **Redis 數據結構**：
-```
 principles:srp           - SRP 原則
-principles:architecture  - 企業架構十大原則
+```typescript
 principles:development   - 開發順序與檢查清單
 principles:error        - 錯誤處理流程
 patterns:repository     - Repository 模式
@@ -318,10 +316,9 @@ class UserListComponent {
 **定義**：明確隔離不同層級，避免跨層依賴
 
 **架構分層**：
-```
 Routes (業務層)
   ↓ 依賴
-Shared (共享層)
+```sql
   ↓ 依賴
 Core (基礎設施層)
   ├─ Facades
@@ -366,10 +363,10 @@ readonly summary = computed(() => ({
 **定義**：依賴方向從上到下，避免循環依賴
 
 **依賴方向**：
-```
 Component → Facade → Service → Repository → SupabaseService → Supabase
   ↓          ↓        ↓          ↓
 Models   ← Types  ← Types    ← Types
+```text
 ```
 
 **檢查方法**：
@@ -456,11 +453,10 @@ Models   ← Types  ← Types    ← Types
 
 ### 標準開發流程
 
-```
 第 1 步：Types 層（P0 - 必須最先完成）
   ↓
 第 2 步：Repositories 層（P0 - 依賴 Types）
-  ↓
+```text
 第 3 步：Models 層（P0 - 可與 Repositories 並行）
   ↓
 第 4 步：Services 層（P0 - 依賴 Repositories + Models）
@@ -558,12 +554,11 @@ Models   ← Types  ← Types    ← Types
 
 ### 新功能開發標準思考流程
 
-```
 🔍 步驟 1：需求理解與分析
 ├─ 問題：這個功能要解決什麼問題？
 ├─ 目標：業務目標是什麼？
 ├─ 範圍：包含什麼？不包含什麼？
-└─ 驗證：如何驗證功能正確？
+```text
 
 📐 步驟 2：架構設計與規劃
 ├─ 層級：需要哪些層級？（Types → Repositories → Models → Services → Facades → Routes）
@@ -617,13 +612,12 @@ Models   ← Types  ← Types    ← Types
 
 #### 決策 1：是否需要創建業務模組類型文件？
 
-```
 檢查 database.types.ts
   ├─ 包含所需類型？
   │   └─ 是 → 不需要創建 {feature}.types.ts
   └─ 不包含？
       └─ 檢查業務需求
-          ├─ 需要額外類型定義？（枚舉、聯合類型、業務接口）
+```text
           │   └─ 是 → 創建 {feature}.types.ts
           └─ 不需要？
               └─ 否 → 不需要創建
@@ -631,19 +625,17 @@ Models   ← Types  ← Types    ← Types
 
 #### 決策 2：是否需要整合活動記錄？
 
-```
 檢查業務需求
   ├─ 需要記錄用戶操作？
   │   └─ 是 → 整合 BlueprintActivityService
   ├─ 需要審計追蹤？
   │   └─ 是 → 整合 BlueprintActivityService
   └─ 需要活動時間軸？
-      └─ 是 → 整合 BlueprintActivityService
+```text
 ```
 
 #### 決策 3：是否需要特定查詢方法？
 
-```
 檢查查詢需求
   ├─ BaseRepository.findAll() 足夠？
   │   └─ 是 → 不需要添加
@@ -651,13 +643,12 @@ Models   ← Types  ← Types    ← Types
       └─ 是 → 檢查使用頻率
           ├─ 多處使用？
           │   └─ 是 → 在 Repository 層實現
-          └─ 單一使用？
+```text
               └─ 是 → 在 Service 層實現
 ```
 
 #### 決策 4：是否需要多個 Services？
 
-```
 檢查業務複雜度
   ├─ 單一業務領域？
   │   └─ 是 → 單一 Service
@@ -666,7 +657,7 @@ Models   ← Types  ← Types    ← Types
           ├─ 職責清晰分離？
           │   └─ 是 → 分別創建 Service
           └─ 職責重疊？
-              └─ 是 → 合併為單一 Service
+```text
 ```
 
 ---
@@ -675,7 +666,6 @@ Models   ← Types  ← Types    ← Types
 
 ### 通用錯誤處理流程
 
-```
 開始執行步驟
   ↓
 執行開發步驟
@@ -685,7 +675,7 @@ Models   ← Types  ← Types    ← Types
   │   └─ 是 → 檢查企業標準
   │       ├─ 全部通過？
   │       │   └─ 是 → 進入下一步 ✅
-  │       └─ 部分失敗？
+```bash
   │           └─ 執行修復 → 重新檢查
   └─ 部分失敗？
       └─ 執行錯誤處理流程

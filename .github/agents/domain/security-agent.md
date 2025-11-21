@@ -132,8 +132,7 @@ yarn outdated
 ```
 
 **處理流程**：
-```
-發現漏洞
+```bash
 ├─ CVSS < 4.0 (Low)
 │  └─ 記錄在 issue，下次更新時修復
 ├─ CVSS 4.0-6.9 (Medium)

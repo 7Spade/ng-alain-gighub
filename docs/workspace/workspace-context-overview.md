@@ -216,8 +216,7 @@
 - **PR 審查** (`/blueprints/review`) - PR 審查界面
 
 **Git-like 分支模型**：
-```
-主分支 (Main Branch)
+```mermaid
   │
   ├─ 組織分支 1 (Org Branch A)
   │   ├─ 任務執行數據
@@ -704,9 +703,8 @@ export class FeatureComponent {
 
 ### 場景 1：跨上下文協作流程
 
-```
 1. 專案經理（組織上下文）
-   - 創建藍圖 → 設置主分支 → 定義標準任務
+```text
 
 2. 組織分支（組織上下文）
    - Fork 任務 → 創建組織分支 → 開始執行
@@ -726,10 +724,9 @@ export class FeatureComponent {
 
 ### 場景 2：問題處理流程
 
-```
 1. 團隊成員（團隊上下文）
    - 發現問題 → 查看問題列表（只讀）
-
+```text
 2. 切換到組織上下文
    - 創建問題 → 問題即時同步至主分支
 

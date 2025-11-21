@@ -14,8 +14,7 @@ Core 模組是應用程式的**核心基礎設施層**，提供：
 ## ⚡ 快速參考
 
 ### 依賴關係
-```
-✅ 可被依賴：routes、shared 可依賴 core
+```typescript
 ❌ 禁止依賴：core 不可依賴 routes 或 shared
 ```
 
@@ -143,9 +142,8 @@ export class ErrorStateService {
 - **Gemini**：搜尋最新安全實踐、API 更新
 
 ### 常見 Prompt 範例
-```
 請為 Core 模組創建一個 HTTP 攔截器，要求：
-1. 添加 Bearer token 認證
+```text
 2. 統一錯誤處理
 3. 實現 3 次重試（指數退避）
 4. 遵循 .cursor/rules/core-specific.mdc 規範

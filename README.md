@@ -185,8 +185,7 @@ For detailed architecture understanding, see:
 
 ### Five-Layer Architecture
 
-```
-Routes (Business Layer)
+```text
   ↓ depends on
 Shared (Shared Layer)
   ↓ depends on

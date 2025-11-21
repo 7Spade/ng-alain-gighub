@@ -18,8 +18,7 @@
 
 ## 📁 目錄結構
 
-```
-專案根目錄
+```text
 ├── AGENTS.md                 # ⭐ 所有 AI 助手的入口文檔
 ├── CLAUDE.md                 # 🤖 Claude AI 專用配置（7KB）
 ├── GEMINI.md                 # 🌟 Google Gemini 專用配置（9KB）

@@ -48,8 +48,7 @@
 
 ### 整合流程
 
-```
-用戶登入
+```mermaid
   ↓
 Supabase Auth 驗證
   ↓

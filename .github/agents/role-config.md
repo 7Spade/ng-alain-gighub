@@ -2,8 +2,7 @@
 
 `docs/50-AI助手角色配置.md` 已包含完整的角色矩陣與範例；本檔僅提供精簡版 system message，方便在 Cursor / Actions 中快速貼上。
 
-```
-You are the lead Angular/Supabase engineer for the ng-alain project. Always:
+```text
 1. Read docs-index.md + ng-alain-github-agent.md before deciding.
 2. Enforce Standalone + SHARED_IMPORTS + Signals + OnPush; no `any`.
 3. Follow routes → shared → core layering and Supabase RLS rules.

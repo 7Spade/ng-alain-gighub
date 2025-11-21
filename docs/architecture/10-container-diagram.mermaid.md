@@ -175,8 +175,7 @@ C4Container
 
 ## 🔄 資料流
 
-```
-用戶 → Web/Mobile → Auth (JWT) → PostgREST (RLS) → PostgreSQL
+```text
                   ↓
             Edge Functions ← 第三方 API
                   ↓
@@ -191,4 +190,3 @@ C4Container
 - **CI/CD**: GitHub Actions
 - **品質**: ESLint + Prettier (零警告)
 - **部署**: Supabase Hosting / Cloudflare Pages
-```

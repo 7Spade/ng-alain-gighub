@@ -252,8 +252,7 @@ we use the git commit messages to **generate the ng-alain change log**.
 Each commit message consists of a **header**, a **body** and a **footer**.  The header has a special
 format that includes a **type**, a **scope** and a **subject**:
 
-```
-<type>(<scope>): <subject>
+```html
 <BLANK LINE>
 <body>
 <BLANK LINE>
@@ -269,13 +268,12 @@ Footer should contain a [closing reference to an issue](https://help.github.com/
 
 Samples: (even more [samples](https://github.com/ng-alain/ng-alain-gighub/commits/master))
 
-```
 docs(changelog): update change log to beta.5
+```text
 ```
 
-```
 fix(release): need to depend on latest rxjs and zone.js
-
+```text
 The version in our package.json gets copied to the one we publish, and users need the latest of these.
 ```
 

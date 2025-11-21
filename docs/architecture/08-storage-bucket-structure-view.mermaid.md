@@ -339,14 +339,12 @@ graph TD
 - **私有 Bucket**: `documents/`, `drawings/`, `exports/` - 需權限驗證
 
 #### 1.2 路徑命名規範
-```
-{bucket}/{blueprint_id}/{category}/{entity_id}_{序號}.{ext}
+```json
 ```
 
 範例:
-```
 images/550e8400-e29b-41d4-a716-446655440000/daily_reports/abc123_001.jpg
-documents/550e8400-e29b-41d4-a716-446655440000/contracts/主合約.pdf
+```mermaid
 drawings/550e8400-e29b-41d4-a716-446655440000/architectural/A01_平面圖.dwg
 ```
 
@@ -642,10 +640,9 @@ async function uploadImage(file: File, path: string) {
 ## 詳細路徑結構
 
 ### images/ Bucket
-```
 images/
   └── {blueprint_id}/
-      ├── daily_reports/
+```text
       │   └── {report_id}_001.jpg
       │   └── {report_id}_002.jpg
       ├── quality_checks/
@@ -657,11 +654,10 @@ images/
 ```
 
 ### documents/ Bucket
-```
 documents/
   └── {blueprint_id}/
       ├── contracts/
-      │   ├── contract_001.pdf
+```text
       │   └── contract_002.pdf
       ├── reports/
       │   ├── report_2025-11.pdf
@@ -671,12 +667,11 @@ documents/
 ```
 
 ### drawings/ Bucket
-```
 drawings/
   └── {blueprint_id}/
       ├── architectural/
       │   ├── v1.0_floor_plan.dwg
-      │   ├── v1.1_floor_plan.dwg
+```text
       │   └── v2.0_floor_plan.dwg
       ├── structural/
       │   └── S01_foundation.dwg

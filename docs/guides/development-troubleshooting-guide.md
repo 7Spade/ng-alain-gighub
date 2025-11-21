@@ -74,8 +74,7 @@ yarn dev:check
 #### 問題 1.1：`yarn install` 失敗
 
 **症狀**：
-```
-error An unexpected error occurred: "https://registry.yarnpkg.com/...
+```bash
 ```
 
 **解決方案 A**：清除快取並重試
@@ -105,8 +104,8 @@ yarn config delete registry
 #### 問題 1.2：`node-gyp` 編譯錯誤
 
 **症狀**：
-```
 gyp ERR! build error
+```bash
 ```
 
 **解決方案**：
@@ -128,8 +127,8 @@ sudo apt-get install build-essential
 #### 問題 2.1：端口 4200 被占用
 
 **症狀**：
-```
 Port 4200 is already in use.
+```bash
 ```
 
 **解決方案 A**：查找並終止占用進程
@@ -150,8 +149,8 @@ yarn ng serve --port 4201
 #### 問題 2.2：開發伺服器無法啟動
 
 **症狀**：
-```
 Error: Cannot find module '@angular-devkit/build-angular'
+```bash
 ```
 
 **解決方案**：
@@ -187,8 +186,8 @@ yarn ng serve --hmr --open
 #### 問題 3.1：記憶體不足
 
 **症狀**：
-```
 FATAL ERROR: Ineffective mark-compacts near heap limit
+```bash
 ```
 
 **解決方案**：
@@ -220,8 +219,8 @@ yarn ng build --build-optimizer=false
 #### 問題 3.3：TypeScript 編譯錯誤
 
 **症狀**：
-```
 error TS2304: Cannot find name 'xxx'
+```bash
 ```
 
 **解決方案**：
@@ -244,8 +243,8 @@ yarn build
 #### 問題 4.1：ESLint 錯誤
 
 **症狀**：
-```
 Parsing error: Cannot read file 'tsconfig.json'
+```bash
 ```
 
 **解決方案**：
@@ -283,8 +282,8 @@ yarn lint --no-fix
 #### 問題 5.1：連線失敗
 
 **症狀**：
-```
 Error: Invalid Supabase URL or Anon Key
+```markdown
 ```
 
 **解決方案**：
@@ -308,8 +307,8 @@ export const environment = {
 #### 問題 5.2：RLS 權限錯誤
 
 **症狀**：
-```
 new row violates row-level security policy
+```text
 ```
 
 **解決方案**：
@@ -324,8 +323,8 @@ new row violates row-level security policy
 #### 問題 6.1：Pre-commit Hook 失敗
 
 **症狀**：
-```
 husky - pre-commit hook exited with code 1
+```bash
 ```
 
 **解決方案**：
@@ -365,8 +364,8 @@ git mergetool
 #### 問題 7.1：測試無法執行
 
 **症狀**：
-```
 Error: Cannot find module '@angular/core/testing'
+```bash
 ```
 
 **解決方案**：
@@ -381,8 +380,8 @@ rm -rf .karma
 #### 問題 7.2：測試超時
 
 **症狀**：
-```
 Timeout - Async callback was not invoked within timeout
+```javascript
 ```
 
 **解決方案**：
@@ -400,8 +399,8 @@ it('should do something', async () => {
 #### 問題 8.1：找不到型別
 
 **症狀**：
-```
 Cannot find name 'YourType'
+```sql
 ```
 
 **解決方案**：
@@ -417,8 +416,8 @@ find src -name "*.model.ts"
 #### 問題 8.2：`any` 型別警告
 
 **症狀**：
-```
 Unexpected any. Specify a different type
+```bash
 ```
 
 **解決方案**：

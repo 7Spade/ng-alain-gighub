@@ -40,8 +40,7 @@ Shared 模組提供**可重用的組件、服務和工具**，包括：
 ## ⚡ 快速參考
 
 ### 依賴關係
-```
-✅ 可被依賴：routes 可依賴 shared
+```typescript
 ✅ 可依賴：shared 可依賴 core
 ❌ 禁止依賴：shared 不可依賴 routes
 ```
@@ -216,9 +215,8 @@ import { CommonModule } from '@angular/common'; // ❌ 已在 SHARED_IMPORTS 中
 - **Gemini**：UI 設計圖轉組件代碼
 
 ### 常見 Prompt 範例
-```
 請創建一個可重用的 UserCard 組件，要求：
-1. 使用 SHARED_IMPORTS
+```text
 2. 接收 user 作為 input signal
 3. 發出 onEdit 作為 output
 4. 使用 NG-ZORRO nz-card 組件

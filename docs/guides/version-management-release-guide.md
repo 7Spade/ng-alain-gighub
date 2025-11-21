@@ -115,8 +115,7 @@
 
 **版本格式**：`MAJOR.MINOR.PATCH[-prerelease][+build]`
 
-```
-版本號範例：
+```diff
 - 1.0.0        （正式版本）
 - 1.0.0-alpha.1（Alpha 預覽版）
 - 1.0.0-beta.2 （Beta 測試版）
@@ -156,9 +155,8 @@
 ### 預發布版本
 
 #### Alpha（內部測試版）
-```
 格式：x.y.z-alpha.n
-範例：2.0.0-alpha.1
+```diff
 
 特性：
 - 功能未完整
@@ -168,10 +166,9 @@
 ```
 
 #### Beta（公開測試版）
-```
 格式：x.y.z-beta.n
 範例：2.0.0-beta.1
-
+```diff
 特性：
 - 功能基本完整
 - 已修復重大錯誤
@@ -180,11 +177,10 @@
 ```
 
 #### RC（候選發布版）
-```
 格式：x.y.z-rc.n
 範例：2.0.0-rc.1
 
-特性：
+```markdown
 - 功能完整凍結
 - 僅進行錯誤修正
 - 準備正式發布
@@ -422,12 +418,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Git Flow 模型
 
-```
 main (生產環境)
 ├── develop (開發主線)
 │   ├── feature/user-auth (功能分支)
 │   ├── feature/photo-gallery (功能分支)
-│   └── ...
+```bash
 ├── release/v2.1.0 (發布分支)
 └── hotfix/critical-bug (緊急修復分支)
 ```

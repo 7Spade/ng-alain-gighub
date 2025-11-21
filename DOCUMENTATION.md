@@ -20,8 +20,7 @@
 #### 1. 檔案命名
 ✅ **使用 kebab-case（小寫字母+連字符）**
 
-```
-✅ 正確: getting-started.md, api-standards.md, code-review-guide.md
+```bash
 ❌ 錯誤: Getting-Started.md, API_Standards.md, codeReviewGuide.md
 ```
 
@@ -75,8 +74,8 @@ npm install
 ```
 
 ❌ 錯誤:
-```
 export class Example {}
+```mermaid
 ```
 ````
 
