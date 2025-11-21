@@ -1,14 +1,15 @@
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, computed, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BlueprintStatus } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, BlueprintService, Blueprint, AccountService, Account, AccountType } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { BlueprintCreateModalComponent } from './blueprint-create-modal.component';
 
 @Component({
   selector: 'app-blueprint-list',
   standalone: true,
-  imports: [SHARED_IMPORTS],
+  imports: [SHARED_IMPORTS, BlueprintCreateModalComponent],
   template: `
     <page-header [title]="pageTitle()">
       <ng-template #extra>
@@ -77,6 +78,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
         </ng-template>
       </st>
     </nz-card>
+
+    <!-- Blueprint Create Modal -->
+    <app-blueprint-create-modal #createModal (blueprintCreated)="onBlueprintCreated($event)"></app-blueprint-create-modal>
   `
 })
 export class BlueprintListComponent implements OnInit {
@@ -85,6 +89,8 @@ export class BlueprintListComponent implements OnInit {
   router = inject(Router);
   route = inject(ActivatedRoute);
   message = inject(NzMessageService);
+
+  @ViewChild('createModal') createModal!: BlueprintCreateModalComponent;
 
   // 导出枚举供模板使用
   AccountType = AccountType;
@@ -197,7 +203,15 @@ export class BlueprintListComponent implements OnInit {
   }
 
   createBlueprint(): void {
-    this.router.navigate(['/blueprints/create']);
+    this.createModal.open();
+  }
+
+  onBlueprintCreated(blueprintId: string): void {
+    // 重新加载数据
+    this.loadData().then(() => {
+      // 可选：导航到新创建的蓝图详情页
+      // this.router.navigate(['/blueprints', blueprintId]);
+    });
   }
 
   viewDetail(id: string): void {
