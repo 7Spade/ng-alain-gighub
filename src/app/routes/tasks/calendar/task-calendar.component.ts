@@ -88,7 +88,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           </nz-list>
         }
       }
-    }
     </nz-card>
   `
 })
