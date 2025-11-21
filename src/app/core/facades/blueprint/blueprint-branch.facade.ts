@@ -1,5 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { BlueprintBranchRepository, BranchForkRepository, type Blueprint, type BlueprintBranch, type BlueprintBranchUpdate } from '@core';
+import {
+  BlueprintBranchRepository,
+  BranchForkRepository,
+  type Blueprint,
+  type BlueprintBranch,
+  type BlueprintBranchUpdate,
+  type BlueprintInsert
+} from '@core';
 import { BlueprintActivityService, BranchService } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
@@ -107,7 +114,7 @@ export class BlueprintBranchFacade {
     sourceBranchId: string,
     data: { name: string; project_code: string; owner_id: string },
     forkedBy: string,
-    crudFacade: { createBlueprint: (data: any) => Promise<Blueprint> }
+    crudFacade: { createBlueprint: (data: BlueprintInsert) => Promise<Blueprint> }
   ): Promise<{ newBlueprint: Blueprint; fork: unknown }> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('fork_blueprint');

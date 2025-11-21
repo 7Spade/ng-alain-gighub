@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { ErrorStateService } from '@core';
 import { BotInsert, BotUpdate, BotTaskInsert, BotTaskUpdate, Bot, BotTask, BotExecutionLog, BlueprintActivityService } from '@shared';
 import { BotService, type BotDetail } from '@shared/services/bot/bot.service';
@@ -54,7 +54,7 @@ import { BotService, type BotDetail } from '@shared/services/bot/bot.service';
 @Injectable({
   providedIn: 'root'
 })
-export class BotFacade implements OnDestroy {
+export class BotFacade {
   // Inject dependencies
   private readonly botService = inject(BotService);
   private readonly activityService = inject(BlueprintActivityService);
@@ -109,13 +109,6 @@ export class BotFacade implements OnDestroy {
       recentExecutions: this.recentExecutions().length
     };
   });
-
-  /**
-   * Cleanup on destroy
-   */
-  ngOnDestroy(): void {
-    // Cleanup if needed
-  }
 
   // ============================================================================
   // Bot CRUD Operations
@@ -431,7 +424,7 @@ export class BotFacade implements OnDestroy {
     this.lastOperationState.set('start_bot');
 
     try {
-      await this.botService.updateBot(botId, { is_enabled: true } as any);
+      await this.botService.updateBot(botId, { is_enabled: true });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '启动机器人失败';
       this.errorStateService.addError({
@@ -459,7 +452,7 @@ export class BotFacade implements OnDestroy {
     this.lastOperationState.set('stop_bot');
 
     try {
-      await this.botService.updateBot(botId, { is_enabled: false } as any);
+      await this.botService.updateBot(botId, { is_enabled: false });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '停止机器人失败';
       this.errorStateService.addError({
@@ -556,16 +549,14 @@ export class BotFacade implements OnDestroy {
    */
   private computeChanges(oldBot: Bot, newBot: Bot): Array<{ field: string; oldValue: unknown; newValue: unknown }> {
     const changes: Array<{ field: string; oldValue: unknown; newValue: unknown }> = [];
-    const oldAny = oldBot as any;
-    const newAny = newBot as any;
 
-    const fieldsToCheck = ['bot_type', 'is_enabled', 'config'];
+    const fieldsToCheck: Array<keyof Bot> = ['bot_type', 'is_enabled', 'config'];
     for (const field of fieldsToCheck) {
-      if (oldAny[field] !== newAny[field]) {
+      if (oldBot[field] !== newBot[field]) {
         changes.push({
           field,
-          oldValue: oldAny[field],
-          newValue: newAny[field]
+          oldValue: oldBot[field],
+          newValue: newBot[field]
         });
       }
     }

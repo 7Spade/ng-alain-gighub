@@ -2,10 +2,9 @@ import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { ErrorStateService } from '@core';
 import { AuthService, type SignInRequest, type SignUpRequest } from '@shared/services/auth';
-import type { User, Session } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
-import { type Account } from '../../../shared/models';
+import type { Account } from '../../../shared/models';
 
 /**
  * Auth Facade
@@ -170,7 +169,7 @@ export class AuthFacade {
   async register(
     email: string,
     password: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<{ success: boolean; error?: string; requiresEmailVerification?: boolean }> {
     this.loadingState.set(true);
     this.lastOperationState.set('register');

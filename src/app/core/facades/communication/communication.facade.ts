@@ -115,13 +115,11 @@ export class CommunicationFacade implements OnDestroy {
         unread: unread.length,
         read: allNotifications.length - unread.length,
         byType: {
-          task: allNotifications.filter(
-            n => (n as any).notification_type === 'task_assignment' || (n as any).notification_type === 'task_update'
-          ).length,
-          issue: allNotifications.filter(n => (n as any).notification_type === 'issue_mention').length,
-          comment: allNotifications.filter(n => (n as any).notification_type === 'comment_reply').length,
-          pr: allNotifications.filter(n => (n as any).notification_type === 'pr_review').length,
-          system: allNotifications.filter(n => (n as any).notification_type === 'system').length
+          task: allNotifications.filter(n => n.notification_type === 'task_assignment' || n.notification_type === 'task_update').length,
+          issue: allNotifications.filter(n => n.notification_type === 'issue_mention').length,
+          comment: allNotifications.filter(n => n.notification_type === 'comment_reply').length,
+          pr: allNotifications.filter(n => n.notification_type === 'pr_review').length,
+          system: allNotifications.filter(n => n.notification_type === 'system').length
         }
       }
     };
@@ -180,7 +178,7 @@ export class CommunicationFacade implements OnDestroy {
         table: 'comments',
         events: ['INSERT', 'UPDATE', 'DELETE']
       },
-      payload => {
+      () => {
         // Refresh comments when changes occur
         const resource = this.currentResource();
         if (resource) {
@@ -197,7 +195,7 @@ export class CommunicationFacade implements OnDestroy {
         table: 'notifications',
         events: ['INSERT', 'UPDATE']
       },
-      payload => {
+      () => {
         // Refresh notifications when changes occur
         // Note: This would typically filter by current user
         // We need userId to load unread notifications, so we skip auto-refresh here

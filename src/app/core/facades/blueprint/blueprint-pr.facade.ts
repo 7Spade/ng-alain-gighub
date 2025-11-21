@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { type PullRequest, type PullRequestInsert, type PullRequestUpdate, type QueryOptions } from '@core';
+import { type PullRequest, type PullRequestInsert, type PullRequestUpdate } from '@core';
 import { BlueprintActivityService, PullRequestService } from '@shared';
 
 /**
@@ -71,10 +71,9 @@ export class BlueprintPrFacade {
    * Load Pull Requests for a blueprint
    *
    * @param blueprintId Blueprint ID
-   * @param options Query options
    * @returns Promise<PullRequest[]>
    */
-  async loadPullRequests(blueprintId: string, options?: QueryOptions): Promise<PullRequest[]> {
+  async loadPullRequests(blueprintId: string): Promise<PullRequest[]> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('load_pull_requests');
 
@@ -196,16 +195,14 @@ export class BlueprintPrFacade {
    *
    * @param prId Pull Request ID
    * @param reviewedBy Reviewer ID
-   * @param reason Rejection reason (optional)
    * @returns Promise<PullRequest>
    */
-  async rejectPullRequest(prId: string, reviewedBy: string, reason?: string): Promise<PullRequest> {
+  async rejectPullRequest(prId: string, reviewedBy: string): Promise<PullRequest> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('reject_pull_request');
 
     try {
       const pr = await this.pullRequestService.rejectPullRequest(prId, reviewedBy);
-      // Note: reason can be added to PR description or comments if needed
       return pr;
     } catch (error) {
       console.error('[BlueprintPrFacade] Failed to reject pull request:', error);
@@ -223,7 +220,7 @@ export class BlueprintPrFacade {
    * @param changesSummary Changes summary (optional)
    * @returns Promise<PullRequest>
    */
-  async mergePullRequest(prId: string, mergedBy: string, changesSummary?: any): Promise<PullRequest> {
+  async mergePullRequest(prId: string, mergedBy: string, changesSummary?: unknown): Promise<PullRequest> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('merge_pull_request');
 

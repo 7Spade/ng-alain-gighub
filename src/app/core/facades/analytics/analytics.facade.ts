@@ -1,15 +1,7 @@
-import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { ErrorStateService } from '@core';
 import { ProgressTrackingService, AnalyticsCacheService, BlueprintActivityService } from '@shared';
-import type {
-  ProgressTracking,
-  ProgressTrackingInsert,
-  ProgressTrackingUpdate,
-  AnalyticsCache,
-  ActivityLog,
-  ActivityLogDetail,
-  ActivityLogFilters
-} from '@shared';
+import type { ProgressTracking, ProgressTrackingUpdate, AnalyticsCache, ActivityLog, ActivityLogFilters } from '@shared';
 import { AnalyticsService } from '@shared/services/analytics/analytics.service';
 
 /**
@@ -80,7 +72,7 @@ export interface ReportData {
 @Injectable({
   providedIn: 'root'
 })
-export class AnalyticsFacade implements OnDestroy {
+export class AnalyticsFacade {
   // Inject dependencies
   private readonly progressTrackingService = inject(ProgressTrackingService);
   private readonly analyticsCacheService = inject(AnalyticsCacheService);
@@ -126,12 +118,12 @@ export class AnalyticsFacade implements OnDestroy {
       };
     }
 
-    const latest = records[0] as any;
     const averageProgress =
       records.length > 0
         ? records.reduce((sum, r) => {
-            const rAny = r as any;
-            return sum + (rAny.total_tasks > 0 ? (rAny.completed_tasks / rAny.total_tasks) * 100 : 0);
+            const totalTasks = r.total_tasks ?? 0;
+            const completedTasks = r.completed_tasks ?? 0;
+            return sum + (totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0);
           }, 0) / records.length
         : 0;
 
@@ -174,13 +166,6 @@ export class AnalyticsFacade implements OnDestroy {
       lastGenerated: null as string | null
     };
   });
-
-  /**
-   * Cleanup on destroy
-   */
-  ngOnDestroy(): void {
-    // Cleanup if needed
-  }
 
   // ============================================================================
   // Progress Tracking Management
@@ -329,7 +314,7 @@ export class AnalyticsFacade implements OnDestroy {
     this.lastOperationState.set('create_activity_log');
 
     try {
-      await this.activityService.logActivity(blueprintId, resourceType as any, resourceId, action, changes || []);
+      await this.activityService.logActivity(blueprintId, resourceType, resourceId, action, changes || []);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '创建活动记录失败';
       this.errorStateService.addError({
@@ -577,15 +562,18 @@ export class AnalyticsFacade implements OnDestroy {
       await this.loadProgressTracking(blueprintId);
 
       const records = this.progressTracking();
-      const recordsAny = records as any[];
 
       // Generate progress chart data
       const progressChart: ChartData = {
-        labels: recordsAny.map(r => r.tracking_date || ''),
+        labels: records.map(r => r.tracking_date || ''),
         datasets: [
           {
             label: 'Progress %',
-            data: recordsAny.map(r => (r.total_tasks > 0 ? (r.completed_tasks / r.total_tasks) * 100 : 0)),
+            data: records.map(r => {
+              const totalTasks = r.total_tasks ?? 0;
+              const completedTasks = r.completed_tasks ?? 0;
+              return totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+            }),
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)'
           }

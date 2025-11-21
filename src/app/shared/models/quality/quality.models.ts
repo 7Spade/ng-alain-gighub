@@ -100,6 +100,7 @@ export enum QualityCheckType {
 /**
  * 檢查狀態
  * 統一從 core/types 重新導出，避免重複定義
+ *
  * @see core/infra/types/quality/quality.types.ts
  */
 export { QualityCheckStatus };
