@@ -80,6 +80,17 @@
   - 設計決策
   - 實作細節
 
+- **architecture-layers-atomization-design.md** - 架構層級原子化設計規範
+  - 五層架構定義
+  - 原子化策略
+  - 設計原則
+
+- **layer-structure-classification.md** - 五層架構結構分類說明 ⭐ NEW
+  - 實際層級結構總覽
+  - 業務域完整映射
+  - 組織原則與命名規範
+  - 最佳實踐指南
+
 ### 行為模型 (Behavioral Models)
 
 - **13-sequence-diagram.mermaid.md** - 序列圖

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { STColumn } from '@delon/abc/st';
 import { WorkspaceContextFacade } from '@core';
+import { STColumn } from '@delon/abc/st';
 import {
   SHARED_IMPORTS,
   TaskService,
@@ -67,177 +67,177 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             </nz-form-item>
           }
 
-        @if (selectedBlueprintId()) {
-          <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>状态</nz-form-label>
-            <nz-form-control>
-              <nz-select
-                [ngModel]="filterStatus()"
-                (ngModelChange)="filterStatus.set($event)"
-                nzPlaceHolder="全部状态"
-                nzAllowClear
-                style="width: 150px;"
-              >
-                <nz-option nzValue="pending" nzLabel="待处理"></nz-option>
-                <nz-option nzValue="assigned" nzLabel="已指派"></nz-option>
-                <nz-option nzValue="in_progress" nzLabel="进行中"></nz-option>
-                <nz-option nzValue="staging" nzLabel="暂存中"></nz-option>
-                <nz-option nzValue="in_qa" nzLabel="品管中"></nz-option>
-                <nz-option nzValue="in_inspection" nzLabel="验收中"></nz-option>
-                <nz-option nzValue="completed" nzLabel="已完成"></nz-option>
-                <nz-option nzValue="cancelled" nzLabel="已取消"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
+          @if (selectedBlueprintId()) {
+            <nz-form-item style="margin-bottom: 0;">
+              <nz-form-label>状态</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                  [ngModel]="filterStatus()"
+                  (ngModelChange)="filterStatus.set($event)"
+                  nzPlaceHolder="全部状态"
+                  nzAllowClear
+                  style="width: 150px;"
+                >
+                  <nz-option nzValue="pending" nzLabel="待处理"></nz-option>
+                  <nz-option nzValue="assigned" nzLabel="已指派"></nz-option>
+                  <nz-option nzValue="in_progress" nzLabel="进行中"></nz-option>
+                  <nz-option nzValue="staging" nzLabel="暂存中"></nz-option>
+                  <nz-option nzValue="in_qa" nzLabel="品管中"></nz-option>
+                  <nz-option nzValue="in_inspection" nzLabel="验收中"></nz-option>
+                  <nz-option nzValue="completed" nzLabel="已完成"></nz-option>
+                  <nz-option nzValue="cancelled" nzLabel="已取消"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
 
-          <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>优先级</nz-form-label>
-            <nz-form-control>
-              <nz-select
-                [ngModel]="filterPriority()"
-                (ngModelChange)="filterPriority.set($event)"
-                nzPlaceHolder="全部优先级"
-                nzAllowClear
-                style="width: 120px;"
-              >
-                <nz-option nzValue="low" nzLabel="低"></nz-option>
-                <nz-option nzValue="medium" nzLabel="中"></nz-option>
-                <nz-option nzValue="high" nzLabel="高"></nz-option>
-                <nz-option nzValue="urgent" nzLabel="紧急"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
+            <nz-form-item style="margin-bottom: 0;">
+              <nz-form-label>优先级</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                  [ngModel]="filterPriority()"
+                  (ngModelChange)="filterPriority.set($event)"
+                  nzPlaceHolder="全部优先级"
+                  nzAllowClear
+                  style="width: 120px;"
+                >
+                  <nz-option nzValue="low" nzLabel="低"></nz-option>
+                  <nz-option nzValue="medium" nzLabel="中"></nz-option>
+                  <nz-option nzValue="high" nzLabel="高"></nz-option>
+                  <nz-option nzValue="urgent" nzLabel="紧急"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
 
-          <nz-form-item style="margin-bottom: 0;">
-            <nz-form-label>类型</nz-form-label>
-            <nz-form-control>
-              <nz-select
-                [ngModel]="filterType()"
-                (ngModelChange)="filterType.set($event)"
-                nzPlaceHolder="全部类型"
-                nzAllowClear
-                style="width: 120px;"
-              >
-                <nz-option nzValue="milestone" nzLabel="里程碑"></nz-option>
-                <nz-option nzValue="phase" nzLabel="阶段"></nz-option>
-                <nz-option nzValue="task" nzLabel="任务"></nz-option>
-                <nz-option nzValue="subtask" nzLabel="子任务"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        }
-      </div>
-
-      @if (taskService.loading()) {
-        <div style="text-align: center; padding: 40px;">
-          <nz-spin nzSize="large" nzTip="加载任务中..."></nz-spin>
+            <nz-form-item style="margin-bottom: 0;">
+              <nz-form-label>类型</nz-form-label>
+              <nz-form-control>
+                <nz-select
+                  [ngModel]="filterType()"
+                  (ngModelChange)="filterType.set($event)"
+                  nzPlaceHolder="全部类型"
+                  nzAllowClear
+                  style="width: 120px;"
+                >
+                  <nz-option nzValue="milestone" nzLabel="里程碑"></nz-option>
+                  <nz-option nzValue="phase" nzLabel="阶段"></nz-option>
+                  <nz-option nzValue="task" nzLabel="任务"></nz-option>
+                  <nz-option nzValue="subtask" nzLabel="子任务"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          }
         </div>
-      } @else {
-        <st
-          #st
-          [data]="filteredTasks()"
-          [columns]="columns"
-          [loading]="taskService.loading()"
-          [page]="{ front: false, show: true, showSize: true }"
-          (change)="onTableChange()"
-        >
-          <ng-template #type let-record>
-            @switch (record.task_type) {
-              @case ('milestone') {
-                <nz-tag nzColor="purple">里程碑</nz-tag>
-              }
-              @case ('phase') {
-                <nz-tag nzColor="blue">阶段</nz-tag>
-              }
-              @case ('task') {
-                <nz-tag nzColor="cyan">任务</nz-tag>
-              }
-              @case ('subtask') {
-                <nz-tag nzColor="default">子任务</nz-tag>
-              }
-            }
-          </ng-template>
 
-          <ng-template #status let-record>
-            @switch (record.status) {
-              @case ('pending') {
-                <nz-tag nzColor="default">待处理</nz-tag>
+        @if (taskService.loading()) {
+          <div style="text-align: center; padding: 40px;">
+            <nz-spin nzSize="large" nzTip="加载任务中..."></nz-spin>
+          </div>
+        } @else {
+          <st
+            #st
+            [data]="filteredTasks()"
+            [columns]="columns"
+            [loading]="taskService.loading()"
+            [page]="{ front: false, show: true, showSize: true }"
+            (change)="onTableChange()"
+          >
+            <ng-template #type let-record>
+              @switch (record.task_type) {
+                @case ('milestone') {
+                  <nz-tag nzColor="purple">里程碑</nz-tag>
+                }
+                @case ('phase') {
+                  <nz-tag nzColor="blue">阶段</nz-tag>
+                }
+                @case ('task') {
+                  <nz-tag nzColor="cyan">任务</nz-tag>
+                }
+                @case ('subtask') {
+                  <nz-tag nzColor="default">子任务</nz-tag>
+                }
               }
-              @case ('assigned') {
-                <nz-tag nzColor="blue">已指派</nz-tag>
-              }
-              @case ('in_progress') {
-                <nz-tag nzColor="processing">进行中</nz-tag>
-              }
-              @case ('staging') {
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                  <nz-tag nzColor="orange">暂存中</nz-tag>
-                  @if (stagingInfo()[record.id]) {
-                    <small style="color: #ff7a45;"> 剩余 {{ stagingInfo()[record.id].remainingHours }}h </small>
-                  }
-                </div>
-              }
-              @case ('in_qa') {
-                <nz-tag nzColor="gold">品管中</nz-tag>
-              }
-              @case ('in_inspection') {
-                <nz-tag nzColor="lime">验收中</nz-tag>
-              }
-              @case ('completed') {
-                <nz-tag nzColor="success">已完成</nz-tag>
-              }
-              @case ('cancelled') {
-                <nz-tag nzColor="error">已取消</nz-tag>
-              }
-            }
-          </ng-template>
+            </ng-template>
 
-          <ng-template #priority let-record>
-            @switch (record.priority) {
-              @case ('low') {
-                <nz-tag nzColor="default">低</nz-tag>
+            <ng-template #status let-record>
+              @switch (record.status) {
+                @case ('pending') {
+                  <nz-tag nzColor="default">待处理</nz-tag>
+                }
+                @case ('assigned') {
+                  <nz-tag nzColor="blue">已指派</nz-tag>
+                }
+                @case ('in_progress') {
+                  <nz-tag nzColor="processing">进行中</nz-tag>
+                }
+                @case ('staging') {
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <nz-tag nzColor="orange">暂存中</nz-tag>
+                    @if (stagingInfo()[record.id]) {
+                      <small style="color: #ff7a45;"> 剩余 {{ stagingInfo()[record.id].remainingHours }}h </small>
+                    }
+                  </div>
+                }
+                @case ('in_qa') {
+                  <nz-tag nzColor="gold">品管中</nz-tag>
+                }
+                @case ('in_inspection') {
+                  <nz-tag nzColor="lime">验收中</nz-tag>
+                }
+                @case ('completed') {
+                  <nz-tag nzColor="success">已完成</nz-tag>
+                }
+                @case ('cancelled') {
+                  <nz-tag nzColor="error">已取消</nz-tag>
+                }
               }
-              @case ('medium') {
-                <nz-tag nzColor="blue">中</nz-tag>
-              }
-              @case ('high') {
-                <nz-tag nzColor="orange">高</nz-tag>
-              }
-              @case ('urgent') {
-                <nz-tag nzColor="red">紧急</nz-tag>
-              }
-            }
-          </ng-template>
+            </ng-template>
 
-          <ng-template #statusActions let-record>
-            @if (record.status !== 'completed' && record.status !== 'cancelled') {
-              <button nz-button nzType="link" nz-dropdown [nzDropdownMenu]="statusMenu" nzSize="small">
-                变更状态
-                <span nz-icon nzType="down"></span>
-              </button>
-              <nz-dropdown-menu #statusMenu="nzDropdownMenu">
-                <ul nz-menu>
-                  @for (status of allowedStatuses()[record.id]; track status) {
-                    <li nz-menu-item (click)="changeTaskStatus(record.id, status)">
-                      {{ getStatusLabel(status) }}
-                    </li>
-                  }
-                  @if (!allowedStatuses()[record.id] || allowedStatuses()[record.id].length === 0) {
-                    <li nz-menu-item nzDisabled>无可用转换</li>
-                  }
-                </ul>
-              </nz-dropdown-menu>
-            }
-          </ng-template>
+            <ng-template #priority let-record>
+              @switch (record.priority) {
+                @case ('low') {
+                  <nz-tag nzColor="default">低</nz-tag>
+                }
+                @case ('medium') {
+                  <nz-tag nzColor="blue">中</nz-tag>
+                }
+                @case ('high') {
+                  <nz-tag nzColor="orange">高</nz-tag>
+                }
+                @case ('urgent') {
+                  <nz-tag nzColor="red">紧急</nz-tag>
+                }
+              }
+            </ng-template>
 
-          <ng-template #stagingActions let-record>
-            @if (record.status === 'staging' && stagingInfo()[record.id]?.canWithdraw) {
-              <button nz-button nzType="link" nzDanger nzSize="small" (click)="withdrawStaging(record.id)"> 撤回 </button>
-            }
-          </ng-template>
-        </st>
+            <ng-template #statusActions let-record>
+              @if (record.status !== 'completed' && record.status !== 'cancelled') {
+                <button nz-button nzType="link" nz-dropdown [nzDropdownMenu]="statusMenu" nzSize="small">
+                  变更状态
+                  <span nz-icon nzType="down"></span>
+                </button>
+                <nz-dropdown-menu #statusMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    @for (status of allowedStatuses()[record.id]; track status) {
+                      <li nz-menu-item (click)="changeTaskStatus(record.id, status)">
+                        {{ getStatusLabel(status) }}
+                      </li>
+                    }
+                    @if (!allowedStatuses()[record.id] || allowedStatuses()[record.id].length === 0) {
+                      <li nz-menu-item nzDisabled>无可用转换</li>
+                    }
+                  </ul>
+                </nz-dropdown-menu>
+              }
+            </ng-template>
+
+            <ng-template #stagingActions let-record>
+              @if (record.status === 'staging' && stagingInfo()[record.id]?.canWithdraw) {
+                <button nz-button nzType="link" nzDanger nzSize="small" (click)="withdrawStaging(record.id)"> 撤回 </button>
+              }
+            </ng-template>
+          </st>
+        }
       }
-    }
     </nz-card>
   `
 })
