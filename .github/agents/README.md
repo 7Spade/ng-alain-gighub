@@ -131,6 +131,15 @@ docs/architecture/01-system-architecture-mindmap.mermaid.md
 | [enterprise-compliance-checklist.md](./enterprise-compliance-checklist.md) | 企業標準合規檢查清單（五級檢查）| **所有 Agent（必讀）** |
 | [.github/copilot/memory.jsonl](../copilot/memory.jsonl) | 專案記憶庫（149 實體 + 170 關係） | **所有 Agent（必讀）** |
 
+### 自動化工具（新增）⭐⭐⭐⭐⭐
+| 工具 | 用途 | 適用場景 |
+|------|------|----------|
+| [tools/validate-compliance.sh](./tools/validate-compliance.sh) | 自動檢查 Level 0-5 合規性 | PR 提交前、開發過程中 |
+| [tools/check-memory-coverage.sh](./tools/check-memory-coverage.sh) | 檢查記憶庫覆蓋率 | 記憶庫更新後 |
+| [tools/verify-dev-sequence.sh](./tools/verify-dev-sequence.sh) | 驗證開發順序遵循情況 | 新功能開發後 |
+| [tools/monitoring-prototype.md](./tools/monitoring-prototype.md) | 監控追蹤系統雛型設計 | 系統監控規劃 |
+| [tools/README.md](./tools/README.md) | 工具使用說明與快速開始 | **工具使用者（必讀）** |
+
 ### 指引文件
 | 文件 | 用途 | 適用對象 |
 |------|------|----------|
