@@ -141,6 +141,38 @@
   - 優先級排序與時間估算
   - 實用技巧與尋求幫助
 
+- **facades-getting-started.md** ⭐⭐⭐⭐⭐ - Facades 增強開始指南
+  - 快速開始（5 分鐘）
+  - 工作模式與拆分原則
+  - 優先級排序
+  - 快速範例與程式碼模板
+  - 檢查清單（最小版）
+  - 遇到問題的解決方案
+
+- **facades-project-summary.md** ⭐⭐⭐⭐⭐ - Facades 增強計畫 - 專案總結
+  - 專案概覽（目標、參考標準）
+  - Phase 1 完成總結（文檔、分析、策略）
+  - Phase 2-7 實施計畫
+  - 統計資訊（工作量估算、檔案統計）
+  - 成功指標與學習資源
+  - 設計決策與注意事項
+
+- **facades-enhancement-progress-history.md** ⭐⭐⭐⭐⭐ - Facades 增強計畫 - 進度歷程
+  - 項目時間線與進度追蹤
+  - Phase 1 完成記錄（2025-01-15）
+  - Phase 2-7 進度規劃
+  - 詳細統計資訊與指標
+  - 經驗教訓與改進建議
+  - 變更日誌與實施筆記
+
+- **facades-implementation-record.md** ⭐⭐⭐⭐⭐ - Facades 增強 - 實施記錄
+  - 詳細實施活動記錄
+  - 技術決策日誌（6 個核心決策）
+  - 代碼指標與分析
+  - 階段性洞察與經驗教訓
+  - 未來階段實施筆記
+  - 進度追蹤與下一步行動
+
 ## 使用方法 (Usage)
 
 ### 快速理解系統
@@ -174,15 +206,28 @@
 5. 參考已整合的頁面範例（task-board, task-todo, task-assignments）
 6. 遵循設計原則：移除 URL 參數、使用 WorkspaceContextFacade、顯示上下文指示器
 
-### Facades 與 Repositories 增強 ⭐⭐⭐ **NEW (2025-01-15)**
+### Facades 與 Repositories 增強 ⭐⭐⭐ **NEW (2025-01-15, Updated 2025-11-21)**
 
 需要增強 Facades 層和 Repositories 層的開發者：
-1. **facades-quick-reference.md** ⭐⭐⭐ - **快速參考** - 最快速了解核心概念和使用方式
-2. **facades-repositories-enhancement-plan.md** ⭐⭐⭐⭐⭐ - **完整計畫** - 了解整體規劃、優先級、時程
-3. **facades-implementation-guide.md** ⭐⭐⭐⭐ - **實施指南** - 執行具體實施的詳細步驟
-4. **facades-enhancement-checklist.md** ⭐⭐⭐⭐ - **檢查清單** - 追蹤進度、確保品質
-5. 參考 Blueprint Facade 實現：`src/app/core/facades/blueprint/`
-6. 遵循設計原則：Signal 狀態管理、錯誤處理、活動日誌、主 Facade 協調器模式
+
+**快速開始路徑**:
+1. **facades-getting-started.md** ⭐⭐⭐⭐⭐ - **5 分鐘開始** - 最快理解整體概念和如何開始
+2. **facades-quick-reference.md** ⭐⭐⭐⭐ - **快速參考** - 代碼模板和常用命令
+3. **facades-project-summary.md** ⭐⭐⭐⭐⭐ - **專案總結** - 了解 Phase 1 完成狀態和後續計畫
+
+**詳細實施路徑**:
+1. **facades-repositories-enhancement-plan.md** ⭐⭐⭐⭐⭐ - **完整計畫** - 了解整體規劃、優先級、時程
+2. **facades-implementation-guide.md** ⭐⭐⭐⭐ - **實施指南** - 執行具體實施的詳細步驟（7 步驟）
+3. **facades-enhancement-checklist.md** ⭐⭐⭐⭐ - **檢查清單** - 追蹤進度、確保品質（500+ 項）
+
+**進度追蹤**:
+1. **facades-enhancement-progress-history.md** ⭐⭐⭐⭐⭐ - **進度歷程** - Phase 1 完成，Phase 2-7 規劃
+2. **facades-implementation-record.md** ⭐⭐⭐⭐⭐ - **實施記錄** - 詳細實施日誌、技術決策、經驗教訓
+
+**參考資源**:
+- Blueprint Facade 實現：`src/app/core/facades/blueprint/`
+- 設計原則：Signal 狀態管理、錯誤處理、活動日誌、主 Facade 協調器模式
+- 成功標準：完整性、一致性、可維護性、測試覆蓋
 
 ## 核心概念
 
@@ -325,16 +370,27 @@ A: 檢查是否有不必要的資料查詢，考慮實作快取機制。
 
 ## 統計資訊
 
-- **文檔數量**: 15 個工作區文檔（新增：4 個 Facades 增強文檔）
+- **文檔數量**: 19 個工作區文檔
+  - 基礎功能文檔：11 個
+  - Facades 增強文檔：8 個（新增：3 個進度追蹤文檔）
 - **需要整合的頁面**: 86 個（4 個已完成，82 個待處理）
 - **額外識別的工作項**: 47 個（基礎設施、技術債務、服務層等）
-- **Facades 增強計畫**: 10 個 Facades（Task, Issue, Quality 等）
+- **Facades 增強計畫**: 
+  - 10 個 Facades（Task, Issue, Quality, Document, Account, Collaboration, Communication, Bot, Analytics, System）
+  - 50+ 個缺失方法需要補充
+  - 25+ 個子 Facades 需要建立
+  - Phase 1 已完成（2025-01-15），Phase 2-7 待實施
 - **總工作量預估**: 
   - 頁面重新設計：6 週
   - 額外工作項：20-37 週（取決於並行程度）
   - Facades 增強：4-6 週（可並行進行）
   - 總計：20-30 週（現實估計）
-- **功能狀態**: ✅ 核心功能生產就緒，🔶 頁面整合進行中，🔶 Facades 增強規劃中，⚠️ 基礎設施需加強
+- **功能狀態**: 
+  - ✅ 核心功能生產就緒
+  - 🔶 頁面整合進行中
+  - ✅ Facades 增強規劃完成（Phase 1）
+  - 📋 Facades 增強實施待開始（Phase 2-7）
+  - ⚠️ 基礎設施需加強
 
-**最後更新**: 2025-01-15  
+**最後更新**: 2025-11-21  
 **維護者**: 前端團隊
