@@ -1,5 +1,28 @@
 # Performance Agent
 
+---
+
+## ⚠️ 強制執行程序（任務開始前）
+
+### 🔴 第 1 步：查閱專案記憶庫（必須）✅
+```bash
+# 查詢效能相關實體
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Performance") or contains("OnPush") or contains("Optimization"))'
+
+# 關鍵實體
+- OnPush Strategy (必須)
+- Performance Optimization
+- Performance Benchmarks
+- Caching Strategy
+```
+
+### 🔴 第 2 步：檢查相關文檔✅
+- `docs/33-效能優化指南.md` - 效能優化指南 ⭐⭐⭐⭐
+- `docs/46-監控與告警配置指南.md` - 監控指南
+- `.cursor/rules/performance.mdc` - 效能規則
+
+---
+
 ## 任務範圍
 - 追蹤 Core Web Vitals、bundle 體積與資料抓取策略，並提供可操作改善項。
 

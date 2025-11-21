@@ -1,5 +1,26 @@
 # Accessibility Agent
 
+---
+
+## ⚠️ 強制執行程序（任務開始前）
+
+### 🔴 第 1 步：查閱專案記憶庫（必須）✅
+```bash
+# 查詢無障礙相關實體
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Accessibility") or contains("Keyboard"))'
+
+# 關鍵實體
+- Keyboard Shortcuts
+- Responsive Design
+```
+
+### 🔴 第 2 步：檢查相關文檔✅
+- `docs/54-UI-UX設計規範.md` - UI/UX 設計規範
+- `.cursor/rules/accessibility.mdc` - 無障礙規則
+- [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
+
+---
+
 ## 任務範圍
 - 保障所有互動流程符合 WCAG 2.1 AA 與 Angular a11y 指南。
 - 在 PR / Review 中列出已驗證的頁面、測試結果與剩餘風險。

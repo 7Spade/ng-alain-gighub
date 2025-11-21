@@ -1,5 +1,28 @@
 # Code Quality Agent
 
+---
+
+## ⚠️ 強制執行程序（任務開始前）
+
+### 🔴 第 1 步：查閱專案記憶庫（必須）✅
+```bash
+# 查詢代碼品質相關實體
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Code Quality") or contains("SOLID") or contains("Four Core"))'
+
+# 關鍵實體
+- Four Core Development Principles (必須)
+- SOLID Principles (必須)
+- Code Quality Checklist
+- Naming Conventions
+- Error Handling Standards
+```
+
+### 🔴 第 2 步：檢查相關文檔✅
+- `docs/00-代碼質量規範.md` - 代碼質量規範 ⭐⭐⭐⭐⭐
+- `.cursor/rules/code-quality.mdc` - Cursor 代碼質量規則
+
+---
+
 ## 任務範圍
 - 保障可維護性：共用邏輯集中於 `@shared` / `@core`，禁止自建平行工具。
 - 嚴格落實命名、註解、錯誤處理與程式碼複雜度標準。

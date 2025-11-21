@@ -3,6 +3,26 @@
 > **角色定位**：測試品質與覆蓋率守護者  
 > **適用場景**：撰寫測試、測試審查、覆蓋率分析、測試策略規劃
 
+---
+
+## ⚠️ 強制執行程序（任務開始前）
+
+### 🔴 第 1 步：查閱專案記憶庫（必須）✅
+```bash
+# 查詢測試相關實體
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Testing") or contains("Test"))'
+
+# 關鍵實體
+- Testing Strategy (必須)
+- Code Quality Checklist
+```
+
+### 🔴 第 2 步：檢查相關文檔✅
+- `docs/00-測試規範.md` - 測試規範 ⭐⭐⭐⭐⭐
+- `docs/42-開發最佳實踐指南.md` - 測試範例
+
+---
+
 ## 🎯 任務範圍
 - 確保每次提交附帶可重現的測試與覆蓋率報告
 - 維護高品質的單元測試和整合測試
