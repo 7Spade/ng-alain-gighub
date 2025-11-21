@@ -83,12 +83,13 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
    * @returns Observable<TaskStaging[]>
    */
   findWithdrawable(options?: QueryOptions): Observable<TaskStaging[]> {
-    return this.findAll({
+    // 使用 BaseRepository 的 findByTimeComparison 方法
+    // expires_at > NOW() 表示未過期，且 can_withdraw = true
+    return this.findByTimeComparison('expiresAt', 'gt', new Date(), {
       ...options,
       filters: {
         ...options?.filters,
         canWithdraw: true // 会自动转换为 can_withdraw
-        // TODO: 添加 expires_at > NOW() 的条件
       }
     });
   }
@@ -100,14 +101,8 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
    * @returns Observable<TaskStaging[]>
    */
   findExpired(options?: QueryOptions): Observable<TaskStaging[]> {
-    // TODO: 实现过期查询
-    // 需要使用数据库函数或 RPC 来比较时间
-    return this.findAll({
-      ...options,
-      filters: {
-        ...options?.filters
-        // expires_at 比较需要特殊处理
-      }
-    });
+    // 使用 BaseRepository 的 findByTimeComparison 方法
+    // expires_at < NOW() 表示已過期
+    return this.findByTimeComparison('expiresAt', 'lt', new Date(), options);
   }
 }
