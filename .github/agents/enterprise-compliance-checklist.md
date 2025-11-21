@@ -36,6 +36,7 @@
 - [ ] 已查詢與任務相關的實體
 - [ ] 已理解相關的架構原則和模式
 - [ ] 已遵循記憶庫中的開發標準
+- [ ] 已查詢 "Five Layer Development Order" 實體
 
 ### 系統架構理解
 - [ ] 已閱讀系統架構思維導圖（`docs/architecture/01-system-architecture-mindmap.mermaid.md`）
@@ -48,6 +49,13 @@
 - [ ] 已確認任務範圍與目標
 - [ ] 已規劃執行順序（遵循五層架構）
 - [ ] 已閱讀相關文檔
+
+### 開發順序指南（新功能開發必須）
+- [ ] 已閱讀開發順序指南（`.github/agents/development-sequence-guide.md`）
+- [ ] 已確認需要開發哪些層級
+- [ ] 已理解每個層級的依賴關係
+- [ ] 已理解每個層級的完成標準
+- [ ] 已確認開發順序：Types → Repositories → Models → Services → Facades → Components → Tests
 
 ---
 
@@ -150,6 +158,97 @@
 - [ ] 一致的 Component 架構
 - [ ] 一致的錯誤處理
 - [ ] 一致的 UX 行為
+
+---
+
+## 🟡 Level 2.5：開發順序合規（新功能開發必須 100% 通過）
+
+> **詳細指南**：[development-sequence-guide.md](./development-sequence-guide.md) ⭐⭐⭐⭐⭐
+
+### 開發前準備
+
+#### 需求分析
+- [ ] 明確功能需求（PRD、用戶故事）
+- [ ] 確認業務流程和規則
+- [ ] 識別相關的現有模組和依賴
+- [ ] 評估複雜度和優先級
+- [ ] 參考項目中已有的類似實現
+
+#### 資料庫設計
+- [ ] 設計資料表結構（對照 51 張表架構）
+- [ ] 確認是否需要新增資料表
+- [ ] 設計 RLS 策略（參考安全文檔）
+- [ ] 準備資料庫遷移腳本
+- [ ] 使用 Supabase MCP 工具驗證設計
+
+#### 架構規劃
+- [ ] 確認功能屬於哪個業務模組（11 個模組之一）
+- [ ] 規劃需要哪些層級（Types、Repositories、Models、Services、Facades）
+- [ ] 確認與現有模組的整合點
+- [ ] 設計 API 介面（如需要）
+
+### 五層架構開發順序（嚴格遵守）
+
+#### 第 1 步：Types 層（P0 - 必須最先完成）
+- [ ] 生成/更新 `database.types.ts`（如需要新表）
+- [ ] 創建業務模組類型文件（如需要）
+- [ ] 類型定義完整，與資料庫結構一致
+- [ ] 類型已正確導出
+- [ ] 通過 TypeScript 編譯檢查（`yarn type-check`）
+- [ ] 無 `any` 類型（除非必要）
+
+#### 第 2 步：Repositories 層（P0 - 依賴 Types）
+- [ ] Repository 繼承自 `BaseRepository`
+- [ ] `tableName` 已正確設置（snake_case）
+- [ ] 類型參數正確（Entity, Insert, Update）
+- [ ] 特定查詢方法已實現（如需要）
+- [ ] Repository 已正確導出
+- [ ] 通過 TypeScript 編譯檢查
+- [ ] 職責分離明確（只負責數據訪問）
+
+#### 第 3 步：Models 層（P0 - 可與 Repositories 並行）
+- [ ] Models 文件已創建
+- [ ] 從 Types 層正確提取類型
+- [ ] 業務相關枚舉和類型已定義
+- [ ] Models 已正確導出
+- [ ] 通過 TypeScript 編譯檢查
+- [ ] 模型定義完整，枚舉值明確
+
+#### 第 4 步：Services 層（P0 - 依賴 Repositories + Models）
+- [ ] Service 使用 `@Injectable({ providedIn: 'root' })`
+- [ ] 使用 `inject()` 進行依賴注入
+- [ ] 使用 Signals 管理狀態（`signal()`, `computed()`）
+- [ ] 暴露 `ReadonlySignal` 給組件
+- [ ] 業務邏輯方法已實現
+- [ ] 錯誤處理已實現（try-catch，錯誤狀態管理）
+- [ ] Loading 狀態管理已實現
+- [ ] Service 已正確導出
+- [ ] 測試覆蓋率 ≥80%
+
+#### 第 5 步：Facades 層（P0 - 依賴 Services）
+- [ ] Facade 使用 `@Injectable({ providedIn: 'root' })`
+- [ ] 協調多個 Services（如需要）
+- [ ] 暴露統一的 Signal 狀態接口
+- [ ] 整合錯誤處理（ErrorStateService）
+- [ ] 業務方法已實現
+- [ ] Facade 已正確導出
+- [ ] 測試覆蓋率 ≥80%
+
+#### 第 6 步：Routes/Components 層（P0 - 依賴 Facades）
+- [ ] 組件使用 Standalone Component
+- [ ] 使用 `SHARED_IMPORTS` 導入模組
+- [ ] 使用 `inject()` 注入 Facade
+- [ ] 從 Facade 獲取狀態（ReadonlySignal）
+- [ ] 路由已配置（懶加載）
+- [ ] UI/UX 符合設計規範
+- [ ] 響應式設計已實現
+- [ ] 可訪問性要求已滿足（WCAG 2.1 AA）
+
+#### 第 7 步：測試與文檔（P0 - 必須完成）
+- [ ] Service 測試已編寫（≥80% 覆蓋率）
+- [ ] Facade 測試已編寫（≥80% 覆蓋率）
+- [ ] 所有測試通過（`yarn test`）
+- [ ] 文檔已更新（README、API 文檔、架構文檔）
 
 ---
 

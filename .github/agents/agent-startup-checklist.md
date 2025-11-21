@@ -116,6 +116,10 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 
 ### 🏗️ 第 5 步：規劃執行順序（遵循五層架構）
 
+**⭐ 重要：新功能開發必須遵循五層架構開發順序**
+
+**詳細指南**：[development-sequence-guide.md](./development-sequence-guide.md) ⭐⭐⭐⭐⭐
+
 **標準開發順序**：
 ```
 第 1 步：Types 層（P0 - 必須最先）
@@ -135,10 +139,21 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 
 **檢查清單**：
 ```
+✓ 已閱讀開發順序指南（development-sequence-guide.md）
 ✓ 確認需要哪些層級
 ✓ 確認依賴關係
 ✓ 確認開發順序
+✓ 理解每個層級的完成標準
 ✓ 預估每個步驟的時間
+```
+
+**從記憶庫查詢開發順序**：
+```bash
+# 查詢五層架構開發順序
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Five Layer Development Order"))'
+
+# 查詢各層開發實踐
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Development"))'
 ```
 
 ---

@@ -104,19 +104,21 @@ docs/architecture/01-system-architecture-mindmap.mermaid.md
 2. `memory-usage-guide.md` – ⭐⭐⭐⭐⭐ **記憶庫使用指南（如何查詢）**
 3. `.github/copilot/memory.jsonl` – ⭐⭐⭐⭐⭐ **專案記憶庫（必讀）**
 4. `docs/architecture/01-system-architecture-mindmap.mermaid.md` – ⭐⭐⭐⭐⭐ **系統架構思維導圖**
-5. `QUICK-START.md` – ⭐⭐⭐⭐ 決策樹與快速參考
-6. `role.agent.md` – ⭐⭐⭐ AI 角色定位與回覆原則
-7. `ng-alain-github-agent.md` – ⭐⭐⭐⭐⭐ 專案願景、架構、資料與 API 摘要
-8. `docs-index.md` – ⭐⭐⭐ 確認任務涉及的 `docs/` 原始資料
+5. `development-sequence-guide.md` – ⭐⭐⭐⭐⭐ **五層架構開發順序指南（開發任務必讀）**
+6. `QUICK-START.md` – ⭐⭐⭐⭐ 決策樹與快速參考
+7. `role.agent.md` – ⭐⭐⭐ AI 角色定位與回覆原則
+8. `ng-alain-github-agent.md` – ⭐⭐⭐⭐⭐ 專案願景、架構、資料與 API 摘要
+9. `docs-index.md` – ⭐⭐⭐ 確認任務涉及的 `docs/` 原始資料
 
 ### 執行特定任務
 1. **查閱記憶庫**（必須）：`.github/copilot/memory.jsonl` 搜尋相關實體
 2. **檢查架構圖**（必須）：`docs/architecture/01-system-architecture-mindmap.mermaid.md` 理解系統架構
 3. **完成檢查清單**（必須）：`agent-startup-checklist.md` 確認所有必須項目
-4. `QUICK-START.md` - 使用決策樹找到對應文件
-5. `domain/*.md` – 依任務類型套用專家檢查表
-6. `docs-index.md` - 查找詳細文檔
-7. `role-config.md` – 需要快速複製的 system message 時使用
+4. **新功能開發**（必須）：`development-sequence-guide.md` 遵循五層架構順序
+5. `QUICK-START.md` - 使用決策樹找到對應文件
+6. `domain/*.md` – 依任務類型套用專家檢查表
+7. `docs-index.md` - 查找詳細文檔
+8. `role-config.md` – 需要快速複製的 system message 時使用
 
 ## 📚 核心文件說明
 
@@ -125,6 +127,8 @@ docs/architecture/01-system-architecture-mindmap.mermaid.md
 |------|------|----------|
 | [agent-startup-checklist.md](./agent-startup-checklist.md) | 企業標準啟動檢查清單、強制執行流程 | **所有 Agent（必讀）** |
 | [memory-usage-guide.md](./memory-usage-guide.md) | 記憶庫使用指南、查詢方法、常見場景 | **所有 Agent（必讀）** |
+| [development-sequence-guide.md](./development-sequence-guide.md) | 五層架構開發順序指南（Agent 專用版）| **開發任務 Agent（必讀）** |
+| [enterprise-compliance-checklist.md](./enterprise-compliance-checklist.md) | 企業標準合規檢查清單（五級檢查）| **所有 Agent（必讀）** |
 | [.github/copilot/memory.jsonl](../copilot/memory.jsonl) | 專案記憶庫（149 實體 + 170 關係） | **所有 Agent（必讀）** |
 
 ### 指引文件
