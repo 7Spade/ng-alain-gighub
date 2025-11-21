@@ -77,3 +77,24 @@ export enum DailyReportType {
   /** 进度日报 */
   PROGRESS = 'progress'
 }
+
+/**
+ * 文档上传来源枚举
+ * 对应数据库 documents.upload_source 字段
+ * 
+ * @description 定义文档的上传来源
+ */
+export enum DocumentUploadSource {
+  /** 手动上传 */
+  MANUAL = 'manual',
+  /** 任务关联 */
+  TASK = 'task',
+  /** 问题关联 */
+  ISSUE = 'issue',
+  /** 质检关联 */
+  QUALITY_CHECK = 'quality_check',
+  /** 检查关联 */
+  INSPECTION = 'inspection',
+  /** 系统自动 */
+  SYSTEM = 'system'
+}
