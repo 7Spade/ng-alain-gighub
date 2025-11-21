@@ -1,4 +1,4 @@
-import { Database } from '@core';
+import { Database, ActivityLogResourceType } from '@core';
 
 /**
  * 资料分析系统数据模型
@@ -104,19 +104,10 @@ export type AnalyticsCacheUpdate = Database['public']['Tables']['analytics_cache
 
 /**
  * 資源類型
- * 保留原有枚举定义以保持向后兼容
+ * 統一從 core/types 重新導出，避免重複定義
+ * @see core/infra/types/system/system.types.ts
  */
-export enum ActivityLogResourceType {
-  BLUEPRINT = 'blueprint',
-  BRANCH = 'branch',
-  TASK = 'task',
-  ISSUE = 'issue',
-  PR = 'pr',
-  COMMENT = 'comment',
-  DOCUMENT = 'document',
-  INSPECTION = 'inspection',
-  QA = 'qa'
-}
+export { ActivityLogResourceType };
 
 /**
  * 活動記錄詳情（包含關聯資料）

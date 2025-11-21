@@ -66,3 +66,24 @@ export enum BotExecutionStatus {
   /** 超时 */
   TIMEOUT = 'timeout'
 }
+
+/**
+ * 机器人类型枚举
+ * 对应数据库 bots.bot_type 字段
+ * 
+ * @description 定义机器人的类型分类
+ */
+export enum BotType {
+  /** 自动化任务机器人 */
+  AUTOMATION = 'automation',
+  /** 通知机器人 */
+  NOTIFICATION = 'notification',
+  /** 数据同步机器人 */
+  SYNC = 'sync',
+  /** 报告生成机器人 */
+  REPORT = 'report',
+  /** 监控机器人 */
+  MONITORING = 'monitoring',
+  /** 自定义机器人 */
+  CUSTOM = 'custom'
+}
