@@ -1,14 +1,7 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import {
-  BlueprintRepository,
-  BlueprintConfigRepository,
-  BlueprintInsert,
-  BlueprintUpdate,
-  BlueprintConfigInsert,
-  BlueprintConfigUpdate
-} from '@core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { BlueprintConfigRepository, BlueprintInsert, BlueprintRepository, BlueprintUpdate } from '@core';
 import { Blueprint, BlueprintConfig, BlueprintStatus } from '@shared';
-import { Observable, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Blueprint Service
@@ -283,6 +276,31 @@ export class BlueprintService {
       return config;
     } catch (error) {
       this.errorState.set(error instanceof Error ? error.message : '设置配置失败');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 搜索蓝图（支持模糊查询）
+   *
+   * @param query 搜索关键词
+   * @param options 查询选项
+   * @returns Promise<Blueprint[]>
+   */
+  async searchBlueprints(
+    query: string,
+    options?: { page?: number; pageSize?: number; orderBy?: string; orderDirection?: 'asc' | 'desc' }
+  ): Promise<Blueprint[]> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const blueprints = await firstValueFrom(this.blueprintRepository.search(query, options));
+      return blueprints;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '搜索蓝图失败');
       throw error;
     } finally {
       this.loadingState.set(false);

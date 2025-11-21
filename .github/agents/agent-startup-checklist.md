@@ -132,7 +132,7 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
   ↓
 第 5 步：Facades 層（P0 - 依賴 Services）
   ↓
-第 6 步：Routes/Components 層（P0 - 依賴 Facades）
+第 6 步：Routes/ㄋ 層（P0 - 依賴 Facades）
   ↓
 第 7 步：測試與文檔（P0 - 必須完成）
 ```

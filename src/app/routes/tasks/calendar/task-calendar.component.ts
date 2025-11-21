@@ -1,7 +1,7 @@
-import { Component, OnInit, inject, signal, computed, effect, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkspaceContextFacade } from '@core';
-import { SHARED_IMPORTS, TaskService, Task, BlueprintService } from '@shared';
+import { BlueprintService, SHARED_IMPORTS, Task, TaskService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -88,7 +88,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           </nz-list>
         }
       }
-    }
     </nz-card>
   `
 })

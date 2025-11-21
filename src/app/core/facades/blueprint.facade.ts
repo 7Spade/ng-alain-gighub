@@ -1,18 +1,30 @@
-import { Injectable, inject, signal, computed, effect, OnDestroy } from '@angular/core';
+import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import {
-  BlueprintRepository,
   BlueprintBranchRepository,
+  BlueprintRepository,
   BranchForkRepository,
+  type ActivityLog,
   type Blueprint,
+  type BlueprintBranch,
+  type BlueprintBranchUpdate,
   type BlueprintInsert,
   type BlueprintUpdate,
-  type BlueprintBranch
+  type PullRequest,
+  type PullRequestInsert,
+  type PullRequestUpdate,
+  type QueryOptions
 } from '@core';
-import { BlueprintService, BlueprintActivityService, BranchService, type BlueprintStatus } from '@shared';
-import { BlueprintAggregationRefreshService } from '@shared';
+import {
+  BlueprintActivityService,
+  BlueprintAggregationRefreshService,
+  BlueprintService,
+  BranchService,
+  PullRequestService,
+  type ActivityLogFilters,
+  type BlueprintConfig,
+  type BlueprintStatus
+} from '@shared';
 import { firstValueFrom } from 'rxjs';
-
-import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Blueprint Facade
@@ -74,6 +86,7 @@ export class BlueprintFacade implements OnDestroy {
   // Inject dependencies
   private readonly blueprintService = inject(BlueprintService);
   private readonly branchService = inject(BranchService);
+  private readonly pullRequestService = inject(PullRequestService);
   private readonly activityService = inject(BlueprintActivityService);
   private readonly blueprintRepository = inject(BlueprintRepository);
   private readonly blueprintBranchRepository = inject(BlueprintBranchRepository);
@@ -98,6 +111,25 @@ export class BlueprintFacade implements OnDestroy {
   readonly configs = this.blueprintService.configs;
   readonly loading = this.blueprintService.loading;
   readonly error = this.blueprintService.error;
+
+  // Branch signals
+  readonly branches = this.branchService.branches;
+  readonly selectedBranch = this.branchService.selectedBranch;
+  readonly activeBranches = this.branchService.activeBranches;
+  readonly mergedBranches = this.branchService.mergedBranches;
+
+  // Pull Request signals
+  readonly pullRequests = this.pullRequestService.pullRequests;
+  readonly selectedPullRequest = this.pullRequestService.selectedPullRequest;
+  readonly openPullRequests = this.pullRequestService.openPullRequests;
+  readonly reviewingPullRequests = this.pullRequestService.reviewingPullRequests;
+  readonly approvedPullRequests = this.pullRequestService.approvedPullRequests;
+  readonly mergedPullRequests = this.pullRequestService.mergedPullRequests;
+
+  // Activity signals
+  readonly activityLogs = this.activityService.logs;
+  readonly recentActivityLogs = this.activityService.recentLogs;
+  readonly activityStats = this.activityService.activityStats;
 
   // Computed: Active blueprints
   readonly activeBlueprints = this.blueprintService.activeBlueprints;
@@ -243,6 +275,30 @@ export class BlueprintFacade implements OnDestroy {
       return await this.blueprintService.loadBlueprintByProjectCode(projectCode);
     } catch (error) {
       console.error('[BlueprintFacade] Failed to load blueprint by project code:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Search blueprints (supports fuzzy search)
+   *
+   * @param query Search query
+   * @param options Search options (pagination, sorting)
+   * @returns Promise<Blueprint[]>
+   */
+  async searchBlueprints(
+    query: string,
+    options?: { page?: number; pageSize?: number; orderBy?: string; orderDirection?: 'asc' | 'desc' }
+  ): Promise<Blueprint[]> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('search_blueprints');
+
+    try {
+      return await this.blueprintService.searchBlueprints(query, options);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to search blueprints:', error);
       throw error;
     } finally {
       this.operationInProgressState.set(false);
@@ -533,6 +589,559 @@ export class BlueprintFacade implements OnDestroy {
    */
   setSelectedBranch(branchId: string | null): void {
     this.selectedBranchIdState.set(branchId);
+    if (branchId) {
+      this.branchService.loadBranchById(branchId).catch(error => {
+        console.error('[BlueprintFacade] Failed to load branch:', error);
+      });
+    }
+  }
+
+  // ============================================================================
+  // Branch Management Operations
+  // ============================================================================
+
+  /**
+   * Load branches for a blueprint
+   *
+   * @param blueprintId Blueprint ID
+   * @returns Promise<BlueprintBranch[]>
+   */
+  async loadBranches(blueprintId: string): Promise<BlueprintBranch[]> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_branches');
+
+    try {
+      return await this.branchService.loadBranchesByBlueprintId(blueprintId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to load branches:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Load branch by ID
+   *
+   * @param branchId Branch ID
+   * @returns Promise<BlueprintBranch | null>
+   */
+  async loadBranchById(branchId: string): Promise<BlueprintBranch | null> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_branch_by_id');
+    this.selectedBranchIdState.set(branchId);
+
+    try {
+      return await this.branchService.loadBranchById(branchId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to load branch:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Update branch
+   *
+   * @param branchId Branch ID
+   * @param data Branch update data
+   * @returns Promise<BlueprintBranch>
+   */
+  async updateBranch(branchId: string, data: BlueprintBranchUpdate): Promise<BlueprintBranch> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('update_branch');
+
+    try {
+      const branch = await this.branchService.updateBranch(branchId, data);
+
+      // Log activity
+      try {
+        await this.activityService.logActivity(branch.blueprint_id, 'branch', branchId, 'updated', [], {
+          branchName: branch.branch_name
+        });
+      } catch (error) {
+        console.error('[BlueprintFacade] Failed to log branch update:', error);
+      }
+
+      return branch;
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to update branch:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Delete branch
+   *
+   * @param branchId Branch ID
+   * @returns Promise<void>
+   */
+  async deleteBranch(branchId: string): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('delete_branch');
+
+    const branch = this.branches().find(b => b.id === branchId);
+
+    try {
+      await this.branchService.deleteBranch(branchId);
+
+      // Log activity
+      if (branch) {
+        try {
+          await this.activityService.logActivity(branch.blueprint_id, 'branch', branchId, 'deleted', [], {
+            branchName: branch.branch_name
+          });
+        } catch (error) {
+          console.error('[BlueprintFacade] Failed to log branch deletion:', error);
+        }
+      }
+
+      // Clear selected branch if it was deleted
+      if (this.selectedBranchId() === branchId) {
+        this.selectedBranchIdState.set(null);
+      }
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to delete branch:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Sync branch from main branch
+   *
+   * @param branchId Branch ID
+   * @returns Promise<void>
+   */
+  async syncBranchFromMain(branchId: string): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('sync_branch_from_main');
+
+    try {
+      await this.branchService.syncFromMainBranch(branchId);
+
+      // Log activity
+      const branch = this.branches().find(b => b.id === branchId);
+      if (branch) {
+        try {
+          await this.activityService.logActivity(branch.blueprint_id, 'branch', branchId, 'synced', [], {
+            branchName: branch.branch_name
+          });
+        } catch (error) {
+          console.error('[BlueprintFacade] Failed to log branch sync:', error);
+        }
+      }
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to sync branch:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Close branch
+   *
+   * @param branchId Branch ID
+   * @returns Promise<BlueprintBranch>
+   */
+  async closeBranch(branchId: string): Promise<BlueprintBranch> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('close_branch');
+
+    try {
+      const branch = await this.branchService.closeBranch(branchId);
+
+      // Log activity
+      try {
+        await this.activityService.logActivity(branch.blueprint_id, 'branch', branchId, 'closed', [], {
+          branchName: branch.branch_name
+        });
+      } catch (error) {
+        console.error('[BlueprintFacade] Failed to log branch close:', error);
+      }
+
+      return branch;
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to close branch:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Mark branch as merged
+   *
+   * @param branchId Branch ID
+   * @returns Promise<BlueprintBranch>
+   */
+  async markBranchAsMerged(branchId: string): Promise<BlueprintBranch> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('mark_branch_as_merged');
+
+    try {
+      const branch = await this.branchService.markBranchAsMerged(branchId);
+
+      // Log activity
+      try {
+        await this.activityService.logActivity(branch.blueprint_id, 'branch', branchId, 'merged', [], {
+          branchName: branch.branch_name
+        });
+      } catch (error) {
+        console.error('[BlueprintFacade] Failed to log branch merge:', error);
+      }
+
+      return branch;
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to mark branch as merged:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  // ============================================================================
+  // Pull Request Operations
+  // ============================================================================
+
+  /**
+   * Create Pull Request
+   *
+   * @param data Pull Request insert data
+   * @returns Promise<PullRequest>
+   */
+  async createPullRequest(data: PullRequestInsert): Promise<PullRequest> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('create_pull_request');
+
+    try {
+      const pr = await this.pullRequestService.createPullRequest(data);
+
+      // Log activity
+      try {
+        await this.activityService.logActivity(pr.blueprint_id, 'pull_request', pr.id, 'created', [], {
+          prTitle: pr.title,
+          branchId: pr.branch_id
+        });
+      } catch (error) {
+        console.error('[BlueprintFacade] Failed to log PR creation:', error);
+      }
+
+      return pr;
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to create pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Load Pull Requests for a blueprint
+   *
+   * @param blueprintId Blueprint ID
+   * @param options Query options
+   * @returns Promise<PullRequest[]>
+   */
+  async loadPullRequests(blueprintId: string, options?: QueryOptions): Promise<PullRequest[]> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_pull_requests');
+
+    try {
+      return await this.pullRequestService.loadPullRequestsByBlueprintId(blueprintId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to load pull requests:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Load Pull Request by ID
+   *
+   * @param prId Pull Request ID
+   * @returns Promise<PullRequest | null>
+   */
+  async loadPullRequestById(prId: string): Promise<PullRequest | null> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_pull_request_by_id');
+
+    try {
+      return await this.pullRequestService.loadPullRequestById(prId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to load pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Load Pull Requests by branch ID
+   *
+   * @param branchId Branch ID
+   * @returns Promise<PullRequest[]>
+   */
+  async loadPullRequestsByBranchId(branchId: string): Promise<PullRequest[]> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_pull_requests_by_branch');
+
+    try {
+      return await this.pullRequestService.loadPullRequestsByBranchId(branchId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to load pull requests by branch:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Update Pull Request
+   *
+   * @param prId Pull Request ID
+   * @param data Pull Request update data
+   * @returns Promise<PullRequest>
+   */
+  async updatePullRequest(prId: string, data: PullRequestUpdate): Promise<PullRequest> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('update_pull_request');
+
+    try {
+      return await this.pullRequestService.updatePullRequest(prId, data);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to update pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Start review of Pull Request
+   *
+   * @param prId Pull Request ID
+   * @param reviewedBy Reviewer ID
+   * @returns Promise<PullRequest>
+   */
+  async startReview(prId: string, reviewedBy: string): Promise<PullRequest> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('start_review');
+
+    try {
+      return await this.pullRequestService.startReview(prId, reviewedBy);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to start review:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Approve Pull Request
+   *
+   * @param prId Pull Request ID
+   * @param reviewedBy Reviewer ID
+   * @returns Promise<PullRequest>
+   */
+  async approvePullRequest(prId: string, reviewedBy: string): Promise<PullRequest> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('approve_pull_request');
+
+    try {
+      return await this.pullRequestService.approvePullRequest(prId, reviewedBy);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to approve pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Reject Pull Request
+   *
+   * @param prId Pull Request ID
+   * @param reviewedBy Reviewer ID
+   * @param reason Rejection reason (optional)
+   * @returns Promise<PullRequest>
+   */
+  async rejectPullRequest(prId: string, reviewedBy: string, reason?: string): Promise<PullRequest> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('reject_pull_request');
+
+    try {
+      const pr = await this.pullRequestService.rejectPullRequest(prId, reviewedBy);
+      // Note: reason can be added to PR description or comments if needed
+      return pr;
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to reject pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Merge Pull Request
+   *
+   * @param prId Pull Request ID
+   * @param mergedBy User ID who performs the merge
+   * @param changesSummary Changes summary (optional)
+   * @returns Promise<PullRequest>
+   */
+  async mergePullRequest(prId: string, mergedBy: string, changesSummary?: any): Promise<PullRequest> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('merge_pull_request');
+
+    try {
+      return await this.pullRequestService.mergePullRequest(prId, mergedBy, changesSummary);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to merge pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Close Pull Request
+   *
+   * @param prId Pull Request ID
+   * @returns Promise<PullRequest>
+   */
+  async closePullRequest(prId: string): Promise<PullRequest> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('close_pull_request');
+
+    try {
+      return await this.pullRequestService.closePullRequest(prId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to close pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Delete Pull Request
+   *
+   * @param prId Pull Request ID
+   * @returns Promise<void>
+   */
+  async deletePullRequest(prId: string): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('delete_pull_request');
+
+    try {
+      await this.pullRequestService.deletePullRequest(prId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to delete pull request:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  // ============================================================================
+  // Configuration Management
+  // ============================================================================
+
+  /**
+   * Load configurations for a blueprint
+   *
+   * @param blueprintId Blueprint ID
+   * @returns Promise<BlueprintConfig[]>
+   */
+  async loadConfigs(blueprintId: string): Promise<BlueprintConfig[]> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_configs');
+
+    try {
+      return await this.blueprintService.loadConfigs(blueprintId);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to load configs:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Get configuration value
+   *
+   * @param blueprintId Blueprint ID
+   * @param configKey Configuration key
+   * @returns Promise<BlueprintConfig | null>
+   */
+  async getConfig(blueprintId: string, configKey: string): Promise<BlueprintConfig | null> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('get_config');
+
+    try {
+      return await this.blueprintService.getConfig(blueprintId, configKey);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to get config:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Set configuration value
+   *
+   * @param blueprintId Blueprint ID
+   * @param configKey Configuration key
+   * @param configValue Configuration value
+   * @param updatedBy User ID who updates the config (optional)
+   * @returns Promise<BlueprintConfig>
+   */
+  async setConfig(blueprintId: string, configKey: string, configValue: any, updatedBy?: string): Promise<BlueprintConfig> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('set_config');
+
+    try {
+      return await this.blueprintService.setConfig(blueprintId, configKey, configValue, updatedBy);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to set config:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  // ============================================================================
+  // Activity Log Management
+  // ============================================================================
+
+  /**
+   * Load activity logs for a blueprint
+   *
+   * @param blueprintId Blueprint ID
+   * @param filters Activity log filters (optional)
+   * @returns Promise<ActivityLog[]>
+   */
+  async loadActivities(blueprintId: string, filters?: ActivityLogFilters): Promise<ActivityLog[]> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_activities');
+
+    try {
+      return await this.activityService.getActivityLogs(blueprintId, filters);
+    } catch (error) {
+      console.error('[BlueprintFacade] Failed to load activities:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
   }
 
   // ============================================================================

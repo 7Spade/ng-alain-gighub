@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
-import { BaseRepository, QueryOptions } from './base.repository';
 import { Database } from '../types/common';
+import { BaseRepository, QueryOptions } from './base.repository';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）
@@ -81,13 +81,26 @@ export class BlueprintConfigRepository extends BaseRepository<BlueprintConfig, B
    * @returns Observable<BlueprintConfig>
    */
   upsertConfig(blueprintId: string, configKey: string, configValue: any, updatedBy?: string): Observable<BlueprintConfig> {
-    // 使用类型断言，因为 BaseRepository 会自动进行 camelCase → snake_case 转换
-    const data = {
-      blueprintId,
-      configKey,
-      configValue,
-      updatedBy
-    } as any as BlueprintConfigInsert;
-    return this.create(data);
+    // 先查询是否存在
+    return this.findByConfigKey(blueprintId, configKey).pipe(
+      map(existing => {
+        const data = {
+          blueprintId,
+          configKey,
+          configValue,
+          updatedBy
+        } as any as BlueprintConfigInsert;
+
+        if (existing) {
+          // 如果存在，则更新
+          return this.update(existing.id, data as any);
+        } else {
+          // 如果不存在，则创建
+          return this.create(data);
+        }
+      }),
+      // 展开 Observable<Observable<BlueprintConfig>> 为 Observable<BlueprintConfig>
+      switchMap(obs => obs)
+    );
   }
 }
