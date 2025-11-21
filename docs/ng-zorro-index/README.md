@@ -7,9 +7,9 @@
 每個組件都有獨立的文檔文件，命名格式為：`[序號]-[組件名稱].md`
 
 例如：
-- `01-Alert.md` - Alert 警告提示組件
-- `02-Form.md` - Form 表單組件
-- `03-Tree.md` - Tree 樹形控件組件
+- `01-alert.md` - Alert 警告提示組件
+- `02-form.md` - Form 表單組件
+- `03-tree.md` - Tree 樹形控件組件
 
 ## 文檔內容
 
