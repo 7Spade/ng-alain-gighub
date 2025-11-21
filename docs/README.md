@@ -76,9 +76,12 @@
 
 ### 💼 工作區系統 (workspace/)
 
-**8 個工作區文檔** - 四層上下文系統
+**10 個工作區文檔** - 四層上下文系統
 
 完整索引：[workspace/README.md](./workspace/README.md)
+
+⭐⭐⭐ **重要**：[workspace/workspace-missing-work-items-analysis.md](./workspace/workspace-missing-work-items-analysis.md)  
+全面分析報告：除了 86 個頁面重新設計，還識別出 47 個額外工作項（基礎設施、技術債務、服務層整合等）
 
 ### 📦 套件索引
 
