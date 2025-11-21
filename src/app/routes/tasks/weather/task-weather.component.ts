@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import { WorkspaceContextFacade } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -79,14 +80,16 @@ interface WeatherRecordItem {
   `
 })
 export class TaskWeatherComponent implements OnInit {
-  message = inject(NzMessageService);
+  private readonly message = inject(NzMessageService);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
 
   // Component signals
-  loading = signal(false);
-  filterLocation = signal<string | null>(null);
-  dateRange = signal<[Date, Date] | null>(null);
-  records = signal<WeatherRecordItem[]>([]);
-  locations = signal<string[]>([]);
+  readonly loading = signal(false);
+  readonly filterLocation = signal<string | null>(null);
+  readonly dateRange = signal<[Date, Date] | null>(null);
+  readonly records = signal<WeatherRecordItem[]>([]);
+  readonly locations = signal<string[]>([]);
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
 
   // Computed filtered records
   filteredRecords = computed(() => {

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { DailyReportRepository } from '@core';
+import { DailyReportRepository, WorkspaceContextFacade } from '@core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS, TaskService, Task, DailyReport, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -59,6 +59,7 @@ export class DailyReportsComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
   private readonly dailyReportRepository = inject(DailyReportRepository);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
   private readonly modal = inject(NzModalService);
@@ -66,6 +67,7 @@ export class DailyReportsComponent implements OnInit {
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
   readonly reports = signal<DailyReport[]>([]);
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
 
   columns: STColumn[] = [
     { title: 'ID', index: 'id', width: 100 },
