@@ -235,6 +235,56 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
   }
 
   /**
+   * 搜索任务（支持模糊查询）
+   *
+   * @param query 搜索关键词 - 用于搜索任务标题和描述
+   * @param options 查询选项 - 包含排序、分页等配置
+   * @returns Observable<Task[]> - 返回匹配的任务列表
+   * @throws Error - 当查询失败时抛出错误
+   *
+   * @example
+   * ```typescript
+   * taskRepository.search('设计', { page: 1, pageSize: 10 })
+   *   .subscribe(tasks => console.log('搜索结果:', tasks));
+   * ```
+   */
+  search(query: string, options?: QueryOptions): Observable<Task[]> {
+    if (!query || query.trim().length === 0) {
+      return from(Promise.resolve([]));
+    }
+
+    const trimmedQuery = query.trim();
+    let searchQuery = this.supabase
+      .from(this.tableName as any)
+      .select(options?.select || '*')
+      .or(`title.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%`) as any;
+
+    // 应用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      searchQuery = searchQuery.order(snakeOrderBy, {
+        ascending: options.orderDirection !== 'desc'
+      });
+    } else {
+      searchQuery = searchQuery.order('created_at', { ascending: false });
+    }
+
+    // 应用分页
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      searchQuery = searchQuery.range(fromIndex, toIndex);
+    }
+
+    return from(Promise.resolve(searchQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Task>(item)) : [];
+      })
+    );
+  }
+
+  /**
    * 根据任务 ID 列表批量查询任务
    *
    * @param taskIds 任务 ID 列表
