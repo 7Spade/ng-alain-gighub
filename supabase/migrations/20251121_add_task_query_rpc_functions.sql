@@ -75,7 +75,19 @@ CREATE INDEX IF NOT EXISTS idx_tasks_parent_task_id ON tasks (parent_task_id);
 -- Grants
 -- ============================================================================
 -- Grant execute permissions to authenticated users
--- Adjust these grants based on your RLS policies and security requirements
+-- 
+-- SECURITY NOTES:
+-- - These functions use SECURITY DEFINER to run with the privileges of the function owner
+-- - RLS policies on the 'tasks' table will NOT automatically apply to these functions
+-- - Consider implementing additional security checks within the functions if needed
+-- - Alternative: Create wrapper functions that respect RLS policies, or use SECURITY INVOKER
+-- 
+-- Example of adding RLS check in the function:
+-- IF NOT current_setting('request.jwt.claims', true)::json->>'sub' = ... THEN
+--   RAISE EXCEPTION 'Access denied';
+-- END IF;
+--
+-- TODO: Review and adjust permissions based on your specific RLS policies and security requirements
 
 GRANT EXECUTE ON FUNCTION find_task_subtree(ltree) TO authenticated;
 GRANT EXECUTE ON FUNCTION find_task_path(UUID) TO authenticated;

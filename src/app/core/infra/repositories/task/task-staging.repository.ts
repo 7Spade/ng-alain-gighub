@@ -84,7 +84,7 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
       query = query.range(fromIndex, toIndex);
     }
 
-    return from(Promise.resolve(query) as Promise<PostgrestResponse<any>>).pipe(
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
       map((response: PostgrestResponse<any>) => {
         const data = handleSupabaseResponse(response, `${this.constructor.name}.findByBlueprintId`);
         return Array.isArray(data) ? data.map(item => toCamelCaseData<TaskStaging>(item)) : [toCamelCaseData<TaskStaging>(data)];

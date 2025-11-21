@@ -302,7 +302,7 @@ export abstract class BaseRepository<T, TInsert = Partial<T>, TUpdate = Partial<
       query = query.range(fromIndex, toIndex);
     }
 
-    return from(Promise.resolve(query) as Promise<PostgrestResponse<any>>).pipe(
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
       map((response: PostgrestResponse<any>) => {
         const data = handleSupabaseResponse(response, `${this.constructor.name}.findByTimeComparison`);
         return Array.isArray(data) ? data.map(item => toCamelCaseData<T>(item)) : [toCamelCaseData<T>(data)];

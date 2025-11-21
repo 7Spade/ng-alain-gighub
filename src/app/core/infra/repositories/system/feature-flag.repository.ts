@@ -88,7 +88,7 @@ export class FeatureFlagRepository extends BaseRepository<FeatureFlag, FeatureFl
       .eq('is_enabled', true)
       .contains('target_accounts', [accountId]) as any;
 
-    return from(Promise.resolve(query) as Promise<PostgrestResponse<any>>).pipe(
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
       map((response: PostgrestResponse<any>) => {
         const data = handleSupabaseResponse(response, `${this.constructor.name}.findByTargetAccount`);
         return Array.isArray(data) ? data.map(item => toCamelCaseData<FeatureFlag>(item)) : [toCamelCaseData<FeatureFlag>(data)];
@@ -112,7 +112,7 @@ export class FeatureFlagRepository extends BaseRepository<FeatureFlag, FeatureFl
       .eq('is_enabled', true)
       .contains('target_organizations', [organizationId]) as any;
 
-    return from(Promise.resolve(query) as Promise<PostgrestResponse<any>>).pipe(
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
       map((response: PostgrestResponse<any>) => {
         const data = handleSupabaseResponse(response, `${this.constructor.name}.findByTargetOrganization`);
         return Array.isArray(data) ? data.map(item => toCamelCaseData<FeatureFlag>(item)) : [toCamelCaseData<FeatureFlag>(data)];
