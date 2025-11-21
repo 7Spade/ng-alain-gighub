@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WorkspaceContextFacade } from '@core';
 import { SHARED_IMPORTS, TaskDetail, TaskService, TaskStatus } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -265,9 +266,12 @@ export class TaskDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
 
   readonly taskDetail = signal<TaskDetail | null>(null);
   readonly taskId = signal<string>('');
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
+  readonly contextType = computed(() => this.contextFacade.contextType());
 
   // 计算 Checklist（基于任务状态和子任务状态）
   readonly checklist = computed<ChecklistItem[]>(() => {

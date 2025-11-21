@@ -1,7 +1,7 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthFacade } from '@core';
+import { AuthFacade, WorkspaceContextFacade } from '@core';
 import { BlueprintService, SHARED_IMPORTS, TaskInsert, TaskService, TaskUpdate } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -130,6 +130,7 @@ export class TaskFormComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
   private readonly authFacade = inject(AuthFacade);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
@@ -137,6 +138,8 @@ export class TaskFormComponent implements OnInit {
 
   readonly isEdit = signal<boolean>(false);
   readonly taskId = signal<string>('');
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
+  readonly contextType = computed(() => this.contextFacade.contextType());
   form!: FormGroup;
 
   ngOnInit(): void {
