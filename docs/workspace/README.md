@@ -78,6 +78,22 @@
   - 組織專案
   - 權限控制
 
+### 遷移與重新設計文檔 ⭐ **NEW**
+
+- **workspace-context-migration-plan.md** - Workspace Context Manager 頁面重新設計需求明確化文件
+  - 86 個需要重新設計的頁面清單
+  - 詳細設計需求規範
+  - 技術實施指南
+  - 優先級與時程規劃（6 週計畫）
+  - 測試策略與成功指標
+
+- **pages-requiring-redesign.md** - 需要重新設計的頁面清單（快速查詢版）
+  - P0 高優先級頁面（35 個）：核心功能
+  - P1 中優先級頁面（28 個）：重要功能
+  - P2 低優先級頁面（22 個）：次要功能
+  - 按模組和上下文分類統計
+  - 核心設計原則與範例代碼
+
 ## 使用方法 (Usage)
 
 ### 快速理解系統
@@ -100,6 +116,14 @@
 1. 參考 **workspace-context-architecture-review.md** 了解架構
 2. 查閱對應的上下文菜單文檔
 3. 使用 **workspace-context-switch-flowchart.mermaid.md** 理解狀態流
+
+### 頁面整合與遷移 ⭐ **NEW**
+
+需要整合 Workspace Context Manager 的開發者：
+1. **pages-requiring-redesign.md** - 快速查詢需要重新設計的頁面清單
+2. **workspace-context-migration-plan.md** - 完整的遷移計畫與技術規範
+3. 參考已整合的頁面範例（task-board, task-todo, task-assignments）
+4. 遵循設計原則：移除 URL 參數、使用 WorkspaceContextFacade、顯示上下文指示器
 
 ## 核心概念
 
@@ -241,7 +265,11 @@ A: 檢查是否有不必要的資料查詢，考慮實作快取機制。
 
 ---
 
+## 統計資訊
+
+- **文檔數量**: 9 個工作區文檔
+- **需要整合的頁面**: 86 個（4 個已完成，82 個待處理）
+- **功能狀態**: ✅ 核心功能生產就緒，🔶 頁面整合進行中
+
 **最後更新**: 2025-01-20  
-**維護者**: 前端團隊  
-**文檔數量**: 7 個工作區文檔  
-**功能狀態**: ✅ 生產就緒
+**維護者**: 前端團隊
