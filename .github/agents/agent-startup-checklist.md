@@ -10,6 +10,62 @@
 
 ## ⚠️ 強制執行項目（每次任務開始前）
 
+### 🔴 第 0 步：連接 Redis 外掛大腦（絕對必須）⭐⭐⭐⭐⭐
+
+**工具**：Redis MCP Server  
+**詳細指南**：[redis-external-brain-guide.md](./redis-external-brain-guide.md) ⭐⭐⭐⭐⭐
+
+**⚠️ Redis 是 Agent 的外掛大腦，負責長期記憶、知識累積與持續成長**
+
+#### A. 載入長期記憶（Recall from External Brain）
+```bash
+# 1. 載入使用者偏好
+redis-cli MGET user:preferences:code_style user:preferences:ui user:preferences:workflow
+
+# 2. 載入專案知識
+redis-cli MGET project:knowledge:architecture project:knowledge:api_conventions project:knowledge:naming
+
+# 3. 載入歷史決策（類似任務）
+redis-cli KEYS history:decisions:*
+
+# 4. 載入模式與慣例
+redis-cli MGET patterns:repository patterns:service patterns:component
+
+# 5. 載入常見錯誤與修正
+redis-cli GET errors:common
+
+# 6. 載入統計數據
+redis-cli MGET stats:tasks stats:tool_usage stats:code_quality
+```
+
+**必須確認**：
+- [ ] 是否已連接 Redis？
+- [ ] 是否載入了使用者偏好？
+- [ ] 是否載入了專案知識？
+- [ ] 是否載入了相關的歷史決策？
+- [ ] 是否載入了模式和慣例？
+
+#### B. 記錄當前任務（Observation）
+```bash
+# 記錄新任務到 Redis
+redis-cli SET history:tasks:$(date +%Y%m%dT%H%M%S) '{
+  "description": "任務描述",
+  "context": "任務上下文",
+  "timestamp": "$(date -Iseconds)"
+}'
+
+# 更新統計
+redis-cli INCR stats:tasks:total
+```
+
+**完整 Redis 使用流程**：
+1. **載入記憶** → 從 Redis 讀取所有相關知識
+2. **任務推論** → 結合 Redis 記憶 + 當前上下文
+3. **更新知識** → 將新發現寫回 Redis
+4. **持續成長** → 每次任務都讓 Agent 更聰明
+
+---
+
 ### 🧠 第 1 步：查閱專案記憶庫（必須）
 
 **位置**：[.github/copilot/memory.jsonl](../copilot/memory.jsonl)
@@ -101,54 +157,84 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 
 **工具**：`sequential-thinking` MCP Tool
 
-**使用時機**：**每次任務開始前必須使用**
+**使用時機**：**每次任務開始前必須使用（在載入 Redis 記憶後）**
+
+**⚠️ 重要：Sequential Thinking 必須結合 Redis 外掛大腦的記憶進行推論**
 
 ```
 ✓ 啟動 Sequential Thinking Tool
-✓ 分析問題背景與目標
+✓ 結合 Redis 載入的使用者偏好進行分析
+✓ 參考 Redis 中的專案知識和歷史決策
 ✓ 拆解任務步驟與依賴關係
-✓ 識別潛在風險與挑戰
-✓ 驗證解決方案可行性
+✓ 識別潛在風險與挑戰（參考 Redis 常見錯誤）
+✓ 驗證解決方案可行性（基於 Redis 統計數據）
 ✓ 記錄思考過程與決策理由
 ```
 
-**Sequential Thinking 使用範例**：
+**Sequential Thinking 使用範例（結合 Redis 外掛大腦）**：
 ```typescript
-// Thought 1/5: 理解問題本質
+// Thought 1/7: 載入 Redis 外掛大腦記憶
+// 從 Redis 載入：
+// - user:preferences:code_style (使用者代碼風格偏好)
+// - project:knowledge:auth (專案認證方式)
+// - history:decisions:* (類似登入功能的歷史決策)
+// - patterns:service (Service 層模式)
+// - errors:common (常見的認證錯誤)
+
+// Thought 2/7: 理解問題本質（基於 Redis 知識）
 // 任務：實作用戶登入功能
 // 核心問題：需要整合 Supabase Auth + @delon/auth TokenService
 // 涉及模組：身份認證層、權限控制層
+// Redis 顯示：過去類似任務使用相同架構，成功率 95%
 
-// Thought 2/5: 檢查記憶庫
-// 查詢關鍵實體：
+// Thought 3/7: 檢查記憶庫和 Redis
+// memory.jsonl 查詢關鍵實體：
 // - "Supabase Auth Integration" 
 // - "Delon Auth Token Management"
-// - "Authentication Flow"
+// Redis 顯示：
+// - project:knowledge:auth = "Supabase Auth + @delon/auth"
+// - patterns:auth_flow = "signIn → TokenService → routing"
 
-// Thought 3/5: 分析架構影響
-// 需要修改的層級：
+// Thought 4/7: 分析架構影響（基於 Redis 模式）
+// 需要修改的層級（遵循 Redis patterns:*）：
 // 1. Types 層：定義 AuthUser 類型
 // 2. Services 層：AuthService 整合 Supabase
 // 3. Facades 層：AuthFacade 提供 UI 介面
 // 4. Components 層：LoginComponent
+// Redis 統計：類似任務平均時間 4.5 小時
 
-// Thought 4/5: 識別風險
+// Thought 5/7: 識別風險（參考 Redis errors:common）
 // - Supabase session 刷新機制
 // - Token 過期處理
 // - RLS 策略是否正確配置
 // - 路由守衛設定
+// Redis 顯示：errors:common:forgot_rls_check 發生過 3 次
 
-// Thought 5/5: 驗證可行性
+// Thought 6/7: 參考歷史決策（Redis history:decisions:*）
+// 找到 3 個類似任務的歷史決策：
+// - history:decisions:20251110_auth: 使用 Supabase + @delon/auth (成功)
+// - history:decisions:20251115_session: 實作 session 刷新 (成功)
+// - history:decisions:20251118_rls: RLS 策略配置 (失敗→修正→成功)
+// 學習到的經驗：必須先測試 RLS 策略
+
+// Thought 7/7: 驗證可行性（基於 Redis 統計）
 // ✅ 符合五層架構開發順序
-// ✅ 符合 SRP 原則
-// ✅ 有完整的錯誤處理
-// ✅ 測試覆蓋率可達標
+// ✅ 符合 SRP 原則（基於 Redis patterns:*）
+// ✅ 有完整的錯誤處理（避免 Redis errors:common）
+// ✅ 測試覆蓋率可達標（基於 Redis stats:code_quality）
+// ✅ 歷史數據顯示：類似任務成功率 95%，預期時間 4.5h
 ```
 
-**必須回答的問題**：
+**必須回答的問題（結合 Redis）**：
 1. ❓ 任務的核心問題是什麼？
-2. ❓ 需要查閱記憶庫中的哪些實體？
-3. ❓ 涉及系統架構的哪些模組？
+2. ❓ Redis 中有哪些相關的使用者偏好？
+3. ❓ Redis 中有哪些相關的專案知識？
+4. ❓ 需要查閱記憶庫中的哪些實體？
+5. ❓ Redis 中有哪些類似任務的歷史決策？
+6. ❓ 涉及系統架構的哪些模組？
+7. ❓ 需要遵循哪些開發原則（Redis patterns:*）？
+8. ❓ 有哪些潛在風險（Redis errors:common）？
+9. ❓ 如何驗證解決方案（Redis stats:*）？
 4. ❓ 需要遵循哪些開發原則？
 5. ❓ 有哪些潛在風險？
 6. ❓ 如何驗證解決方案？
@@ -423,6 +509,59 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Developmen
 - [ ] 記錄關鍵決策（如需要，更新 memory.jsonl）
 - [ ] Commit 訊息符合規範（`<type>(<scope>): <subject>`）
 - [ ] PR 描述清晰完整
+
+### 🧠 Redis 外掛大腦成長（必須）⭐⭐⭐⭐⭐
+
+**⚠️ 任務完成後必須將新知識寫回 Redis，讓 Agent 持續成長**
+
+```bash
+# 1. 保存決策與推論結果
+redis-cli SET history:decisions:$(date +%Y%m%dT%H%M%S) '{
+  "task": "任務描述",
+  "decision": "最終決策",
+  "reasoning": "推論過程",
+  "alternatives_considered": ["方案A", "方案B"],
+  "outcome": "successful",
+  "lessons_learned": "學到的經驗"
+}'
+
+# 2. 更新專案知識（如有新發現）
+redis-cli SET project:knowledge:new_domain '{
+  "pattern": "新發現的模式",
+  "convention": "新的慣例"
+}'
+
+# 3. 記錄新的命名規範（如有）
+redis-cli HSET project:knowledge:naming new_pattern "新命名模式"
+
+# 4. 更新統計數據
+redis-cli INCR stats:tasks:total_completed
+redis-cli HINCRBY stats:tasks:by_type feature 1
+
+# 5. 記錄使用者反饋（如有）
+redis-cli SET feedback:$(date +%Y%m%dT%H%M%S) '{
+  "decision": "決策",
+  "feedback": "反饋內容",
+  "effective": true
+}'
+
+# 6. 更新工具使用統計
+redis-cli HINCRBY stats:tool_usage:sequential_thinking used 1
+redis-cli HINCRBY stats:tool_usage:software_planning used 1
+```
+
+**必須確認**：
+- [ ] 是否將新決策寫入 Redis？
+- [ ] 是否更新了專案知識？
+- [ ] 是否記錄了新的模式和慣例？
+- [ ] 是否更新了統計數據？
+- [ ] 是否記錄了使用者反饋？
+
+**成長效果**：
+- ✅ 下次類似任務，Agent 會記得這次的決策
+- ✅ 專案知識持續累積，Agent 越來越熟悉專案
+- ✅ 統計數據幫助 Agent 做出更準確的時間估算
+- ✅ 使用者偏好讓 Agent 越來越符合你的習慣
 
 ### 🔧 工具使用完成度驗證
 

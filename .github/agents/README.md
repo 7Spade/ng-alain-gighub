@@ -27,8 +27,9 @@
 ├── .github/agents/           # 📂 GitHub Agents 目錄
 │   ├── README.md             # 本文件
 │   ├── QUICK-START.md        # 🚀 快速開始指南（新手必讀）
-│   ├── agent-startup-checklist.md # ⭐⭐⭐ Agent 啟動檢查清單（v2.0 - 含 MCP 工具）
-│   ├── mcp-tools-workflow-guide.md # ⭐⭐⭐ MCP 工具工作流程指南（新）
+│   ├── agent-startup-checklist.md # ⭐⭐⭐ Agent 啟動檢查清單（v3.0 - 含 Redis）
+│   ├── redis-external-brain-guide.md # ⭐⭐⭐⭐⭐ Redis 外掛大腦指南（新）
+│   ├── mcp-tools-workflow-guide.md # ⭐⭐⭐ MCP 工具工作流程指南
 │   ├── memory-usage-guide.md # ⭐⭐⭐ 記憶庫使用指南
 │   ├── copilot-instructions.md # ⭐⭐ GitHub Copilot Agent 優化版（v2.0）
 │   ├── ng-alain-github-agent.md   # ⭐ 專案級上下文（v2.0 - 強調工具使用）
@@ -73,18 +74,37 @@
 
 ### 日常使用（強制流程）⭐⭐⭐⭐⭐
 
-#### 🔴 第 0 步：使用 MCP 工具（絕對必須，最高優先級）
-**⚠️ 任何任務都必須先使用這兩個工具：**
+#### 🔴 第 0 步：連接 Redis 外掛大腦（絕對必須，最高優先級）
+**⚠️ Redis 是 Agent 的外掛大腦，負責長期記憶和持續成長**
+
+```bash
+# 1. 載入使用者偏好
+redis-cli MGET user:preferences:code_style user:preferences:ui
+
+# 2. 載入專案知識
+redis-cli MGET project:knowledge:architecture project:knowledge:api_conventions
+
+# 3. 載入歷史決策
+redis-cli KEYS history:decisions:*
+
+# 4. 載入模式與慣例
+redis-cli MGET patterns:repository patterns:service patterns:component
+```
+
+**詳細指南**：[redis-external-brain-guide.md](./redis-external-brain-guide.md) ⭐⭐⭐⭐⭐
+
+#### 🔴 第 1 步：使用 MCP 工具（絕對必須，結合 Redis 記憶）
+**⚠️ 必須在載入 Redis 記憶後使用這兩個工具：**
 
 1. **Sequential Thinking Tool** (`sequential-thinking`)
-   - 分析任務、識別風險、驗證可行性
+   - 基於 Redis 記憶分析任務、識別風險、驗證可行性
    - 詳細指南：[mcp-tools-workflow-guide.md](./mcp-tools-workflow-guide.md)
 
 2. **Software Planning Tool** (`software-planning-tool`)
-   - 創建可執行計畫、追蹤進度
+   - 參考 Redis 知識創建可執行計畫、追蹤進度
    - 詳細指南：[mcp-tools-workflow-guide.md](./mcp-tools-workflow-guide.md)
 
-#### 🔴 第 1 步：查閱記憶庫（必須）
+#### 🔴 第 2 步：查閱記憶庫（必須）
 ```bash
 # 打開記憶庫
 .github/copilot/memory.jsonl
@@ -93,25 +113,43 @@
 cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 ```
 
-#### 🔴 第 2 步：檢查系統架構（必須）
+#### 🔴 第 3 步：檢查系統架構（必須）
 ```bash
 # 打開系統架構思維導圖
 docs/architecture/01-system-architecture-mindmap.mermaid.md
 ```
 
-#### 🔴 第 3 步：完成啟動檢查清單（必須）
+#### 🔴 第 4 步：完成啟動檢查清單（必須）
 - 使用 [agent-startup-checklist.md](./agent-startup-checklist.md)
 - 確認所有必須項目已完成
-- **特別注意**：Step 4 & 5 的工具使用（Sequential Thinking + Software Planning）
+- **特別注意**：Redis 外掛大腦 + MCP 工具使用
 
-#### 第 4 步：執行任務
-- **工具優先**：始終使用 Sequential Thinking 和 Software Planning Tool
+#### 第 5 步：執行任務
+- **Redis 優先**：載入外掛大腦記憶
+- **工具優先**：Sequential Thinking + Software Planning（結合 Redis）
 - **Context7 (@C7)**：查官方來源（Angular、ng-alain、Supabase）
 - **文件索引**：使用 `docs-index.md` 尋找對應 `docs/` 文件
 - **決策支援**：使用 `QUICK-START.md` 的決策樹快速定位
 - **任務執行**：依 `domain/*.md` 檢查清單逐項完成
 - **品質把關**：參考每個 agent 的審查檢查清單
 - **進度追蹤**：使用 Software Planning Tool 的 `update_todo_status` 更新進度
+
+#### 第 6 步：任務完成後 - 更新 Redis 外掛大腦（必須）⭐⭐⭐⭐⭐
+```bash
+# 1. 保存決策
+redis-cli SET history:decisions:$(date +%Y%m%dT%H%M%S) '{"task":"...","decision":"..."}'
+
+# 2. 更新專案知識
+redis-cli SET project:knowledge:new_domain '{"pattern":"..."}'
+
+# 3. 更新統計
+redis-cli INCR stats:tasks:total_completed
+
+# 4. 記錄反饋
+redis-cli SET feedback:$(date +%Y%m%dT%H%M%S) '{"effective":true}'
+```
+
+**成長效果**：每次任務讓 Agent 更聰明，越用越熟悉專案 🌱
 
 ## 🧭 推薦閱讀順序
 
@@ -140,15 +178,28 @@ docs/architecture/01-system-architecture-mindmap.mermaid.md
 
 ## 📚 核心文件說明
 
-### MCP 工具使用（新增）⭐⭐⭐⭐⭐
+### Redis 外掛大腦（新增）⭐⭐⭐⭐⭐
+| 文件 | 用途 | 適用對象 |
+|------|------|----------|
+| [redis-external-brain-guide.md](./redis-external-brain-guide.md) | **Redis 外掛大腦完整指南**：長期記憶、知識累積、持續成長 | **所有 Agent（絕對必讀）** |
+
+**Redis 成長循環**：
+1. **載入記憶** - 從 Redis 讀取使用者偏好、專案知識、歷史決策
+2. **結合推論** - Sequential Thinking + Software Planning 結合 Redis 記憶
+3. **更新知識** - 將新決策、模式、統計寫回 Redis
+4. **持續成長** - 每次任務讓 Agent 更聰明，越用越熟悉專案
+
+### MCP 工具使用⭐⭐⭐⭐⭐
 | 文件 | 用途 | 適用對象 |
 |------|------|----------|
 | [mcp-tools-workflow-guide.md](./mcp-tools-workflow-guide.md) | Sequential Thinking 和 Software Planning Tool 完整使用指南 | **所有 Agent（必讀）** |
 
-**工具使用流程**：
-1. **Sequential Thinking** - 分析任務（7 步驟思考流程）
-2. **Software Planning** - 創建計畫（按五層架構順序）
-3. **執行與追蹤** - 更新進度（`update_todo_status`）
+**工具使用流程（結合 Redis）**：
+1. **Redis 載入** - 載入外掛大腦的記憶
+2. **Sequential Thinking** - 基於 Redis 記憶分析任務
+3. **Software Planning** - 參考 Redis 知識創建計畫
+4. **執行與追蹤** - 更新進度
+5. **Redis 更新** - 寫回新知識，讓 Agent 成長
 
 ### 企業標準文件⭐⭐⭐⭐⭐
 | 文件 | 用途 | 適用對象 |
