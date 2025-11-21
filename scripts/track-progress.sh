@@ -38,7 +38,8 @@ echo ""
 # Function to count lines in TypeScript files
 count_lines() {
     local dir=$1
-    find "$dir" -name "*.ts" -not -name "*.spec.ts" -exec wc -l {} + | tail -1 | awk '{print $1}'
+    local count=$(find "$dir" -name "*.ts" -not -name "*.spec.ts" -exec wc -l {} + 2>/dev/null | tail -1 | awk '{print $1}')
+    echo "${count:-0}"
 }
 
 # Function to count test files
@@ -140,7 +141,7 @@ cat > "$REPORT_FILE" << EOF
 
 | Component | Tests | Coverage | Status |
 |-----------|-------|----------|--------|
-| Total Tests | $TOTAL_TESTS | $TEST_COVERAGE% | $([ "$TOTAL_TESTS" -gt 50 ] && echo "🟢 Good" || echo "🔴 Low") |
+| Total Tests | $TOTAL_TESTS | N/A | $([ "$TOTAL_TESTS" -gt 50 ] && echo "🟢 Good" || echo "🔴 Low") |
 | Facades Tests | $FACADES_TESTS | N/A | $([ "$FACADES_TESTS" -gt 10 ] && echo "🟢 Good" || echo "🔴 Low") |
 
 ### Code Quality
