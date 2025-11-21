@@ -49,3 +49,41 @@ export enum InspectionPhotoType {
   /** 进度照片 */
   PROGRESS = 'progress'
 }
+
+/**
+ * 检查状态枚举
+ * 对应数据库 inspections.status 字段
+ *
+ * @description 定义检查的各种状态
+ */
+export enum InspectionStatus {
+  /** 待检查 */
+  PENDING = 'pending',
+  /** 检查中 */
+  IN_PROGRESS = 'in_progress',
+  /** 已通过 */
+  PASSED = 'passed',
+  /** 未通过 */
+  FAILED = 'failed',
+  /** 已完成 */
+  COMPLETED = 'completed'
+}
+
+/**
+ * 检查类型枚举
+ * 对应数据库 inspections.inspection_type 字段
+ *
+ * @description 定义检查的类型分类
+ */
+export enum InspectionType {
+  /** 现场检查 */
+  SITE = 'site',
+  /** 文件检查 */
+  DOCUMENT = 'document',
+  /** 进度检查 */
+  PROGRESS = 'progress',
+  /** 安全检查 */
+  SAFETY = 'safety',
+  /** 质量检查 */
+  QUALITY = 'quality'
+}
