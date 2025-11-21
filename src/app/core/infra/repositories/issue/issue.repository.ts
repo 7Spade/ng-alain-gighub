@@ -203,4 +203,56 @@ export class IssueRepository extends BaseRepository<Issue, IssueInsert, IssueUpd
       }
     });
   }
+
+  /**
+   * 搜索问题（支持模糊查询）
+   *
+   * @param query 搜索关键词 - 用于搜索问题标题和描述
+   * @param options 查询选项 - 包含排序、分页等配置
+   * @returns Observable<Issue[]> - 返回匹配的问题列表
+   * @throws Error - 当查询失败时抛出错误
+   *
+   * @example
+   * ```typescript
+   * issueRepository.search('漏水', { page: 1, pageSize: 10 })
+   *   .subscribe(issues => console.log('搜索结果:', issues));
+   * ```
+   */
+  search(query: string, options?: QueryOptions): Observable<Issue[]> {
+    if (!query || query.trim().length === 0) {
+      return from(Promise.resolve([]));
+    }
+
+    const trimmedQuery = query.trim();
+    let searchQuery = this.supabase
+      .from(this.tableName as any)
+      .select(options?.select || '*')
+      .or(`title.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%`) as any;
+
+    // 应用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      searchQuery = searchQuery.order(snakeOrderBy, {
+        ascending: options.orderDirection !== 'desc'
+      });
+    } else {
+      searchQuery = searchQuery.order('created_at', { ascending: false });
+    }
+
+    // 应用分页
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      searchQuery = searchQuery.range(fromIndex, toIndex);
+    }
+
+    return from(Promise.resolve(searchQuery) as Promise<{ data: any[] | null; error: any }>).pipe(
+      map((response: { data: any[] | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '搜索问题失败');
+        }
+        return (response.data || []).map(item => toCamelCaseData<Issue>(item));
+      })
+    );
+  }
 }
