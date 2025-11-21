@@ -1,0 +1,404 @@
+# Repositories 層增強檢查清單
+
+> **建立日期**: 2025-11-21  
+> **文檔類型**: 企業級工作檢查清單  
+> **優先級**: P0 (高優先級 - 數據訪問層)  
+> **預估工時**: 5-7 天
+
+---
+
+## 📋 目的 (Purpose)
+
+本文檔提供 Repositories 層（`core/infra/repositories/`）的詳細增強檢查清單，確保所有 Repository 具備完整的基礎方法，特別是搜索功能。
+
+## 👥 目標讀者 (Audience)
+
+- 前端開發者  
+- 架構師  
+- AI Agents
+
+---
+
+## 🎯 總覽
+
+### 背景
+
+所有 Repository 都繼承自 `BaseRepository`，自動獲得基礎 CRUD 方法。但許多Repository 缺少：
+- 搜索方法（`search()`）
+- 按特定條件查詢方法（如 `findActive()`）
+
+### 目標
+
+- ✅ 為 10 個主表 Repository 補充搜索方法
+- ✅ 補充常用的按條件查詢方法
+- ✅ 統一錯誤處理和日誌記錄
+
+### 工作量統計
+
+| 優先級 | Repository數量 | 預估工時 |
+|--------|--------------|---------|
+| P0 高優先級 | 5 個 | 3-4 天 |
+| P1 中優先級 | 5 個 | 2-3 天 |
+| **總計** | **10 個** | **5-7 天** |
+
+---
+
+## 📝 待補充方法清單
+
+### 🔴 P0: 高優先級 Repository
+
+#### 1. Task Repository ⭐⭐⭐⭐⭐
+
+**文件**: `core/infra/repositories/task/task.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索任務（按標題、描述）
+
+**工作項**:
+```typescript
+/**
+ * 搜索任務（支持模糊查詢）
+ */
+search(query: string, options?: QueryOptions): Observable<Task[]> {
+  if (!query || query.trim().length === 0) {
+    return of([]);
+  }
+
+  const trimmedQuery = query.trim();
+  let searchQuery = this.supabase
+    .from(this.tableName as any)
+    .select(options?.select || '*')
+    .or(`title.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%`);
+
+  // 應用排序
+  if (options?.orderBy) {
+    const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+    searchQuery = searchQuery.order(snakeOrderBy, {
+      ascending: options.orderDirection !== 'desc'
+    });
+  } else {
+    searchQuery = searchQuery.order('created_at', { ascending: false });
+  }
+
+  // 應用分頁
+  if (options?.page && options?.pageSize) {
+    const fromIndex = (options.page - 1) * options.pageSize;
+    const toIndex = fromIndex + options.pageSize - 1;
+    searchQuery = searchQuery.range(fromIndex, toIndex);
+  }
+
+  return from(searchQuery as unknown as Promise<PostgrestResponse<any>>).pipe(
+    map((response: PostgrestResponse<any>) => {
+      const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+      return Array.isArray(data) ? data.map(item => toCamelCaseData<Task>(item)) : [];
+    })
+  );
+}
+```
+
+**檢查清單**:
+- [ ] 方法實現完成
+- [ ] 支持標題和描述模糊查詢
+- [ ] 支持排序和分頁
+- [ ] 添加單元測試
+- [ ] 添加 JSDoc 註釋
+- [ ] 編譯無錯誤
+- [ ] Lint 檢查通過
+
+**預估工時**: 0.5 天
+
+---
+
+#### 2. Issue Repository ⭐⭐⭐⭐⭐
+
+**文件**: `core/infra/repositories/issue/issue.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索問題（按標題、描述）
+
+**實施步驟**: 同 Task Repository，替換為 Issue 類型
+
+**檢查清單**:
+- [ ] 方法實現完成
+- [ ] 支持標題和描述模糊查詢
+- [ ] 支持排序和分頁
+- [ ] 添加單元測試
+- [ ] 添加 JSDoc 註釋
+
+**預估工時**: 0.5 天
+
+---
+
+#### 3. Document Repository ⭐⭐⭐⭐
+
+**文件**: `core/infra/repositories/document/document.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索文檔（按標題、文件名、描述）
+- [ ] `findByBlueprintId(blueprintId, options?)` - 按藍圖加載
+
+**工作項**:
+```typescript
+/**
+ * 根據藍圖 ID 查詢文檔
+ */
+findByBlueprintId(blueprintId: string, options?: QueryOptions): Observable<Document[]> {
+  return this.findAll({
+    ...options,
+    filters: {
+      ...options?.filters,
+      blueprintId // 會自動轉換為 blueprint_id
+    }
+  });
+}
+
+/**
+ * 搜索文檔（支持模糊查詢）
+ */
+search(query: string, options?: QueryOptions): Observable<Document[]> {
+  if (!query || query.trim().length === 0) {
+    return of([]);
+  }
+
+  const trimmedQuery = query.trim();
+  let searchQuery = this.supabase
+    .from(this.tableName as any)
+    .select(options?.select || '*')
+    .or(`title.ilike.%${trimmedQuery}%,file_name.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%`);
+
+  // 只搜索未刪除的文檔
+  searchQuery = searchQuery.is('soft_deleted_at', null);
+
+  // 應用排序和分頁（同Task Repository）...
+  
+  return from(searchQuery as unknown as Promise<PostgrestResponse<any>>).pipe(
+    map((response: PostgrestResponse<any>) => {
+      const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+      return Array.isArray(data) ? data.map(item => toCamelCaseData<Document>(item)) : [];
+    })
+  );
+}
+```
+
+**檢查清單**:
+- [ ] `findByBlueprintId` 實現完成
+- [ ] `search` 方法實現完成
+- [ ] 支持標題、文件名、描述查詢
+- [ ] 過濾軟刪除文檔
+- [ ] 添加單元測試
+
+**預估工時**: 1 天
+
+---
+
+#### 4. QualityCheck Repository ⭐⭐⭐⭐
+
+**文件**: `core/infra/repositories/quality/quality-check.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索質檢記錄（按備註、檢查結果）
+- [ ] `findByBlueprintId(blueprintId, options?)` - 按藍圖加載（需要通過 task 關聯）
+
+**注意**: `findByBlueprintId` 需要 JOIN 查詢，建議在 Service 層實現或使用數據庫 RPC 函數。
+
+**檢查清單**:
+- [ ] `search` 方法實現完成
+- [ ] 考慮 `findByBlueprintId` 實現方案
+- [ ] 添加單元測試
+
+**預估工時**: 0.5 天
+
+---
+
+#### 5. Inspection Repository ⭐⭐⭐⭐
+
+**文件**: `core/infra/repositories/quality/inspection.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索檢查記錄
+- [ ] `findByBlueprintId(blueprintId, options?)` - 按藍圖加載
+- [ ] `findByInspectionType(type, options?)` - 按檢查類型加載
+
+**實施步驟**: 同 QualityCheck Repository
+
+**預估工時**: 0.5 天
+
+---
+
+### 🟡 P1: 中優先級 Repository
+
+#### 6. Comment Repository ⭐⭐⭐
+
+**文件**: `core/infra/repositories/communication/comment.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索評論（按內容）
+
+**預估工時**: 0.5 天
+
+---
+
+#### 7. Bot Repository ⭐⭐⭐
+
+**文件**: `core/infra/repositories/bot/bot.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索機器人（按名稱、描述）
+- [ ] `findByStatus(status, options?)` - 按狀態查詢
+
+**預估工時**: 0.5 天
+
+---
+
+#### 8. OrganizationCollaboration Repository ⭐⭐⭐
+
+**文件**: `core/infra/repositories/collaboration/organization-collaboration.repository.ts`
+
+**缺少方法**:
+- [ ] `findActive(options?)` - 查詢活躍的協作
+
+**工作項**:
+```typescript
+/**
+ * 查詢活躍的協作關係（狀態為 active）
+ */
+findActive(options?: QueryOptions): Observable<OrganizationCollaboration[]> {
+  return this.findByStatus(CollaborationStatus.ACTIVE, options);
+}
+```
+
+**預估工時**: 0.25 天
+
+---
+
+#### 9. BlueprintBranch Repository ⭐⭐
+
+**文件**: `core/infra/repositories/blueprint/blueprint-branch.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索分支（可選）
+
+**預估工時**: 0.5 天
+
+---
+
+#### 10. PullRequest Repository ⭐⭐
+
+**文件**: `core/infra/repositories/blueprint/blueprint-pull-request.repository.ts`
+
+**缺少方法**:
+- [ ] `search(query, options?)` - 搜索 PR（可選）
+
+**預估工時**: 0.5 天
+
+---
+
+## 📋 實施步驟
+
+### Phase 1: 高優先級 Repository（3-4 天）
+
+#### Day 1: Task & Issue Repository
+- [ ] Task Repository - 實現 `search()` 方法
+- [ ] Issue Repository - 實現 `search()` 方法
+- [ ] 添加單元測試
+- [ ] 代碼審查
+
+#### Day 2-3: Document, QualityCheck, Inspection Repository
+- [ ] Document Repository - 實現 `search()` 和 `findByBlueprintId()`
+- [ ] QualityCheck Repository - 實現 `search()`
+- [ ] Inspection Repository - 實現 `search()` 和 `findByInspectionType()`
+- [ ] 添加單元測試
+- [ ] 代碼審查
+
+### Phase 2: 中優先級 Repository（2-3 天）
+
+#### Day 4-5: 其他 Repository
+- [ ] Comment Repository - 實現 `search()`
+- [ ] Bot Repository - 實現 `search()` 和 `findByStatus()`
+- [ ] OrganizationCollaboration Repository - 實現 `findActive()`
+- [ ] BlueprintBranch Repository - 實現 `search()`（可選）
+- [ ] PullRequest Repository - 實現 `search()`（可選）
+- [ ] 添加單元測試
+- [ ] 代碼審查
+
+### Phase 3: 驗證與測試（0.5 天）
+
+- [ ] 運行 `yarn build` - 確認編譯無錯誤
+- [ ] 運行 `yarn lint` - 確認無 ESLint 錯誤
+- [ ] 運行 `yarn test` - 確認所有測試通過
+- [ ] 代碼覆蓋率檢查（目標 > 80%）
+- [ ] 性能測試（搜索響應時間 < 500ms）
+
+---
+
+## ✅ 驗證檢查清單
+
+### 代碼實現檢查
+- [ ] 所有搜索方法支持模糊查詢
+- [ ] 所有搜索方法支持排序
+- [ ] 所有搜索方法支持分頁
+- [ ] 空查詢返回空陣列（不是錯誤）
+- [ ] 錯誤處理統一使用 `handleSupabaseResponse`
+- [ ] 數據轉換使用 `toCamelCaseData`
+
+### 單元測試檢查
+- [ ] 測試正常搜索場景
+- [ ] 測試空查詢場景
+- [ ] 測試排序功能
+- [ ] 測試分頁功能
+- [ ] 測試錯誤處理
+- [ ] 測試覆蓋率 > 80%
+
+### 性能檢查
+- [ ] 搜索查詢使用索引
+- [ ] 避免 N+1 查詢問題
+- [ ] 分頁查詢正確使用 range
+- [ ] 響應時間 < 500ms
+
+---
+
+## 📊 進度追蹤
+
+### P0 高優先級進度
+- [ ] Task Repository (0/1)
+- [ ] Issue Repository (0/1)
+- [ ] Document Repository (0/2)
+- [ ] QualityCheck Repository (0/1)
+- [ ] Inspection Repository (0/2)
+
+**總進度**: 0/7 (0%)
+
+### P1 中優先級進度
+- [ ] Comment Repository (0/1)
+- [ ] Bot Repository (0/2)
+- [ ] OrganizationCollaboration Repository (0/1)
+- [ ] BlueprintBranch Repository (0/1)
+- [ ] PullRequest Repository (0/1)
+
+**總進度**: 0/6 (0%)
+
+### 總體進度
+**完成度**: 0/13 (0%)
+
+---
+
+## 📚 參考文檔
+
+### 分析報告
+- [Repositories 層基礎方法完整性分析報告](../archive/repositories-analysis-report.md)
+
+### 工作計劃
+- [五層架構增強總計劃](./five-layer-architecture-enhancement-plan.md)
+
+### 參考實現
+- Blueprint Repository: `src/app/core/infra/repositories/blueprint/blueprint.repository.ts`
+- BaseRepository: `src/app/core/infra/repositories/base/base.repository.ts`
+
+### 數據庫結構
+- [完整 SQL 表結構定義](../reference/22-完整SQL表結構定義.md)
+
+---
+
+**最後更新**: 2025-11-21  
+**負責人**: 開發團隊  
+**狀態**: 📋 待開始
