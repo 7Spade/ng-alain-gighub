@@ -17,6 +17,9 @@ export * from './components/permission-guard';
 // Pipes
 export * from './pipes';
 
+// Directives
+export * from './directives';
+
 // Utils
 export * from './utils/yuan';
 

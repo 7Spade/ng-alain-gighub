@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -104,7 +104,7 @@ interface BackupItem {
         </ng-template>
 
         <ng-template #size let-record>
-          {{ record.size | fileSize }}
+          {{ record.size | mega }}
         </ng-template>
       </st>
     </nz-card>

@@ -36,10 +36,12 @@ import { LoadingIndicatorComponent } from './components/loading-indicator';
 import { PhotoGalleryComponent } from './components/photo-gallery';
 import { QcCameraComponent } from './components/qc-camera';
 import { TodoWidgetComponent } from './components/todo-widget';
-import { FileSizePipe } from './pipes/file-size.pipe';
-import { StatusPipe } from './pipes/status.pipe';
+import { ClickOutsideDirective, CopyToClipboardDirective, DebounceClickDirective, LazyLoadImageDirective } from './directives';
+import { DurationPipe, RolePipe, StatusPipe } from './pipes';
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+
+// Shared Directives
 
 // Shared Pipes
 
@@ -97,6 +99,14 @@ export const SHARED_IMPORTS = [
   QcCameraComponent, // 品管相機 (拍照 + 標註)
 
   // ========== Shared 自訂管道 ==========
-  FileSizePipe, // 文件大小格式化管道
-  StatusPipe // 狀態格式化管道
+  DurationPipe, // 時間長度格式化管道
+  RolePipe, // 角色格式化管道
+  StatusPipe, // 狀態格式化管道
+  // 注意：文件大小格式化使用 delon 的 CurrencyMegaPipe (mega)，已在 SHARED_DELON_MODULES 中
+
+  // ========== Shared 自訂指令 ==========
+  ClickOutsideDirective, // 點擊外部區域指令
+  DebounceClickDirective, // 防抖點擊指令
+  CopyToClipboardDirective, // 複製到剪貼板指令
+  LazyLoadImageDirective // 圖片懶加載指令
 ];

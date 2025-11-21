@@ -48,7 +48,7 @@ interface VersionItem {
         </ng-template>
 
         <ng-template #fileSize let-record>
-          {{ record.fileSize | fileSize }}
+          {{ record.fileSize | mega }}
         </ng-template>
       </st>
     </nz-card>

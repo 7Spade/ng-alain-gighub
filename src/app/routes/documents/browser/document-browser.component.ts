@@ -70,7 +70,7 @@ interface FolderItem {
                 }
               </td>
               <td>{{ item.type === 'folder' ? '文件夹' : '文件' }}</td>
-              <td>{{ item.size ? (item.size | fileSize) : '-' }}</td>
+              <td>{{ item.size ? (item.size | mega) : '-' }}</td>
               <td>{{ item.modifiedAt | date: 'yyyy-MM-dd HH:mm' }}</td>
               <td>
                 <button nz-button nzType="link" nzSize="small" (click)="viewDetail(item.id)">查看</button>
