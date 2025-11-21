@@ -44,9 +44,17 @@
 
 **代碼模板**:
 ```typescript
-// 1. Signals
-private readonly tasksState = signal<Task[]>([]);
-readonly tasks = this.tasksState.asReadonly();
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class TaskService {
+  // 1. Dependencies
+  private readonly repository = inject(TaskRepository);
+  
+  // 2. Private signals
+  private readonly tasksState = signal<Task[]>([]);
+  readonly tasks = this.tasksState.asReadonly();
 
 // 2. 加載方法
 async loadTasks(): Promise<void> {

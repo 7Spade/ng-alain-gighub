@@ -58,6 +58,11 @@
 ```typescript
 /**
  * 搜索任務（支持模糊查詢）
+ * 
+ * @param query 搜索關鍵詞 - 用於搜索任務標題和描述
+ * @param options 查詢選項 - 包含排序、分頁等配置
+ * @returns Observable<Task[]> - 返回匹配的任務列表
+ * @throws Error - 當查詢失敗時拋出錯誤
  */
 search(query: string, options?: QueryOptions): Observable<Task[]> {
   if (!query || query.trim().length === 0) {
