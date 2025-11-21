@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseRepository, QueryOptions } from './base.repository';
-import { BranchStatus, BranchType } from '../types/blueprint';
-import { Database } from '../types/common';
+import { BranchStatus, BranchType } from '../../types/blueprint';
+import { Database } from '../../types/common';
+import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
  * BlueprintBranch 实体类型（camelCase）

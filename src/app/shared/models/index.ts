@@ -19,7 +19,7 @@
 
 // 按模块导出（按依赖顺序）
 export * from './account.models';
-export * from './blueprint.models';
+export * from './blueprint/blueprint.models';
 export * from './bot.models';
 export * from './collaboration.models';
 export * from './communication.models';
