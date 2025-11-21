@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
-import { type Account } from '@shared/models';
+import { type Account } from '../../../shared/models';
 import { AuthService, type SignInRequest, type SignUpRequest } from '@shared/services/auth';
 import type { User, Session } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';

@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { type Account, AccountStatus, AccountType } from '@shared/models';
+import { type Account, AccountStatus, AccountType } from '../../../shared/models';
 import { AccountService } from '@shared/services/account';
 
 import { ErrorStateService } from '../services/error-state.service';
