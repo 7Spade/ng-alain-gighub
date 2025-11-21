@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
+import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
@@ -43,20 +47,56 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
   }
 
   /**
-   * 根據藍圖 ID 查詢暫存記錄（透過 JOIN tasks 表）
+   * 根據藍圖 ID 查詢暫存記錄（透過關聯 tasks 表）
    *
-   * 注意：此方法需要在 BaseRepository 支援 JOIN，或使用 RPC
-   * 目前簡化為透過所有記錄過濾
+   * 使用 Supabase 的 select 語法包含關聯表查詢
    *
    * @param blueprintId 藍圖 ID
    * @param options 查詢選項
    * @returns Observable<TaskStaging[]>
    */
   findByBlueprintId(blueprintId: string, options?: QueryOptions): Observable<TaskStaging[]> {
-    // TODO: 實現更高效的查詢（使用 JOIN 或 RPC）
-    // 目前簡化為返回所有記錄，由 Service 層過濾
-    // 或者在 Supabase 創建一個 View 或 Function 來處理
-    return this.findAll(options);
+    // Supabase 的關聯查詢語法：在 select 中包含關聯表，然後篩選
+    // 注意：這需要在 Supabase 中定義 task_staging -> tasks 的外鍵關係
+    let query = this.supabase
+      .from(this.tableName as any)
+      .select(`*, tasks!inner(blueprint_id)`)
+      .eq('tasks.blueprint_id', blueprintId) as any;
+
+    // 應用額外的篩選條件
+    if (options?.filters) {
+      for (const [key, value] of Object.entries(options.filters)) {
+        const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        query = query.eq(snakeKey, value);
+      }
+    }
+
+    // 應用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      query = query.order(snakeOrderBy, { ascending: options.orderDirection !== 'desc' });
+    }
+
+    // 應用分頁
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      query = query.range(fromIndex, toIndex);
+    }
+
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findByBlueprintId`);
+        // 只返回 task_staging 的資料，不包含關聯的 tasks 資料
+        return Array.isArray(data)
+          ? data.map(item => {
+              // 移除關聯的 tasks 欄位，只保留 task_staging 自己的欄位
+              const { tasks, ...stagingData } = item;
+              return toCamelCaseData<TaskStaging>(stagingData);
+            })
+          : [toCamelCaseData<TaskStaging>(data)];
+      })
+    );
   }
 
   /**
@@ -83,12 +123,13 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
    * @returns Observable<TaskStaging[]>
    */
   findWithdrawable(options?: QueryOptions): Observable<TaskStaging[]> {
-    return this.findAll({
+    // 使用 BaseRepository 的 findByTimeComparison 方法
+    // expires_at > NOW() 表示未過期，且 can_withdraw = true
+    return this.findByTimeComparison('expiresAt', 'gt', new Date(), {
       ...options,
       filters: {
         ...options?.filters,
         canWithdraw: true // 会自动转换为 can_withdraw
-        // TODO: 添加 expires_at > NOW() 的条件
       }
     });
   }
@@ -100,14 +141,8 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
    * @returns Observable<TaskStaging[]>
    */
   findExpired(options?: QueryOptions): Observable<TaskStaging[]> {
-    // TODO: 实现过期查询
-    // 需要使用数据库函数或 RPC 来比较时间
-    return this.findAll({
-      ...options,
-      filters: {
-        ...options?.filters
-        // expires_at 比较需要特殊处理
-      }
-    });
+    // 使用 BaseRepository 的 findByTimeComparison 方法
+    // expires_at < NOW() 表示已過期
+    return this.findByTimeComparison('expiresAt', 'lt', new Date(), options);
   }
 }

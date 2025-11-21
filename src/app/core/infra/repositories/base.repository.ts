@@ -248,4 +248,65 @@ export abstract class BaseRepository<T, TInsert = Partial<T>, TUpdate = Partial<
       })
     );
   }
+
+  /**
+   * 根據時間欄位進行篩選的通用方法
+   *
+   * @param fieldName 時間欄位名稱（camelCase）
+   * @param operator 比較運算子 ('gt' | 'gte' | 'lt' | 'lte')
+   * @param value 比較值（ISO 字串或 Date 物件），預設為當前時間
+   * @param options 查詢選項
+   * @returns Observable<T[]>
+   *
+   * @example
+   * ```typescript
+   * // 查詢未過期的記錄 (expires_at > NOW())
+   * this.findByTimeComparison('expiresAt', 'gt').subscribe(records => {...});
+   *
+   * // 查詢已過期的記錄 (expires_at < NOW())
+   * this.findByTimeComparison('expiresAt', 'lt').subscribe(records => {...});
+   * ```
+   */
+  protected findByTimeComparison(
+    fieldName: string,
+    operator: 'gt' | 'gte' | 'lt' | 'lte',
+    value: string | Date = new Date(),
+    options?: QueryOptions
+  ): Observable<T[]> {
+    const snakeFieldName = fieldName.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+    const isoValue = value instanceof Date ? value.toISOString() : value;
+
+    let query = this.supabase.from(this.tableName as any).select(options?.select || '*') as any;
+
+    // 應用時間比較
+    query = query[operator](snakeFieldName, isoValue);
+
+    // 應用額外的篩選條件
+    if (options?.filters) {
+      for (const [key, val] of Object.entries(options.filters)) {
+        const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        query = query.eq(snakeKey, val);
+      }
+    }
+
+    // 應用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      query = query.order(snakeOrderBy, { ascending: options.orderDirection !== 'desc' });
+    }
+
+    // 應用分頁
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      query = query.range(fromIndex, toIndex);
+    }
+
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findByTimeComparison`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<T>(item)) : [toCamelCaseData<T>(data)];
+      })
+    );
+  }
 }

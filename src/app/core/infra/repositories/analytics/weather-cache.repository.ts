@@ -69,8 +69,16 @@ export class WeatherCacheRepository extends BaseRepository<WeatherCache, Weather
    * @returns Observable<WeatherCache[]>
    */
   findValid(location: string, options?: QueryOptions): Observable<WeatherCache[]> {
-    // TODO: 实现过期检查
-    // 需要使用数据库函数或 RPC 来比较 expires_at > NOW()
-    return this.findByLocation(location, options);
+    // 使用 BaseRepository 的 findByTimeComparison 方法
+    // expires_at > NOW() 表示未過期
+    return this.findByTimeComparison('expiresAt', 'gt', new Date(), {
+      ...options,
+      filters: {
+        ...options?.filters,
+        location
+      },
+      orderBy: options?.orderBy || 'forecast_date',
+      orderDirection: options?.orderDirection || 'desc'
+    });
   }
 }

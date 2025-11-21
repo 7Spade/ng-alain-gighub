@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { PostgrestResponse } from '@supabase/supabase-js';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
 import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
@@ -72,49 +74,49 @@ export class FeatureFlagRepository extends BaseRepository<FeatureFlag, FeatureFl
   /**
    * 根据目标账户查询功能开关
    *
+   * 使用 Supabase 的 contains 運算子查詢 JSON 陣列
+   *
    * @param accountId 账户 ID
    * @returns Observable<FeatureFlag[]>
    */
   findByTargetAccount(accountId: string): Observable<FeatureFlag[]> {
-    // 需要在 target_accounts JSON 字段中查找 accountId
-    // 这需要特殊处理，可能需要使用 Supabase 的 JSON 查询功能
-    // 暂时使用 findAll 然后过滤，或者标记为 TODO
-    return this.findAll({
-      filters: {
-        isEnabled: true
-      }
-    }).pipe(
-      map(flags =>
-        flags.filter(flag => {
-          // BaseRepository 会自动转换，但类型定义仍然是 snake_case
-          // 使用 snake_case 属性名访问（BaseRepository 转换后可能仍然是 snake_case）
-          const targetAccounts = (flag as any).target_accounts as string[] | null;
-          return targetAccounts && targetAccounts.includes(accountId);
-        })
-      )
+    // 使用 Supabase 的 contains 運算子查詢 JSONB 陣列
+    // target_accounts @> '["accountId"]' 表示 target_accounts 包含 accountId
+    let query = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .eq('is_enabled', true)
+      .contains('target_accounts', [accountId]) as any;
+
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findByTargetAccount`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<FeatureFlag>(item)) : [toCamelCaseData<FeatureFlag>(data)];
+      })
     );
   }
 
   /**
    * 根据目标组织查询功能开关
    *
+   * 使用 Supabase 的 contains 運算子查詢 JSON 陣列
+   *
    * @param organizationId 组织 ID
    * @returns Observable<FeatureFlag[]>
    */
   findByTargetOrganization(organizationId: string): Observable<FeatureFlag[]> {
-    return this.findAll({
-      filters: {
-        isEnabled: true
-      }
-    }).pipe(
-      map(flags =>
-        flags.filter(flag => {
-          // BaseRepository 会自动转换，但类型定义仍然是 snake_case
-          // 使用 snake_case 属性名访问（BaseRepository 转换后可能仍然是 snake_case）
-          const targetOrganizations = (flag as any).target_organizations as string[] | null;
-          return targetOrganizations && targetOrganizations.includes(organizationId);
-        })
-      )
+    // 使用 Supabase 的 contains 運算子查詢 JSONB 陣列
+    let query = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .eq('is_enabled', true)
+      .contains('target_organizations', [organizationId]) as any;
+
+    return from(query as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findByTargetOrganization`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<FeatureFlag>(item)) : [toCamelCaseData<FeatureFlag>(data)];
+      })
     );
   }
 

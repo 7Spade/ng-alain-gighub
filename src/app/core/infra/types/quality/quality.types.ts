@@ -14,10 +14,14 @@
 export enum QualityCheckStatus {
   /** 待检查 */
   PENDING = 'pending',
+  /** 检查中 */
+  IN_PROGRESS = 'in_progress',
   /** 已通过 */
   PASSED = 'passed',
   /** 未通过 */
   FAILED = 'failed',
+  /** 条件通过 */
+  CONDITIONAL_PASS = 'conditional_pass',
   /** 需重检 */
   RECHECK_REQUIRED = 'recheck_required'
 }
@@ -53,7 +57,7 @@ export enum InspectionPhotoType {
 /**
  * 检查状态枚举
  * 对应数据库 inspections.status 字段
- * 
+ *
  * @description 定义检查的各种状态
  */
 export enum InspectionStatus {
@@ -72,7 +76,7 @@ export enum InspectionStatus {
 /**
  * 检查类型枚举
  * 对应数据库 inspections.inspection_type 字段
- * 
+ *
  * @description 定义检查的类型分类
  */
 export enum InspectionType {

@@ -200,38 +200,80 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
   /**
    * 使用 ltree 查询子树
    *
-   * 注意：此方法需要使用 PostgreSQL ltree 操作符
-   * 如果 BaseRepository 不支持，可能需要使用 RPC 函数或原生 SQL
+   * 注意：此方法使用 Supabase RPC 函數來執行 ltree 查詢
+   * 需要在 Supabase 中創建以下 RPC 函數：
    *
-   * @param treePath ltree 路径
+   * ```sql
+   * CREATE OR REPLACE FUNCTION find_task_subtree(parent_path ltree)
+   * RETURNS SETOF tasks AS $$
+   * BEGIN
+   *   RETURN QUERY
+   *   SELECT * FROM tasks
+   *   WHERE tree_path <@ parent_path OR tree_path = parent_path
+   *   ORDER BY tree_path;
+   * END;
+   * $$ LANGUAGE plpgsql;
+   * ```
+   *
+   * @param treePath ltree 路径 (例如: 'root.task1.subtask1')
    * @param options 查询选项
    * @returns Observable<Task[]>
    */
   findSubtree(treePath: string, options?: QueryOptions): Observable<Task[]> {
-    // TODO: 实现 ltree 查询
-    // 需要使用 PostgreSQL 的 <@ 操作符或 RPC 函数
-    // 示例：WHERE tree_path <@ 'path.to.parent'
-    // 当前先使用简单的 parent_task_id 查询作为临时方案
-    return this.findAll({
-      ...options,
-      filters: {
-        ...options?.filters
-        // treePath 查询需要特殊处理
-      }
-    });
+    // 使用 Supabase RPC 函数调用 ltree 查询
+    // 如果 RPC 函數不存在，將會返回錯誤
+    // 使用 any 類型斷言因為 TypeScript 不知道自定義 RPC 函數
+    return from(
+      (this.supabase.rpc as any)('find_task_subtree', {
+        parent_path: treePath
+      }) as Promise<PostgrestResponse<any>>
+    ).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findSubtree`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Task>(item)) : [toCamelCaseData<Task>(data)];
+      })
+    );
   }
 
   /**
    * 查询任务的完整路径（从根到当前任务）
    *
+   * 注意：此方法使用 Supabase RPC 函數來執行遞迴查詢
+   * 需要在 Supabase 中創建以下 RPC 函數：
+   *
+   * ```sql
+   * CREATE OR REPLACE FUNCTION find_task_path(task_id UUID)
+   * RETURNS SETOF tasks AS $$
+   * BEGIN
+   *   RETURN QUERY
+   *   WITH RECURSIVE task_path AS (
+   *     SELECT * FROM tasks WHERE id = task_id
+   *     UNION ALL
+   *     SELECT t.* FROM tasks t
+   *     INNER JOIN task_path tp ON t.id = tp.parent_task_id
+   *   )
+   *   SELECT * FROM task_path
+   *   ORDER BY tree_level;
+   * END;
+   * $$ LANGUAGE plpgsql;
+   * ```
+   *
    * @param taskId 任务 ID
    * @returns Observable<Task[]>
    */
   findTaskPath(taskId: string): Observable<Task[]> {
-    // TODO: 实现路径查询
-    // 需要使用递归查询或 ltree 操作符
-    // 当前先返回单个任务作为临时方案
-    return this.findById(taskId).pipe(map(task => (task ? [task] : [])));
+    // 使用 Supabase RPC 函数进行递归查询
+    // 使用 any 類型斷言因為 TypeScript 不知道自定義 RPC 函數
+    return from(
+      (this.supabase.rpc as any)('find_task_path', {
+        task_id: taskId
+      }) as Promise<PostgrestResponse<any>>
+    ).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.findTaskPath`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Task>(item)) : [toCamelCaseData<Task>(data)];
+      })
+    );
   }
 
   /**
