@@ -49,6 +49,7 @@ export type BranchPermissionUpdate = Database['public']['Tables']['branch_permis
 /**
  * 分支權限級別枚舉
  * 統一從 core/types 重新導出，避免重複定義
+ *
  * @see core/infra/types/permission/permission.types.ts
  */
 export { BranchPermissionLevel };

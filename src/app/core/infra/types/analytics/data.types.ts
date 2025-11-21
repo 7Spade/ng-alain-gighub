@@ -81,7 +81,7 @@ export enum DailyReportType {
 /**
  * 文档上传来源枚举
  * 对应数据库 documents.upload_source 字段
- * 
+ *
  * @description 定义文档的上传来源
  */
 export enum DocumentUploadSource {

@@ -105,6 +105,7 @@ export type AnalyticsCacheUpdate = Database['public']['Tables']['analytics_cache
 /**
  * 資源類型
  * 統一從 core/types 重新導出，避免重複定義
+ *
  * @see core/infra/types/system/system.types.ts
  */
 export { ActivityLogResourceType };

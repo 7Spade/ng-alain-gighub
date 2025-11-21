@@ -70,7 +70,7 @@ export enum BotExecutionStatus {
 /**
  * 机器人类型枚举
  * 对应数据库 bots.bot_type 字段
- * 
+ *
  * @description 定义机器人的类型分类
  */
 export enum BotType {
