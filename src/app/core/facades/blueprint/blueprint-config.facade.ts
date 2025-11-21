@@ -79,7 +79,7 @@ export class BlueprintConfigFacade {
    * @param updatedBy User ID who updates the config (optional)
    * @returns Promise<BlueprintConfig>
    */
-  async setConfig(blueprintId: string, configKey: string, configValue: any, updatedBy?: string): Promise<BlueprintConfig> {
+  async setConfig(blueprintId: string, configKey: string, configValue: unknown, updatedBy?: string): Promise<BlueprintConfig> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('set_config');
 
