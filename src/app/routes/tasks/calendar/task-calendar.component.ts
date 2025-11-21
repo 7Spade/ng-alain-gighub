@@ -24,7 +24,13 @@ import { NzMessageService } from 'ng-zorro-antd/message';
             }
           </nz-select>
         }
-        @if (canCreate()) {
+        @if (canCreate() && currentBlueprintIds().length === 0) {
+          <button nz-button nzType="default" (click)="createBlueprint()" style="margin-right: 8px;">
+            <span nz-icon nzType="project"></span>
+            创建蓝图
+          </button>
+        }
+        @if (canCreate() && currentBlueprintIds().length > 0) {
           <button nz-button nzType="primary" (click)="createTask()">
             <span nz-icon nzType="plus"></span>
             新建任务
