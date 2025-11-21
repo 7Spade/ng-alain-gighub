@@ -53,11 +53,6 @@
               "text": "My Blueprint List",
               "link": "/blueprints",
               "i18n": "menu.personal.blueprints.list"
-            },
-            {
-              "text": "Create Blueprint",
-              "link": "/blueprints/create",
-              "i18n": "menu.personal.blueprints.create"
             }
           ]
         },

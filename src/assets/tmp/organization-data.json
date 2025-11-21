@@ -60,11 +60,6 @@
               "i18n": "menu.organization.blueprints.list"
             },
             {
-              "text": "Create Blueprint",
-              "link": "/blueprints/create",
-              "i18n": "menu.organization.blueprints.create"
-            },
-            {
               "text": "Blueprint Detail",
               "link": "/blueprints/detail",
               "i18n": "menu.organization.blueprints.detail"
