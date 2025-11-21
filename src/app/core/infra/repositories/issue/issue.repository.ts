@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { PostgrestResponse } from '@supabase/supabase-js';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
 import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
@@ -202,5 +204,58 @@ export class IssueRepository extends BaseRepository<Issue, IssueInsert, IssueUpd
         syncedToMain: true // 会自动转换为 synced_to_main
       }
     });
+  }
+
+  /**
+   * 搜索问题（支持模糊查询）
+   *
+   * @param query 搜索关键词 - 用于搜索问题标题和描述
+   * @param options 查询选项 - 包含排序、分页等配置
+   * @returns Observable<Issue[]> - 返回匹配的问题列表
+   * @throws Error - 当查询失败时抛出错误
+   *
+   * @example
+   * ```typescript
+   * issueRepo.search('数据错误', { page: 1, pageSize: 20 }).subscribe(issues => {
+   *   console.log('找到问题:', issues);
+   * });
+   * ```
+   */
+  search(query: string, options?: QueryOptions): Observable<Issue[]> {
+    // 空查询返回空数组（不是错误）
+    if (!query || query.trim().length === 0) {
+      return from(Promise.resolve([]));
+    }
+
+    const trimmedQuery = query.trim();
+    let searchQuery = this.supabase
+      .from(this.tableName as any)
+      .select(options?.select || '*')
+      .or(`title.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%`) as any;
+
+    // 应用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      searchQuery = searchQuery.order(snakeOrderBy, {
+        ascending: options.orderDirection !== 'desc'
+      });
+    } else {
+      // 默认按创建时间降序排序
+      searchQuery = searchQuery.order('created_at', { ascending: false });
+    }
+
+    // 应用分页
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      searchQuery = searchQuery.range(fromIndex, toIndex);
+    }
+
+    return from(Promise.resolve(searchQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Issue>(item)) : [];
+      })
+    );
   }
 }
