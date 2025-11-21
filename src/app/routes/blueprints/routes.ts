@@ -11,10 +11,6 @@ export const BLUEPRINT_ROUTES: Routes = [
     loadComponent: () => import('./list/blueprint-list.component').then(m => m.BlueprintListComponent)
   },
   {
-    path: 'create',
-    loadComponent: () => import('./form/blueprint-form.component').then(m => m.BlueprintFormComponent)
-  },
-  {
     path: 'detail',
     loadComponent: () => import('./detail-shell/blueprint-detail-shell.component').then(m => m.BlueprintDetailShellComponent)
   },

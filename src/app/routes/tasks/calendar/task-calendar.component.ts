@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
+import { WorkspaceContextFacade } from '@core';
 import { SHARED_IMPORTS, TaskService, Task, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -7,32 +8,47 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   selector: 'app-task-calendar',
   standalone: true,
   imports: [SHARED_IMPORTS],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <page-header [title]="'任务日历'" [extra]="extraTemplate">
+    <page-header [title]="pageTitle()" [extra]="extraTemplate">
       <ng-template #extraTemplate>
-        <nz-select
-          [ngModel]="selectedBlueprintId()"
-          (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
-          nzPlaceHolder="请选择蓝图"
-          style="width: 300px; margin-right: 8px;"
-        >
-          @for (blueprint of blueprintService.blueprints(); track blueprint.id) {
-            <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
-          }
-        </nz-select>
-        <button nz-button nzType="primary" (click)="createTask()">
-          <span nz-icon nzType="plus"></span>
-          新建任务
-        </button>
+        @if (currentBlueprintIds().length > 1) {
+          <nz-select
+            [ngModel]="selectedBlueprintId()"
+            (ngModelChange)="selectedBlueprintId.set($event); onBlueprintChange()"
+            nzPlaceHolder="切换蓝图"
+            style="width: 300px; margin-right: 8px;"
+          >
+            @for (blueprint of workspaceContext.contextBlueprints(); track blueprint.id) {
+              <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
+            }
+          </nz-select>
+        }
+        @if (canCreate()) {
+          <button nz-button nzType="primary" (click)="createTask()">
+            <span nz-icon nzType="plus"></span>
+            新建任务
+          </button>
+        }
       </ng-template>
     </page-header>
 
     <nz-card style="margin-top: 16px;">
-      @if (!selectedBlueprintId()) {
-        <nz-empty nzNotFoundContent="请先选择蓝图"></nz-empty>
+      @if (workspaceContext.contextType() === 'app') {
+        <nz-empty nzNotFoundContent="请先切换到用户、组织或团队视角"></nz-empty>
+      } @else if (workspaceContext.loadingBlueprints()) {
+        <div style="text-align: center; padding: 40px;">
+          <nz-spin nzSize="large" nzTip="加载蓝图中..."></nz-spin>
+        </div>
+      } @else if (currentBlueprintIds().length === 0) {
+        <nz-empty nzNotFoundContent="当前视角下没有蓝图">
+          <ng-container nz-empty-footer>
+            <button nz-button nzType="primary" (click)="createBlueprint()"> 创建蓝图 </button>
+          </ng-container>
+        </nz-empty>
       } @else if (taskService.loading()) {
         <div style="text-align: center; padding: 40px;">
-          <nz-spin nzSize="large"></nz-spin>
+          <nz-spin nzSize="large" nzTip="加载任务中..."></nz-spin>
         </div>
       } @else {
         <nz-calendar [ngModel]="selectedDate()" (nzSelectChange)="onDateSelect($event)" [nzFullscreen]="false">
@@ -72,43 +88,76 @@ import { NzMessageService } from 'ng-zorro-antd/message';
           </nz-list>
         }
       }
+    }
     </nz-card>
   `
 })
 export class TaskCalendarComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly blueprintService = inject(BlueprintService);
+  readonly workspaceContext = inject(WorkspaceContextFacade);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
 
+  // Signals for workspace context
   readonly selectedBlueprintId = signal<string | null>(null);
+  readonly currentBlueprintIds = this.workspaceContext.currentBlueprintIds;
   readonly selectedDate = signal<Date>(new Date());
+
+  // Computed page title with context
+  readonly pageTitle = computed(() => {
+    const contextLabel = this.workspaceContext.contextLabel();
+    return `${contextLabel} - 任务日历`;
+  });
+
+  // Computed permission check
+  readonly canCreate = computed(() => {
+    const contextType = this.workspaceContext.contextType();
+    return contextType === 'organization' || contextType === 'team' || contextType === 'user';
+  });
 
   readonly tasksForSelectedDate = computed(() => {
     const date = this.selectedDate();
     return this.getTasksForDate(date);
   });
 
-  ngOnInit(): void {
-    this.loadBlueprints();
+  constructor() {
+    // Auto-load: respond to context and blueprint changes
+    effect(() => {
+      const blueprintIds = this.currentBlueprintIds();
+      const contextType = this.workspaceContext.contextType();
+
+      if (contextType !== 'app' && blueprintIds.length > 0) {
+        // Auto-select first blueprint if not selected or current selection is invalid
+        if (!this.selectedBlueprintId() || !blueprintIds.includes(this.selectedBlueprintId()!)) {
+          this.selectedBlueprintId.set(blueprintIds[0]);
+        }
+
+        // Auto-load tasks for selected blueprint
+        const blueprintId = this.selectedBlueprintId();
+        if (blueprintId) {
+          this.loadTasksForBlueprint(blueprintId);
+        }
+      }
+    });
   }
 
-  async loadBlueprints(): Promise<void> {
+  ngOnInit(): void {
+    // Initialization handled by effect in constructor
+  }
+
+  async loadTasksForBlueprint(blueprintId: string): Promise<void> {
     try {
-      await this.blueprintService.loadBlueprints();
+      await this.taskService.loadTasksByBlueprint(blueprintId);
     } catch (error) {
-      this.message.error('加载蓝图列表失败');
+      this.message.error('加载任务列表失败');
     }
   }
 
   async onBlueprintChange(): Promise<void> {
     const blueprintId = this.selectedBlueprintId();
     if (blueprintId) {
-      try {
-        await this.taskService.loadTasksByBlueprint(blueprintId);
-      } catch (error) {
-        this.message.error('加载任务列表失败');
-      }
+      await this.loadTasksForBlueprint(blueprintId);
     }
   }
 
@@ -157,6 +206,10 @@ export class TaskCalendarComponent implements OnInit {
 
   createTask(): void {
     this.router.navigate(['/tasks/create']);
+  }
+
+  createBlueprint(): void {
+    this.router.navigate(['/blueprints/create']);
   }
 
   viewTask(id: string): void {

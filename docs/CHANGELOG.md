@@ -2,8 +2,89 @@
 
 > 📋 **目的**：記錄所有文檔的重大更新，確保文檔與實際架構保持一致
 
-**最後更新**：2025-11-16
+**最後更新**：2025-11-21
 **維護者**：開發團隊
+
+- --
+
+## [2025-11-21] - Workspace Context Manager 整合 PR#1
+
+### 📋 更新概述
+
+完成第一輪 Workspace Context Manager 頁面整合，包括 2 個任務管理頁面和藍圖創建功能重構。
+
+### ✅ 整合頁面（2 個）
+
+#### 任務管理模組
+- ✅ **task-list.component** - 任務列表頁面整合
+  - 整合 WorkspaceContextFacade
+  - 實現上下文感知的數據過濾
+  - 動態頁面標題與權限控制
+  - 自動響應上下文切換
+
+- ✅ **task-calendar.component** - 任務日曆頁面整合
+  - 整合 WorkspaceContextFacade
+  - 上下文感知的日曆數據顯示
+  - 自動更新機制
+  - OnPush 變更檢測策略
+
+### 🔄 功能重構（1 個）
+
+#### 藍圖管理優化
+- ✅ **BlueprintCreateModalComponent** - 新增可復用模態框組件
+  - 封裝藍圖創建功能為獨立組件
+  - 移除 `/blueprints/create` 路由
+  - 在列表頁面直接使用模態框創建
+  - 改善用戶體驗，無需頁面跳轉
+
+### 📝 新增文檔（1 個文件）
+
+- ✅ **workspace-context-integration-pr1-summary.md** - PR#1 完成摘要
+  - 詳細記錄所有變更
+  - 技術實現說明
+  - 整合模式總結
+  - 後續工作規劃
+
+### 📊 更新文檔（1 個文件）
+
+- ✅ **pages-requiring-redesign.md** - 頁面狀態更新
+  - 更新任務列表狀態為「已整合」
+  - 更新任務日曆狀態為「已整合」
+  - 更新任務管理模組進度：25% → 42%
+  - 更新整體進度：4.7% → 7.0%
+
+### 📈 進度統計
+
+| 指標 | 數值 | 變化 |
+|------|------|------|
+| 已整合頁面 | 6/86 | +2 |
+| 整體進度 | 7.0% | +2.3% |
+| 任務管組 | 5/12 (42%) | +17% |
+| 新增文檔 | 1 個 | - |
+| 修改代碼 | 6 個文件 | - |
+
+### 🎯 技術亮點
+
+1. **標準整合模式建立**：
+   - WorkspaceContextFacade 整合模式成熟
+   - 可直接應用於剩餘 80 個頁面
+   - 使用 effect() 實現響應式數據加載
+
+2. **組件化設計**：
+   - 藍圖創建功能成功組件化
+   - 提升代碼復用性
+   - 改善用戶體驗
+
+3. **企業標準遵循**：
+   - 所有變更通過四大核心原則檢查
+   - OnPush 變更檢測策略
+   - 完整的錯誤處理
+
+### 🔗 相關文件
+
+- PR 摘要：`docs/workspace/workspace-context-integration-pr1-summary.md`
+- 頁面清單：`docs/workspace/pages-requiring-redesign.md`
+- 遷移計劃：`docs/workspace/workspace-context-migration-plan.md`
 
 - --
 
