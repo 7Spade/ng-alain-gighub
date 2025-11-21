@@ -7,7 +7,7 @@
  * 
  * Usage:
  *   node scripts/validate-docs.js [file-pattern]
- *   node scripts/validate-docs.js docs/**/*.md
+ *   node scripts/validate-docs.js "docs/**\/*.md"
  *   node scripts/validate-docs.js --all
  */
 
@@ -25,9 +25,10 @@ class DocValidator {
     this.specialFiles = new Set([
       'README.md', 'CONTRIBUTING.md', 'CHANGELOG.md', 'LICENSE.md',
       'AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'README-zh_CN.md',
-      'QUICK-START.md', 'PULL_REQUEST_TEMPLATE.md', 'MEMORY_SUMMARY.md',
-      'AUTO-LOAD-IMPLEMENTATION.md', 'USAGE-GUIDE.md', 'QUICK_START.md',
-      'FINAL-SUMMARY.md', 'MCP-Server-Verification-Report.md', 'MERGE_PLAN.md'
+      'DOCUMENTATION.md', 'QUICK-START.md', 'PULL_REQUEST_TEMPLATE.md', 
+      'MEMORY_SUMMARY.md', 'AUTO-LOAD-IMPLEMENTATION.md', 'USAGE-GUIDE.md', 
+      'QUICK_START.md', 'FINAL-SUMMARY.md', 'MCP-Server-Verification-Report.md', 
+      'MERGE_PLAN.md'
     ]);
   }
 
@@ -61,8 +62,20 @@ class DocValidator {
   validateHeadings(filepath, content) {
     const lines = content.split('\n');
     const headings = [];
+    let inCodeBlock = false;
     
     for (let i = 0; i < lines.length; i++) {
+      // Track code block state
+      if (lines[i].trim().startsWith('```')) {
+        inCodeBlock = !inCodeBlock;
+        continue;
+      }
+      
+      // Skip headings inside code blocks
+      if (inCodeBlock) {
+        continue;
+      }
+      
       const match = lines[i].match(/^(#{1,6})\s+(.+)/);
       if (match) {
         const level = match[1].length;
