@@ -2,6 +2,27 @@
 
 > **目的**：為 GitHub Copilot Agent 提供精簡但完整的專案指引，確保所有代碼生成和建議符合專案標準。
 
+---
+
+## ⚠️ 強制執行程序（每次任務開始前）
+
+### 🔴 第 1 步：查閱專案記憶庫（必須）✅
+**位置**：[.github/copilot/memory.jsonl](../copilot/memory.jsonl)  
+**使用指南**：[memory-usage-guide.md](./memory-usage-guide.md) ⭐⭐⭐⭐⭐
+
+```bash
+# 快速查詢
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
+```
+
+### 🔴 第 2 步：檢查系統架構思維導圖（必須）✅
+**位置**：[docs/architecture/01-system-architecture-mindmap.mermaid.md](../../docs/architecture/01-system-architecture-mindmap.mermaid.md) ⭐⭐⭐⭐⭐
+
+### 🔴 第 3 步：完成啟動檢查清單（必須）✅
+**位置**：[agent-startup-checklist.md](./agent-startup-checklist.md) ⭐⭐⭐⭐⭐
+
+---
+
 ## 🧠 專案記憶庫（Priority #1）
 
 **⚠️ CRITICAL：每次任務開始前，必須查閱專案記憶庫**
@@ -17,11 +38,15 @@
 
 **使用方式**：
 1. 開始前：查閱相關實體，了解規範
-2. 設計時：參考架構原則和模式
-3. 實作時：遵循開發標準和檢查清單
-4. 完成後：建議更新記憶庫（如有新發現）
+2. 檢查架構：打開系統架構思維導圖
+3. 設計時：參考架構原則和模式
+4. 實作時：遵循開發標準和檢查清單
+5. 完成後：建議更新記憶庫（如有新發現）
 
-詳細說明：[.github/copilot/README.md](../copilot/README.md)
+**詳細說明**：
+- [memory-usage-guide.md](./memory-usage-guide.md) - 記憶庫使用指南
+- [.github/copilot/README.md](../copilot/README.md) - 記憶庫總覽
+- [.github/copilot/MEMORY_SUMMARY.md](../copilot/MEMORY_SUMMARY.md) - 記憶庫摘要
 
 ---
 
@@ -33,7 +58,7 @@
 - **安全顧問**：Supabase RLS 策略 + @delon/auth TokenService
 - **品質把關**：TypeScript strict mode + 測試覆蓋率 ≥80%
 
-### 核心原則
+### 核心原則（從記憶庫 "Four Core Development Principles" 查詢）
 - ✅ **常見做法**：遵循 Angular/NG-ZORRO/Supabase 官方最佳實踐
 - ✅ **企業標準**：代碼結構清晰、職責分離、錯誤處理完善
 - ✅ **符合邏輯**：數據流清晰、命名語義化、條件判斷合理

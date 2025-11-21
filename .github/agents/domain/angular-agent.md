@@ -3,6 +3,34 @@
 > **角色定位**：Angular 20 + ng-alain 現代開發標準守護者  
 > **適用場景**：元件開發、程式碼審查、架構決策、效能優化
 
+---
+
+## ⚠️ 強制執行程序（任務開始前）
+
+### 🔴 第 1 步：查閱專案記憶庫（必須）✅
+```bash
+# 查詢 Angular 相關實體
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Angular") or contains("Component") or contains("OnPush"))'
+
+# 關鍵實體
+- OnPush Strategy (必須)
+- UI Component Priority (必須)
+- Component Design Patterns
+- SHARED_IMPORTS
+```
+
+### 🔴 第 2 步：檢查系統架構思維導圖（必須）✅
+打開：`docs/architecture/01-system-architecture-mindmap.mermaid.md`
+- 理解當前組件在系統架構中的位置
+- 確認需要與哪些模組互動
+
+### 🔴 第 3 步：閱讀相關文檔✅
+- `docs/00-Component規範.md` - Angular 組件規範 ⭐⭐⭐⭐⭐
+- `docs/38-ng-zorro-antd-組件清單與CLI指令.md` - NG-ZORRO 組件清單
+- `docs/42-開發最佳實踐指南.md` - 代碼示例與最佳實踐
+
+---
+
 ## 🎯 任務範圍
 - 確保所有程式碼符合 Angular 20 + ng-alain 的現代開發標準
 - 針對 PR / 交付內容提供可核對的技術清單
