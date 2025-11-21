@@ -89,15 +89,15 @@ Agent 應查閱的記憶實體：
 
 ### 📊 目前包含的知識
 
-**版本 v4.0** - 組織化 + 文檔導航增強（文檔整合完成）
+**版本 v4.1** - 核心服務實現模式補充（實現細節增強）
 
-#### 實體統計（138 個實體，+12 from v3.0）
+#### 實體統計（161 個實體，+12 from v4.0）
 - **專案**：ng-alain-gighub（企業級資源中心）
 - **技術棧**：Angular 20、NG-ZORRO、@delon、TypeScript、Supabase、RxJS
 - **架構設計**：Git-like Branch Model、Database Schema、Layered Architecture、Five Layer Architecture
 - **核心原則**：OnPush Strategy、SOLID Principles、Code Quality、Enterprise Development Principles、UI Component Priority、Consistency Principle、Composability Principle、Dependency Direction Principle、Low Coupling High Cohesion
-- **功能特性**：Staging Area Mechanism（48h 可撤回）、Todo Center System（五種狀態）、Issue Synchronization、Activity Logging System、Document Management System、Task Tree Structure、Data Analysis System、Notification System、Bot System、Workspace Context System、File Upload Standards、Search Functionality、Pagination Standards
-- **設計模式**：SHARED_IMPORTS、Repository Pattern、Component Design Patterns、Modal Design Patterns、Table Design Patterns、Form Design Patterns、Layout Patterns
+- **功能特性**：Staging Area Mechanism（48h 可撤回）、Todo Center System（五種狀態）、Issue Synchronization、Activity Logging System、Document Management System、Task Tree Structure、Data Analysis System、Notification System、Bot System、Workspace Context System、File Upload Standards、Search Functionality、Pagination Standards、Realtime Communication System、Explore Module、Dashboard Module、Daily Report System
+- **設計模式**：SHARED_IMPORTS、Repository Pattern、Component Design Patterns、Modal Design Patterns、Table Design Patterns、Form Design Patterns、Layout Patterns、ErrorStateService Pattern、BlueprintActivityService Pattern、Aggregation Refresh Pattern、Facade Coordination Pattern、Supabase Storage Pattern、Workspace Context Implementation、Task State Machine、Task Dependency Management
 - **安全性**：Authentication Flow、Security Principles、Security Best Practices、Branch Permission Rules、RLS Policy Patterns、Security Scanning
 - **文檔導航**（✨ v4.0 新增）：
   - Documentation Structure（232 個文檔的完整結構）⭐
@@ -145,7 +145,7 @@ Agent 應查閱的記憶實體：
   - Onboarding Process ⭐
 - **約束條件**：Forbidden Practices
 
-#### 關係統計（159 個關係，+14 from v3.0）
+#### 關係統計（193 個關係，+23 from v4.0）
 - **技術使用關係**：ng-alain-gighub → Angular 20/NG-ZORRO/@delon/Supabase/TypeScript/Git-like Branch Model/Database Schema
 - **架構實作關係**：Five Layer Architecture → Layered Architecture、Git-like Branch Model → Database Schema
 - **技術整合關係**：Angular 20 → NG-ZORRO/RxJS/OnPush Strategy、@delon → NG-ZORRO/Supabase
@@ -158,6 +158,7 @@ Agent 應查閱的記憶實體：
 - **UI 模式關係**：Modal/Table/Form/Layout Design Patterns → NG-ZORRO/@delon、Theme Customization → NG-ZORRO、Responsive Design → NG-ZORRO
 - **DevOps 關係**：Git Workflow → CI/CD Pipeline、CI/CD Pipeline → Migration Standards、Monitoring & Analytics → Performance Monitoring、Security Scanning → Security Principles、Team Collaboration → Git Workflow、Onboarding Process → Documentation
 - **文檔關係**（✨ v4.0 新增）：Documentation Structure → ng-alain-gighub、Documentation Priority System → Documentation Structure、Reading Paths → Documentation Structure、NG-ZORRO Component Index → NG-ZORRO、DELON Package Index → @delon、Core Documentation Files → Documentation Structure/Git-like Branch Model/Database Schema、Cursor IDE Rules → Code Quality、GitHub Agents Configuration → ng-alain-gighub、Module Documentation → Layered Architecture、Quick Reference Documents → Documentation Structure、Architecture Diagrams → Documentation Structure、Workspace Context Documentation → Workspace Context System
+- **核心服務模式關係**（✨ v4.1 新增）：ErrorStateService Pattern → Facades Layer Development/Error Handling Strategy、BlueprintActivityService Pattern → Facades Layer Development/Activity Logging System、Aggregation Refresh Pattern → Facades Layer Development/Realtime Communication System、Facade Coordination Pattern → Facades Layer Development/ErrorStateService Pattern/BlueprintActivityService Pattern、Supabase Storage Pattern → Document Management System/File Upload Standards、Workspace Context Implementation → Workspace Context System/Route Parameter Replacement、Task State Machine → Task Tree Structure、Task Dependency Management → Task Tree Structure、Realtime Communication System → Aggregation Refresh Pattern/Supabase、Explore Module → Workspace Context System/Search Functionality、Dashboard Module → Data Analysis System/Aggregation Refresh Pattern、Daily Report System → Task Execution System/Supabase Storage Pattern
 
 ### 🎯 使用目的
 
@@ -221,6 +222,11 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
 ---
 
 **版本歷史**：
+- **v4.1** (2025-01-21): 核心服務實現模式補充 - 添加實現細節 ✨
+  - 新增 12 個核心服務實現模式實體：ErrorStateService Pattern、BlueprintActivityService Pattern、Aggregation Refresh Pattern、Facade Coordination Pattern、Supabase Storage Pattern、Workspace Context Implementation、Task State Machine、Task Dependency Management、Realtime Communication System、Explore Module、Dashboard Module、Daily Report System
+  - 新增 23 個關係：連接核心服務模式與現有架構
+  - 重點：補充核心服務的具體實現模式，幫助 AI 助手理解代碼結構
+  - 總計：161 個實體、193 個關係（從 v4.0 的 149/170 增加）
 - **v4.0.1** (2025-11-20): 版本整合 - 移除舊備份檔案 🧹
   - **整合完成**：移除 memory.jsonl.v3.0-backup（已合併至主檔案）
   - **統一版本**：現在只有一個 memory.jsonl 檔案（149 實體 + 170 關係）
@@ -243,6 +249,6 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
   - 基礎技術棧、架構設計、開發原則
   - 總計：23 個實體、24 個關係
 
-**最後更新**：2025-11-20（v4.0.1 版本整合完成 - 現只有一個 memory.jsonl 檔案）  
+**最後更新**：2025-01-21（v4.1 核心服務實現模式補充）  
 **維護者**：開發團隊  
 **下次檢視**：專案重大架構變更時

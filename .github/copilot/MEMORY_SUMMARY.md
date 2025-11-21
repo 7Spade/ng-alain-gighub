@@ -1,11 +1,11 @@
 # GitHub Copilot Memory Summary
 
-> **Last Updated**: 2025-11-20  
-> **Version**: v4.0.1 (整合版本)  
-> **Total Entities**: 149  
-> **Total Relations**: 170  
-> **Total Lines**: 319  
-> **Status**: ✅ 已整合 - 現只有一個 memory.jsonl 檔案
+> **Last Updated**: 2025-01-21  
+> **Version**: v4.1 (核心服務實現模式補充)  
+> **Total Entities**: 161  
+> **Total Relations**: 193  
+> **Total Lines**: 401  
+> **Status**: ✅ 已更新 - 補充核心服務實現細節
 
 ## 📊 Overview
 
@@ -16,7 +16,7 @@ This document provides a summary of the organized `memory.jsonl` file, which con
 | Category | Count | Description |
 |----------|-------|-------------|
 | **Standard** | 48 | Development standards and coding conventions |
-| **Feature** | 14 | Project features and functionality |
+| **Feature** | 18 | Project features and functionality (including Realtime Communication System, Explore Module, Dashboard Module, Daily Report System) |
 | **Principle** | 13 | Core development principles (SOLID, DRY, KISS, etc.) |
 | **Documentation** | 9 | Documentation structure and files |
 | **UI Pattern** | 7 | User interface design patterns |
@@ -24,7 +24,7 @@ This document provides a summary of the organized `memory.jsonl` file, which con
 | **Security** | 6 | Security best practices and standards |
 | **Architecture** | 5 | System architecture patterns |
 | **DevOps** | 5 | DevOps practices and CI/CD |
-| **Pattern** | 4 | Design patterns (Repository, Facade, etc.) |
+| **Pattern** | 12 | Design patterns (Repository, Facade, ErrorStateService, BlueprintActivityService, Aggregation Refresh, Facade Coordination, Supabase Storage, Workspace Context Implementation, Task State Machine, Task Dependency Management, etc.) |
 | **Workspace** | 3 | Workspace context system |
 | **Performance** | 3 | Performance optimization techniques |
 | **Checklist** | 2 | Development checklists |
@@ -49,7 +49,95 @@ Top 10 relation types by frequency:
 9. **documents** (7): Documentation relationships
 10. **supports** (7): Support relationships
 
-## 📝 New Content Added from Development Guide
+## 📝 New Content Added in v4.1
+
+### Core Service Implementation Patterns (✨ v4.1 新增)
+
+The following 12 entities were added to document core service implementation patterns:
+
+1. **ErrorStateService Pattern** (Pattern)
+   - Unified error state management using Angular Signals
+   - Error categories: Network, BusinessLogic, Validation, Permission, System
+   - Auto-dismissal mechanism (5 seconds default)
+   - Error history tracking (max 100 entries)
+
+2. **BlueprintActivityService Pattern** (Pattern)
+   - Activity logging for audit trail
+   - Automatic sensitive field filtering
+   - Change difference calculation (oldValue vs newValue)
+   - Non-invasive logging (failures don't affect main flow)
+
+3. **Aggregation Refresh Pattern** (Pattern)
+   - Automatic data refresh when related resources change
+   - Uses RealtimeFacade to listen to Supabase Realtime events
+   - Debounced refresh (1 second default)
+   - Multi-blueprint subscription management
+
+4. **Facade Coordination Pattern** (Pattern)
+   - Main Facade coordinates multiple sub-Facades
+   - Exposes Service Signal states through Facade
+   - Integrates ErrorStateService and BlueprintActivityService
+   - Provides unified interface to Component layer
+
+5. **Supabase Storage Pattern** (Pattern)
+   - File upload workflow: select → validate → upload → save metadata
+   - Signed URL protection
+   - Automatic thumbnail generation
+   - Soft delete mechanism
+
+6. **Workspace Context Implementation** (Pattern)
+   - WorkspaceContextFacade manages current context (user/team/organization)
+   - Automatic route parameter replacement
+   - Context switching updates menus and routes
+
+7. **Task State Machine** (Pattern)
+   - Task state transitions: pending → in_progress → staging → quality_check → acceptance → completed
+   - Permission and precondition validation
+   - Automatic related operations triggering
+
+8. **Task Dependency Management** (Pattern)
+   - TaskDependencyService manages task dependencies
+   - Supports blocking and non-blocking dependencies
+   - Circular dependency detection
+   - Dependency graph building
+
+9. **Realtime Communication System** (Feature)
+   - RealtimeFacade encapsulates Supabase Realtime functionality
+   - Table-level subscriptions (INSERT, UPDATE, DELETE)
+   - Subscription lifecycle management
+
+10. **Explore Module** (Feature)
+    - Global search for Account and Blueprint
+    - Context filtering (global, current-context, current-org, current-team)
+    - Quick context switching
+
+11. **Dashboard Module** (Feature)
+    - Aggregates multiple data sources
+    - Uses Aggregation Refresh Pattern for real-time updates
+    - Customizable dashboard configuration
+
+12. **Daily Report System** (Feature)
+    - Daily reports: work summary, hours, worker count, photos, weather
+    - Photos stored in Supabase Storage
+    - Weather data via Edge Function API with caching
+
+### Relations Added in v4.1
+
+23 new relations were added to connect the new service implementation patterns:
+- ErrorStateService Pattern → Facades Layer Development/Error Handling Strategy
+- BlueprintActivityService Pattern → Facades Layer Development/Activity Logging System
+- Aggregation Refresh Pattern → Facades Layer Development/Realtime Communication System
+- Facade Coordination Pattern → Facades Layer Development/ErrorStateService Pattern/BlueprintActivityService Pattern
+- Supabase Storage Pattern → Document Management System/File Upload Standards
+- Workspace Context Implementation → Workspace Context System/Route Parameter Replacement
+- Task State Machine → Task Tree Structure
+- Task Dependency Management → Task Tree Structure
+- Realtime Communication System → Aggregation Refresh Pattern/Supabase
+- Explore Module → Workspace Context System/Search Functionality
+- Dashboard Module → Data Analysis System/Aggregation Refresh Pattern
+- Daily Report System → Task Execution System/Supabase Storage Pattern
+
+## 📝 Previous Content Added from Development Guide
 
 The following entities were added from `docs/archive/開發順序.md`:
 
@@ -151,14 +239,14 @@ To maintain this memory:
 ## 📊 Statistics
 
 ```text
-├── Entities: 149 (46.7%)
-└── Relations: 170 (53.3%)
+├── Entities: 161 (45.5%)
+└── Relations: 193 (54.5%)
 
 Entity categories: 33
-Relation types: 40
+Relation types: 40+
 
 Largest category: Standard (48 entities)
-Most common relation: uses (26 occurrences)
+Most common relation: uses (26+ occurrences)
 ```
 
 ## ✅ Validation

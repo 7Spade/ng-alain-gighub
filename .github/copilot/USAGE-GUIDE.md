@@ -24,9 +24,9 @@ AI 助手在每次對話時都是「無記憶」的，無法記住專案的：
 
 ### 解決方案
 **memory.jsonl** 提供一個持久化的知識圖譜，包含：
-- **149 個實體**：專案中的核心概念、規範、模式
-- **170 個關係**：實體之間的關聯和依賴
-- **完整上下文**：架構、安全、效能、測試、文檔
+- **161 個實體**：專案中的核心概念、規範、模式、實現細節
+- **193 個關係**：實體之間的關聯和依賴
+- **完整上下文**：架構、安全、效能、測試、文檔、核心服務實現模式
 
 ---
 
@@ -90,7 +90,7 @@ AI 助手在每次對話時都是「無記憶」的，無法記住專案的：
 | 類別 | 數量 | 說明 |
 |------|------|------|
 | **Standard** | 48 | 開發標準和編碼規範 |
-| **Feature** | 14 | 專案功能和特性 |
+| **Feature** | 18 | 專案功能和特性（包含 Realtime Communication System, Explore Module, Dashboard Module, Daily Report System） |
 | **Principle** | 13 | 核心開發原則（SOLID, DRY, KISS 等） |
 | **Documentation** | 9 | 文檔結構和文件 |
 | **UI Pattern** | 7 | 使用者介面設計模式 |
@@ -98,7 +98,7 @@ AI 助手在每次對話時都是「無記憶」的，無法記住專案的：
 | **Security** | 6 | 安全最佳實踐和標準 |
 | **Architecture** | 5 | 系統架構模式 |
 | **DevOps** | 5 | DevOps 實踐和 CI/CD |
-| **Pattern** | 4 | 設計模式（Repository, Facade 等） |
+| **Pattern** | 12 | 設計模式（Repository, Facade, ErrorStateService, BlueprintActivityService, Aggregation Refresh, Facade Coordination, Supabase Storage, Workspace Context Implementation, Task State Machine, Task Dependency Management 等） |
 | **Workspace** | 3 | 工作區上下文系統 |
 | **Performance** | 3 | 效能優化技術 |
 | 其他 | 25 | 其他專門類別 |
@@ -425,6 +425,6 @@ cat memory.jsonl | jq 'select(.type=="entity" and .name=="實體名稱")'
 
 ---
 
-**最後更新**：2025-01-20  
-**版本**：v1.0.0  
+**最後更新**：2025-01-21  
+**版本**：v1.1.0（更新統計數據以反映 v4.1 新增內容）  
 **維護者**：開發團隊

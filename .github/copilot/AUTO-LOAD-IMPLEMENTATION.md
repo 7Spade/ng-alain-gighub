@@ -34,15 +34,16 @@
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
 │  📄 .github/copilot/memory.jsonl                            │
-│     ├─ 149 個實體（Entity）                                 │
+│     ├─ 161 個實體（Entity）                                 │
 │     │   ├─ Architecture（架構）                             │
 │     │   ├─ Security（安全）                                 │
 │     │   ├─ Standard（標準）                                 │
 │     │   ├─ Principle（原則）                                │
 │     │   ├─ Feature（功能）                                  │
+│     │   ├─ Pattern（模式，包含核心服務實現模式）            │
 │     │   └─ ...其他 28 個類別                                │
 │     │                                                        │
-│     └─ 170 個關係（Relation）                               │
+│     └─ 193 個關係（Relation）                               │
 │         ├─ uses（使用）                                      │
 │         ├─ implements（實作）                                │
 │         ├─ enforces（強制）                                  │
@@ -221,17 +222,18 @@ cat .github/copilot/memory.jsonl | \
 └─ .github/copilot/USAGE-GUIDE.md (新建)
 
 記憶庫內容：
-├─ 實體：149 個
+├─ 實體：161 個
 │   ├─ Standard: 48
-│   ├─ Feature: 14
+│   ├─ Feature: 18（+4：Realtime Communication System, Explore Module, Dashboard Module, Daily Report System）
+│   ├─ Pattern: 12（+8：核心服務實現模式）
 │   ├─ Principle: 13
-│   └─ 其他 30 個類別: 74
+│   └─ 其他 30 個類別: 70
 │
-└─ 關係：170 個
-    ├─ uses: 26
-    ├─ implements: 21
-    ├─ enforces: 14
-    └─ 其他 37 種: 109
+└─ 關係：193 個
+    ├─ uses: 26+
+    ├─ implements: 21+
+    ├─ enforces: 14+
+    └─ 其他 37+ 種: 132+
 ```
 
 ## 使用驗證
@@ -265,13 +267,13 @@ cat .github/copilot/memory.jsonl | jq '.' > /dev/null
 cat .github/copilot/memory.jsonl | \
   jq -s '[.[] | select(.type=="entity")] | length'
 
-# 預期：149
+# 預期：161
 
 # 計算關係數量
 cat .github/copilot/memory.jsonl | \
   jq -s '[.[] | select(.type=="relation")] | length'
 
-# 預期：170
+# 預期：193
 ```
 
 ## 維護指南
@@ -341,8 +343,8 @@ cat .github/copilot/memory.jsonl | \
 ### Q3：記憶庫會不會太大？
 
 **A**：目前不會：
-- 149 實體 + 170 關係 = 319 行
-- 檔案大小約 100KB
+- 161 實體 + 193 關係 = 401 行
+- 檔案大小約 120KB
 - jq 查詢非常快速
 - 可按需查詢特定實體
 
@@ -381,7 +383,7 @@ cat .github/copilot/memory.jsonl | \
 
 ---
 
-**版本**：v1.0.0  
-**最後更新**：2025-01-20  
+**版本**：v1.1.0（更新統計數據以反映 v4.1 新增內容）  
+**最後更新**：2025-01-21  
 **維護者**：開發團隊  
 **狀態**：✅ 已實施並運行中
