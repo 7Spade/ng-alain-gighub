@@ -132,7 +132,12 @@ class DocValidator {
     }
     
     const lines = content.split('\n');
-    const hasPurpose = lines.some(line => /^#{2,3}\s+(目的|Purpose)/.test(line));
+    // Accept both heading format (## 目的) and blockquote format (> **目的**:)
+    const hasPurpose = lines.some(line => 
+      /^#{2,3}\s+(目的|Purpose)/.test(line) || 
+      /^>\s+\*\*目的\*\*/.test(line) ||
+      /^>\s+\*\*Purpose\*\*/.test(line)
+    );
     const hasAudience = lines.some(line => /^#{2,3}\s+(目標讀者|Audience)/.test(line));
     
     if (!hasPurpose) {
