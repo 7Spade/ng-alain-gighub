@@ -101,6 +101,12 @@
   - 預估工時：184 天（37 週）
   - 實施建議與時程規劃
 
+- **ANALYSIS-SUMMARY-ZH.md** ⭐ - 遺漏工作項分析報告摘要（中文版）
+  - 快速概覽版本，適合快速了解核心發現
+  - 關鍵問題突出顯示
+  - 實施建議與資源需求
+  - 風險與挑戰分析
+
 ## 使用方法 (Usage)
 
 ### 快速理解系統
@@ -127,11 +133,12 @@
 ### 頁面整合與遷移 ⭐ **NEW**
 
 需要整合 Workspace Context Manager 的開發者：
-1. **workspace-missing-work-items-analysis.md** ⭐⭐⭐ - **必讀！** 全面了解除了頁面重新設計之外還需要完成的工作
-2. **pages-requiring-redesign.md** - 快速查詢需要重新設計的頁面清單（86 個頁面）
-3. **workspace-context-migration-plan.md** - 完整的遷移計畫與技術規範
-4. 參考已整合的頁面範例（task-board, task-todo, task-assignments）
-5. 遵循設計原則：移除 URL 參數、使用 WorkspaceContextFacade、顯示上下文指示器
+1. **ANALYSIS-SUMMARY-ZH.md** ⭐ - **中文快速概覽** - 快速了解除了頁面重新設計之外還需要完成的工作
+2. **workspace-missing-work-items-analysis.md** ⭐⭐⭐ - **完整英文報告** - 詳細的分析與實施建議
+3. **pages-requiring-redesign.md** - 快速查詢需要重新設計的頁面清單（86 個頁面）
+4. **workspace-context-migration-plan.md** - 完整的遷移計畫與技術規範
+5. 參考已整合的頁面範例（task-board, task-todo, task-assignments）
+6. 遵循設計原則：移除 URL 參數、使用 WorkspaceContextFacade、顯示上下文指示器
 
 ## 核心概念
 
@@ -275,7 +282,7 @@ A: 檢查是否有不必要的資料查詢，考慮實作快取機制。
 
 ## 統計資訊
 
-- **文檔數量**: 10 個工作區文檔（新增：遺漏工作項分析報告）
+- **文檔數量**: 11 個工作區文檔（新增：遺漏工作項分析報告 + 中文摘要）
 - **需要整合的頁面**: 86 個（4 個已完成，82 個待處理）
 - **額外識別的工作項**: 47 個（基礎設施、技術債務、服務層等）
 - **總工作量預估**: 
