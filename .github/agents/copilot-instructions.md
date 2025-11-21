@@ -21,6 +21,14 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 ### 🔴 第 3 步：完成啟動檢查清單（必須）✅
 **位置**：[agent-startup-checklist.md](./agent-startup-checklist.md) ⭐⭐⭐⭐⭐
 
+### 🔴 第 4 步：新功能開發必讀（開發任務必須）✅
+**位置**：[development-sequence-guide.md](./development-sequence-guide.md) ⭐⭐⭐⭐⭐
+
+**強制遵循五層架構開發順序**：
+```
+Types → Repositories → Models → Services → Facades → Components → Tests
+```
+
 ---
 
 ## 🧠 專案記憶庫（Priority #1）
