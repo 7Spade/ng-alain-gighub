@@ -19,7 +19,7 @@ interface BlueprintFormValue {
 
 /**
  * Blueprint Create Modal Component
- * 
+ *
  * 封装的蓝图创建模态框组件
  * 可在列表页面或其他需要创建蓝图的地方复用
  */
@@ -28,13 +28,7 @@ interface BlueprintFormValue {
   standalone: true,
   imports: [SHARED_IMPORTS, ReactiveFormsModule, AccountSelectorComponent],
   template: `
-    <nz-modal
-      [(nzVisible)]="visible"
-      nzTitle="创建新蓝图"
-      [nzWidth]="720"
-      [nzFooter]="modalFooter"
-      (nzOnCancel)="handleCancel()"
-    >
+    <nz-modal [(nzVisible)]="visible" nzTitle="创建新蓝图" [nzWidth]="720" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
       <ng-container *nzModalContent>
         <form nz-form [formGroup]="form">
           <nz-form-item>
@@ -100,9 +94,7 @@ interface BlueprintFormValue {
 
       <ng-template #modalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">取消</button>
-        <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="submitting()" (click)="handleOk()">
-          创建
-        </button>
+        <button nz-button nzType="primary" [disabled]="!form.valid" [nzLoading]="submitting()" (click)="handleOk()"> 创建 </button>
       </ng-template>
     </nz-modal>
   `
@@ -111,7 +103,7 @@ export class BlueprintCreateModalComponent {
   private readonly blueprintService = inject(BlueprintService);
   private readonly message = inject(NzMessageService);
 
-  @Output() blueprintCreated = new EventEmitter<string>(); // 发出创建的蓝图ID
+  @Output() readonly blueprintCreated = new EventEmitter<string>(); // 发出创建的蓝图ID
 
   @ViewChild(AccountSelectorComponent) accountSelector?: AccountSelectorComponent;
 
@@ -203,7 +195,7 @@ export class BlueprintCreateModalComponent {
       this.message.success('创建成功');
       this.visible = false;
       this.form.reset();
-      
+
       // 发出创建成功事件，传递蓝图ID
       this.blueprintCreated.emit(blueprint.id);
     } catch (error) {

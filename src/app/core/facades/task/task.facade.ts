@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, computed, effect, OnDestroy } from '@angular/core';
 import { TaskInsert, TaskUpdate, type Task } from '@core';
+import { ErrorStateService } from '@core';
 import {
   TaskService,
   TaskAssignmentService,
@@ -22,8 +23,6 @@ import {
 } from '@shared';
 import { BlueprintActivityService } from '@shared';
 import { firstValueFrom } from 'rxjs';
-
-import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Task Facade

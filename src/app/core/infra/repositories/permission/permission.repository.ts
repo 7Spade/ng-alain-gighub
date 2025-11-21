@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseRepository, QueryOptions } from '../base.repository';
 import { Database } from '../../types/common';
+import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
  * 从数据库类型中提取原始类型（snake_case）

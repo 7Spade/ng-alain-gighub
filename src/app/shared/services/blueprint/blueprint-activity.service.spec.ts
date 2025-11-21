@@ -4,7 +4,7 @@ import { of, throwError } from 'rxjs';
 
 import { BlueprintActivityService, type ActivityChange } from './blueprint-activity.service';
 import { type Account } from '../../models/account.models';
-import { type ActivityLogFilters } from '../../models/data.models';
+import { type ActivityLogFilters } from '../../models/data/data.models';
 import { AuthStateService } from '../auth';
 
 describe('BlueprintActivityService', () => {

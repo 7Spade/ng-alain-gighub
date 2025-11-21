@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseRepository, QueryOptions } from '../base.repository';
 import { Database } from '../../types/common';
 import { BranchPermissionLevel } from '../../types/permission';
+import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
  * BranchPermission 实体类型（camelCase）

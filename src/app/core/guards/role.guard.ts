@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree, ActivatedRouteSnapshot } from '@angular/router';
 
-import { AuthFacade } from '../facades/auth.facade';
+import { AuthFacade } from '../facades/auth/auth.facade';
 import { PermissionService } from '../permissions';
 
 /**

@@ -50,3 +50,6 @@ export { RoleRepository } from './permission/role.repository';
 export type { RoleInsert, RoleUpdate } from './permission/role.repository';
 export { UserRoleRepository } from './permission/user-role.repository';
 export type { UserRoleInsert, UserRoleUpdate } from './permission/user-role.repository';
+export { RolePermissionRepository } from './permission/role-permission.repository';
+export { BranchPermissionRepository } from './permission/branch-permission.repository';
+export type { BranchPermissionInsert, BranchPermissionUpdate } from './permission/branch-permission.repository';

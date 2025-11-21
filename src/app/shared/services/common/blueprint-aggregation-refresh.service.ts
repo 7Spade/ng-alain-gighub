@@ -3,7 +3,7 @@ import { ErrorStateService } from '@core';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { RealtimeFacade } from '../../../core/facades/realtime.facade';
+import { RealtimeFacade } from '../../../core/facades/realtime/realtime.facade';
 
 /**
  * Refresh Reason

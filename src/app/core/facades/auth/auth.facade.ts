@@ -1,11 +1,11 @@
 import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
-import { type Account } from '../../../shared/models';
+import { ErrorStateService } from '@core';
 import { AuthService, type SignInRequest, type SignUpRequest } from '@shared/services/auth';
 import type { User, Session } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
-import { ErrorStateService } from '../services/error-state.service';
+import { type Account } from '../../../shared/models';
 
 /**
  * Auth Facade

@@ -1,9 +1,9 @@
 import { computed, effect, inject, Injectable } from '@angular/core';
+import { ErrorStateService } from '@core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { WorkspaceContextService, WorkspaceDataService } from '@shared/services/workspace-context';
 
-import { ErrorStateService } from '../services/error-state.service';
-import { WorkspaceMenuService } from '../services/workspace-menu.service';
+import { WorkspaceMenuService } from '../../services/workspace-menu.service';
 
 /**
  * Workspace Context Facade

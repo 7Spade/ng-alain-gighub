@@ -1,4 +1,5 @@
 import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
+import { ErrorStateService } from '@core';
 import {
   CommentService,
   NotificationService,
@@ -9,8 +10,7 @@ import {
   type NotificationInsert
 } from '@shared';
 
-import { RealtimeFacade } from './realtime.facade';
-import { ErrorStateService } from '../services/error-state.service';
+import { RealtimeFacade } from '../realtime/realtime.facade';
 
 /**
  * Communication Facade

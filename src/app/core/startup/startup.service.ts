@@ -7,9 +7,9 @@ import { ALAIN_I18N_TOKEN, MenuService, SettingsService, TitleService } from '@d
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { Observable, catchError, firstValueFrom, from, map, of, switchMap, zip } from 'rxjs';
 
-import { WorkspaceContextFacade } from '../facades/workspace-context.facade';
+import { WorkspaceContextFacade } from '../facades/workspace/workspace-context.facade';
 import { I18NService } from '../i18n/i18n.service';
-import { AccountRepository } from '../infra/repositories/account.repository';
+import { AccountRepository } from '../infra/repositories/account/account.repository';
 import { PermissionService } from '../permissions/permission.service';
 import { SupabaseSessionAdapterService } from '../supabase';
 

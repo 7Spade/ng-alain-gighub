@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { BaseRepository, QueryOptions } from '../base.repository';
 import { Database } from '../../types/common';
+import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
  * ActivityLog 實體類型（camelCase）

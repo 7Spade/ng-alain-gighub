@@ -1,5 +1,6 @@
 import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { type Inspection, type InspectionInsert, type InspectionUpdate } from '@core';
+import { ErrorStateService } from '@core';
 import {
   BlueprintActivityService,
   InspectionService,
@@ -9,8 +10,6 @@ import {
   type QualityCheckInsert,
   type QualityCheckUpdate
 } from '@shared';
-
-import { ErrorStateService } from '../services/error-state.service';
 
 /**
  * Quality Facade
