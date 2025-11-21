@@ -186,4 +186,90 @@ export class DocumentRepository extends BaseRepository<Document, DocumentInsert,
       })
     );
   }
+
+  /**
+   * 根据蓝图 ID 查询文档
+   *
+   * @param blueprintId 蓝图 ID
+   * @param options 查询选项
+   * @returns Observable<Document[]>
+   *
+   * @example
+   * ```typescript
+   * documentRepo.findByBlueprintId('blueprint-123').subscribe(documents => {
+   *   console.log('该蓝图的文档:', documents);
+   * });
+   * ```
+   */
+  findByBlueprintId(blueprintId: string, options?: QueryOptions): Observable<Document[]> {
+    return this.findAll({
+      ...options,
+      filters: {
+        ...options?.filters,
+        blueprintId // 会自动转换为 blueprint_id
+      }
+    });
+  }
+
+  /**
+   * 搜索文档（支持模糊查询）
+   *
+   * @param query 搜索关键词 - 用于搜索文档标题、文件名和描述
+   * @param options 查询选项 - 包含排序、分页等配置
+   * @returns Observable<Document[]> - 返回匹配的文档列表
+   * @throws Error - 当查询失败时抛出错误
+   *
+   * @example
+   * ```typescript
+   * documentRepo.search('设计图', { 
+   *   page: 1, 
+   *   pageSize: 20,
+   *   orderBy: 'uploadedAt'
+   * }).subscribe(documents => {
+   *   console.log('找到文档:', documents);
+   * });
+   * ```
+   */
+  search(query: string, options?: QueryOptions): Observable<Document[]> {
+    // 空查询返回空数组（不是错误）
+    if (!query || query.trim().length === 0) {
+      return from(Promise.resolve([]));
+    }
+
+    const trimmedQuery = query.trim();
+    let searchQuery = this.supabase
+      .from(this.tableName as any)
+      .select(options?.select || '*')
+      .or(`title.ilike.%${trimmedQuery}%,file_name.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%`) as any;
+
+    // 只搜索未删除的文档
+    searchQuery = searchQuery.is('soft_deleted_at', null);
+
+    // 应用排序
+    if (options?.orderBy) {
+      const snakeOrderBy = options.orderBy.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      searchQuery = searchQuery.order(snakeOrderBy, {
+        ascending: options.orderDirection !== 'desc'
+      });
+    } else {
+      // 默认按上传时间降序排序
+      searchQuery = searchQuery.order('uploaded_at', { ascending: false });
+    }
+
+    // 应用分页
+    if (options?.page && options?.pageSize) {
+      const fromIndex = (options.page - 1) * options.pageSize;
+      const toIndex = fromIndex + options.pageSize - 1;
+      searchQuery = searchQuery.range(fromIndex, toIndex);
+    }
+
+    return from(Promise.resolve(searchQuery) as Promise<{ data: any[] | null; error: any }>).pipe(
+      map((response: { data: any[] | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '搜索文档失败');
+        }
+        return (response.data || []).map(item => toCamelCaseData<Document>(item));
+      })
+    );
+  }
 }
