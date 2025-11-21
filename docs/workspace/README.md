@@ -107,7 +107,47 @@
   - 實施建議與資源需求
   - 風險與挑戰分析
 
-### Facades 與 Repositories 增強文檔 ⭐⭐⭐ **NEW (2025-01-15)**
+### 五層架構增強文檔 ⭐⭐⭐⭐⭐ **NEW (2025-11-21)**
+
+- **five-layer-architecture-enhancement-plan.md** ⭐⭐⭐⭐⭐ - 五層架構增強總計劃（NEW）
+  - 整合 Types、Repositories、Models、Services、Facades 五層的完整性分析
+  - 按五層架構開發順序規劃增強工作（38-55 天）
+  - 各層增強優先級與時程安排
+  - 依賴關係圖與詳細實施指南
+  - 完整的代碼示例與成功指標
+  - 統一的驗證檢查清單
+
+- **types-layer-enhancement-checklist.md** ⭐⭐⭐⭐ - Types 層增強檢查清單（NEW）
+  - 10 個待補充枚舉清單（P0/P1/P2 優先級）
+  - 3 處待統一枚舉（刪除重複定義）
+  - 詳細實施步驟與代碼示例
+  - 預估工時：2-3 天
+
+- **repositories-layer-enhancement-checklist.md** ⭐⭐⭐⭐ - Repositories 層增強檢查清單（NEW）
+  - 10 個 Repository 待補充搜索方法
+  - P0/P1 優先級劃分（Task, Issue, Document, QualityCheck, Inspection 等）
+  - 搜索方法實現模板與最佳實踐
+  - 預估工時：5-7 天
+
+- **models-layer-enhancement-checklist.md** ⭐⭐⭐⭐ - Models 層增強檢查清單（NEW）
+  - 8 個模組待補充枚舉重新導出
+  - 4 個擴展接口從 Service 層移動到 Models 層
+  - 3 處重複定義待刪除
+  - 預估工時：3-4 天
+
+- **services-layer-enhancement-checklist.md** ⭐⭐⭐⭐ - Services 層增強檢查清單（NEW）
+  - 9 個 Service 待補充 50+ 個方法
+  - 20+ 個 Signals 狀態管理待添加
+  - 搜索、選擇、重置方法實現模板
+  - 預估工時：8-10 天
+
+- **facades-layer-enhancement-checklist.md** ⭐⭐⭐⭐ - Facades 層增強檢查清單（NEW）
+  - 8 個 Facade 待拆分與增強（Task, Issue, Quality, Document 等）
+  - 25+ 個子 Facade 待建立
+  - 參考既有完整文檔（facades-enhancement-checklist.md 等）
+  - 預估工時：20-31 天
+
+### Facades 與 Repositories 增強文檔 ⭐⭐⭐ **UPDATED (2025-11-21)**
 
 - **facades-repositories-enhancement-plan.md** ⭐⭐⭐⭐⭐ - Facades 與 Repositories 基礎方法完整性增強計畫
   - 總體規劃與目標
@@ -370,11 +410,23 @@ A: 檢查是否有不必要的資料查詢，考慮實作快取機制。
 
 ## 統計資訊
 
-- **文檔數量**: 19 個工作區文檔
+- **文檔數量**: 25 個工作區文檔 ⬆️ **+6 (2025-11-21)**
   - 基礎功能文檔：11 個
-  - Facades 增強文檔：8 個（新增：3 個進度追蹤文檔）
+  - Facades 增強文檔：8 個
+  - **五層架構增強文檔：6 個** ✨ **NEW**
 - **需要整合的頁面**: 86 個（4 個已完成，82 個待處理）
 - **額外識別的工作項**: 47 個（基礎設施、技術債務、服務層等）
+- **五層架構增強計畫** ✨ **NEW (2025-11-21)**:
+  - **總計劃**: 1 個（整合 5 個分析報告）
+  - **各層檢查清單**: 5 個（Types, Repositories, Models, Services, Facades）
+  - **待補充項目**: 
+    - Types 層：10 個枚舉 + 3 處重複統一
+    - Repositories 層：10 個 Repository 搜索方法
+    - Models 層：8 個枚舉重新導出 + 4 個接口移動
+    - Services 層：50+ 個方法 + 20+ 個 Signals
+    - Facades 層：8 個 Facade 拆分 + 25+ 個子 Facade
+  - **總工作量**: 38-55 天（按五層架構順序）
+  - **優先級**: Types(P1) → Repositories(P0) → Models(P1) → Services(P0) → Facades(P0)
 - **Facades 增強計畫**: 
   - 10 個 Facades（Task, Issue, Quality, Document, Account, Collaboration, Communication, Bot, Analytics, System）
   - 50+ 個缺失方法需要補充
@@ -383,13 +435,15 @@ A: 檢查是否有不必要的資料查詢，考慮實作快取機制。
 - **總工作量預估**: 
   - 頁面重新設計：6 週
   - 額外工作項：20-37 週（取決於並行程度）
-  - Facades 增強：4-6 週（可並行進行）
-  - 總計：20-30 週（現實估計）
+  - **五層架構增強：5.5-8 週** ✨ **NEW**
+  - 總計：25-40 週（現實估計）⬆️
 - **功能狀態**: 
   - ✅ 核心功能生產就緒
   - 🔶 頁面整合進行中
   - ✅ Facades 增強規劃完成（Phase 1）
   - 📋 Facades 增強實施待開始（Phase 2-7）
+  - ✨ **五層架構增強規劃完成** ✨ **NEW (2025-11-21)**
+  - 📋 **五層架構增強實施待開始** ✨ **NEW**
   - ⚠️ 基礎設施需加強
 
 **最後更新**: 2025-11-21  
