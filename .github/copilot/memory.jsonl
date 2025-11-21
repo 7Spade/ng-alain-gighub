@@ -399,3 +399,22 @@
 {"type": "relation", "from": "Dashboard Module", "to": "Aggregation Refresh Pattern", "relationType": "uses"}
 {"type": "relation", "from": "Daily Report System", "to": "Task Execution System", "relationType": "partOf"}
 {"type": "relation", "from": "Daily Report System", "to": "Supabase Storage Pattern", "relationType": "uses"}
+{"type": "entity", "name": "Sequential Thinking Tool", "entityType": "Development Tool", "observations": ["用於複雜問題的深度分析和結構化思考", "支援思考鏈（thoughtNumber、totalThoughts）", "允許修正前面的想法（isRevision、revisesThought）", "支援分支探索不同方案（branchFromThought、branchId）", "可動態調整思考步驟數量（needsMoreThoughts）", "適用場景：架構設計、技術選型、複雜問題分析", "參數：thought、nextThoughtNeeded、thoughtNumber、totalThoughts", "詳細說明：.github/copilot/TOOL-GUIDE.md"]}
+{"type": "entity", "name": "Software Planning Tool", "entityType": "Development Tool", "observations": ["用於任務規劃、分解和進度追蹤", "支援規劃會話（start_planning）", "支援任務管理（add_todo、remove_todo、get_todos、update_todo_status）", "支援計畫保存（save_plan）", "任務包含：title、description、complexity、codeExample", "複雜度評估：1-2（簡單）、3-4（中等）、5-6（普通複雜）、7-8（複雜）、9-10（非常複雜）", "適用場景：新功能開發、大型任務、需要分解的工作", "詳細說明：.github/copilot/TOOL-GUIDE.md"]}
+{"type": "entity", "name": "Tool-Assisted Development Pattern", "entityType": "Pattern", "observations": ["工具輔助開發模式：思考 → 規劃 → 執行 → 反思", "使用 Sequential Thinking 進行需求分析和架構設計", "使用 Software Planning Tool 進行任務分解和進度追蹤", "與記憶庫整合：查詢規範 → 遵循標準 → 記錄經驗", "提升開發質量：減少返工、降低風險、提高效率", "完整工作流程參考：.github/copilot/DEVELOPMENT-WORKFLOWS.md"]}
+{"type": "entity", "name": "Thinking-First Development", "entityType": "Principle", "observations": ["思考優先開發原則：複雜任務先思考再執行", "避免盲目編碼導致的返工", "通過深度分析提前識別風險", "結構化思考確保方案完整性", "適用於：複雜功能開發、架構設計、技術選型、問題診斷", "不適用於：簡單修改、明確任務、緊急修復（可快速執行後再分析）", "與 Four Core Development Principles 互補"]}
+{"type": "entity", "name": "AI Tool Integration", "entityType": "Feature", "observations": ["AI 工具整合到開發流程中", "Sequential Thinking Tool：深度分析工具", "Software Planning Tool：任務管理工具", "記憶庫（memory.jsonl）：知識管理工具", "工具協同使用提升開發效率", "完整使用指南：.github/copilot/TOOL-GUIDE.md", "工作流程範例：.github/copilot/DEVELOPMENT-WORKFLOWS.md"]}
+{"type": "entity", "name": "Structured Problem Solving", "entityType": "Principle", "observations": ["結構化問題解決方法", "分步思考：將複雜問題分解為多個步驟", "驗證機制：每步驗證結果正確性", "修正機制：發現錯誤時及時修正", "分支探索：探索多個可能方案", "由 Sequential Thinking Tool 支援實現", "適用於：複雜問題、多方案比較、風險識別"]}
+{"type": "relation", "from": "Sequential Thinking Tool", "to": "Structured Problem Solving", "relationType": "enables"}
+{"type": "relation", "from": "Sequential Thinking Tool", "to": "Code Quality", "relationType": "improves"}
+{"type": "relation", "from": "Sequential Thinking Tool", "to": "Thinking-First Development", "relationType": "implements"}
+{"type": "relation", "from": "Software Planning Tool", "to": "Tool-Assisted Development Pattern", "relationType": "implements"}
+{"type": "relation", "from": "Software Planning Tool", "to": "Development Validation Sequence", "relationType": "integrates_with"}
+{"type": "relation", "from": "Tool-Assisted Development Pattern", "to": "Five Layer Development Order", "relationType": "follows"}
+{"type": "relation", "from": "Tool-Assisted Development Pattern", "to": "Enterprise Development Principles", "relationType": "enforces"}
+{"type": "relation", "from": "Thinking-First Development", "to": "Four Core Development Principles", "relationType": "complements"}
+{"type": "relation", "from": "Thinking-First Development", "to": "Common Sense Principle", "relationType": "prevents"}
+{"type": "relation", "from": "AI Tool Integration", "to": "ng-alain-gighub", "relationType": "enhances"}
+{"type": "relation", "from": "AI Tool Integration", "to": "Development Phase Validation", "relationType": "supports"}
+{"type": "relation", "from": "AI Tool Integration", "to": "Sequential Thinking Tool", "relationType": "includes"}
+{"type": "relation", "from": "AI Tool Integration", "to": "Software Planning Tool", "relationType": "includes"}

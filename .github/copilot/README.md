@@ -69,6 +69,58 @@ Agent 應查閱的記憶實體：
 
 ---
 
+## 🛠️ AI 工具整合（v4.2 新增）
+
+本專案整合了兩個強大的 AI 工具，提升開發效率和質量：
+
+### Sequential Thinking Tool
+
+**用途**：複雜問題的深度分析和結構化思考
+
+**適用場景**：
+- ✅ 架構設計決策
+- ✅ 複雜問題分析
+- ✅ 技術選型評估
+- ✅ Bug 根因分析
+
+**特色功能**：
+- 思考鏈記錄（完整的思考過程）
+- 修正機制（isRevision）
+- 分支探索（branchFromThought）
+- 動態調整步驟數
+
+### Software Planning Tool
+
+**用途**：任務規劃、分解和進度追蹤
+
+**適用場景**：
+- ✅ 新功能開發
+- ✅ 大型任務分解
+- ✅ 多步驟重構
+- ✅ 團隊協作任務
+
+**核心命令**：
+- `start_planning(goal)` - 啟動規劃會話
+- `add_todo(...)` - 添加任務
+- `update_todo_status(...)` - 更新狀態
+- `save_plan(plan)` - 保存計畫
+
+### 🔗 工具整合使用
+
+**標準工作流程**：
+1. 使用 Sequential Thinking 分析需求和設計架構
+2. 查詢 memory.jsonl 了解相關規範
+3. 使用 Software Planning Tool 創建任務計畫
+4. 執行任務（遵循五層開發順序）
+5. 遇到問題時使用 Sequential Thinking 分析
+6. 完成後更新記憶庫
+
+**詳細指南**：
+- [TOOL-GUIDE.md](./TOOL-GUIDE.md) - 完整的工具使用指南
+- [DEVELOPMENT-WORKFLOWS.md](./DEVELOPMENT-WORKFLOWS.md) - 實際開發工作流程範例
+
+---
+
 ## 📄 memory.jsonl
 
 記憶檔案採用 JSONL (JSON Lines) 格式，每一行都是一個 JSON 物件，用於定義專案的知識圖譜。
@@ -89,11 +141,12 @@ Agent 應查閱的記憶實體：
 
 ### 📊 目前包含的知識
 
-**版本 v4.1** - 核心服務實現模式補充（實現細節增強）
+**版本 v4.2** - AI Tool Integration（工具整合增強）
 
-#### 實體統計（161 個實體，+12 from v4.0）
+#### 實體統計（167 個實體，+6 from v4.1）
 - **專案**：ng-alain-gighub（企業級資源中心）
 - **技術棧**：Angular 20、NG-ZORRO、@delon、TypeScript、Supabase、RxJS
+- **AI 工具**：Sequential Thinking Tool、Software Planning Tool、Tool-Assisted Development Pattern ✨
 - **架構設計**：Git-like Branch Model、Database Schema、Layered Architecture、Five Layer Architecture
 - **核心原則**：OnPush Strategy、SOLID Principles、Code Quality、Enterprise Development Principles、UI Component Priority、Consistency Principle、Composability Principle、Dependency Direction Principle、Low Coupling High Cohesion
 - **功能特性**：Staging Area Mechanism（48h 可撤回）、Todo Center System（五種狀態）、Issue Synchronization、Activity Logging System、Document Management System、Task Tree Structure、Data Analysis System、Notification System、Bot System、Workspace Context System、File Upload Standards、Search Functionality、Pagination Standards、Realtime Communication System、Explore Module、Dashboard Module、Daily Report System
@@ -145,8 +198,9 @@ Agent 應查閱的記憶實體：
   - Onboarding Process ⭐
 - **約束條件**：Forbidden Practices
 
-#### 關係統計（193 個關係，+23 from v4.0）
+#### 關係統計（207 個關係，+14 from v4.1）
 - **技術使用關係**：ng-alain-gighub → Angular 20/NG-ZORRO/@delon/Supabase/TypeScript/Git-like Branch Model/Database Schema
+- **AI 工具關係**：AI Tool Integration → Sequential Thinking Tool/Software Planning Tool、Tool-Assisted Development Pattern → Five Layer Development Order ✨
 - **架構實作關係**：Five Layer Architecture → Layered Architecture、Git-like Branch Model → Database Schema
 - **技術整合關係**：Angular 20 → NG-ZORRO/RxJS/OnPush Strategy、@delon → NG-ZORRO/Supabase
 - **安全實作關係**：Supabase → Authentication Flow → Security Principles、Branch Permission Rules → Security Best Practices、RLS Policy Patterns → Security Principles
@@ -222,6 +276,12 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
 ---
 
 **版本歷史**：
+- **v4.2** (2025-11-21): AI Tool Integration - 整合 Sequential Thinking 和 Software Planning Tool ✨🚀
+  - 新增 6 個實體：Sequential Thinking Tool、Software Planning Tool、Tool-Assisted Development Pattern、Thinking-First Development、AI Tool Integration、Structured Problem Solving
+  - 新增 14 個關係：連接工具與開發流程、質量標準
+  - 新增 2 個完整指南：TOOL-GUIDE.md（18KB）、DEVELOPMENT-WORKFLOWS.md（23KB）
+  - 重點：提供完整的 AI 工具使用指南和實際開發工作流程範例
+  - 總計：167 個實體、207 個關係（從 v4.1 的 161/193 增加）
 - **v4.1** (2025-01-21): 核心服務實現模式補充 - 添加實現細節 ✨
   - 新增 12 個核心服務實現模式實體：ErrorStateService Pattern、BlueprintActivityService Pattern、Aggregation Refresh Pattern、Facade Coordination Pattern、Supabase Storage Pattern、Workspace Context Implementation、Task State Machine、Task Dependency Management、Realtime Communication System、Explore Module、Dashboard Module、Daily Report System
   - 新增 23 個關係：連接核心服務模式與現有架構
@@ -249,6 +309,6 @@ Memory MCP 是 GitHub Copilot 的記憶系統，允許：
   - 基礎技術棧、架構設計、開發原則
   - 總計：23 個實體、24 個關係
 
-**最後更新**：2025-01-21（v4.1 核心服務實現模式補充）  
+**最後更新**：2025-11-21（v4.2 AI Tool Integration）  
 **維護者**：開發團隊  
 **下次檢視**：專案重大架構變更時
