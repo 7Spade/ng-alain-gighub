@@ -4,7 +4,7 @@ import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseRepository, QueryOptions } from '../base.repository';
-import { handleSupabaseResponse } from '../errors/supabase-error.transformer';
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
 import { TaskPriority, TaskStatus, TaskType } from '../../types/task';
 import { toCamelCaseData } from '../../utils/transformers';

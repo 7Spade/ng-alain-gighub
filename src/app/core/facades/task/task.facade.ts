@@ -23,7 +23,7 @@ import {
 import { BlueprintActivityService } from '@shared';
 import { firstValueFrom } from 'rxjs';
 
-import { ErrorStateService } from '../services/error-state.service';
+import { ErrorStateService } from '@core';
 
 /**
  * Task Facade

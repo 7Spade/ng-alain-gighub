@@ -5,11 +5,11 @@ import type {
   OrganizationCollaboration,
   OrganizationCollaborationInsert,
   OrganizationCollaborationUpdate
-} from '@shared/models/collaboration.models';
-import type { Notification, NotificationInsert } from '@shared/models/communication.models';
+} from '@shared/models';
+import type { Notification, NotificationInsert } from '@shared/models';
 
-import { RealtimeFacade } from './realtime.facade';
-import { ErrorStateService } from '../services/error-state.service';
+import { RealtimeFacade } from '../realtime/realtime.facade';
+import { ErrorStateService } from '@core';
 
 // Type aliases for backward compatibility
 type CollaborationInsert = OrganizationCollaborationInsert;

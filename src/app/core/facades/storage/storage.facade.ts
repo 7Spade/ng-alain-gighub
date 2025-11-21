@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { SupabaseService } from '@core';
 
-import { ErrorStateService } from '../services/error-state.service';
+import { ErrorStateService } from '@core';
 
 /**
  * Upload Options

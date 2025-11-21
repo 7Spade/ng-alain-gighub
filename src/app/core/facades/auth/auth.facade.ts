@@ -5,7 +5,7 @@ import { AuthService, type SignInRequest, type SignUpRequest } from '@shared/ser
 import type { User, Session } from '@supabase/supabase-js';
 import { firstValueFrom } from 'rxjs';
 
-import { ErrorStateService } from '../services/error-state.service';
+import { ErrorStateService } from '@core';
 
 /**
  * Auth Facade

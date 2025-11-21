@@ -3,8 +3,8 @@ import { SupabaseService } from '@core';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
 import { RealtimeFacade } from './realtime.facade';
-import { SubscriptionConfig } from '../infra/types/common';
-import { ErrorStateService } from '../services/error-state.service';
+import { SubscriptionConfig } from '../../infra/types/common';
+import { ErrorStateService } from '@core';
 
 describe('RealtimeFacade', () => {
   let facade: RealtimeFacade;

@@ -1,9 +1,9 @@
 import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
-import { SubscriptionConfig, SubscriptionInfo } from '../infra/types/common';
-import { ErrorStateService } from '../services/error-state.service';
-import { SupabaseService } from '../supabase/supabase.service';
+import { SubscriptionConfig, SubscriptionInfo } from '../../infra/types/common';
+import { ErrorStateService } from '@core';
+import { SupabaseService } from '../../supabase/supabase.service';
 
 /**
  * Realtime Facade

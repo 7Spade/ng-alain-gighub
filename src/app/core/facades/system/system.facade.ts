@@ -11,7 +11,7 @@ import {
 import { FeatureFlagService } from '@shared/services/system/feature-flag.service';
 import { SettingService } from '@shared/services/system/setting.service';
 
-import { ErrorStateService } from '../services/error-state.service';
+import { ErrorStateService } from '@core';
 
 /**
  * A/B Test Result

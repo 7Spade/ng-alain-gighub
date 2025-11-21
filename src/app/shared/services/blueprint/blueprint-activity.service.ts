@@ -3,7 +3,7 @@ import { ActivityLogRepository, type ActivityLog, type ActivityLogInsert, type J
 import { ErrorStateService } from '@core';
 import { firstValueFrom } from 'rxjs';
 
-import { type ActivityLogFilters } from '../../models/data.models';
+import { type ActivityLogFilters } from '../../models/data/data.models';
 import { AuthStateService } from '../auth';
 
 /**

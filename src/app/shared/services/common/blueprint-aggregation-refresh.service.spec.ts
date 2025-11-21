@@ -3,7 +3,7 @@ import { ErrorStateService } from '@core';
 import { take } from 'rxjs/operators';
 
 import { BlueprintAggregationRefreshService, RefreshReason } from './blueprint-aggregation-refresh.service';
-import { RealtimeFacade } from '../../../core/facades/realtime.facade';
+import { RealtimeFacade } from '../../../core/facades/realtime/realtime.facade';
 
 describe('BlueprintAggregationRefreshService', () => {
   let service: BlueprintAggregationRefreshService;

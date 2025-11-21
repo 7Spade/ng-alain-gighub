@@ -10,7 +10,7 @@ import {
   type QualityCheckUpdate
 } from '@shared';
 
-import { ErrorStateService } from '../services/error-state.service';
+import { ErrorStateService } from '@core';
 
 /**
  * Quality Facade

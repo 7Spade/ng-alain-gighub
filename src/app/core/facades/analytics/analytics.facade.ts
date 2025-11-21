@@ -11,7 +11,7 @@ import type {
 } from '@shared';
 import { AnalyticsService } from '@shared/services/analytics/analytics.service';
 
-import { ErrorStateService } from '../services/error-state.service';
+import { ErrorStateService } from '@core';
 
 /**
  * Chart Data
