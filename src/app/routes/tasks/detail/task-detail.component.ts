@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkspaceContextFacade } from '@core';
 import { SHARED_IMPORTS, TaskDetail, TaskService, TaskStatus } from '@shared';

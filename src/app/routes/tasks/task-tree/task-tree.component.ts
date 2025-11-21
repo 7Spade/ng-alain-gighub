@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkspaceContextFacade } from '@core';
 import { BlueprintService, SHARED_IMPORTS, TaskTreeNode } from '@shared';
@@ -69,7 +69,7 @@ interface NzTreeNodeOptions {
   templateUrl: './task-tree.component.html',
   styleUrls: ['./task-tree.component.less']
 })
-export class TaskTreeComponent implements OnInit, OnDestroy {
+export class TaskTreeComponent implements OnDestroy {
   readonly facade = inject(TaskTreeFacade);
   readonly router = inject(Router);
   readonly workspaceContext = inject(WorkspaceContextFacade);
@@ -85,6 +85,7 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   readonly contextId = this.workspaceContext.contextId;
   readonly contextLabel = this.workspaceContext.contextLabel;
   readonly currentBlueprintIds = this.workspaceContext.currentBlueprintIds;
+  readonly loadingBlueprints = this.workspaceContext.loadingBlueprints;
 
   // Page title with context
   readonly pageTitle = computed(() => {
@@ -147,11 +148,7 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
         // Clear selection if no blueprints available
         this.selectedBlueprintId.set(null);
       }
-    });
-  }
-
-  ngOnInit(): void {
-    // Context-based initialization is now handled by effect in constructor
+    }, { allowSignalWrites: true });
   }
 
   ngOnDestroy(): void {

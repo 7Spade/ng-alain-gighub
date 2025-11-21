@@ -21,7 +21,7 @@
   <!-- Workspace Context Check -->
   @if (contextType() === 'app') {
     <nz-empty nzNotFoundContent="請先切換到用戶、組織或團隊視角"></nz-empty>
-  } @else if (workspaceContext.loadingBlueprints()) {
+  } @else if (loadingBlueprints()) {
     <div style="text-align: center; padding: 40px;">
       <nz-spin nzSize="large" nzTip="加載藍圖中..."></nz-spin>
     </div>
