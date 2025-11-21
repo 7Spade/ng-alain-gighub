@@ -55,8 +55,16 @@
     ></nz-alert>
   }
 
-  <!-- Empty State -->
-  @if (!loading() && !error() && taskTree().length === 0) {
+  <!-- Empty State: No blueprint selected -->
+  @if (!loading() && !error() && !selectedBlueprintId()) {
+    <nz-empty
+      nzNotFoundContent="請選擇藍圖以查看任務樹"
+      [nzNotFoundImage]="'simple'"
+    ></nz-empty>
+  }
+
+  <!-- Empty State: No tasks -->
+  @if (!loading() && !error() && selectedBlueprintId() && taskTree().length === 0) {
     <nz-empty
       nzNotFoundContent="暫無任務"
       [nzNotFoundFooter]="emptyFooter"
@@ -69,7 +77,7 @@
   }
 
   <!-- Task Tree with Drag-Drop -->
-  @if (!loading() && !error() && treeData().length > 0) {
+  @if (!loading() && !error() && selectedBlueprintId() && treeData().length > 0) {
     <div class="task-tree-container" [class.is-dragging]="isDragging()">
       <!-- Phase 2.1.4: CDK DropList container -->
       <div cdkDropList [cdkDropListData]="taskTree()" (cdkDropListDropped)="onDrop($event)">

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { ReportPhotoRepository, DailyReportRepository } from '@core';
+import { ReportPhotoRepository, DailyReportRepository, WorkspaceContextFacade } from '@core';
 import { SHARED_IMPORTS, TaskService, Task, ReportPhoto, BlueprintService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -81,6 +81,7 @@ export class TaskPhotosComponent implements OnInit {
   readonly blueprintService = inject(BlueprintService);
   private readonly reportPhotoRepository = inject(ReportPhotoRepository);
   private readonly dailyReportRepository = inject(DailyReportRepository);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
   private readonly modal = inject(NzModalService);
@@ -88,6 +89,7 @@ export class TaskPhotosComponent implements OnInit {
   readonly selectedBlueprintId = signal<string | null>(null);
   readonly loading = signal<boolean>(false);
   readonly photos = signal<ReportPhoto[]>([]);
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
 
   ngOnInit(): void {
     this.loadBlueprints();

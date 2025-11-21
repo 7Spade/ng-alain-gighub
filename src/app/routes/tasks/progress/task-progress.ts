@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WorkspaceContextFacade } from '@core';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -44,16 +45,18 @@ interface Milestone {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskProgressComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private message = inject(NzMessageService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly message = inject(NzMessageService);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
 
   // Signals for state management
-  loading = signal<boolean>(true);
-  taskProgress = signal<TaskProgressData | null>(null);
-  progressItems = signal<ProgressItem[]>([]);
-  milestones = signal<Milestone[]>([]);
-  error = signal<string | null>(null);
+  readonly loading = signal<boolean>(true);
+  readonly taskProgress = signal<TaskProgressData | null>(null);
+  readonly progressItems = signal<ProgressItem[]>([]);
+  readonly milestones = signal<Milestone[]>([]);
+  readonly error = signal<string | null>(null);
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
 
   // Computed properties
   overallProgress = computed(() => {

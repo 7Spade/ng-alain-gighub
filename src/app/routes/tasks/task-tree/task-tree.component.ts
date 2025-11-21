@@ -1,6 +1,7 @@
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { WorkspaceContextFacade } from '@core';
 import { BlueprintService, SHARED_IMPORTS, TaskTreeNode } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
@@ -67,13 +68,14 @@ interface NzTreeNodeOptions {
 export class TaskTreeComponent implements OnInit, OnDestroy {
   readonly facade = inject(TaskTreeFacade);
   readonly router = inject(Router);
-  readonly route = inject(ActivatedRoute);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
   readonly blueprintService = inject(BlueprintService);
   private readonly message = inject(NzMessageService);
   private readonly dragService = inject(TaskTreeDragService);
 
   // Blueprint selection
   readonly selectedBlueprintId = signal<string | null>(null);
+  readonly isUserContext = computed(() => this.contextFacade.contextType() === 'user');
 
   // Facade signals (exposed for template)
   readonly taskTree = this.facade.taskTree;
@@ -104,13 +106,16 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    // Load blueprints first, then check for blueprint ID from route
+    // Load blueprints first
     this.loadBlueprints().then(() => {
-      // 从查询参数中获取蓝图ID
-      const blueprintId = this.route.snapshot.queryParamMap.get('blueprintId');
-      if (blueprintId) {
-        this.selectedBlueprintId.set(blueprintId);
-        this.loadTasks(blueprintId);
+      // In user context, user can optionally select a blueprint to view tasks
+      // In org/team context, blueprint selection is required
+      if (!this.isUserContext()) {
+        // Organization or team context - blueprint selection required
+        // No auto-loading, user must select from dropdown
+      } else {
+        // User context - blueprint selection optional
+        // User can select blueprint from dropdown if they want to view specific blueprint tasks
       }
     });
   }
