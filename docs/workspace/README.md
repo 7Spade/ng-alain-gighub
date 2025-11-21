@@ -107,6 +107,40 @@
   - 實施建議與資源需求
   - 風險與挑戰分析
 
+### Facades 與 Repositories 增強文檔 ⭐⭐⭐ **NEW (2025-01-15)**
+
+- **facades-repositories-enhancement-plan.md** ⭐⭐⭐⭐⭐ - Facades 與 Repositories 基礎方法完整性增強計畫
+  - 總體規劃與目標
+  - 10 個需要增強的 Facades（Task, Issue, Quality, Document, Account, Collaboration, Communication, Bot, Analytics, System）
+  - 拆分原則與參考架構（Blueprint Facade 模式）
+  - 缺失方法清單與實施優先級
+  - 7 個階段的詳細實施計畫（20-31 天）
+  - 程式碼結構規範與成功指標
+
+- **facades-implementation-guide.md** ⭐⭐⭐⭐ - Facades 實施指南
+  - 拆分原則與步驟（何時拆分、如何拆分）
+  - 7 步驟實施流程（分析、建立、遷移、補充、重構、匯出、測試）
+  - 完整程式碼範例（子 Facade、主 Facade 協調器）
+  - 常見問題解答（10+ FAQ）
+  - 檢查清單（拆分前、中、後）
+
+- **facades-enhancement-checklist.md** ⭐⭐⭐⭐ - Facades 增強檢查清單
+  - 總體進度追蹤（7 個 Phase）
+  - 每個 Phase 的詳細檢查項目
+  - Task Facade 完整檢查清單（60+ 項）
+  - Issue Facade 完整檢查清單（40+ 項）
+  - Quality Facade 完整檢查清單（50+ 項）
+  - 測試與驗證檢查清單
+  - 成果統計與經驗總結模板
+
+- **facades-quick-reference.md** ⭐⭐⭐ - Facades 增強快速參考指南
+  - 核心概念速查（拆分模式、基礎方法、Signal 狀態）
+  - 程式碼模板（子 Facade、主 Facade）
+  - 常用命令速查（建立檔案、檢查測試）
+  - 缺失方法速查表（Task, Issue, Quality, Document）
+  - 優先級排序與時間估算
+  - 實用技巧與尋求幫助
+
 ## 使用方法 (Usage)
 
 ### 快速理解系統
@@ -139,6 +173,16 @@
 4. **workspace-context-migration-plan.md** - 完整的遷移計畫與技術規範
 5. 參考已整合的頁面範例（task-board, task-todo, task-assignments）
 6. 遵循設計原則：移除 URL 參數、使用 WorkspaceContextFacade、顯示上下文指示器
+
+### Facades 與 Repositories 增強 ⭐⭐⭐ **NEW (2025-01-15)**
+
+需要增強 Facades 層和 Repositories 層的開發者：
+1. **facades-quick-reference.md** ⭐⭐⭐ - **快速參考** - 最快速了解核心概念和使用方式
+2. **facades-repositories-enhancement-plan.md** ⭐⭐⭐⭐⭐ - **完整計畫** - 了解整體規劃、優先級、時程
+3. **facades-implementation-guide.md** ⭐⭐⭐⭐ - **實施指南** - 執行具體實施的詳細步驟
+4. **facades-enhancement-checklist.md** ⭐⭐⭐⭐ - **檢查清單** - 追蹤進度、確保品質
+5. 參考 Blueprint Facade 實現：`src/app/core/facades/blueprint/`
+6. 遵循設計原則：Signal 狀態管理、錯誤處理、活動日誌、主 Facade 協調器模式
 
 ## 核心概念
 
@@ -281,14 +325,16 @@ A: 檢查是否有不必要的資料查詢，考慮實作快取機制。
 
 ## 統計資訊
 
-- **文檔數量**: 11 個工作區文檔（新增：遺漏工作項分析報告 + 中文摘要）
+- **文檔數量**: 15 個工作區文檔（新增：4 個 Facades 增強文檔）
 - **需要整合的頁面**: 86 個（4 個已完成，82 個待處理）
 - **額外識別的工作項**: 47 個（基礎設施、技術債務、服務層等）
+- **Facades 增強計畫**: 10 個 Facades（Task, Issue, Quality 等）
 - **總工作量預估**: 
   - 頁面重新設計：6 週
   - 額外工作項：20-37 週（取決於並行程度）
+  - Facades 增強：4-6 週（可並行進行）
   - 總計：20-30 週（現實估計）
-- **功能狀態**: ✅ 核心功能生產就緒，🔶 頁面整合進行中，⚠️ 基礎設施需加強
+- **功能狀態**: ✅ 核心功能生產就緒，🔶 頁面整合進行中，🔶 Facades 增強規劃中，⚠️ 基礎設施需加強
 
-**最後更新**: 2025-01-21  
+**最後更新**: 2025-01-15  
 **維護者**: 前端團隊
