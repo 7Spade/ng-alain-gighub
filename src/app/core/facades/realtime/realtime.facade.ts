@@ -1,8 +1,8 @@
 import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
+import { ErrorStateService } from '@core';
 import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 import { SubscriptionConfig, SubscriptionInfo } from '../../infra/types/common';
-import { ErrorStateService } from '@core';
 import { SupabaseService } from '../../supabase/supabase.service';
 
 /**

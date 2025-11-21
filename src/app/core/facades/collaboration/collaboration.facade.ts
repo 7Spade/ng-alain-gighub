@@ -1,15 +1,16 @@
 import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { ErrorStateService } from '@core';
 import { CollaborationService, NotificationService } from '@shared';
 import type {
   CollaborationInvitation,
   OrganizationCollaboration,
   OrganizationCollaborationInsert,
-  OrganizationCollaborationUpdate
+  OrganizationCollaborationUpdate,
+  Notification,
+  NotificationInsert
 } from '@shared/models';
-import type { Notification, NotificationInsert } from '@shared/models';
 
 import { RealtimeFacade } from '../realtime/realtime.facade';
-import { ErrorStateService } from '@core';
 
 // Type aliases for backward compatibility
 type CollaborationInsert = OrganizationCollaborationInsert;

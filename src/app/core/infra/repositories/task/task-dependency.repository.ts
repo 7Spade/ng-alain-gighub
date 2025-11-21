@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { BaseRepository, QueryOptions } from '../base.repository';
 import { Database } from '../../types/common';
 import { TaskDependencyType } from '../../types/task';
+import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
  * TaskDependency 实体类型（camelCase）

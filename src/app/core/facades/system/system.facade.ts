@@ -1,4 +1,5 @@
 import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
+import { ErrorStateService } from '@core';
 import {
   SettingInsert,
   SettingUpdate,
@@ -10,8 +11,6 @@ import {
 } from '@shared';
 import { FeatureFlagService } from '@shared/services/system/feature-flag.service';
 import { SettingService } from '@shared/services/system/setting.service';
-
-import { ErrorStateService } from '@core';
 
 /**
  * A/B Test Result
