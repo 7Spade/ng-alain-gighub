@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Database } from '../../types/common';
 import { BaseRepository, QueryOptions } from '../base.repository';
@@ -80,5 +81,42 @@ export class InspectionRepository extends BaseRepository<Inspection, InspectionI
       orderBy: 'inspected_at',
       orderDirection: 'desc'
     });
+  }
+
+  /**
+   * 搜索驗收記錄（支持模糊查詢）
+   * 
+   * @param query 搜索關鍵詞 - 用於搜索驗收項目和備註
+   * @param options 查詢選項 - 包含排序、分頁等配置
+   * @returns Observable<Inspection[]> - 返回匹配的驗收記錄列表
+   * @example
+   * inspectionRepository.search('水電', { page: 1, pageSize: 10 })
+   */
+  search(query: string, options?: QueryOptions): Observable<Inspection[]> {
+    if (!query || query.trim().length === 0) {
+      return of([]);
+    }
+
+    const trimmedQuery = query.trim();
+    let searchQuery = this.supabase
+      .from(this.tableName)
+      .select(options?.select || '*')
+      .or(`inspection_item.ilike.%${trimmedQuery}%,remarks.ilike.%${trimmedQuery}%`);
+
+    // 應用排序
+    if (options?.orderBy) {
+      searchQuery = searchQuery.order(options.orderBy, {
+        ascending: options.orderDirection === 'asc'
+      });
+    }
+
+    // 應用分頁
+    if (options?.page && options?.pageSize) {
+      const from = (options.page - 1) * options.pageSize;
+      const to = from + options.pageSize - 1;
+      searchQuery = searchQuery.range(from, to);
+    }
+
+    return this.executeQuery(searchQuery);
   }
 }
