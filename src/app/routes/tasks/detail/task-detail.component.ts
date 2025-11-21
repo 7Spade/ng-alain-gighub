@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WorkspaceContextFacade } from '@core';
 import { SHARED_IMPORTS, TaskDetail, TaskService, TaskStatus } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -13,20 +14,22 @@ interface ChecklistItem {
   standalone: true,
   imports: [SHARED_IMPORTS],
   template: `
-    <page-header [title]="taskDetail() ? taskDetail()!.title : '任务详情'">
+    <page-header [title]="pageTitle()">
       <ng-template #extra>
-        <button nz-button nzType="default" (click)="schedule()" [disabled]="!taskDetail()" style="margin-right: 8px;">
-          <span nz-icon nzType="schedule"></span>
-          排程
-        </button>
-        <button nz-button nzType="primary" (click)="assign()" [disabled]="!taskDetail()" style="margin-right: 8px;">
-          <span nz-icon nzType="team"></span>
-          指派
-        </button>
-        <button nz-button (click)="edit()" [disabled]="!taskDetail()" style="margin-right: 8px;">
-          <span nz-icon nzType="edit"></span>
-          编辑
-        </button>
+        @if (canEdit()) {
+          <button nz-button nzType="default" (click)="schedule()" [disabled]="!taskDetail()" style="margin-right: 8px;">
+            <span nz-icon nzType="schedule"></span>
+            排程
+          </button>
+          <button nz-button nzType="primary" (click)="assign()" [disabled]="!taskDetail()" style="margin-right: 8px;">
+            <span nz-icon nzType="team"></span>
+            指派
+          </button>
+          <button nz-button (click)="edit()" [disabled]="!taskDetail()" style="margin-right: 8px;">
+            <span nz-icon nzType="edit"></span>
+            编辑
+          </button>
+        }
         <button nz-button nzType="default" (click)="goBack()">
           <span nz-icon nzType="arrow-left"></span>
           返回
@@ -45,6 +48,25 @@ interface ChecklistItem {
       } @else if (!taskDetail()) {
         <nz-empty nzNotFoundContent="任务不存在"></nz-empty>
       } @else {
+        <!-- Context Information Card -->
+        @if (contextLabel()) {
+          <nz-card nzTitle="上下文信息" class="section-card" [nzSize]="'small'">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span nz-icon [nzType]="contextIcon()" style="font-size: 20px;"></span>
+              <div>
+                <div style="font-weight: 500;">{{ contextLabel() }}</div>
+                <div style="color: #999; font-size: 12px;">
+                  @switch (contextType()) {
+                    @case ('user') { 個人視角 }
+                    @case ('organization') { 組織視角 }
+                    @case ('team') { 團隊視角 }
+                  }
+                </div>
+              </div>
+            </div>
+          </nz-card>
+        }
+
         <!-- 任务 Metadata -->
         <nz-card nzTitle="任務 Metadata" class="section-card">
           <nz-descriptions nzBordered [nzColumn]="{ xxl: 3, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }">
@@ -262,12 +284,33 @@ interface ChecklistItem {
 })
 export class TaskDetailComponent implements OnInit {
   readonly taskService = inject(TaskService);
+  readonly workspaceContext = inject(WorkspaceContextFacade);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly message = inject(NzMessageService);
 
   readonly taskDetail = signal<TaskDetail | null>(null);
   readonly taskId = signal<string>('');
+
+  // Workspace context computed signals
+  readonly contextType = this.workspaceContext.contextType;
+  readonly contextId = this.workspaceContext.contextId;
+  readonly contextLabel = this.workspaceContext.contextLabel;
+  readonly contextIcon = this.workspaceContext.contextIcon;
+
+  // Page title with task name and context
+  readonly pageTitle = computed(() => {
+    const task = this.taskDetail();
+    const label = this.contextLabel();
+    const taskName = task?.title || '任务详情';
+    return label ? `${label} - ${taskName}` : taskName;
+  });
+
+  // Check if user can edit (Org/Team context)
+  readonly canEdit = computed(() => {
+    const contextType = this.contextType();
+    return contextType === 'organization' || contextType === 'team';
+  });
 
   // 计算 Checklist（基于任务状态和子任务状态）
   readonly checklist = computed<ChecklistItem[]>(() => {

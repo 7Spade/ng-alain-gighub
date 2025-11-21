@@ -4,7 +4,7 @@
 
 **最後更新**：2025-01-21  
 **總頁面數**：86 個  
-**已完成**：7 個（8.1%）  
+**已完成**：8 個（9.3%）  
 **完整文檔**：[workspace-context-migration-plan.md](./workspace-context-migration-plan.md)
 
 ---
@@ -32,7 +32,7 @@
 | 4 | `/tasks/tree` | task-tree.component | User/Org/Team | ✅ 已整合 |
 | 5 | `/tasks/todo` | task-todo.component | User/Org/Team | ✅ 已整合 |
 | 6 | `/tasks/assignments` | task-assignments.component | User/Org/Team | ✅ 已整合 |
-| 7 | `/tasks/detail` | task-detail.component | User/Org/Team | 🔴 待處理 |
+| 7 | `/tasks/detail` | task-detail.component | User/Org/Team | ✅ 已整合 |
 | 8 | `/tasks/form` | task-form.component | Org/Team | 🔴 待處理 |
 | 9 | `/tasks/daily-reports` | daily-reports.component | Org/Team | 🔴 待處理 |
 | 10 | `/tasks/photos` | task-photos.component | Org/Team | 🔴 待處理 |
@@ -187,7 +187,7 @@
 
 | 模組 | P0 | P1 | P2 | 總計 | 已完成 | 完成率 |
 |------|----|----|-------|------|--------|--------|
-| 任務管理 | 12 | 0 | 0 | 12 | 6 | 50% |
+| 任務管理 | 12 | 0 | 0 | 12 | 7 | 58% |
 | 藍圖管理 | 11 | 0 | 0 | 11 | 0 | 0% |
 | 問題追蹤 | 8 | 0 | 0 | 8 | 0 | 0% |
 | 文檔管理 | 4 | 0 | 4 | 8 | 0 | 0% |
@@ -198,7 +198,7 @@
 | 協作管理 | 0 | 0 | 4 | 4 | 0 | 0% |
 | 系統設置 | 0 | 0 | 3 | 3 | 0 | 0% |
 | 機器人管理 | 0 | 0 | 3 | 3 | 0 | 0% |
-| **總計** | **35** | **28** | **22** | **86** | **7** | **8.1%** |
+| **總計** | **35** | **28** | **22** | **86** | **8** | **9.3%** |
 
 ---
 
