@@ -31,6 +31,7 @@
     "lint": "npm run lint:ts && npm run lint:style",
     "lint:ts": "npx eslint --cache --fix",
     "lint:style": "npx stylelint 'src/**/*.less'",
+    "lint:docs": "node scripts/validate-docs.js --all",
     "e2e": "ng e2e",
     "test": "ng test --watch",
     "test-coverage": "ng test --code-coverage --watch=false",
@@ -39,7 +40,9 @@
     "icon": "ng g ng-alain:plugin icon",
     "prepare": "husky install",
     "dev:check": "./scripts/dev-tools/quick-check.sh",
-    "dev:check-full": "yarn lint && yarn build"
+    "dev:check-full": "yarn lint && yarn build",
+    "docs:validate": "node scripts/validate-docs.js",
+    "docs:validate-all": "node scripts/validate-docs.js --all"
   },
   "dependencies": {
     "@angular/animations": "^20.3.0",

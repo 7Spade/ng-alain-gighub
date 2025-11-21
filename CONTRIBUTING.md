@@ -6,6 +6,7 @@ today! As a contributor, here are the guidelines we would like you to follow:
  - [Issues and Bugs](#issue)
  - [Feature Requests](#feature)
  - [Submission Guidelines](#submit)
+ - [Documentation Contributions](#documentation)
  - [Maintainer Responsibilities](#maintainers)
  - [Coding Rules](#rules)
  - [Commit Message Guidelines](#commit)
@@ -118,6 +119,37 @@ from the main (upstream) repository:
   ```shell
   git pull --ff upstream master
   ```
+
+## <a name="documentation"></a> Documentation Contributions
+
+Documentation is critical for project success. We have specific standards for documentation quality.
+
+### Documentation Standards
+
+All Markdown documentation must follow our [Markdown Documentation Standards](.github/agents/markdown-documentation-standards.md).
+
+**Quick Reference**:
+- ✅ Use kebab-case for file naming (e.g., `getting-started.md`)
+- ✅ One H1 heading per file, sequential heading levels
+- ✅ Include "Purpose" and "Audience" sections in guides/specs/reference docs
+- ✅ Add language tags to all code blocks
+- ✅ Use `-` for unordered lists
+
+### Validate Your Documentation
+
+Before submitting documentation changes:
+
+```bash
+# Validate specific file
+yarn docs:validate docs/your-file.md
+
+# Validate all documentation
+yarn docs:validate-all
+```
+
+### Complete Documentation Guide
+
+For detailed guidelines, see [DOCUMENTATION.md](DOCUMENTATION.md).
 
 ## <a name="maintainers"></a> Maintainer Responsibilities
 

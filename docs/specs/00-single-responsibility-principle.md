@@ -1,5 +1,15 @@
 # SRP (Single Responsibility Principle) 規範
 
+> **目的**: 本文檔定義單一職責原則（SRP）在 ng-alain-gighub 專案中的應用，以及企業級架構的十大核心原則，確保程式碼可維護性、可測試性和可擴展性。
+
+## 目標讀者 (Audience)
+
+- 前端開發者
+- 後端開發者
+- 技術主管
+- 架構師
+- AI Agents
+
 ## 核心原則
 
 **Component**：只處理 UI → 單一職責
