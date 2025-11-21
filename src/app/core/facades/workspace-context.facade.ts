@@ -155,14 +155,17 @@ export class WorkspaceContextFacade {
       const dataLoading = this.loadingOrganizations() || this.loadingTeams();
       const token = this.tokenService.get();
       const hasToken = !!token?.['user']?.['id'];
+      const userAccountId = this.currentUserAccountId(); // 新增：确保用户账户 ID 已加载
 
       // 如果已经恢复过上下文，不再重复恢复
       if (this.hasRestoredContext) {
         return;
       }
 
-      // 条件：菜单已初始化 && 数据加载完成 && 用户已登录
-      if (menuInitialized && !dataLoading && hasToken) {
+      // 条件：菜单已初始化 && 数据加载完成 && 用户已登录 && 用户账户 ID 已加载
+      // 修复：添加 userAccountId 检查，确保在用户账户数据加载完成后才恢复上下文
+      // 这样可以避免在 restoreContext() 中因为 currentUserAccountId() 返回 null 而无法切换到用户上下文
+      if (menuInitialized && !dataLoading && hasToken && userAccountId) {
         // 延迟恢复，确保所有状态都已准备好
         setTimeout(() => {
           if (!this.hasRestoredContext) {

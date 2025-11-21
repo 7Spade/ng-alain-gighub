@@ -63,17 +63,24 @@ export class WorkspaceContextService {
   // Computed signals
   /**
    * 合并所有组织（创建+加入，去重）
+   *
+   * 优化说明：
+   * - 使用 Set 进行快速去重，避免使用 Map.has() 的重复检查
+   * - 如果没有交集，直接返回数组，避免不必要的去重操作
    */
   readonly allOrganizations = computed(() => {
-    const all = [...this.createdOrganizations(), ...this.joinedOrganizations()];
-    // 根据 ID 去重
-    const uniqueMap = new Map<string, Account>();
-    all.forEach(org => {
-      if (!uniqueMap.has(org.id)) {
-        uniqueMap.set(org.id, org);
-      }
-    });
-    return Array.from(uniqueMap.values());
+    const created = this.createdOrganizations();
+    const joined = this.joinedOrganizations();
+
+    // 如果任一列表为空，直接返回另一列表
+    if (created.length === 0) return joined;
+    if (joined.length === 0) return created;
+
+    // 使用 Set 快速去重：将 created 的 ID 存入 Set，然后过滤 joined
+    const createdIds = new Set(created.map(org => org.id));
+    const uniqueJoined = joined.filter(org => !createdIds.has(org.id));
+
+    return [...created, ...uniqueJoined];
   });
 
   /**
@@ -91,9 +98,8 @@ export class WorkspaceContextService {
 
     // 按组织分组团队
     teams.forEach(team => {
-      // BaseRepository 会将 snake_case 转换为 camelCase，所以应该是 organizationId
-      // 但为了兼容性，同时检查两种格式
-      const orgId = (team as any).organizationId || (team as any).organization_id;
+      // BaseRepository 会将 snake_case 转换为 camelCase
+      const orgId = (team as any).organizationId;
       if (orgId && teamsMap.has(orgId)) {
         teamsMap.get(orgId)!.push(team);
       } else if (orgId) {
@@ -194,31 +200,23 @@ export class WorkspaceContextService {
         if (id) {
           const account = this.findUserAccount(id);
           if (account) {
-            return (account as any).avatarUrl || (account as any).avatar_url || null;
+            return this.getAvatarUrl(account);
           }
         }
         // 如果没有找到，返回当前用户账户的头像
-        const currentAccount = this.currentUserAccount();
-        if (currentAccount) {
-          return (currentAccount as any).avatarUrl || (currentAccount as any).avatar_url || null;
-        }
-        return null;
+        return this.getAvatarUrl(this.currentUserAccount());
       }
       case 'organization': {
         if (id) {
           const account = this.allOrganizations().find(a => a.id === id);
-          if (account) {
-            return (account as any).avatarUrl || (account as any).avatar_url || null;
-          }
+          return this.getAvatarUrl(account);
         }
         return null;
       }
       case 'team': {
         if (id) {
           const team = this.userTeams().find(t => t.id === id);
-          if (team) {
-            return (team as any).avatarUrl || (team as any).avatar_url || null;
-          }
+          return this.getAvatarUrl(team);
         }
         return null;
       }
@@ -267,6 +265,17 @@ export class WorkspaceContextService {
       return currentAccount;
     }
     return this.accountService.userAccounts().find(a => a.id === userId) || null;
+  }
+
+  /**
+   * 提取头像 URL（兼容 camelCase 和 snake_case）
+   *
+   * @param obj 包含头像 URL 的对象
+   * @returns 头像 URL，如果不存在则返回 null
+   */
+  private getAvatarUrl(obj: any): string | null {
+    if (!obj) return null;
+    return obj.avatarUrl || obj.avatar_url || null;
   }
 
   /**

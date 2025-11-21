@@ -158,7 +158,7 @@ export class WorkspaceDataService {
         console.log('[WorkspaceDataService] Loaded teams:', teams);
         console.log(
           '[WorkspaceDataService] Teams organization IDs:',
-          teams.map(t => (t as any).organization_id || (t as any).organizationId)
+          teams.map(t => (t as any).organizationId)
         );
         console.log(
           '[WorkspaceDataService] All organizations:',
@@ -213,7 +213,7 @@ export class WorkspaceDataService {
           // 注意：团队本身不创建蓝图，蓝图属于组织
           const team = this.userTeamsState().find(t => t.id === contextId);
           if (team) {
-            const orgId = (team as any).organizationId || (team as any).organization_id;
+            const orgId = (team as any).organizationId;
             if (orgId) {
               blueprints = await this.blueprintService.loadBlueprintsByOwnerId(orgId);
             }
