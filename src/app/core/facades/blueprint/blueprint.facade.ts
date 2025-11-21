@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
-import { type Blueprint, type BlueprintInsert, type BlueprintUpdate } from '@core';
+import { type Blueprint, type BlueprintInsert, type BlueprintUpdate, BlueprintStatus } from '@core';
 import { BlueprintAggregationRefreshService } from '@shared';
 
 import { BlueprintActivityFacade } from './blueprint-activity.facade';
@@ -182,7 +182,7 @@ export class BlueprintFacade implements OnDestroy {
    * @param status Blueprint status
    * @returns Promise<Blueprint[]>
    */
-  async loadBlueprintsByStatus(status: any): Promise<Blueprint[]> {
+  async loadBlueprintsByStatus(status: BlueprintStatus): Promise<Blueprint[]> {
     return this.crud.loadBlueprintsByStatus(status);
   }
 
@@ -347,7 +347,7 @@ export class BlueprintFacade implements OnDestroy {
     const refreshService = this.aggregationRefreshService;
 
     // Listen for refresh events
-    refreshService.listen().subscribe((event: any) => {
+    refreshService.listen().subscribe(event => {
       console.log('[BlueprintFacade] Aggregation refresh triggered:', event);
 
       // Only refresh if the event is for the current blueprint
