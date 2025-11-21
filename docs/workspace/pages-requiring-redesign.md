@@ -2,8 +2,9 @@
 
 > 📋 **目的**：快速查詢所有需要適應 Workspace Context Manager 的頁面
 
-**最後更新**：2025-01-20  
+**最後更新**：2025-01-21  
 **總頁面數**：86 個  
+**已完成**：7 個（8.1%）  
 **完整文檔**：[workspace-context-migration-plan.md](./workspace-context-migration-plan.md)
 
 ---
@@ -28,7 +29,7 @@
 | 1 | `/tasks/list` | task-list.component | User/Org/Team | ✅ 已整合 |
 | 2 | `/tasks/calendar` | task-calendar.component | User/Org/Team | ✅ 已整合 |
 | 3 | `/tasks/board` | task-board.component | User/Org/Team | ✅ 已整合 |
-| 4 | `/tasks/tree` | task-tree.component | User/Org/Team | 🔴 待處理 |
+| 4 | `/tasks/tree` | task-tree.component | User/Org/Team | ✅ 已整合 |
 | 5 | `/tasks/todo` | task-todo.component | User/Org/Team | ✅ 已整合 |
 | 6 | `/tasks/assignments` | task-assignments.component | User/Org/Team | ✅ 已整合 |
 | 7 | `/tasks/detail` | task-detail.component | User/Org/Team | 🔴 待處理 |
@@ -186,7 +187,7 @@
 
 | 模組 | P0 | P1 | P2 | 總計 | 已完成 | 完成率 |
 |------|----|----|-------|------|--------|--------|
-| 任務管理 | 12 | 0 | 0 | 12 | 5 | 42% |
+| 任務管理 | 12 | 0 | 0 | 12 | 6 | 50% |
 | 藍圖管理 | 11 | 0 | 0 | 11 | 0 | 0% |
 | 問題追蹤 | 8 | 0 | 0 | 8 | 0 | 0% |
 | 文檔管理 | 4 | 0 | 4 | 8 | 0 | 0% |
@@ -197,7 +198,7 @@
 | 協作管理 | 0 | 0 | 4 | 4 | 0 | 0% |
 | 系統設置 | 0 | 0 | 3 | 3 | 0 | 0% |
 | 機器人管理 | 0 | 0 | 3 | 3 | 0 | 0% |
-| **總計** | **35** | **28** | **22** | **86** | **6** | **7.0%** |
+| **總計** | **35** | **28** | **22** | **86** | **7** | **8.1%** |
 
 ---
 

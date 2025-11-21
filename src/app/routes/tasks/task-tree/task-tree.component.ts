@@ -1,6 +1,7 @@
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { WorkspaceContextFacade } from '@core';
 import { BlueprintService, SHARED_IMPORTS, TaskTreeNode } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
@@ -41,6 +42,7 @@ interface NzTreeNodeOptions {
  * - Phase 3.3: Realtime subscriptions
  * - Phase 5.1: Conflict resolution
  * - Phase 5.2: Connection status indicator
+ * - ✨ Workspace Context Integration (2025-01-21)
  *
  * Features:
  * - Signal-based reactive tree structure
@@ -49,11 +51,14 @@ interface NzTreeNodeOptions {
  * - Automatic audit logging via TaskTreeFacade
  * - Drag-drop with circular dependency prevention
  * - Realtime updates via Supabase
+ * - Workspace context-aware filtering
+ * - Auto-load tasks when context changes
  *
  * Implements Phases 2-3 from EXECUTION-PLAN-TaskTreeUI-Phases-2-8.md
  *
  * @example
- * Route: /tasks/tree
+ * Route: /tasks/tree (no query params needed)
+ * Automatically filters by current workspace context (User/Org/Team)
  */
 @Component({
   selector: 'app-task-tree',
@@ -67,13 +72,31 @@ interface NzTreeNodeOptions {
 export class TaskTreeComponent implements OnInit, OnDestroy {
   readonly facade = inject(TaskTreeFacade);
   readonly router = inject(Router);
-  readonly route = inject(ActivatedRoute);
+  readonly workspaceContext = inject(WorkspaceContextFacade);
   readonly blueprintService = inject(BlueprintService);
   private readonly message = inject(NzMessageService);
   private readonly dragService = inject(TaskTreeDragService);
 
   // Blueprint selection
   readonly selectedBlueprintId = signal<string | null>(null);
+
+  // Workspace context computed signals
+  readonly contextType = this.workspaceContext.contextType;
+  readonly contextId = this.workspaceContext.contextId;
+  readonly contextLabel = this.workspaceContext.contextLabel;
+  readonly currentBlueprintIds = this.workspaceContext.currentBlueprintIds;
+
+  // Page title with context
+  readonly pageTitle = computed(() => {
+    const label = this.contextLabel();
+    return label ? `${label} - 任務樹狀視圖` : '任務樹狀視圖';
+  });
+
+  // Check if user can create tasks (Org/Team context)
+  readonly canCreate = computed(() => {
+    const contextType = this.contextType();
+    return contextType === 'organization' || contextType === 'team';
+  });
 
   // Facade signals (exposed for template)
   readonly taskTree = this.facade.taskTree;
@@ -103,16 +126,32 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
     return this.convertToNzTreeData(this.taskTree());
   });
 
-  ngOnInit(): void {
-    // Load blueprints first, then check for blueprint ID from route
-    this.loadBlueprints().then(() => {
-      // 从查询参数中获取蓝图ID
-      const blueprintId = this.route.snapshot.queryParamMap.get('blueprintId');
-      if (blueprintId) {
-        this.selectedBlueprintId.set(blueprintId);
-        this.loadTasks(blueprintId);
+  constructor() {
+    // Auto-load tasks when context changes
+    effect(() => {
+      const blueprintIds = this.currentBlueprintIds();
+      const contextType = this.contextType();
+
+      // Only auto-load if we have a valid context with blueprints
+      if (contextType !== 'app' && blueprintIds.length > 0) {
+        const firstBlueprintId = blueprintIds[0];
+        
+        // If no blueprint is selected or selected blueprint not in current context, select first one
+        if (!this.selectedBlueprintId() || !blueprintIds.includes(this.selectedBlueprintId()!)) {
+          this.selectedBlueprintId.set(firstBlueprintId);
+          this.loadTasks(firstBlueprintId).catch(error => {
+            console.error('[TaskTreeComponent] Auto-load tasks failed:', error);
+          });
+        }
+      } else {
+        // Clear selection if no blueprints available
+        this.selectedBlueprintId.set(null);
       }
     });
+  }
+
+  ngOnInit(): void {
+    // Context-based initialization is now handled by effect in constructor
   }
 
   ngOnDestroy(): void {
@@ -327,17 +366,5 @@ export class TaskTreeComponent implements OnInit, OnDestroy {
       origin: node, // Store original node data
       children: node.children ? node.children.map(child => this.taskNodeToTreeNode(child)) : []
     };
-  }
-
-  /**
-   * Load blueprints list
-   */
-  async loadBlueprints(): Promise<void> {
-    try {
-      await this.blueprintService.loadBlueprints();
-    } catch (error) {
-      this.message.error('載入藍圖列表失敗');
-      console.error('Failed to load blueprints:', error);
-    }
   }
 }
