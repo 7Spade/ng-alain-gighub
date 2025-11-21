@@ -13,6 +13,42 @@ version: "2.0.0"
 
 ## ⚠️ 強制執行程序（每次任務開始前）
 
+### 🔴 第 0 步：必須使用 MCP 工具（最高優先級）⭐⭐⭐⭐⭐
+
+**⚠️ 絕對強制：任何任務都必須先使用以下工具，不得跳過**
+
+#### A. Sequential Thinking Tool（必須第一步使用）
+**工具名稱**：`sequential-thinking`  
+**何時使用**：**每次任務開始前的第一步**
+
+```
+✓ 使用 Sequential Thinking 分析任務
+✓ 理解問題本質和目標
+✓ 查閱記憶庫相關實體
+✓ 分析架構影響
+✓ 識別技術挑戰和風險
+✓ 驗證可行性
+✓ 記錄關鍵決策
+```
+
+#### B. Software Planning Tool（必須第二步使用）
+**工具名稱**：`software-planning-tool`  
+**何時使用**：**完成 Sequential Thinking 後立即使用**
+
+```
+✓ 創建規劃會話（start_planning）
+✓ 將分析結果轉化為執行計畫
+✓ 按五層架構順序創建 todos
+✓ 設定複雜度和時間估算
+✓ 添加代碼範例和參考
+✓ 保存完整計畫（save_plan）
+✓ 執行過程中更新狀態（update_todo_status）
+```
+
+**詳細工具使用指南**：[mcp-tools-workflow-guide.md](./mcp-tools-workflow-guide.md) ⭐⭐⭐⭐⭐
+
+---
+
 ### 🔴 第 1 步：查閱專案記憶庫（必須）✅
 **位置**：[.github/copilot/memory.jsonl](../copilot/memory.jsonl)  
 **詳細指南**：[memory-usage-guide.md](./memory-usage-guide.md)

@@ -97,24 +97,199 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 
 ---
 
-### 🎯 第 4 步：確認任務範圍與目標
+### 🎯 第 4 步：使用 Sequential Thinking 分析任務（必須）⭐⭐⭐⭐⭐
+
+**工具**：`sequential-thinking` MCP Tool
+
+**使用時機**：**每次任務開始前必須使用**
 
 ```
-✓ 明確任務目標
-✓ 確認成功標準
-✓ 識別約束條件
-✓ 確定交付物
+✓ 啟動 Sequential Thinking Tool
+✓ 分析問題背景與目標
+✓ 拆解任務步驟與依賴關係
+✓ 識別潛在風險與挑戰
+✓ 驗證解決方案可行性
+✓ 記錄思考過程與決策理由
 ```
 
-**關鍵問題**：
-1. 要解決什麼問題？
-2. 預期產出是什麼？
-3. 有哪些限制？（時間、技術、資源）
-4. 如何驗證成功？
+**Sequential Thinking 使用範例**：
+```typescript
+// Thought 1/5: 理解問題本質
+// 任務：實作用戶登入功能
+// 核心問題：需要整合 Supabase Auth + @delon/auth TokenService
+// 涉及模組：身份認證層、權限控制層
+
+// Thought 2/5: 檢查記憶庫
+// 查詢關鍵實體：
+// - "Supabase Auth Integration" 
+// - "Delon Auth Token Management"
+// - "Authentication Flow"
+
+// Thought 3/5: 分析架構影響
+// 需要修改的層級：
+// 1. Types 層：定義 AuthUser 類型
+// 2. Services 層：AuthService 整合 Supabase
+// 3. Facades 層：AuthFacade 提供 UI 介面
+// 4. Components 層：LoginComponent
+
+// Thought 4/5: 識別風險
+// - Supabase session 刷新機制
+// - Token 過期處理
+// - RLS 策略是否正確配置
+// - 路由守衛設定
+
+// Thought 5/5: 驗證可行性
+// ✅ 符合五層架構開發順序
+// ✅ 符合 SRP 原則
+// ✅ 有完整的錯誤處理
+// ✅ 測試覆蓋率可達標
+```
+
+**必須回答的問題**：
+1. ❓ 任務的核心問題是什麼？
+2. ❓ 需要查閱記憶庫中的哪些實體？
+3. ❓ 涉及系統架構的哪些模組？
+4. ❓ 需要遵循哪些開發原則？
+5. ❓ 有哪些潛在風險？
+6. ❓ 如何驗證解決方案？
 
 ---
 
-### 🏗️ 第 5 步：規劃執行順序（遵循五層架構）
+### 📋 第 5 步：使用 Software Planning Tool 制定計畫（必須）⭐⭐⭐⭐⭐
+
+**工具**：`software-planning-tool` MCP Tool
+
+**使用時機**：**完成 Sequential Thinking 後立即使用**
+
+```
+✓ 啟動 Software Planning Tool
+✓ 創建新的規劃會話（start_planning）
+✓ 將 Sequential Thinking 的輸出轉化為具體計畫
+✓ 分解任務為可執行的子任務（add_todo）
+✓ 設定每個子任務的複雜度（0-10）
+✓ 添加代碼範例和參考文檔
+✓ 保存完整計畫（save_plan）
+```
+
+**Software Planning Tool 使用範例**：
+```yaml
+# start_planning
+goal: "實作用戶登入功能，整合 Supabase Auth 和 @delon/auth"
+
+# add_todo 範例
+todos:
+  - title: "第1步：Types 層 - 定義認證類型"
+    description: |
+      創建 auth.types.ts 定義：
+      - AuthUser 介面
+      - LoginCredentials 介面
+      - AuthSession 介面
+      參考：docs/22-完整SQL表結構定義.md
+    complexity: 2
+    codeExample: |
+      export interface AuthUser {
+        id: string;
+        email: string;
+        // ...
+      }
+  
+  - title: "第2步：Services 層 - AuthService"
+    description: |
+      創建 auth.service.ts：
+      - signIn() 整合 Supabase
+      - signOut() 清除 session
+      - refreshToken() 自動刷新
+      - syncWithDelonAuth() 同步 TokenService
+    complexity: 7
+    codeExample: |
+      @Injectable({ providedIn: 'root' })
+      export class AuthService {
+        private supabase = inject(SupabaseService);
+        // ...
+      }
+  
+  - title: "第3步：Facades 層 - AuthFacade"
+    description: |
+      創建 auth.facade.ts：
+      - 使用 Signals 管理狀態
+      - 提供 UI 友善的錯誤訊息
+      - 處理 loading 狀態
+    complexity: 5
+  
+  - title: "第4步：Components 層 - LoginComponent"
+    description: |
+      創建登入組件：
+      - 使用 NG-ZORRO 表單元件
+      - OnPush 策略
+      - Signals API
+      - 表單驗證
+    complexity: 6
+  
+  - title: "第5步：測試與文檔"
+    description: |
+      - AuthService 單元測試（覆蓋率 ≥80%）
+      - AuthFacade 單元測試（覆蓋率 ≥80%）
+      - E2E 測試（登入流程）
+      - 更新認證流程文檔
+    complexity: 8
+
+# save_plan
+plan: |
+  ## 用戶登入功能實作計畫
+  
+  ### 總時間估算：28 小時
+  - Types 層：2h
+  - Services 層：8h
+  - Facades 層：6h
+  - Components 層：6h
+  - 測試與文檔：6h
+  
+  ### 風險評估
+  1. Supabase session 刷新機制需額外測試
+  2. RLS 策略需要仔細檢查
+  3. 多標籤頁 session 同步問題
+  
+  ### 驗證標準
+  - ✅ 所有測試通過
+  - ✅ 測試覆蓋率 ≥80%
+  - ✅ ESLint 無錯誤
+  - ✅ TypeScript 編譯通過
+  - ✅ 生產構建成功
+```
+
+**規劃必須包含**：
+- ✅ 明確的任務目標
+- ✅ 按五層架構順序的子任務
+- ✅ 每個子任務的複雜度評分（0-10）
+- ✅ 具體的代碼範例或參考
+- ✅ 時間估算
+- ✅ 風險評估
+- ✅ 驗證標準
+
+---
+
+### 🎯 第 6 步：確認任務範圍與目標
+
+**基於 Sequential Thinking 和 Software Planning 的輸出**：
+
+```
+✓ 任務目標已明確（來自 Sequential Thinking）
+✓ 執行計畫已制定（來自 Software Planning）
+✓ 風險已識別並有應對策略
+✓ 成功標準已定義
+✓ 時間估算已完成
+```
+
+**檢查清單**：
+- [ ] 是否已完成 Sequential Thinking 分析？
+- [ ] 是否已使用 Software Planning Tool 創建計畫？
+- [ ] 計畫是否包含所有必要的子任務？
+- [ ] 每個子任務是否有明確的驗證標準？
+- [ ] 是否識別了所有潛在風險？
+
+---
+
+### 🏗️ 第 7 步：執行開發（遵循五層架構）
 
 **⭐ 重要：新功能開發必須遵循五層架構開發順序**
 
@@ -139,12 +314,14 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("關鍵字"))'
 
 **檢查清單**：
 ```
+✓ 已使用 Sequential Thinking Tool 分析任務
+✓ 已使用 Software Planning Tool 創建計畫
 ✓ 已閱讀開發順序指南（development-sequence-guide.md）
-✓ 確認需要哪些層級
-✓ 確認依賴關係
-✓ 確認開發順序
+✓ 確認需要哪些層級（參考 Software Planning 輸出）
+✓ 確認依賴關係（參考 Sequential Thinking 輸出）
+✓ 確認開發順序（按照 Software Planning 中的 todos）
 ✓ 理解每個層級的完成標準
-✓ 預估每個步驟的時間
+✓ 預估每個步驟的時間（已在 Software Planning 中完成）
 ```
 
 **從記憶庫查詢開發順序**：
@@ -159,6 +336,26 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Developmen
 ---
 
 ## 📋 執行中檢查
+
+### 🔄 工具使用確認（每個階段必須）
+
+**階段 1：開始前**
+- [ ] 是否使用 Sequential Thinking Tool 分析任務？
+- [ ] 是否使用 Software Planning Tool 創建計畫？
+- [ ] Sequential Thinking 輸出是否包含：問題分析、架構影響、風險識別、可行性驗證？
+- [ ] Software Planning 輸出是否包含：目標、子任務、複雜度、時間估算、風險評估？
+
+**階段 2：執行中**
+- [ ] 是否按照 Software Planning 的 todos 順序執行？
+- [ ] 遇到新問題時，是否再次使用 Sequential Thinking 分析？
+- [ ] 計畫變更時，是否更新 Software Planning Tool（update_todo_status）？
+
+**階段 3：完成前**
+- [ ] 是否記錄了關鍵決策和思考過程？
+- [ ] 是否使用 Software Planning Tool 標記完成的任務（update_todo_status）？
+- [ ] 是否檢視所有 todos 都已完成（get_todos）？
+
+---
 
 ### 開發原則檢查
 
@@ -227,6 +424,14 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Developmen
 - [ ] Commit 訊息符合規範（`<type>(<scope>): <subject>`）
 - [ ] PR 描述清晰完整
 
+### 🔧 工具使用完成度驗證
+
+- [ ] **Sequential Thinking Tool**：是否在任務開始前使用？
+- [ ] **Software Planning Tool**：是否創建了完整的執行計畫？
+- [ ] **工具輸出質量**：思考過程是否清晰？計畫是否可執行？
+- [ ] **工具記錄留存**：是否保存了工具使用的輸出（用於未來參考）？
+- [ ] **持續更新**：執行過程中是否持續使用工具追蹤進度？
+
 ---
 
 ## 🚫 禁止事項（必須避免）
@@ -245,6 +450,7 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Developmen
 ❌ **禁止 Agent 自動修改 infrastructure 配置**
 ❌ **禁止 Agent 自動修改 migrations 腳本**
 ❌ **禁止 Agent 自動修改 production 配置**
+❌ **禁止跳過 Sequential Thinking Tool 和 Software Planning Tool 使用** ⭐⭐⭐⭐⭐
 
 ---
 
@@ -256,11 +462,12 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Developmen
 |------|------------|------|
 | 記憶庫查閱 | __ / 10 | 是否充分利用記憶庫知識？ |
 | 架構理解 | __ / 10 | 是否理解系統架構與模組關係？ |
+| **工具使用** | __ / 10 | **是否正確使用 Sequential Thinking 和 Software Planning Tool？** ⭐ |
 | 標準遵循 | __ / 10 | 是否遵循企業標準與最佳實踐？ |
 | 代碼質量 | __ / 10 | 是否通過所有檢查？ |
 | 測試覆蓋 | __ / 10 | 是否達到測試覆蓋率要求？ |
 | 文檔完整 | __ / 10 | 是否更新相關文檔？ |
-| **總分** | __ / 60 | 目標：≥ 54 分（90%） |
+| **總分** | __ / 70 | 目標：≥ 63 分（90%） |
 
 ### 改進建議
 
@@ -271,6 +478,71 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Developmen
 2. 
 3. 
 ```
+
+---
+
+## 🔧 MCP 工具快速參考
+
+### Sequential Thinking Tool
+**工具名稱**：`sequential-thinking`
+**何時使用**：任務開始前、遇到複雜問題、需要決策時
+
+**基本流程**：
+```typescript
+sequentialthinking({
+  thought: "理解問題：這個任務的核心目標是什麼？",
+  thoughtNumber: 1,
+  totalThoughts: 5,
+  nextThoughtNeeded: true
+})
+
+// 繼續思考...直到 nextThoughtNeeded: false
+```
+
+### Software Planning Tool
+**工具名稱**：`software-planning-tool`
+**何時使用**：完成 Sequential Thinking 後，需要制定執行計畫時
+
+**基本流程**：
+```typescript
+// 1. 開始規劃
+start_planning({ goal: "任務描述" })
+
+// 2. 添加子任務
+add_todo({
+  title: "第1步：Types 層",
+  description: "詳細說明",
+  complexity: 3,
+  codeExample: "範例代碼"
+})
+
+// 3. 更新狀態（執行過程中）
+update_todo_status({
+  todoId: "task-id",
+  isComplete: true
+})
+
+// 4. 檢視所有任務
+get_todos()
+
+// 5. 保存計畫
+save_plan({ plan: "完整計畫文本" })
+```
+
+### 工具使用最佳實踐
+
+✅ **做這些**：
+- 在任務開始前**必須**使用 Sequential Thinking 分析
+- 使用 Software Planning 創建**可追蹤**的計畫
+- 執行過程中持續更新 todo 狀態
+- 保存工具輸出用於文檔和復盤
+- 遇到新問題再次使用 Sequential Thinking
+
+❌ **避免這些**：
+- 跳過工具使用直接開始開發
+- 創建計畫後不更新狀態
+- 工具使用流於形式，不認真思考
+- 不記錄工具輸出和決策過程
 
 ---
 
@@ -296,5 +568,5 @@ cat .github/copilot/memory.jsonl | jq 'select(.name | contains("Layer Developmen
 ---
 
 **最後更新**：2025-01-15  
-**版本**：v1.0.0  
+**版本**：v2.0.0 - 增加 MCP 工具強制使用機制  
 **維護者**：開發團隊
