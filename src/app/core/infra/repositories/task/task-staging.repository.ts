@@ -47,20 +47,20 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
   }
 
   /**
-   * 根據藍圖 ID 查詢暫存記錄（透過 JOIN tasks 表）
+   * 根據藍圖 ID 查詢暫存記錄（透過關聯 tasks 表）
    *
-   * 使用 Supabase 的關聯查詢功能，透過 task_id 關聯到 tasks 表
+   * 使用 Supabase 的 select 語法包含關聯表查詢
    *
    * @param blueprintId 藍圖 ID
    * @param options 查詢選項
    * @returns Observable<TaskStaging[]>
    */
   findByBlueprintId(blueprintId: string, options?: QueryOptions): Observable<TaskStaging[]> {
-    // 使用 Supabase 的 inner join 語法
-    // 透過 task_id 關聯 tasks 表，並篩選 blueprint_id
+    // Supabase 的關聯查詢語法：在 select 中包含關聯表，然後篩選
+    // 注意：這需要在 Supabase 中定義 task_staging -> tasks 的外鍵關係
     let query = this.supabase
       .from(this.tableName as any)
-      .select(options?.select || '*')
+      .select(`*, tasks!inner(blueprint_id)`)
       .eq('tasks.blueprint_id', blueprintId) as any;
 
     // 應用額外的篩選條件
@@ -87,7 +87,14 @@ export class TaskStagingRepository extends BaseRepository<TaskStaging, TaskStagi
     return from(query as Promise<PostgrestResponse<any>>).pipe(
       map((response: PostgrestResponse<any>) => {
         const data = handleSupabaseResponse(response, `${this.constructor.name}.findByBlueprintId`);
-        return Array.isArray(data) ? data.map(item => toCamelCaseData<TaskStaging>(item)) : [toCamelCaseData<TaskStaging>(data)];
+        // 只返回 task_staging 的資料，不包含關聯的 tasks 資料
+        return Array.isArray(data)
+          ? data.map(item => {
+              // 移除關聯的 tasks 欄位，只保留 task_staging 自己的欄位
+              const { tasks, ...stagingData } = item;
+              return toCamelCaseData<TaskStaging>(stagingData);
+            })
+          : [toCamelCaseData<TaskStaging>(data)];
       })
     );
   }
