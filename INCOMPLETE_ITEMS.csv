@@ -1,0 +1,98 @@
+项目名称,类型,状态,Owner,优先级,预估工时,影响范围,相关文件/路径,关联Issue/PR,风险等级,创建日期,备注
+"[Workspace] 完成工作区系统 (133 个工作项)",GitHub Issue,Open,7Spade,HIGH,25-40周,全系统,"86页面+47基础设施+五层架构",#124,CRITICAL,2025-11-21,"包含86页面、47额外工作项、五层架构增强"
+"设置 Copilot instructions",GitHub Issue,Open,7Spade,MEDIUM,2-4小时,开发流程,.github/copilot/,#121,LOW,2025-11-21,配置GitHub Copilot指令
+"创建未完成项目清单 (本PR)",GitHub PR,Draft,Copilot,HIGH,1-2天,项目管理,多个文档文件,#144,LOW,2025-11-22,本次任务的PR
+"Issues模块 - 加载问题数据",TODO,Open,未分配,HIGH,4小时,问题管理,src/app/routes/issues/form/issue-form.component.ts,N/A,MEDIUM,N/A,表单数据加载实现
+"Issues模块 - 实现保存逻辑",TODO,Open,未分配,HIGH,4小时,问题管理,src/app/routes/issues/form/issue-form.component.ts,N/A,MEDIUM,N/A,问题保存功能
+"Issues模块 - 加载蓝图列表",TODO,Open,未分配,MEDIUM,2小时,问题管理,src/app/routes/issues/form/issue-form.component.ts,N/A,MEDIUM,N/A,下拉选择蓝图
+"Issues模块 - 加载任务列表",TODO,Open,未分配,MEDIUM,2小时,问题管理,src/app/routes/issues/form/issue-form.component.ts,N/A,MEDIUM,N/A,下拉选择任务
+"Issues模块 - 实现编辑功能",TODO,Open,未分配,HIGH,3小时,问题管理,src/app/routes/issues/detail/issue-detail.component.ts,N/A,MEDIUM,N/A,问题详情编辑
+"Issues模块 - 加载问题列表",TODO,Open,未分配,HIGH,4小时,问题管理,src/app/routes/issues/list/issue-list.component.ts,N/A,HIGH,N/A,问题列表加载
+"Issues模块 - 实现删除逻辑",TODO,Open,未分配,MEDIUM,2小时,问题管理,src/app/routes/issues/list/issue-list.component.ts,N/A,MEDIUM,N/A,删除问题功能
+"Issues模块 - 加载问题分配数据",TODO,Open,未分配,HIGH,3小时,问题管理,src/app/routes/issues/assignments/issue-assignments.component.ts,N/A,MEDIUM,N/A,分配数据加载
+"Issues模块 - 实现重新分配逻辑",TODO,Open,未分配,HIGH,4小时,问题管理,src/app/routes/issues/assignments/issue-assignments.component.ts,N/A,MEDIUM,N/A,重新分配功能
+"Documents模块 - 加载图纸数据",TODO,Open,未分配,MEDIUM,3小时,文档管理,src/app/routes/documents/drawings/drawing-viewer.component.ts,N/A,LOW,N/A,图纸查看器
+"Documents模块 - 实现添加批注逻辑",TODO,Open,未分配,MEDIUM,4小时,文档管理,src/app/routes/documents/drawings/drawing-viewer.component.ts,N/A,MEDIUM,N/A,图纸批注功能
+"Documents模块 - 初始化表单数据",TODO,Open,未分配,HIGH,2小时,文档管理,src/app/routes/documents/upload/document-upload.component.ts,N/A,MEDIUM,N/A,上传表单初始化
+"Documents模块 - 实现文件验证逻辑",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/upload/document-upload.component.ts,N/A,HIGH,N/A,文件类型/大小验证
+"Documents模块 - 实现上传逻辑",TODO,Open,未分配,HIGH,6小时,文档管理,src/app/routes/documents/upload/document-upload.component.ts,N/A,HIGH,N/A,文件上传至Supabase
+"Documents模块 - 加载蓝图列表",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/upload/document-upload.component.ts,N/A,MEDIUM,N/A,下拉选择蓝图
+"Documents模块 - 加载文档数据",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/preview/document-preview.component.ts,N/A,MEDIUM,N/A,文档预览加载
+"Documents模块 - 实现下载逻辑",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/preview/document-preview.component.ts,N/A,LOW,N/A,文档下载功能
+"Documents模块 - 加载当前文件夹内容",TODO,Open,未分配,HIGH,4小时,文档管理,src/app/routes/documents/browser/document-browser.component.ts,N/A,MEDIUM,N/A,文件浏览器
+"Documents模块 - 实现文件夹导航逻辑",TODO,Open,未分配,MEDIUM,3小时,文档管理,src/app/routes/documents/browser/document-browser.component.ts,N/A,MEDIUM,N/A,文件夹导航
+"Documents模块 - 实现创建文件夹逻辑",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/browser/document-browser.component.ts,N/A,LOW,N/A,创建文件夹
+"Documents模块 - 实现查看详情逻辑",TODO,Open,未分配,LOW,2小时,文档管理,src/app/routes/documents/browser/document-browser.component.ts,N/A,LOW,N/A,文件详情
+"Documents模块 - 实现删除逻辑",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/browser/document-browser.component.ts,N/A,MEDIUM,N/A,删除文件/文件夹
+"Documents模块 - 加载版本列表",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/versions/document-version.component.ts,N/A,MEDIUM,N/A,版本历史列表
+"Documents模块 - 实现上传新版本逻辑",TODO,Open,未分配,MEDIUM,4小时,文档管理,src/app/routes/documents/versions/document-version.component.ts,N/A,MEDIUM,N/A,上传新版本
+"Documents模块 - 实现查看版本逻辑",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/versions/document-version.component.ts,N/A,LOW,N/A,查看历史版本
+"Documents模块 - 实现下载版本逻辑",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/versions/document-version.component.ts,N/A,LOW,N/A,下载历史版本
+"Documents模块 - 实现回滚版本逻辑",TODO,Open,未分配,HIGH,4小时,文档管理,src/app/routes/documents/versions/document-version.component.ts,N/A,HIGH,N/A,版本回滚功能
+"Documents模块 - 实现对比版本逻辑",TODO,Open,未分配,MEDIUM,6小时,文档管理,src/app/routes/documents/versions/document-version.component.ts,N/A,MEDIUM,N/A,版本对比功能
+"Documents模块 - 加载文档元数据",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/metadata/document-metadata.component.ts,N/A,MEDIUM,N/A,元数据管理
+"Documents模块 - 实现保存逻辑",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/metadata/document-metadata.component.ts,N/A,MEDIUM,N/A,元数据保存
+"Documents模块 - 加载蓝图列表 (metadata)",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/metadata/document-metadata.component.ts,N/A,MEDIUM,N/A,下拉选择蓝图
+"Documents模块 - 加载文档列表",TODO,Open,未分配,HIGH,4小时,文档管理,src/app/routes/documents/list/document-list.component.ts,N/A,HIGH,N/A,文档列表加载
+"Documents模块 - 实现下载逻辑 (list)",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/list/document-list.component.ts,N/A,LOW,N/A,批量下载
+"Documents模块 - 实现删除逻辑 (list)",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/list/document-list.component.ts,N/A,MEDIUM,N/A,批量删除
+"Documents模块 - 加载权限列表",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/permissions/document-permission.component.ts,N/A,HIGH,N/A,权限管理列表
+"Documents模块 - 实现添加权限逻辑",TODO,Open,未分配,HIGH,4小时,文档管理,src/app/routes/documents/permissions/document-permission.component.ts,N/A,HIGH,N/A,添加权限
+"Documents模块 - 实现编辑权限逻辑",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/permissions/document-permission.component.ts,N/A,HIGH,N/A,编辑权限
+"Documents模块 - 实现删除权限逻辑",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/permissions/document-permission.component.ts,N/A,MEDIUM,N/A,删除权限
+"Documents模块 - 实现保存逻辑 (permissions)",TODO,Open,未分配,HIGH,3小时,文档管理,src/app/routes/documents/permissions/document-permission.component.ts,N/A,HIGH,N/A,权限保存
+"Documents模块 - 实现复制分享链接逻辑",TODO,Open,未分配,MEDIUM,2小时,文档管理,src/app/routes/documents/permissions/document-permission.component.ts,N/A,LOW,N/A,分享链接生成
+"Documents模块 - 加载用户和组织列表",TODO,Open,未分配,MEDIUM,3小时,文档管理,src/app/routes/documents/permissions/document-permission.component.ts,N/A,MEDIUM,N/A,权限对象选择
+"Blueprints模块 - 获取当前用户ID",TODO,Open,未分配,HIGH,1小时,蓝图管理,src/app/routes/blueprints/branches/branch-detail/branch-detail.ts,N/A,HIGH,N/A,从AuthStateService获取
+"Blueprints模块 - 选择具体分支",TODO,Open,未分配,MEDIUM,2小时,蓝图管理,src/app/routes/blueprints/pull-requests/pull-request-list.component.ts,N/A,MEDIUM,N/A,简化处理改进
+"Blueprints模块 - API调用实现",TODO,Open,未分配,HIGH,4小时,蓝图管理,src/app/routes/blueprints/pull-requests/detail/pull-request-detail.ts,N/A,HIGH,N/A,替换模拟数据
+"Blueprints模块 - 实现同步配置功能",TODO,Open,未分配,MEDIUM,4小时,蓝图管理,src/app/routes/blueprints/detail/blueprint-detail.component.ts,N/A,MEDIUM,N/A,同步配置
+"Blueprints模块 - 依赖检查逻辑",TODO,Open,未分配,HIGH,6小时,蓝图管理,src/app/routes/blueprints/detail/blueprint-detail.component.ts,N/A,HIGH,N/A,完整依赖检查
+"Blueprints模块 - 根据配置填充表单",TODO,Open,未分配,MEDIUM,2小时,蓝图管理,src/app/routes/blueprints/settings/blueprint-settings.component.ts,N/A,MEDIUM,N/A,设置表单初始化
+"Blueprints模块 - 实现草稿保存",TODO,Open,未分配,LOW,3小时,蓝图管理,src/app/routes/blueprints/settings/blueprint-settings.component.ts,N/A,LOW,N/A,草稿自动保存
+"Blueprints模块 - 根据tabKey保存配置",TODO,Open,未分配,MEDIUM,4小时,蓝图管理,src/app/routes/blueprints/settings/blueprint-settings.component.ts,N/A,MEDIUM,N/A,分标签保存配置
+"测试覆盖率提升",测试缺口,Open,未分配,CRITICAL,4-6周,整体质量,全项目测试文件,#124,CRITICAL,N/A,"当前16%，目标80%，需补充单元测试"
+"E2E测试框架搭建",测试缺口,Open,未分配,HIGH,1-2周,测试基础设施,e2e目录,#124,HIGH,N/A,建立端到端测试框架
+"关键服务单元测试",测试缺口,Open,未分配,HIGH,2-3周,核心功能,src/app/core/services/**/*.spec.ts,#124,HIGH,N/A,核心服务测试覆盖
+"依赖安全漏洞 - mockjs",安全问题,Open,未分配,HIGH,2小时,安全,package.json,N/A,HIGH,N/A,"Prototype Pollution漏洞，需升级或替换"
+"依赖安全漏洞 - xlsx",安全问题,Open,未分配,HIGH,2小时,安全,package.json,N/A,HIGH,N/A,"Prototype Pollution + ReDoS漏洞，需升级"
+"依赖安全漏洞 - @delon/mock",安全问题,Open,未分配,HIGH,4小时,安全,package.json,N/A,HIGH,N/A,依赖vulnerable mockjs
+"依赖安全漏洞 - @delon/abc",安全问题,Open,未分配,HIGH,4小时,安全,package.json,N/A,HIGH,N/A,依赖vulnerable xlsx
+"缺失CHANGELOG.md (根目录)",文档缺口,Open,未分配,MEDIUM,1小时,文档,根目录,N/A,LOW,N/A,"docs/有CHANGELOG.md，但根目录缺失"
+"README更新 - 项目状态",文档缺口,Open,未分配,LOW,30分钟,文档,README.md,N/A,LOW,N/A,更新进度统计
+"API文档缺失",文档缺口,Open,未分配,MEDIUM,1-2周,文档,docs/api/,N/A,MEDIUM,N/A,核心API缺少文档
+"部署指南缺失",文档缺口,Open,未分配,MEDIUM,4小时,文档,docs/deployment/,N/A,MEDIUM,N/A,生产部署步骤文档
+"回滚步骤文档缺失",文档缺口,Open,未分配,HIGH,2小时,文档,docs/deployment/,N/A,MEDIUM,N/A,紧急回滚程序文档
+"贡献指南完善",文档缺口,Open,未分配,LOW,2小时,文档,CONTRIBUTING.md,N/A,LOW,N/A,补充开发流程说明
+"代码风格指南",文档缺口,Open,未分配,LOW,2小时,文档,docs/guides/,N/A,LOW,N/A,TypeScript/Angular代码规范
+"测试策略文档",文档缺口,Open,未分配,MEDIUM,3小时,文档,docs/guides/,N/A,MEDIUM,N/A,单元测试/集成测试指南
+"Performance优化 - OnPush策略推广",性能优化,Open,未分配,MEDIUM,1-2周,性能,全部组件,N/A,MEDIUM,N/A,确保所有组件使用OnPush
+"Performance优化 - Lazy Loading检查",性能优化,Open,未分配,MEDIUM,1周,性能,路由配置,N/A,LOW,N/A,路由懒加载优化
+"Performance优化 - Bundle大小优化",性能优化,Open,未分配,MEDIUM,1周,性能,构建配置,N/A,MEDIUM,N/A,减小打包体积
+"代码重构 - 重复代码消除",技术债务,Open,未分配,MEDIUM,2-3周,代码质量,全项目,N/A,MEDIUM,N/A,DRY原则应用
+"代码重构 - 复杂方法拆分",技术债务,Open,未分配,MEDIUM,1-2周,代码质量,全项目,N/A,MEDIUM,N/A,简化复杂逻辑
+"类型安全增强 - any类型消除",技术债务,Open,未分配,HIGH,2-3周,类型安全,TypeScript文件,N/A,MEDIUM,N/A,使用具体类型替换any
+"错误处理标准化",技术债务,Open,未分配,HIGH,1-2周,错误处理,全项目,N/A,HIGH,N/A,统一错误处理机制
+"日志记录标准化",技术债务,Open,未分配,MEDIUM,1周,可维护性,全项目,N/A,LOW,N/A,统一日志输出格式
+"国际化支持完善",功能增强,Open,未分配,LOW,2-3周,国际化,i18n配置,N/A,LOW,N/A,多语言支持完善
+"无障碍性改进",功能增强,Open,未分配,MEDIUM,1-2周,可访问性,UI组件,N/A,MEDIUM,N/A,WCAG 2.1 AA级合规
+"移动端响应式优化",功能增强,Open,未分配,MEDIUM,2-3周,用户体验,CSS/组件,N/A,MEDIUM,N/A,移动设备适配
+"暗色主题完善",功能增强,Open,未分配,LOW,1周,用户体验,样式文件,N/A,LOW,N/A,暗色模式优化
+"搜索功能增强",功能增强,Open,未分配,MEDIUM,1-2周,用户体验,搜索组件,N/A,MEDIUM,N/A,全局搜索功能
+"通知系统完善",功能增强,Open,未分配,MEDIUM,1-2周,用户体验,通知组件,N/A,MEDIUM,N/A,实时通知机制
+"数据导出功能",功能增强,Open,未分配,MEDIUM,1周,数据管理,各列表页面,N/A,LOW,N/A,Excel/CSV导出
+"数据导入功能",功能增强,Open,未分配,MEDIUM,1-2周,数据管理,批量导入,N/A,MEDIUM,N/A,Excel/CSV导入验证
+"批量操作功能",功能增强,Open,未分配,MEDIUM,1周,用户体验,各列表页面,N/A,MEDIUM,N/A,批量编辑/删除
+"权限管理细化",功能增强,Open,未分配,HIGH,2-3周,安全,权限系统,N/A,HIGH,N/A,更细粒度的权限控制
+"审计日志系统",功能增强,Open,未分配,MEDIUM,2-3周,安全/合规,日志系统,N/A,MEDIUM,N/A,操作审计追踪
+"数据备份恢复",运维功能,Open,未分配,HIGH,1-2周,数据安全,备份系统,N/A,HIGH,N/A,自动备份机制
+"监控告警系统",运维功能,Open,未分配,MEDIUM,2-3周,运维,监控系统,N/A,MEDIUM,N/A,性能/错误监控
+"健康检查端点",运维功能,Open,未分配,HIGH,1天,运维,API端点,N/A,MEDIUM,N/A,系统健康状态检查
+"CI/CD优化 - 构建速度",CI/CD改进,Open,未分配,MEDIUM,1周,开发效率,GitHub Actions,N/A,MEDIUM,N/A,加速构建流程
+"CI/CD优化 - 测试并行化",CI/CD改进,Open,未分配,MEDIUM,1周,开发效率,GitHub Actions,N/A,MEDIUM,N/A,并行执行测试
+"CI/CD优化 - 代码覆盖率报告",CI/CD改进,Open,未分配,MEDIUM,2天,质量保证,GitHub Actions,N/A,LOW,N/A,自动生成覆盖率报告
+"自动化发布流程",CI/CD改进,Open,未分配,MEDIUM,1周,开发效率,GitHub Actions,N/A,MEDIUM,N/A,版本自动发布
+"依赖自动更新",CI/CD改进,Open,未分配,LOW,2天,维护,Dependabot配置,N/A,LOW,N/A,自动PR更新依赖
+"Storybook集成",开发工具,Open,未分配,LOW,1-2周,开发体验,Storybook配置,N/A,LOW,N/A,组件文档和演示
+"Chrome DevTools集成",开发工具,Open,未分配,LOW,1周,开发体验,开发工具,N/A,LOW,N/A,Angular DevTools优化
+"VSCode配置优化",开发工具,Open,未分配,LOW,1天,开发体验,.vscode目录,N/A,LOW,N/A,推荐扩展和配置
