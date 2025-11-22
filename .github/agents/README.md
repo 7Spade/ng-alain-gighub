@@ -5,6 +5,20 @@
 
 ---
 
+## ⚠️ 重要提示：Memory MCP 限制
+
+**在 GitHub Agent 環境中，`store_memory` 工具不可用**（會返回 "Resource not found" 錯誤）。
+
+**快速解決方案**：
+- ❌ 不要使用 `store_memory` 工具
+- ✅ 在 PR 描述中記錄建議更新
+- ✅ 使用 `view`/`bash` 讀取 memory.jsonl（正常工作）
+- ✅ 使用 `report_progress` 記錄關鍵決策
+
+**詳細說明**：[MEMORY-MCP-LIMITATION.md](./MEMORY-MCP-LIMITATION.md) ⭐⭐⭐⭐⭐
+
+---
+
 ## 🎯 總覽
 
 本目錄是 GitHub Copilot Agent 的配置中心，提供企業級的開發標準、工作流程與自動化工具。所有配置已模組化，便於維護與擴展。
@@ -31,6 +45,7 @@
 .github/agents/
 ├── README.md                    # 本文件 - 配置中心概覽
 ├── QUICK-START.md               # 🚀 快速開始指南
+├── MEMORY-MCP-LIMITATION.md     # ⚠️ Memory MCP 限制說明（重要）
 ├── copilot-instructions.md      # GitHub Copilot Agent 簡要指引
 ├── role.agent.md                # AI 角色設定
 ├── role-config.md               # System message 快速參考

@@ -52,7 +52,7 @@ supabase db inspect
 supabase gen types typescript
 ```
 
-### 開發中（使用 Filesystem + Memory + Redis）
+### 開發中（使用 Filesystem + Redis，記錄在 PR 中）
 
 #### 4. 創建文件結構（Filesystem MCP）
 ```bash
@@ -77,10 +77,16 @@ GET principles:development
 GET principles:error
 ```
 
-#### 6. 記錄開發決策（Memory MCP）
-- 記住為什麼選擇某種實現
-- 記住遇到的問題與解決方案
-- 記住用戶偏好與習慣
+#### 6. 記錄開發決策（在 PR 描述中）
+
+> **⚠️ 注意**：在 GitHub Agent 環境中，`store_memory` 工具不可用。
+> 改為在 PR 描述中記錄關鍵決策和新發現的模式。
+
+**記錄內容**：
+- 為什麼選擇某種實現
+- 遇到的問題與解決方案
+- 值得記錄的新模式或規範
+- 建議更新到 memory.jsonl 的內容
 
 ### 開發後（使用 Everything + Context7）
 
