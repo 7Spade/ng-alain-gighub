@@ -530,25 +530,307 @@ All Facades:
 
 ---
 
+## 📊 Code Metrics & Quality Gates
+
+### Quality Gate Definition
+
+每個 Phase 完成前必須通過以下品質閘門：
+
+#### 1. Code Quality Metrics
+```yaml
+ESLint Errors: 0
+ESLint Warnings: < 10
+TypeScript Strict Mode: Enabled
+Type Coverage: > 95%
+Cyclomatic Complexity: < 15 per function
+File Size: < 500 lines (sub-facades), < 200 lines (main facade)
+```
+
+#### 2. Test Coverage Metrics
+```yaml
+Unit Test Coverage: > 80%
+Integration Test Coverage: > 70%
+Critical Path Coverage: 100%
+Test Execution Time: < 30 seconds
+```
+
+#### 3. Code Review Checklist
+- [ ] 所有方法都有 JSDoc 註解
+- [ ] 錯誤處理完整（try-catch-finally）
+- [ ] Signal 狀態管理正確使用
+- [ ] 活動記錄已整合（Create/Update/Delete 操作）
+- [ ] 無重複代碼（遵循 DRY 原則）
+- [ ] 遵循 SOLID 原則
+- [ ] 無硬編碼值
+- [ ] 命名語義化且一致
+
+#### 4. Documentation Metrics
+```yaml
+API Documentation: 100%
+Code Comments: > 10%
+Example Code: At least 1 per facade
+README Updates: Required
+```
+
+#### 5. Performance Metrics
+```yaml
+Facade Init Time: < 100ms
+Signal Update Time: < 10ms
+Method Execution Time: < 500ms (non-API calls)
+Memory Leak: None detected
+```
+
+---
+
+## 🎯 Daily Progress Report Template
+
+### Date: YYYY-MM-DD
+
+#### Developer(s)
+- Name: ___________
+- Hours Worked: ___________
+
+#### Today's Goals
+1. [ ] Goal 1
+2. [ ] Goal 2
+3. [ ] Goal 3
+
+#### Actual Achievements
+1. ✅ Achievement 1
+2. ✅ Achievement 2
+3. ⏸️ Blocked: ___________
+
+#### Code Changes
+- Files Modified: ___________
+- Lines Added: ___________
+- Lines Deleted: ___________
+- New Tests: ___________
+
+#### Quality Metrics
+- ESLint Errors: ___________
+- Test Coverage: ___________%
+- Build Status: ⚠️ / ✅
+
+#### Blockers & Issues
+1. Issue 1: Description
+   - Impact: High / Medium / Low
+   - Resolution: ___________
+   - ETA: ___________
+
+#### Tomorrow's Plan
+1. [ ] Task 1
+2. [ ] Task 2
+3. [ ] Task 3
+
+#### Notes & Observations
+- Learning: ___________
+- Improvement: ___________
+- Risk: ___________
+
+---
+
+## 📋 Weekly Progress Report Template
+
+### Week: YYYY-MM-DD to YYYY-MM-DD
+
+#### Team Summary
+- Total Hours: ___________
+- Velocity: _____ story points
+- Completion Rate: _____%
+
+#### Achievements This Week
+1. ✅ Major Achievement 1
+2. ✅ Major Achievement 2
+3. ✅ Major Achievement 3
+
+#### Quality Metrics Trend
+```
+Test Coverage:    Week N-1: ___%  →  Week N: ___%
+ESLint Errors:    Week N-1: ___   →  Week N: ___
+Code Review Time: Week N-1: ___h  →  Week N: ___h
+```
+
+#### Risks & Mitigation
+| Risk | Severity | Mitigation | Status |
+|------|----------|------------|--------|
+| Risk 1 | High | Action | In Progress |
+| Risk 2 | Medium | Action | Resolved |
+
+#### Next Week Goals
+1. [ ] Goal 1 (Priority: High)
+2. [ ] Goal 2 (Priority: High)
+3. [ ] Goal 3 (Priority: Medium)
+
+#### Lessons Learned
+- What worked well: ___________
+- What needs improvement: ___________
+- Action items: ___________
+
+---
+
+## 🚨 Risk Register
+
+### Active Risks
+
+#### Risk #1: Test Coverage Below Target
+- **Identified Date**: 2025-11-21
+- **Severity**: High
+- **Probability**: Medium
+- **Impact**: Delayed release, technical debt
+- **Mitigation**: 
+  1. Allocate 30% time to test writing
+  2. Pair programming for complex scenarios
+  3. Review test coverage daily
+- **Owner**: Test Engineer
+- **Status**: Monitoring
+
+#### Risk #2: Facade Splitting Complexity
+- **Identified Date**: 2025-11-21
+- **Severity**: Medium
+- **Probability**: Medium
+- **Impact**: Extended timeline, inconsistent structure
+- **Mitigation**:
+  1. Follow Blueprint Facade pattern strictly
+  2. Code review before merge
+  3. Create reusable templates
+- **Owner**: Frontend Architect
+- **Status**: Mitigated (templates created)
+
+#### Risk #3: Missing Method Discovery
+- **Identified Date**: 2025-11-21
+- **Severity**: Low
+- **Probability**: Low
+- **Impact**: Additional work in future phases
+- **Mitigation**:
+  1. Comprehensive analysis in Phase 1
+  2. Regular review with stakeholders
+  3. Flexible sprint planning
+- **Owner**: Product Owner
+- **Status**: Monitoring
+
+### Resolved Risks
+(None yet)
+
+---
+
+## 🔍 Technical Debt Register
+
+### Current Technical Debt
+
+#### Debt Item #1: Existing Facades Without Tests
+- **Location**: `src/app/core/facades/`
+- **Severity**: High
+- **Estimated Effort**: 10 days
+- **Created**: Before project start
+- **Plan**: Add tests as part of facade enhancement
+- **Priority**: P0 - Address in Phase 2-7
+- **Status**: Planned
+
+#### Debt Item #2: TODO Comments in Code
+- **Location**: Multiple facades
+- **Severity**: Medium
+- **Estimated Effort**: 5 days
+- **Created**: During initial development
+- **Plan**: Clean up during enhancement
+- **Priority**: P1 - Address opportunistically
+- **Status**: Tracked
+
+#### Debt Item #3: Inconsistent Error Handling
+- **Location**: Older services and facades
+- **Severity**: Medium
+- **Estimated Effort**: 3 days
+- **Created**: Before standardization
+- **Plan**: Standardize using ErrorStateService
+- **Priority**: P1 - Address in Phases 2-4
+- **Status**: Planned
+
+### Debt Prevention Strategy
+1. ✅ Mandatory code review
+2. ✅ Quality gates enforcement
+3. ✅ Test coverage requirements
+4. ✅ Regular refactoring time
+5. ✅ Technical debt review meetings
+
+---
+
 ## 🏁 Next Steps
 
 ### Immediate Actions
 1. ✅ Complete progress history document
-2. ✅ Complete implementation record
-3. [ ] Review and commit all Phase 1 documentation
-4. [ ] Prepare for Phase 2 kickoff
+2. ✅ Complete implementation record with tracking mechanisms
+3. ✅ Add quality gates and metrics
+4. ✅ Add daily/weekly report templates
+5. ✅ Add risk and technical debt registers
+6. [ ] Review and commit all Phase 1 documentation
+7. [ ] Prepare for Phase 2 kickoff
 
 ### Phase 2 Preparation
 1. [ ] Schedule Phase 2 start date
 2. [ ] Assign developer(s)
 3. [ ] Set up development environment
-4. [ ] Create feature branch
+4. [ ] Create feature branch: `feature/facades-task-enhancement`
 5. [ ] Review Task Facade current code
 6. [ ] Study Blueprint Facade reference
+7. [ ] Set up automated quality checks
+8. [ ] Prepare test data and fixtures
 
 ---
 
-**Document Version**: 1.0  
+## 📚 Appendix: Implementation Decision Log
+
+### Decision Log Template
+
+#### Decision #[N]: [Decision Title]
+- **Date**: YYYY-MM-DD
+- **Decider**: [Name/Role]
+- **Status**: Proposed / Accepted / Rejected / Superseded
+- **Context**: What is the issue we're seeing?
+- **Options Considered**:
+  1. Option A: Description
+  2. Option B: Description
+  3. Option C: Description
+- **Decision**: Which option was chosen and why?
+- **Consequences**: 
+  - Positive: ___________
+  - Negative: ___________
+  - Neutral: ___________
+- **Follow-up Actions**: What needs to be done?
+- **Review Date**: When to reassess this decision?
+
+### Active Decisions
+
+#### Decision #1: Use Blueprint Facade as Reference Standard
+- **Date**: 2025-01-15
+- **Decider**: Frontend Architect
+- **Status**: ✅ Accepted
+- **Context**: Need consistent pattern across all facades
+- **Options Considered**:
+  1. Create new pattern from scratch
+  2. Use Blueprint Facade as reference
+  3. Mix patterns from multiple facades
+- **Decision**: Use Blueprint Facade as it's complete and well-tested
+- **Consequences**:
+  - Positive: Consistency, proven pattern, easier training
+  - Negative: May need adjustments for specific use cases
+  - Neutral: Team needs to study Blueprint Facade
+- **Follow-up Actions**: Document Blueprint pattern, create templates
+- **Review Date**: After Phase 2 completion
+
+#### Decision #2: Signal-Based State Management
+- **Date**: 2025-01-15
+- **Decider**: Frontend Architect
+- **Status**: ✅ Accepted
+- **Context**: Need modern, performant state management
+- **Decision**: Use Angular 20 Signals exclusively (already documented)
+- **Follow-up Actions**: Migrate existing BehaviorSubject to Signals
+- **Review Date**: Continuous monitoring
+
+---
+
+**Document Version**: 2.0  
 **Last Updated**: 2025-11-21  
-**Next Update**: When Phase 2 begins  
-**Maintained By**: Development Team
+**Next Update**: Daily during active phases  
+**Maintained By**: Development Team  
+**Change Log**:
+- v2.0 (2025-11-21): Added quality gates, metrics, report templates, risk register, technical debt register, decision log
+- v1.0 (2025-11-15): Initial version with basic tracking
