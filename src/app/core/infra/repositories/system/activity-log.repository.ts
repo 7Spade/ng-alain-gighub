@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
+import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
@@ -107,8 +111,8 @@ export class ActivityLogRepository extends BaseRepository<ActivityLog, ActivityL
    * });
    *
    * // 搜索特定用戶的活動
-   * activityLogRepo.search('創建', { 
-   *   actorId: 'user-id' 
+   * activityLogRepo.search('創建', {
+   *   actorId: 'user-id'
    * }).subscribe(logs => {
    *   console.log('User activities:', logs);
    * });
@@ -158,6 +162,11 @@ export class ActivityLogRepository extends BaseRepository<ActivityLog, ActivityL
     // 按創建時間倒序排序
     supabaseQuery = supabaseQuery.order('created_at', { ascending: false });
 
-    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+    return from(Promise.resolve(supabaseQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<ActivityLog>(item)) : [toCamelCaseData<ActivityLog>(data)];
+      })
+    );
   }
 }

@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
+import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
@@ -141,8 +145,8 @@ export class DailyReportRepository extends BaseRepository<DailyReport, DailyRepo
    * });
    *
    * // 搜索特定任務的施工日志
-   * dailyReportRepo.search('進度', { 
-   *   taskId: 'task-id' 
+   * dailyReportRepo.search('進度', {
+   *   taskId: 'task-id'
    * }).subscribe(reports => {
    *   console.log('Task reports:', reports);
    * });
@@ -192,6 +196,11 @@ export class DailyReportRepository extends BaseRepository<DailyReport, DailyRepo
     // 按報告日期倒序排序
     supabaseQuery = supabaseQuery.order('report_date', { ascending: false });
 
-    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+    return from(Promise.resolve(supabaseQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<DailyReport>(item)) : [toCamelCaseData<DailyReport>(data)];
+      })
+    );
   }
 }
