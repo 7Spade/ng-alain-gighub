@@ -123,7 +123,6 @@ Types → Repositories → Models → Services → Facades → Components → Te
 2. **檢查架構圖**（必須）：打開系統架構思維導圖，理解系統整體架構與模組關係
 3. **設計決策時**：參考記憶庫中的架構原則和最佳實踐
 4. **代碼實作時**：遵循記憶庫中定義的開發標準和檢查清單
-5. **完成任務後**：如發現新的模式或規範，建議更新記憶庫
 
 ### 關鍵記憶實體範例（從 memory.jsonl 查詢）
 - `Five Layer Development Order` - 五層架構開發順序 ⭐⭐⭐⭐⭐
