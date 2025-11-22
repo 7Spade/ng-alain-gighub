@@ -169,7 +169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/architect@npm:0.2100.0":
+"@angular-devkit/architect@npm:0.2100.0, @angular-devkit/architect@npm:>= 0.2100.0 < 0.2200.0":
   version: 0.2100.0
   resolution: "@angular-devkit/architect@npm:0.2100.0"
   dependencies:
@@ -208,7 +208,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:21.0.0":
+"@angular-devkit/core@npm:21.0.0, @angular-devkit/core@npm:>= 21.0.0 < 22.0.0":
   version: 21.0.0
   resolution: "@angular-devkit/core@npm:21.0.0"
   dependencies:
@@ -253,7 +253,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/builder@npm:20.6.0, @angular-eslint/builder@npm:^20.3.0":
+"@angular-eslint/builder@npm:20.6.0":
   version: 20.6.0
   resolution: "@angular-eslint/builder@npm:20.6.0"
   dependencies:
@@ -263,6 +263,19 @@ __metadata:
     eslint: ^8.57.0 || ^9.0.0
     typescript: "*"
   checksum: 10c0/4345faccf8420f59756793f22bfba3b799fe952913e88922d379a6b76656882c3610fa535e1500be4b0e9e2d2256ce741fe27df15321b4c6322cb58d526ec22b
+  languageName: node
+  linkType: hard
+
+"@angular-eslint/builder@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@angular-eslint/builder@npm:21.0.0"
+  dependencies:
+    "@angular-devkit/architect": "npm:>= 0.2100.0 < 0.2200.0"
+    "@angular-devkit/core": "npm:>= 21.0.0 < 22.0.0"
+  peerDependencies:
+    eslint: ^8.57.0 || ^9.0.0
+    typescript: "*"
+  checksum: 10c0/147c2cf0c83a75fd088ba2344141be1a5a57e3dd3ccb0842006868ba6e55885ac6aae205d504e300df10b789f99e1dc8369a88e90996739bd85b8ba552e10e67
   languageName: node
   linkType: hard
 
@@ -9168,7 +9181,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ng-alain-gighub@workspace:."
   dependencies:
-    "@angular-eslint/builder": "npm:^20.3.0"
+    "@angular-eslint/builder": "npm:^21.0.0"
     "@angular/animations": "npm:^21.0.0"
     "@angular/build": "npm:^21.0.0"
     "@angular/cdk": "npm:^21.0.0"
