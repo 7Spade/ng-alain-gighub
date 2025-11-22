@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
+import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
@@ -105,8 +109,8 @@ export class InspectionRepository extends BaseRepository<Inspection, InspectionI
    * });
    *
    * // 搜索已通过的验收记录
-   * inspectionRepo.search('合格', { 
-   *   status: InspectionStatus.PASSED 
+   * inspectionRepo.search('合格', {
+   *   status: InspectionStatus.PASSED
    * }).subscribe(inspections => {
    *   console.log('Passed inspections:', inspections);
    * });
@@ -156,6 +160,11 @@ export class InspectionRepository extends BaseRepository<Inspection, InspectionI
     // 按检查时间倒序排序
     supabaseQuery = supabaseQuery.order('inspected_at', { ascending: false });
 
-    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+    return from(Promise.resolve(supabaseQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Inspection>(item)) : [toCamelCaseData<Inspection>(data)];
+      })
+    );
   }
 }

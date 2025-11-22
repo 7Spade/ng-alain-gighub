@@ -218,8 +218,8 @@ export class NotificationRepository extends BaseRepository<Notification, Notific
    * });
    *
    * // 搜索未读的通知
-   * notificationRepo.search('任务', { 
-   *   isRead: false 
+   * notificationRepo.search('任务', {
+   *   isRead: false
    * }).subscribe(notifications => {
    *   console.log('Unread notifications:', notifications);
    * });

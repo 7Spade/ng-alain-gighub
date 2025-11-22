@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
+import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
@@ -105,8 +109,8 @@ export class QualityCheckRepository extends BaseRepository<QualityCheck, Quality
    * });
    *
    * // 搜索待处理的品质检查
-   * qualityCheckRepo.search('问题', { 
-   *   status: QualityCheckStatus.PENDING 
+   * qualityCheckRepo.search('问题', {
+   *   status: QualityCheckStatus.PENDING
    * }).subscribe(checks => {
    *   console.log('Pending checks:', checks);
    * });
@@ -156,6 +160,11 @@ export class QualityCheckRepository extends BaseRepository<QualityCheck, Quality
     // 按检查时间倒序排序
     supabaseQuery = supabaseQuery.order('checked_at', { ascending: false });
 
-    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+    return from(Promise.resolve(supabaseQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<QualityCheck>(item)) : [toCamelCaseData<QualityCheck>(data)];
+      })
+    );
   }
 }

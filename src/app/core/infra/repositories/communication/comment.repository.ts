@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { PostgrestResponse } from '@supabase/supabase-js';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { handleSupabaseResponse } from '../../errors/supabase-error.transformer';
 import { Database } from '../../types/common';
+import { toCamelCaseData } from '../../utils/transformers';
 import { BaseRepository, QueryOptions } from '../base.repository';
 
 /**
@@ -154,8 +158,8 @@ export class CommentRepository extends BaseRepository<Comment, CommentInsert, Co
    * });
    *
    * // 搜索任务相关的评论
-   * commentRepo.search('问题', { 
-   *   commentableType: 'Task' 
+   * commentRepo.search('问题', {
+   *   commentableType: 'Task'
    * }).subscribe(comments => {
    *   console.log('Task comments:', comments);
    * });
@@ -200,6 +204,11 @@ export class CommentRepository extends BaseRepository<Comment, CommentInsert, Co
     // 按创建时间倒序排序
     supabaseQuery = supabaseQuery.order('created_at', { ascending: false });
 
-    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+    return from(Promise.resolve(supabaseQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Comment>(item)) : [toCamelCaseData<Comment>(data)];
+      })
+    );
   }
 }

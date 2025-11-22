@@ -519,10 +519,7 @@ export class TaskService {
    * @param assigneeId 分配人 ID
    * @param assigneeType 分配人類型
    */
-  async loadTasksByAssignee(
-    assigneeId: string,
-    assigneeType: 'individual' | 'team' | 'organization' | 'contractor'
-  ): Promise<void> {
+  async loadTasksByAssignee(assigneeId: string, assigneeType: 'individual' | 'team' | 'organization' | 'contractor'): Promise<void> {
     this.loadingState.set(true);
     this.errorState.set(null);
 
@@ -537,7 +534,7 @@ export class TaskService {
           }
         })
       );
-      const taskIds = assignments.map(a => a.taskId);
+      const taskIds = assignments.map(a => a.task_id);
 
       if (taskIds.length === 0) {
         this.tasksState.set([]);
@@ -553,14 +550,5 @@ export class TaskService {
     } finally {
       this.loadingState.set(false);
     }
-  }
-
-  /**
-   * 選擇任務
-   *
-   * @param task 要選擇的任務（或 null 來清除選擇）
-   */
-  selectTask(task: Task | null): void {
-    this.selectedTaskState.set(task);
   }
 }

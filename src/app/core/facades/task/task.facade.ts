@@ -382,10 +382,7 @@ export class TaskFacade implements OnDestroy {
    * await facade.loadTasksByAssignee('team-456', 'team');
    * ```
    */
-  async loadTasksByAssignee(
-    assigneeId: string,
-    assigneeType: 'individual' | 'team' | 'organization' | 'contractor'
-  ): Promise<void> {
+  async loadTasksByAssignee(assigneeId: string, assigneeType: 'individual' | 'team' | 'organization' | 'contractor'): Promise<void> {
     this.operationInProgressState.set(true);
     this.lastOperationState.set('load_tasks_by_assignee');
 
