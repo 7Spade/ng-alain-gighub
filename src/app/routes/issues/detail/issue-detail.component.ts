@@ -281,8 +281,12 @@ export class IssueDetailComponent implements OnInit {
   }
 
   edit(): void {
-    this.message.info('編輯功能開發中');
-    // TODO: 实现编辑功能
+    const id = this.issueId();
+    if (!id) {
+      this.message.error('問題ID不存在');
+      return;
+    }
+    this.router.navigate(['/issues', id, 'edit']);
   }
 
   handle(): void {
