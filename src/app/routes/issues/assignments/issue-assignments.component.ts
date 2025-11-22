@@ -1,8 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { IssueAssignmentRepository, IssueRepository } from '@core';
+import { AccountService } from '@shared';
 import { STColumn } from '@delon/abc/st';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { firstValueFrom } from 'rxjs';
 
 interface IssueAssignmentItem {
   readonly id: string;
@@ -89,6 +92,9 @@ interface IssueAssignmentItem {
 export class IssueAssignmentsComponent implements OnInit {
   router = inject(Router);
   message = inject(NzMessageService);
+  issueAssignmentRepo = inject(IssueAssignmentRepository);
+  issueRepo = inject(IssueRepository);
+  accountService = inject(AccountService);
 
   // Component signals
   loading = signal(false);
@@ -139,10 +145,43 @@ export class IssueAssignmentsComponent implements OnInit {
     this.loadAssignments();
   }
 
-  loadAssignments(): void {
-    // TODO: 加载问题分配数据
-    // 暂时使用空数组，实际开发时连接真实数据
-    this.assignments.set([]);
+  async loadAssignments(): Promise<void> {
+    this.loading.set(true);
+    try {
+      // Load all issue assignments
+      const assignments = await firstValueFrom(this.issueAssignmentRepo.findAll());
+      
+      // Load related data (issues and accounts) and transform to display format
+      const items: IssueAssignmentItem[] = await Promise.all(
+        assignments.map(async assignment => {
+          // Load issue details
+          const issue = await firstValueFrom(
+            this.issueRepo.findById(assignment.issue_id)
+          ).catch(() => null);
+          
+          // Load assignee account details
+          await this.accountService.loadAccountById(assignment.assignee_id).catch(() => {});
+          const assignee = this.accountService.accounts().find(a => a.id === assignment.assignee_id);
+          
+          return {
+            id: assignment.id,
+            issueId: assignment.issue_id,
+            issueTitle: issue?.title || 'Unknown Issue',
+            assigneeId: assignment.assignee_id,
+            assigneeName: assignee?.name || assignment.assignee_id,
+            assignedAt: assignment.assigned_at || '',
+            status: assignment.assignment_note || 'pending'
+          };
+        })
+      );
+      
+      this.assignments.set(items);
+    } catch (error) {
+      this.message.error('加載問題分配數據失敗');
+      console.error('Failed to load assignments:', error);
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   onTableChange(): void {
@@ -153,8 +192,35 @@ export class IssueAssignmentsComponent implements OnInit {
     this.router.navigate(['/issues', issueId]);
   }
 
-  reassign(id: string): void {
-    // TODO: 实现重新分配逻辑
-    this.message.info('重新分配功能开发中');
+  async reassign(assignmentId: string): Promise<void> {
+    this.loading.set(true);
+    try {
+      // Find the current assignment
+      const currentAssignment = this.assignments().find(a => a.id === assignmentId);
+      if (!currentAssignment) {
+        this.message.error('找不到分配記錄');
+        return;
+      }
+
+      // Load all available users for reassignment
+      // In a real implementation, this would open a modal to select a new assignee
+      // For now, we'll show a message that the feature needs UI implementation
+      this.message.info('請在彈出的對話框中選擇新的被分配人（UI 待實現）');
+      
+      // TODO: Open modal to select new assignee
+      // Example flow:
+      // 1. Open NzModalService with assignee selector
+      // 2. User selects new assignee
+      // 3. Call issueAssignmentRepo.update() or create new assignment
+      // 4. Reload assignments list
+      
+      console.log('Reassignment for:', currentAssignment);
+      
+    } catch (error) {
+      this.message.error('重新分配失敗');
+      console.error('Failed to reassign:', error);
+    } finally {
+      this.loading.set(false);
+    }
   }
 }
