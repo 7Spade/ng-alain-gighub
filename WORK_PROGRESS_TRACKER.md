@@ -317,7 +317,7 @@ Phase 6: 完整功能集      ░░░░░░░░░░░░░░░░�
 - [INCOMPLETE_ITEMS.csv](./INCOMPLETE_ITEMS.csv) - 98 個未完成項目清單
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) - 企業級 DoD 標準
 - [TECHNICAL_DEBT_BACKLOG.md](./TECHNICAL_DEBT_BACKLOG.md) - 技術債務清單
-- [NEXT_ACTIONS.md](./NEXT_ACTIONS.md) - 下一步行動計劃
+- [NEXT_ACTIONS.md](./docs/archive/workspace-tracking/NEXT_ACTIONS.md) - 下一步行動計劃（已歸檔）
 
 ### 工作流程
 - [WORKFLOW_GUIDE.md](./WORKFLOW_GUIDE.md) - 標準工作流程指南
