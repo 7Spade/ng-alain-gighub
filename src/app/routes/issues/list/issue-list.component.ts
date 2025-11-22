@@ -1,20 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { STColumn } from '@delon/abc/st';
+import { IssueFacade } from '@core';
 import { SHARED_IMPORTS } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
-
-interface IssueListItem {
-  readonly id: string;
-  readonly title: string;
-  readonly status: string;
-  readonly priority: string;
-  readonly severity: string;
-  readonly reportedBy: string;
-  readonly reportedAt: string;
-  readonly blueprintName: string;
-  readonly taskName: string;
-}
 
 @Component({
   selector: 'app-issue-list',
@@ -157,18 +146,21 @@ interface IssueListItem {
   `
 })
 export class IssueListComponent implements OnInit {
-  router = inject(Router);
-  message = inject(NzMessageService);
+  private readonly router = inject(Router);
+  private readonly message = inject(NzMessageService);
+  private readonly issueFacade = inject(IssueFacade);
 
   // Component signals
-  loading = signal(false);
-  filterStatus = signal<string | null>(null);
-  filterPriority = signal<string | null>(null);
-  filterSeverity = signal<string | null>(null);
-  issues = signal<IssueListItem[]>([]);
+  readonly filterStatus = signal<string | null>(null);
+  readonly filterPriority = signal<string | null>(null);
+  readonly filterSeverity = signal<string | null>(null);
+
+  // Facade signals
+  readonly loading = this.issueFacade.loading;
+  readonly issues = this.issueFacade.issues;
 
   // Computed filtered issues
-  filteredIssues = computed(() => {
+  readonly filteredIssues = computed(() => {
     let result = this.issues();
 
     if (this.filterStatus()) {
@@ -192,44 +184,48 @@ export class IssueListComponent implements OnInit {
     { title: '状态', index: 'status', width: 120, render: 'status' },
     { title: '优先级', index: 'priority', width: 100, render: 'priority' },
     { title: '严重程度', index: 'severity', width: 100, render: 'severity' },
-    { title: '报告人', index: 'reportedBy', width: 120 },
-    { title: '报告时间', index: 'reportedAt', type: 'date', width: 180 },
-    { title: '关联蓝图', index: 'blueprintName', width: 200 },
-    { title: '关联任务', index: 'taskName', width: 200 },
+    { title: '报告人', index: 'reported_by', width: 120 },
+    { title: '报告时间', index: 'reported_at', type: 'date', width: 180 },
+    { title: '关联蓝图', index: 'blueprint_id', width: 200 },
+    { title: '关联任务', index: 'task_id', width: 200 },
     {
       title: '操作',
       width: 200,
       buttons: [
         {
           text: '查看',
-          click: (record: IssueListItem) => this.viewDetail(record.id)
+          click: (record: any) => this.viewDetail(record.id)
         },
         {
           text: '编辑',
-          click: (record: IssueListItem) => this.edit(record.id)
+          click: (record: any) => this.edit(record.id)
         },
         {
           text: '删除',
           type: 'del',
           pop: true,
-          click: (record: IssueListItem) => this.delete(record.id)
+          click: (record: any) => this.delete(record.id)
         }
       ]
     }
   ];
 
-  ngOnInit(): void {
-    this.loadIssues();
+  async ngOnInit(): Promise<void> {
+    await this.loadIssues();
   }
 
-  loadIssues(): void {
-    // TODO: 加载问题列表
-    // 暂时使用空数组，实际开发时连接真实数据
-    this.issues.set([]);
+  async loadIssues(): Promise<void> {
+    try {
+      // Load all issues - this will be refined later to filter by workspace context
+      await this.issueFacade.loadIssues();
+    } catch (error) {
+      this.message.error('加载问题列表失敗');
+      console.error('Failed to load issues:', error);
+    }
   }
 
   onTableChange(): void {
-    // 处理表格变化事件（分页、排序等）
+    // Handle table change events (pagination, sorting, etc.)
   }
 
   createIssue(): void {
@@ -244,8 +240,15 @@ export class IssueListComponent implements OnInit {
     this.router.navigate(['/issues', id, 'edit']);
   }
 
-  delete(id: string): void {
-    // TODO: 实现删除逻辑
-    this.message.info('删除功能开发中');
+  async delete(id: string): Promise<void> {
+    try {
+      await this.issueFacade.deleteIssue(id);
+      this.message.success('删除成功');
+      // Reload the list
+      await this.loadIssues();
+    } catch (error) {
+      this.message.error('删除失败');
+      console.error('Failed to delete issue:', error);
+    }
   }
 }
