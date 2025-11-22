@@ -17,7 +17,7 @@
 3. **[domain/angular-agent.md](./domain/angular-agent.md)** - Angular 最佳實踐
 
 ### 我要修復 Bug
-1. **[core/error-handling.md](./core/error-handling.md)** - 錯誤處理流程（待創建）
+1. **[core/error-handling.md](./core/error-handling.md)** - 錯誤處理流程
 2. **[guides/agent-quick-reference.md](./guides/agent-quick-reference.md)** - 快速參考
 3. **[domain/code-quality-agent.md](./domain/code-quality-agent.md)** - 代碼質量檢查
 
@@ -48,12 +48,12 @@
 |------|------|------|
 | [agent-overview.md](./core/agent-overview.md) | Agent 概覽與定位 | ✅ |
 | [startup-procedure.md](./core/startup-procedure.md) | 強制執行程序 | ✅ |
-| [tech-stack.md](./core/tech-stack.md) | 技術棧與 MCP 工具 | 📝 待創建 |
-| [architecture-principles.md](./core/architecture-principles.md) | 企業架構原則 | 📝 待創建 |
-| [development-workflow.md](./core/development-workflow.md) | 開發工作流程 | 📝 待創建 |
-| [decision-logic.md](./core/decision-logic.md) | 決策邏輯指南 | 📝 待創建 |
-| [error-handling.md](./core/error-handling.md) | 錯誤處理流程 | 📝 待創建 |
-| [checklists.md](./core/checklists.md) | 完整檢查清單 | 📝 待創建 |
+| [tech-stack.md](./core/tech-stack.md) | 技術棧與 MCP 工具 | ✅ |
+| [architecture-principles.md](./core/architecture-principles.md) | 企業架構原則 | ✅ |
+| [development-workflow.md](./core/development-workflow.md) | 開發工作流程 | ✅ |
+| [decision-logic.md](./core/decision-logic.md) | 決策邏輯指南 | ✅ |
+| [error-handling.md](./core/error-handling.md) | 錯誤處理流程 | ✅ |
+| [checklists.md](./core/checklists.md) | 完整檢查清單 | ✅ |
 
 ### 指南文件（guides/）
 提供詳細的操作指南
@@ -117,19 +117,20 @@
 ## 📊 文件狀態
 
 ### 完成度統計
-- ✅ **已完成**：15 個文件
-- 📝 **待創建**：6 個核心配置文件（從原 ng-alain-github-agent.md 拆分）
-- 🗄️ **已歸檔**：9 個歷史文件
+- ✅ **已完成**：21 個文件（含 6 個新創建的核心配置）
+- 🗄️ **已歸檔**：10 個歷史文件（含原 ng-alain-github-agent-v2.0-backup.md）
 
 ### 核心配置完成度
-- [x] agent-overview.md（新創建）
-- [x] startup-procedure.md（新創建）
-- [ ] tech-stack.md（待從原文件拆分）
-- [ ] architecture-principles.md（待從原文件拆分）
-- [ ] development-workflow.md（待從原文件拆分）
-- [ ] decision-logic.md（待從原文件拆分）
-- [ ] error-handling.md（待從原文件拆分）
-- [ ] checklists.md（待從原文件拆分）
+- [x] agent-overview.md（已創建）
+- [x] startup-procedure.md（已創建）
+- [x] tech-stack.md（✅ 已完成 - 2025-01-22）
+- [x] architecture-principles.md（✅ 已完成 - 2025-01-22）
+- [x] development-workflow.md（✅ 已完成 - 2025-01-22）
+- [x] decision-logic.md（✅ 已完成 - 2025-01-22）
+- [x] error-handling.md（✅ 已完成 - 2025-01-22）
+- [x] checklists.md（✅ 已完成 - 2025-01-22）
+
+**狀態**：✅ core/ 模組化重構已完成（主文件從 31KB 降至 12KB）
 
 ---
 
