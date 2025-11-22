@@ -24,7 +24,7 @@
           ├─ 修復成功？
           │   └─ 是 → 重新檢查完成標準
           └─ 修復失敗？
-              └─ 記錄問題（Memory MCP）→ 尋求協助
+              └─ 記錄問題（在 PR 描述中）→ 尋求協助
 ```
 
 ## 常見錯誤處理（使用 Redis + Sequential Thinking）
@@ -44,7 +44,7 @@ GET standards:typescript
 步驟 6：重新驗證
 
 # 3. 執行修復（Filesystem MCP）
-# 4. 記錄解決方案（Memory MCP）
+# 4. 記錄解決方案（在 PR 描述中，不使用 store_memory）
 ```
 
 ### ESLint 錯誤
@@ -61,6 +61,8 @@ yarn lint --fix
 步驟 2：查閱規則文檔
 步驟 3：修復問題
 步驟 4：重新驗證
+
+# 4. 記錄解決方案（在 PR 描述中，不使用 store_memory）
 ```
 
 ### 構建錯誤

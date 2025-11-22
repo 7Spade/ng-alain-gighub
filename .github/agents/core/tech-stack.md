@@ -91,13 +91,30 @@ supabase db test
 - 生成樣板代碼
 
 ### 5. Memory MCP
-**用途**：記憶上下文、學習模式、優化建議
 
-**使用場景**：
+> **⚠️ 重要限制**：`store_memory` 工具在 GitHub Agent 環境中**不可用**（會返回 "Resource not found" 錯誤）。
+> 
+> **替代方案**：
+> - ✅ 在 PR 描述中建議 memory.jsonl 更新
+> - ✅ 使用 report_progress 記錄關鍵決策
+> - ✅ 創建文檔文件記錄重要模式
+> - ✅ 人工審查後更新 memory.jsonl
+
+**用途**：記憶上下文、學習模式、優化建議（僅限本地開發環境）
+
+**使用場景**（僅限本地 Copilot）：
 - 記住用戶偏好
 - 學習項目模式
 - 累積最佳實踐
 - 提供個性化建議
+
+**在 GitHub Agent 中的替代流程**：
+```markdown
+當發現值得記錄的模式或規範時：
+1. 在 PR 描述中添加 "建議更新 memory.jsonl" 章節
+2. 描述具體的實體和關係
+3. 由人工審查後更新 memory.jsonl
+```
 
 ### 6. Everything MCP
 **用途**：全局搜索、快速定位、依賴分析
