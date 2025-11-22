@@ -1,0 +1,136 @@
+# GitHub Labels Configuration
+# This file defines standard labels for issues and pull requests
+
+# Type Labels
+- name: "type: feature"
+  description: "New feature or enhancement"
+  color: "0e8a16"
+
+- name: "type: bug"
+  description: "Something isn't working"
+  color: "d73a4a"
+
+- name: "type: documentation"
+  description: "Documentation updates"
+  color: "0075ca"
+
+- name: "type: refactor"
+  description: "Code refactoring"
+  color: "fbca04"
+
+- name: "type: test"
+  description: "Testing related changes"
+  color: "1d76db"
+
+- name: "type: chore"
+  description: "Build, CI, or maintenance tasks"
+  color: "fef2c0"
+
+# Priority Labels
+- name: "priority: critical"
+  description: "Critical priority, must be addressed immediately"
+  color: "b60205"
+
+- name: "priority: high"
+  description: "High priority"
+  color: "d93f0b"
+
+- name: "priority: medium"
+  description: "Medium priority"
+  color: "fbca04"
+
+- name: "priority: low"
+  description: "Low priority"
+  color: "0e8a16"
+
+# Status Labels
+- name: "status: needs review"
+  description: "Waiting for code review"
+  color: "fbca04"
+
+- name: "status: in progress"
+  description: "Work in progress"
+  color: "0e8a16"
+
+- name: "status: blocked"
+  description: "Blocked by another issue or external dependency"
+  color: "d73a4a"
+
+- name: "status: on hold"
+  description: "On hold, not actively being worked on"
+  color: "cccccc"
+
+# Area Labels
+- name: "area: frontend"
+  description: "Frontend/UI related"
+  color: "5319e7"
+
+- name: "area: backend"
+  description: "Backend/API related"
+  color: "1d76db"
+
+- name: "area: database"
+  description: "Database related"
+  color: "0052cc"
+
+- name: "area: infrastructure"
+  description: "Infrastructure/DevOps related"
+  color: "006b75"
+
+- name: "area: security"
+  description: "Security related"
+  color: "d73a4a"
+
+- name: "area: performance"
+  description: "Performance related"
+  color: "fbca04"
+
+# Size Labels
+- name: "size: XS"
+  description: "Extra small change (< 10 lines)"
+  color: "c2e0c6"
+
+- name: "size: S"
+  description: "Small change (10-50 lines)"
+  color: "7ae7bf"
+
+- name: "size: M"
+  description: "Medium change (50-200 lines)"
+  color: "fef2c0"
+
+- name: "size: L"
+  description: "Large change (200-500 lines)"
+  color: "ffb8b8"
+
+- name: "size: XL"
+  description: "Extra large change (> 500 lines)"
+  color: "e99695"
+
+# Special Labels
+- name: "good first issue"
+  description: "Good for newcomers"
+  color: "7057ff"
+
+- name: "help wanted"
+  description: "Extra attention is needed"
+  color: "008672"
+
+- name: "breaking change"
+  description: "Breaking change that requires migration"
+  color: "d73a4a"
+
+- name: "dependencies"
+  description: "Dependency updates"
+  color: "0366d6"
+
+- name: "duplicate"
+  description: "This issue or pull request already exists"
+  color: "cfd3d7"
+
+- name: "wontfix"
+  description: "This will not be worked on"
+  color: "ffffff"
+
+- name: "invalid"
+  description: "This doesn't seem right"
+  color: "e4e669"
