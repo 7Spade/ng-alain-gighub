@@ -39,6 +39,10 @@ export const ISSUE_ROUTES: Routes = [
     loadComponent: () => import('./detail/issue-detail.component').then(m => m.IssueDetailComponent)
   },
   {
+    path: ':id/edit',
+    loadComponent: () => import('./form/issue-form.component').then(m => m.IssueFormComponent)
+  },
+  {
     path: ':id/handle',
     loadComponent: () => import('./handle/issue-handle.component').then(m => m.IssueHandleComponent)
   },
