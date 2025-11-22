@@ -27,7 +27,13 @@ describe('BlueprintFacade', () => {
     owner_id: 'user-1',
     status: 'active',
     created_at: '2025-01-01',
-    updated_at: '2025-01-01'
+    updated_at: '2025-01-01',
+    budget: null,
+    description: null,
+    end_date: null,
+    location: null,
+    metadata: null,
+    start_date: null
   };
 
   const mockBlueprints: Blueprint[] = [
@@ -39,7 +45,13 @@ describe('BlueprintFacade', () => {
       owner_id: 'user-1',
       status: 'planning',
       created_at: '2025-01-01',
-      updated_at: '2025-01-01'
+      updated_at: '2025-01-01',
+      budget: null,
+      description: null,
+      end_date: null,
+      location: null,
+      metadata: null,
+      start_date: null
     }
   ];
 
@@ -290,7 +302,10 @@ describe('BlueprintFacade', () => {
         organization_id: 'org-1',
         branch_name: 'branch-1',
         notes: 'Test branch',
-        status: 'active'
+        status: 'active',
+        branch_type: null,
+        forked_at: null,
+        last_sync_at: null
       };
       blueprintBranchRepository.create.and.returnValue(of(mockBranch));
       activityService.logActivity.and.returnValue(Promise.resolve());
@@ -322,7 +337,10 @@ describe('BlueprintFacade', () => {
         id: 'fork-1',
         blueprint_id: 'blueprint-1',
         branch_id: 'branch-1',
-        forked_by: 'user-2'
+        forked_by: 'user-2',
+        fork_reason: null,
+        forked_at: null,
+        forked_from_task_id: null
       };
 
       blueprintService.createBlueprint.and.returnValue(Promise.resolve(newBlueprint));
