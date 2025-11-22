@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SHARED_IMPORTS } from '@shared';
+import { IssueFacade } from '@core';
+import { SHARED_IMPORTS, BlueprintService, TaskService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -75,7 +76,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
               <nz-form-label>关联蓝图</nz-form-label>
               <nz-form-control>
                 <nz-select formControlName="blueprintId" nzPlaceHolder="请选择蓝图" nzAllowClear>
-                  <!-- TODO: 加载蓝图列表 -->
+                  @for (blueprint of blueprints(); track blueprint.id) {
+                    <nz-option [nzValue]="blueprint.id" [nzLabel]="blueprint.name"></nz-option>
+                  }
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -86,7 +89,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
               <nz-form-label>关联任务</nz-form-label>
               <nz-form-control>
                 <nz-select formControlName="taskId" nzPlaceHolder="请选择任务" nzAllowClear>
-                  <!-- TODO: 加载任务列表 -->
+                  @for (task of tasks(); track task.id) {
+                    <nz-option [nzValue]="task.id" [nzLabel]="task.title"></nz-option>
+                  }
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -113,10 +118,18 @@ export class IssueFormComponent implements OnInit {
   router = inject(Router);
   message = inject(NzMessageService);
   fb = inject(FormBuilder);
+  issueFacade = inject(IssueFacade);
+  blueprintService = inject(BlueprintService);
+  taskService = inject(TaskService);
 
   isEdit = false;
   issueId = '';
   saving = signal(false);
+  loading = signal(false);
+  
+  // Options for dropdowns
+  blueprints = signal<any[]>([]);
+  tasks = signal<any[]>([]);
 
   issueForm: FormGroup = this.fb.group({
     title: ['', [Validators.required]],
@@ -128,20 +141,63 @@ export class IssueFormComponent implements OnInit {
     issueType: [null]
   });
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.issueId = this.route.snapshot.paramMap.get('id') || '';
     this.isEdit = !!this.issueId;
+    
+    // Load dropdown options
+    await this.loadBlueprintList();
+    await this.loadTaskList();
+    
     if (this.isEdit) {
-      this.loadIssue();
+      await this.loadIssue();
     }
   }
 
-  loadIssue(): void {
-    // TODO: 加载问题数据
-    // 暂时使用空表单，实际开发时连接真实数据
+  async loadIssue(): Promise<void> {
+    this.loading.set(true);
+    try {
+      const issue = await this.issueFacade.loadIssueById(this.issueId);
+      if (issue) {
+        this.issueForm.patchValue({
+          title: issue.title,
+          description: issue.description,
+          priority: issue.priority,
+          severity: issue.severity,
+          blueprintId: issue.blueprint_id,
+          taskId: issue.task_id,
+          issueType: issue.issue_type
+        });
+      }
+    } catch (error) {
+      this.message.error('加載問題數據失敗');
+      console.error('Failed to load issue:', error);
+    } finally {
+      this.loading.set(false);
+    }
   }
 
-  save(): void {
+  async loadBlueprintList(): Promise<void> {
+    try {
+      // Load all blueprints for the dropdown
+      await this.blueprintService.loadAllBlueprints();
+      this.blueprints.set(this.blueprintService.blueprints());
+    } catch (error) {
+      console.error('Failed to load blueprints:', error);
+    }
+  }
+
+  async loadTaskList(): Promise<void> {
+    try {
+      // Load all tasks for the dropdown
+      await this.taskService.loadAllTasks();
+      this.tasks.set(this.taskService.tasks());
+    } catch (error) {
+      console.error('Failed to load tasks:', error);
+    }
+  }
+
+  async save(): Promise<void> {
     if (this.issueForm.invalid) {
       Object.values(this.issueForm.controls).forEach(control => {
         if (control.invalid) {
@@ -154,12 +210,44 @@ export class IssueFormComponent implements OnInit {
     }
 
     this.saving.set(true);
-    // TODO: 实现保存逻辑
-    setTimeout(() => {
-      this.saving.set(false);
-      this.message.success(this.isEdit ? '问题更新成功' : '问题创建成功');
+    try {
+      const formValue = this.issueForm.value;
+      
+      if (this.isEdit) {
+        // Update existing issue
+        await this.issueFacade.updateIssue(this.issueId, {
+          title: formValue.title,
+          description: formValue.description,
+          priority: formValue.priority,
+          severity: formValue.severity,
+          blueprint_id: formValue.blueprintId,
+          task_id: formValue.taskId,
+          issue_type: formValue.issueType
+        });
+        this.message.success('问题更新成功');
+      } else {
+        // Create new issue
+        await this.issueFacade.createIssue({
+          title: formValue.title,
+          description: formValue.description,
+          priority: formValue.priority,
+          severity: formValue.severity,
+          blueprint_id: formValue.blueprintId,
+          task_id: formValue.taskId,
+          issue_type: formValue.issueType,
+          status: 'open',
+          reported_at: new Date().toISOString()
+        });
+        this.message.success('问题创建成功');
+      }
+      
       this.router.navigate(['/issues']);
-    }, 1000);
+    } catch (error) {
+      this.message.error(this.isEdit ? '问题更新失败' : '问题创建失败');
+      console.error('Failed to save issue:', error);
+    } finally {
+      this.saving.set(false);
+    }
   }
 
   cancel(): void {
