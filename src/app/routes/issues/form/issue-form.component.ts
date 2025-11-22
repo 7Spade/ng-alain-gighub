@@ -126,7 +126,7 @@ export class IssueFormComponent implements OnInit {
   issueId = '';
   saving = signal(false);
   loading = signal(false);
-  
+
   // Options for dropdowns
   blueprints = signal<any[]>([]);
   tasks = signal<any[]>([]);
@@ -144,11 +144,11 @@ export class IssueFormComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.issueId = this.route.snapshot.paramMap.get('id') || '';
     this.isEdit = !!this.issueId;
-    
+
     // Load dropdown options
     await this.loadBlueprintList();
     await this.loadTaskList();
-    
+
     if (this.isEdit) {
       await this.loadIssue();
     }
@@ -212,7 +212,7 @@ export class IssueFormComponent implements OnInit {
     this.saving.set(true);
     try {
       const formValue = this.issueForm.value;
-      
+
       if (this.isEdit) {
         // Update existing issue
         await this.issueFacade.updateIssue(this.issueId, {
@@ -240,7 +240,7 @@ export class IssueFormComponent implements OnInit {
         });
         this.message.success('问题创建成功');
       }
-      
+
       this.router.navigate(['/issues']);
     } catch (error) {
       this.message.error(this.isEdit ? '问题更新失败' : '问题创建失败');

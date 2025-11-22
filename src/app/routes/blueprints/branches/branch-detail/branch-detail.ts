@@ -1,7 +1,15 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BranchType, BranchStatus, BranchContextService } from '@core';
-import { SHARED_IMPORTS, BranchService, BlueprintService, AccountService, BranchPermissionService, BranchPermissionLevel, AuthStateService } from '@shared';
+import {
+  SHARED_IMPORTS,
+  BranchService,
+  BlueprintService,
+  AccountService,
+  BranchPermissionService,
+  BranchPermissionLevel,
+  AuthStateService
+} from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -50,7 +58,7 @@ export class BranchDetailComponent implements OnInit {
     const branch = this.branch();
     const userId = this.currentUserId();
     if (!branch || !userId) return null;
-    
+
     // 從權限服務中查找當前用戶的權限
     const permissions = this.branchPermissionService.permissions();
     return permissions.find(p => p.user_id === userId) || null;
