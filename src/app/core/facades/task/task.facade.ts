@@ -262,6 +262,144 @@ export class TaskFacade implements OnDestroy {
   }
 
   /**
+   * Load all tasks (no filter)
+   *
+   * Loads tasks from all blueprints accessible to the user.
+   * Use this method sparingly as it may return a large dataset.
+   *
+   * @example
+   * ```typescript
+   * await facade.loadTasks();
+   * const allTasks = facade.tasks();
+   * ```
+   */
+  async loadTasks(): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_all_tasks');
+
+    try {
+      await this.taskService.loadTasks();
+    } catch (error) {
+      console.error('[TaskFacade] Failed to load tasks:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Search tasks by query string
+   *
+   * Searches tasks by title and description using case-insensitive pattern matching.
+   * Supports additional filtering by status, priority, blueprint, and assignee.
+   *
+   * @param query Search query string
+   * @param options Search options
+   * @param options.status Filter by task status
+   * @param options.priority Filter by task priority
+   * @param options.blueprintId Filter by blueprint ID
+   * @param options.assigneeId Filter by assignee ID
+   * @param options.page Page number (default: 1)
+   * @param options.pageSize Items per page (default: 50)
+   *
+   * @example
+   * ```typescript
+   * // Search for tasks containing "API"
+   * await facade.searchTasks('API');
+   *
+   * // Search pending tasks
+   * await facade.searchTasks('test', { status: TaskStatus.PENDING });
+   *
+   * // Search tasks in specific blueprint
+   * await facade.searchTasks('implement', { blueprintId: 'bp-123' });
+   * ```
+   */
+  async searchTasks(
+    query: string,
+    options?: {
+      status?: TaskStatus;
+      priority?: TaskPriority;
+      blueprintId?: string;
+      assigneeId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('search_tasks');
+
+    try {
+      await this.taskService.searchTasks(query, options);
+    } catch (error) {
+      console.error('[TaskFacade] Failed to search tasks:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Load tasks by status
+   *
+   * Filters and loads tasks matching the specified status.
+   *
+   * @param status Task status to filter by
+   *
+   * @example
+   * ```typescript
+   * await facade.loadTasksByStatus(TaskStatus.IN_PROGRESS);
+   * const inProgressTasks = facade.tasks();
+   * ```
+   */
+  async loadTasksByStatus(status: TaskStatus): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_tasks_by_status');
+
+    try {
+      await this.taskService.loadTasksByStatus(status);
+    } catch (error) {
+      console.error('[TaskFacade] Failed to load tasks by status:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
+   * Load tasks by assignee
+   *
+   * Loads tasks assigned to a specific user, team, organization, or contractor.
+   *
+   * @param assigneeId ID of the assignee
+   * @param assigneeType Type of assignee ('individual' | 'team' | 'organization' | 'contractor')
+   *
+   * @example
+   * ```typescript
+   * // Load tasks assigned to a user
+   * await facade.loadTasksByAssignee('user-123', 'individual');
+   *
+   * // Load tasks assigned to a team
+   * await facade.loadTasksByAssignee('team-456', 'team');
+   * ```
+   */
+  async loadTasksByAssignee(
+    assigneeId: string,
+    assigneeType: 'individual' | 'team' | 'organization' | 'contractor'
+  ): Promise<void> {
+    this.operationInProgressState.set(true);
+    this.lastOperationState.set('load_tasks_by_assignee');
+
+    try {
+      await this.taskService.loadTasksByAssignee(assigneeId, assigneeType);
+    } catch (error) {
+      console.error('[TaskFacade] Failed to load tasks by assignee:', error);
+      throw error;
+    } finally {
+      this.operationInProgressState.set(false);
+    }
+  }
+
+  /**
    * Create new task
    *
    * @param data Task data
