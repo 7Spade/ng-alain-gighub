@@ -70,7 +70,7 @@
   // 測試產生指示
   "github.copilot.chat.testGeneration.instructions": [
     {
-      "file": ".copilot-test-instructions.md"
+      "file": ".github/copilot-instructions/.copilot-test-instructions.md"
     },
     {
       "text": "Always try uniting related tests in a suite."
@@ -91,7 +91,7 @@
       "text": "Always response in #zh-tw."
     },
     {
-      "file": ".copilot-instructions.md"
+      "file": ".github/copilot-instructions/.copilot-instructions.md"
     }
   ],
   // 程式碼審查的自訂指示
@@ -100,7 +100,7 @@
       "text": "Always response in #zh-tw."
     },
     {
-      "file": ".copilot-review-instructions.md"
+      "file": ".github/copilot-instructions/.copilot-review-instructions.md"
     }
   ],
   // Git Commit 訊息產生指示
@@ -112,7 +112,7 @@
       "text": "請一律使用正體中文來撰寫記錄"
     },
     {
-      "file": ".copilot-commit-message-instructions.md"
+      "file": ".github/copilot-instructions/.copilot-commit-message-instructions.md"
     }
   ],
   // Pull Request 描述產生指示
@@ -121,7 +121,7 @@
       "text": "請一律使用正體中文來撰寫記錄"
     },
     {
-      "file": ".copilot-pull-request-description-instructions.md"
+      "file": ".github/copilot-instructions/.copilot-pull-request-description-instructions.md"
     }
   ],
 
