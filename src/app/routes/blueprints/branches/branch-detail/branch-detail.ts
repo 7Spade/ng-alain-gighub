@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BranchType, BranchStatus, BranchContextService } from '@core';
-import { SHARED_IMPORTS, BranchService, BlueprintService, AccountService, BranchPermissionService, BranchPermissionLevel } from '@shared';
+import { SHARED_IMPORTS, BranchService, BlueprintService, AccountService, BranchPermissionService, BranchPermissionLevel, AuthStateService } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -17,6 +17,7 @@ export class BranchDetailComponent implements OnInit {
   accountService = inject(AccountService);
   branchPermissionService = inject(BranchPermissionService);
   branchContext = inject(BranchContextService);
+  authState = inject(AuthStateService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   message = inject(NzMessageService);
@@ -41,12 +42,18 @@ export class BranchDetailComponent implements OnInit {
     return this.accountService.accounts().find(a => a.id === branch.organization_id) || null;
   });
 
+  // 當前用戶 ID
+  currentUserId = computed(() => this.authState.user()?.id || null);
+
   // 當前用戶權限
   currentUserPermission = computed(() => {
     const branch = this.branch();
-    if (!branch) return null;
-    // TODO: 從 AuthStateService 獲取當前用戶ID
-    return null;
+    const userId = this.currentUserId();
+    if (!branch || !userId) return null;
+    
+    // 從權限服務中查找當前用戶的權限
+    const permissions = this.branchPermissionService.permissions();
+    return permissions.find(p => p.user_id === userId) || null;
   });
 
   ngOnInit(): void {
