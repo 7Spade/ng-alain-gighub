@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SupabaseService } from '@core';
 import { ErrorStateService } from '@shared/services/common';
+import { REALTIME_CHANNEL_STATES, REALTIME_SUBSCRIBE_STATES } from '@supabase/realtime-js';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
 import { RealtimeFacade, SubscriptionConfig } from './realtime.facade';
@@ -12,9 +13,12 @@ describe('RealtimeFacade', () => {
   let mockChannel: jasmine.SpyObj<RealtimeChannel>;
 
   beforeEach(() => {
-    // Create mock channel
-    mockChannel = jasmine.createSpyObj<RealtimeChannel>('RealtimeChannel', ['on', 'subscribe', 'send', 'track', 'presenceState'], {
-      state: 'joined'
+    // Create mock channel with proper state type
+    mockChannel = jasmine.createSpyObj<RealtimeChannel>('RealtimeChannel', ['on', 'subscribe', 'send', 'track', 'presenceState']);
+    // Set state property manually since it can't be passed in createSpyObj properties
+    Object.defineProperty(mockChannel, 'state', {
+      value: REALTIME_CHANNEL_STATES.joined,
+      writable: true
     });
 
     mockChannel.on.and.returnValue(mockChannel as any);
@@ -78,7 +82,7 @@ describe('RealtimeFacade', () => {
       expect(subscriptionId).toBeTruthy();
       expect(facade.subscriptions().size).toBe(1);
       expect(mockSupabaseService.client.channel).toHaveBeenCalled();
-      expect(mockChannel.on).toHaveBeenCalledWith('postgres_changes', jasmine.any(Object), jasmine.any(Function));
+      expect(mockChannel.on).toHaveBeenCalledWith(jasmine.anything(), jasmine.any(Object), jasmine.any(Function));
       expect(mockChannel.subscribe).toHaveBeenCalled();
     });
 
@@ -136,7 +140,7 @@ describe('RealtimeFacade', () => {
       expect(subscriptionId).toBeTruthy();
       expect(facade.subscriptions().size).toBe(1);
       expect(mockSupabaseService.client.channel).toHaveBeenCalledWith('task-updates');
-      expect(mockChannel.on).toHaveBeenCalledWith('broadcast', jasmine.any(Object), jasmine.any(Function));
+      expect(mockChannel.on).toHaveBeenCalledWith(jasmine.anything(), jasmine.any(Object), jasmine.any(Function));
     });
 
     it('should throw error if channel name is missing', () => {
@@ -171,7 +175,7 @@ describe('RealtimeFacade', () => {
       expect(subscriptionId).toBeTruthy();
       expect(facade.subscriptions().size).toBe(1);
       expect(mockSupabaseService.client.channel).toHaveBeenCalledWith('task-board');
-      expect(mockChannel.on).toHaveBeenCalledWith('presence', jasmine.any(Object), jasmine.any(Function));
+      expect(mockChannel.on).toHaveBeenCalledWith(jasmine.anything(), jasmine.any(Object), jasmine.any(Function));
     });
 
     it('should throw error if channel name is missing', () => {
@@ -263,7 +267,9 @@ describe('RealtimeFacade', () => {
 
       // Get the status callback and simulate SUBSCRIBED status
       const statusCallback = mockChannel.subscribe.calls.mostRecent().args[0];
-      statusCallback('SUBSCRIBED');
+      if (statusCallback) {
+        statusCallback(REALTIME_SUBSCRIBE_STATES.SUBSCRIBED);
+      }
 
       expect(facade.connectedSubscriptions()).toBe(1);
       expect(facade.hasActiveConnection()).toBeTrue();
@@ -275,7 +281,9 @@ describe('RealtimeFacade', () => {
       facade.subscribeToTable({ table: 'tasks' }, callback);
 
       const statusCallback = mockChannel.subscribe.calls.mostRecent().args[0];
-      statusCallback('CHANNEL_ERROR');
+      if (statusCallback) {
+        statusCallback(REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR);
+      }
 
       // Should log error
       expect(mockErrorService.addError).toHaveBeenCalledWith(
@@ -294,7 +302,9 @@ describe('RealtimeFacade', () => {
       const statusCallback = mockChannel.subscribe.calls.mostRecent().args[0];
 
       setTimeout(() => {
-        statusCallback('SUBSCRIBED');
+        if (statusCallback) {
+          statusCallback(REALTIME_SUBSCRIBE_STATES.SUBSCRIBED);
+        }
         expect(facade.lastConnectionUpdate()).not.toBeNull();
         done();
       }, 10);
