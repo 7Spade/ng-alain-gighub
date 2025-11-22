@@ -281,29 +281,9 @@ supabase db test
 - 提供智能補全
 - 優化命名建議
 
-#### 8. Redis MCP
-**用途**：存儲與讀取開發原則、規範、最佳實踐
-
-**使用場景**：
-- 存儲 SRP 原則
-- 存儲企業標準
-- 存儲開發順序
-- 存儲錯誤處理流程
-
-**Redis 數據結構**：
-principles:srp           - SRP 原則
-```typescript
-principles:development   - 開發順序與檢查清單
-principles:error        - 錯誤處理流程
-patterns:repository     - Repository 模式
-patterns:facade         - Facade 模式
-standards:naming        - 命名規範
-standards:typescript    - TypeScript 規範
-```
-
 ### 常用開發與測試工具
 
-#### 9. Git (Version Control)
+#### 8. Git (Version Control)
 **用途**：版本控制操作 (High Priority)
 **使用場景**：代碼提交、分支管理、合併衝突解決
 **基礎用法**：
@@ -319,7 +299,7 @@ git commit -m "feat(auth): implement login logic"
 git push origin feature/user-auth
 ```
 
-#### 10. Playwright (E2E Testing)
+#### 9. Playwright (E2E Testing)
 **用途**：Angular 端對端測試 (High Priority)
 **使用場景**：關鍵業務流程驗證、自動化回歸測試
 **基礎用法**：
@@ -334,7 +314,7 @@ npx playwright test --ui
 npx playwright codegen http://localhost:4200
 ```
 
-#### 11. Time (Data Management)
+#### 10. Time (Data Management)
 **用途**：資料管理系統的時間處理
 **使用場景**：統一資料庫時間戳、跨時區一致性、效能計時
 **基礎用法**：
@@ -624,17 +604,10 @@ Models   ← Types  ← Types    ← Types
    mkdir -p src/app/routes/{feature}
    ```
 
-5. **讀取開發原則**（Redis MCP）
-   ```bash
-   # 讀取 SRP 原則
-   GET principles:srp
-   
-   # 讀取開發順序
-   GET principles:development
-   
-   # 讀取錯誤處理流程
-   GET principles:error
-   ```
+5. **查閱開發原則**（記憶庫）
+   - 從 `.github/copilot/memory.jsonl` 查詢 SRP 原則
+   - 查詢五層架構開發順序
+   - 查詢錯誤處理最佳實踐
 
 6. **記錄開發決策**（Memory MCP）
    - 記住為什麼選擇某種實現
@@ -789,7 +762,7 @@ Models   ← Types  ← Types    ← Types
   └─ 部分失敗？
       └─ 執行錯誤處理流程
           ├─ 1. 識別錯誤類型
-          ├─ 2. 讀取錯誤處理原則（Redis MCP）
+          ├─ 2. 查閱錯誤處理原則（記憶庫）
           ├─ 3. 選擇修復策略（Sequential Thinking）
           ├─ 4. 執行修復（Filesystem MCP）
           ├─ 5. 重新驗證
@@ -799,13 +772,13 @@ Models   ← Types  ← Types    ← Types
               └─ 記錄問題（Memory MCP）→ 尋求協助
 ```
 
-### 常見錯誤處理（使用 Redis + Sequential Thinking）
+### 常見錯誤處理（使用 Sequential Thinking）
 
 #### TypeScript 編譯錯誤
 
 ```bash
-# 1. 讀取 TypeScript 規範（Redis）
-GET standards:typescript
+# 1. 查閱 TypeScript 規範（記憶庫）
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("TypeScript"))'
 
 # 2. 識別錯誤類型（Sequential Thinking）
 步驟 1：檢查錯誤訊息
@@ -822,8 +795,8 @@ GET standards:typescript
 #### ESLint 錯誤
 
 ```bash
-# 1. 讀取 ESLint 規範（Redis）
-GET standards:eslint
+# 1. 查閱 ESLint 規範（記憶庫）
+cat .github/copilot/memory.jsonl | jq 'select(.name | contains("ESLint"))'
 
 # 2. 嘗試自動修復
 yarn lint --fix
