@@ -131,4 +131,75 @@ export class CommentRepository extends BaseRepository<Comment, CommentInsert, Co
       orderDirection: 'asc'
     });
   }
+
+  /**
+   * 搜索评论（按内容）
+   *
+   * 使用全文搜索功能在评论内容中查找匹配的关键字
+   *
+   * @param query 搜索关键字
+   * @param options 搜索选项
+   * @param options.commentableType 按可评论类型筛选
+   * @param options.commentableId 按可评论对象筛选
+   * @param options.authorId 按作者筛选
+   * @param options.page 页码（默认 1）
+   * @param options.pageSize 每页数量（默认 50）
+   * @returns Observable<Comment[]>
+   *
+   * @example
+   * ```typescript
+   * // 搜索包含"问题"的评论
+   * commentRepo.search('问题').subscribe(comments => {
+   *   console.log('Found comments:', comments);
+   * });
+   *
+   * // 搜索任务相关的评论
+   * commentRepo.search('问题', { 
+   *   commentableType: 'Task' 
+   * }).subscribe(comments => {
+   *   console.log('Task comments:', comments);
+   * });
+   * ```
+   */
+  search(
+    query: string,
+    options?: {
+      commentableType?: string;
+      commentableId?: string;
+      authorId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Observable<Comment[]> {
+    // 构建基础查询
+    let supabaseQuery = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .ilike('content', `%${query}%`) as any;
+
+    // 应用筛选条件
+    if (options?.commentableType) {
+      supabaseQuery = supabaseQuery.eq('commentable_type', options.commentableType);
+    }
+
+    if (options?.commentableId) {
+      supabaseQuery = supabaseQuery.eq('commentable_id', options.commentableId);
+    }
+
+    if (options?.authorId) {
+      supabaseQuery = supabaseQuery.eq('author_id', options.authorId);
+    }
+
+    // 应用分页
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 50;
+    const fromIndex = (page - 1) * pageSize;
+    const toIndex = fromIndex + pageSize - 1;
+    supabaseQuery = supabaseQuery.range(fromIndex, toIndex);
+
+    // 按创建时间倒序排序
+    supabaseQuery = supabaseQuery.order('created_at', { ascending: false });
+
+    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+  }
 }

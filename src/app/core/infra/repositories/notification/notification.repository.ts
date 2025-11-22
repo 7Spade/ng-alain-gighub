@@ -195,4 +195,86 @@ export class NotificationRepository extends BaseRepository<Notification, Notific
       })
     );
   }
+
+  /**
+   * 搜索通知（按标题和内容）
+   *
+   * 使用全文搜索功能在通知的标题和内容中查找匹配的关键字
+   *
+   * @param query 搜索关键字
+   * @param options 搜索选项
+   * @param options.recipientId 按接收人筛选
+   * @param options.notificationType 按通知类型筛选
+   * @param options.isRead 按已读状态筛选
+   * @param options.page 页码（默认 1）
+   * @param options.pageSize 每页数量（默认 50）
+   * @returns Observable<Notification[]>
+   *
+   * @example
+   * ```typescript
+   * // 搜索包含"任务"的通知
+   * notificationRepo.search('任务').subscribe(notifications => {
+   *   console.log('Found notifications:', notifications);
+   * });
+   *
+   * // 搜索未读的通知
+   * notificationRepo.search('任务', { 
+   *   isRead: false 
+   * }).subscribe(notifications => {
+   *   console.log('Unread notifications:', notifications);
+   * });
+   * ```
+   */
+  search(
+    query: string,
+    options?: {
+      recipientId?: string;
+      notificationType?: string;
+      isRead?: boolean;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Observable<Notification[]> {
+    // 构建基础查询
+    let supabaseQuery = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .or(`title.ilike.%${query}%,content.ilike.%${query}%`) as any;
+
+    // 应用筛选条件
+    if (options?.recipientId) {
+      supabaseQuery = supabaseQuery.eq('recipient_id', options.recipientId);
+    }
+
+    if (options?.notificationType) {
+      supabaseQuery = supabaseQuery.eq('notification_type', options.notificationType);
+    }
+
+    if (options?.isRead !== undefined) {
+      if (options.isRead) {
+        supabaseQuery = supabaseQuery.eq('is_read', true);
+      } else {
+        supabaseQuery = supabaseQuery.or('is_read.is.null,is_read.eq.false');
+      }
+    }
+
+    // 应用分页
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 50;
+    const fromIndex = (page - 1) * pageSize;
+    const toIndex = fromIndex + pageSize - 1;
+    supabaseQuery = supabaseQuery.range(fromIndex, toIndex);
+
+    // 按创建时间倒序排序
+    supabaseQuery = supabaseQuery.order('created_at', { ascending: false });
+
+    return from(Promise.resolve(supabaseQuery) as Promise<{ data: any[] | null; error: any }>).pipe(
+      map((response: { data: any[] | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '搜索通知失败');
+        }
+        return (response.data || []).map(item => toCamelCaseData<Notification>(item));
+      })
+    );
+  }
 }
