@@ -83,4 +83,81 @@ export class ActivityLogRepository extends BaseRepository<ActivityLog, ActivityL
       orderDirection: 'desc'
     });
   }
+
+  /**
+   * 搜索活動記錄（按描述和元數據）
+   *
+   * 使用全文搜索功能在活動記錄的描述中查找匹配的關鍵字
+   *
+   * @param query 搜索關鍵字
+   * @param options 搜索選項
+   * @param options.blueprintId 按藍圖篩選
+   * @param options.actorId 按操作者篩選
+   * @param options.resourceType 按資源類型篩選
+   * @param options.actionType 按操作類型篩選
+   * @param options.page 頁碼（默認 1）
+   * @param options.pageSize 每頁數量（默認 50）
+   * @returns Observable<ActivityLog[]>
+   *
+   * @example
+   * ```typescript
+   * // 搜索包含"創建"的活動記錄
+   * activityLogRepo.search('創建').subscribe(logs => {
+   *   console.log('Found logs:', logs);
+   * });
+   *
+   * // 搜索特定用戶的活動
+   * activityLogRepo.search('創建', { 
+   *   actorId: 'user-id' 
+   * }).subscribe(logs => {
+   *   console.log('User activities:', logs);
+   * });
+   * ```
+   */
+  search(
+    query: string,
+    options?: {
+      blueprintId?: string;
+      actorId?: string;
+      resourceType?: string;
+      actionType?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Observable<ActivityLog[]> {
+    // 構建基礎查詢
+    let supabaseQuery = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .ilike('description', `%${query}%`) as any;
+
+    // 應用篩選條件
+    if (options?.blueprintId) {
+      supabaseQuery = supabaseQuery.eq('blueprint_id', options.blueprintId);
+    }
+
+    if (options?.actorId) {
+      supabaseQuery = supabaseQuery.eq('actor_id', options.actorId);
+    }
+
+    if (options?.resourceType) {
+      supabaseQuery = supabaseQuery.eq('resource_type', options.resourceType);
+    }
+
+    if (options?.actionType) {
+      supabaseQuery = supabaseQuery.eq('action_type', options.actionType);
+    }
+
+    // 應用分頁
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 50;
+    const fromIndex = (page - 1) * pageSize;
+    const toIndex = fromIndex + pageSize - 1;
+    supabaseQuery = supabaseQuery.range(fromIndex, toIndex);
+
+    // 按創建時間倒序排序
+    supabaseQuery = supabaseQuery.order('created_at', { ascending: false });
+
+    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+  }
 }

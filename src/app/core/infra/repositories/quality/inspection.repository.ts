@@ -81,4 +81,81 @@ export class InspectionRepository extends BaseRepository<Inspection, InspectionI
       orderDirection: 'desc'
     });
   }
+
+  /**
+   * 搜索验收记录（按备注和结果）
+   *
+   * 使用全文搜索功能在验收记录的备注和结果中查找匹配的关键字
+   *
+   * @param query 搜索关键字
+   * @param options 搜索选项
+   * @param options.status 按状态筛选
+   * @param options.inspectionType 按检查类型筛选
+   * @param options.taskId 按任务筛选
+   * @param options.inspectorId 按检查员筛选
+   * @param options.page 页码（默认 1）
+   * @param options.pageSize 每页数量（默认 50）
+   * @returns Observable<Inspection[]>
+   *
+   * @example
+   * ```typescript
+   * // 搜索包含"合格"的验收记录
+   * inspectionRepo.search('合格').subscribe(inspections => {
+   *   console.log('Found inspections:', inspections);
+   * });
+   *
+   * // 搜索已通过的验收记录
+   * inspectionRepo.search('合格', { 
+   *   status: InspectionStatus.PASSED 
+   * }).subscribe(inspections => {
+   *   console.log('Passed inspections:', inspections);
+   * });
+   * ```
+   */
+  search(
+    query: string,
+    options?: {
+      status?: string;
+      inspectionType?: string;
+      taskId?: string;
+      inspectorId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Observable<Inspection[]> {
+    // 构建基础查询 - 搜索备注和结果字段
+    let supabaseQuery = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .or(`remarks.ilike.%${query}%,result.ilike.%${query}%`) as any;
+
+    // 应用筛选条件
+    if (options?.status) {
+      supabaseQuery = supabaseQuery.eq('status', options.status);
+    }
+
+    if (options?.inspectionType) {
+      supabaseQuery = supabaseQuery.eq('inspection_type', options.inspectionType);
+    }
+
+    if (options?.taskId) {
+      supabaseQuery = supabaseQuery.eq('task_id', options.taskId);
+    }
+
+    if (options?.inspectorId) {
+      supabaseQuery = supabaseQuery.eq('inspector_id', options.inspectorId);
+    }
+
+    // 应用分页
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 50;
+    const fromIndex = (page - 1) * pageSize;
+    const toIndex = fromIndex + pageSize - 1;
+    supabaseQuery = supabaseQuery.range(fromIndex, toIndex);
+
+    // 按检查时间倒序排序
+    supabaseQuery = supabaseQuery.order('inspected_at', { ascending: false });
+
+    return this.executeQuery(supabaseQuery, `${this.constructor.name}.search`);
+  }
 }
