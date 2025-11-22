@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { SupabaseService } from '@core';
 import { ErrorStateService } from '@shared/services/common';
-import type { RealtimeChannel } from '@supabase/supabase-js';
 import { REALTIME_CHANNEL_STATES, REALTIME_SUBSCRIBE_STATES } from '@supabase/realtime-js';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 import { RealtimeFacade, SubscriptionConfig } from './realtime.facade';
 

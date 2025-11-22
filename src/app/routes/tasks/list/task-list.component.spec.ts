@@ -71,7 +71,14 @@ describe('TaskListComponent', () => {
   const mockAccount: Account = {
     id: 'user-1',
     email: 'test@example.com',
-    username: 'testuser'
+    name: 'testuser',
+    type: 'user',
+    auth_user_id: null,
+    avatar_url: null,
+    created_at: null,
+    metadata: null,
+    status: null,
+    updated_at: null
   } as Account;
 
   beforeEach(async () => {
