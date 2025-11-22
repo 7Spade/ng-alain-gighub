@@ -440,4 +440,127 @@ export class TaskService {
     const status = task.status as TaskStatus;
     return isWithdrawableStatus(status);
   }
+
+  /**
+   * 加載所有任務（無過濾）
+   *
+   * ⚠️ 此方法會返回所有可訪問的任務，可能返回大量數據。
+   * 建議使用 loadTasksByBlueprint 或 searchTasks 來過濾結果。
+   */
+  async loadTasks(): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const tasks = await firstValueFrom(this.taskRepository.findAll());
+      this.tasksState.set(tasks);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '加載任務列表失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 搜索任務
+   *
+   * @param query 搜索查詢字串
+   * @param options 搜索選項
+   */
+  async searchTasks(
+    query: string,
+    options?: {
+      status?: TaskStatus;
+      priority?: TaskPriority;
+      blueprintId?: string;
+      assigneeId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const tasks = await firstValueFrom(this.taskRepository.search(query, options));
+      this.tasksState.set(tasks);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '搜索任務失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據狀態加載任務
+   *
+   * @param status 任務狀態
+   */
+  async loadTasksByStatus(status: TaskStatus): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const tasks = await firstValueFrom(this.taskRepository.findByStatus(status));
+      this.tasksState.set(tasks);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '加載任務失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據分配人加載任務
+   *
+   * @param assigneeId 分配人 ID
+   * @param assigneeType 分配人類型
+   */
+  async loadTasksByAssignee(
+    assigneeId: string,
+    assigneeType: 'individual' | 'team' | 'organization' | 'contractor'
+  ): Promise<void> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      // 先通過 task_assignments 表找到所有相關的 task_id
+      // 根據 assignee_id 和 assignee_type 查詢
+      const assignments = await firstValueFrom(
+        this.taskAssignmentRepository.findAll({
+          filters: {
+            assigneeId,
+            assigneeType
+          }
+        })
+      );
+      const taskIds = assignments.map(a => a.taskId);
+
+      if (taskIds.length === 0) {
+        this.tasksState.set([]);
+        return;
+      }
+
+      // 然後加載這些任務
+      const tasks = await firstValueFrom(this.taskRepository.findByIds(taskIds));
+      this.tasksState.set(tasks);
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '加載任務失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 選擇任務
+   *
+   * @param task 要選擇的任務（或 null 來清除選擇）
+   */
+  selectTask(task: Task | null): void {
+    this.selectedTaskState.set(task);
+  }
 }

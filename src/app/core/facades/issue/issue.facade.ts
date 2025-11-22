@@ -228,6 +228,197 @@ export class IssueFacade implements OnDestroy {
   }
 
   /**
+   * Search issues by query
+   *
+   * Searches issues by title and description using case-insensitive pattern matching.
+   * Supports additional filtering by status, priority, severity, blueprint, and assignee.
+   *
+   * @param query Search query string
+   * @param options Search options
+   * @param options.status Filter by issue status
+   * @param options.priority Filter by issue priority
+   * @param options.severity Filter by issue severity
+   * @param options.blueprintId Filter by blueprint ID
+   * @param options.assigneeId Filter by assignee ID
+   * @param options.page Page number (default: 1)
+   * @param options.pageSize Items per page (default: 50)
+   *
+   * @example
+   * ```typescript
+   * // Search for issues containing "crack"
+   * await facade.searchIssues('crack');
+   *
+   * // Search critical issues
+   * await facade.searchIssues('structural', { severity: 'critical' });
+   *
+   * // Search issues in specific blueprint
+   * await facade.searchIssues('defect', { blueprintId: 'bp-123' });
+   * ```
+   */
+  async searchIssues(
+    query: string,
+    options?: {
+      status?: string;
+      priority?: string;
+      severity?: string;
+      blueprintId?: string;
+      assigneeId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Promise<void> {
+    this.loading.set(true);
+    this.lastOperation.set('searchIssues');
+
+    try {
+      const issues = await this.issueService.searchIssues(query, options);
+      this.issues.set(issues);
+    } catch (error) {
+      this.errorStateService.addError({
+        message: 'Failed to search issues',
+        category: 'Network',
+        severity: 'error',
+        context: `IssueFacade.searchIssues: ${query}`
+      });
+      throw error;
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  /**
+   * Load issues by status
+   *
+   * Filters and loads issues matching the specified status.
+   *
+   * @param status Issue status ('open', 'in_progress', 'resolved', 'closed')
+   *
+   * @example
+   * ```typescript
+   * await facade.loadIssuesByStatus('open');
+   * const openIssues = facade.issues();
+   * ```
+   */
+  async loadIssuesByStatus(status: string): Promise<void> {
+    this.loading.set(true);
+    this.lastOperation.set('loadIssuesByStatus');
+
+    try {
+      const issues = await this.issueService.getIssuesByStatus(status);
+      this.issues.set(issues);
+    } catch (error) {
+      this.errorStateService.addError({
+        message: 'Failed to load issues by status',
+        category: 'Network',
+        severity: 'error',
+        context: `IssueFacade.loadIssuesByStatus: ${status}`
+      });
+      throw error;
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  /**
+   * Load issues by priority
+   *
+   * Filters and loads issues matching the specified priority.
+   *
+   * @param priority Issue priority ('low', 'medium', 'high', 'critical')
+   *
+   * @example
+   * ```typescript
+   * await facade.loadIssuesByPriority('high');
+   * const highPriorityIssues = facade.issues();
+   * ```
+   */
+  async loadIssuesByPriority(priority: string): Promise<void> {
+    this.loading.set(true);
+    this.lastOperation.set('loadIssuesByPriority');
+
+    try {
+      const issues = await this.issueService.getIssuesByPriority(priority);
+      this.issues.set(issues);
+    } catch (error) {
+      this.errorStateService.addError({
+        message: 'Failed to load issues by priority',
+        category: 'Network',
+        severity: 'error',
+        context: `IssueFacade.loadIssuesByPriority: ${priority}`
+      });
+      throw error;
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  /**
+   * Load issues by severity
+   *
+   * Filters and loads issues matching the specified severity.
+   *
+   * @param severity Issue severity ('trivial', 'minor', 'major', 'critical')
+   *
+   * @example
+   * ```typescript
+   * await facade.loadIssuesBySeverity('critical');
+   * const criticalIssues = facade.issues();
+   * ```
+   */
+  async loadIssuesBySeverity(severity: string): Promise<void> {
+    this.loading.set(true);
+    this.lastOperation.set('loadIssuesBySeverity');
+
+    try {
+      const issues = await this.issueService.getIssuesBySeverity(severity);
+      this.issues.set(issues);
+    } catch (error) {
+      this.errorStateService.addError({
+        message: 'Failed to load issues by severity',
+        category: 'Network',
+        severity: 'error',
+        context: `IssueFacade.loadIssuesBySeverity: ${severity}`
+      });
+      throw error;
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  /**
+   * Load issues by assignee
+   *
+   * Loads issues assigned to a specific user, team, or organization.
+   *
+   * @param assigneeId ID of the assignee
+   *
+   * @example
+   * ```typescript
+   * // Load issues assigned to a user
+   * await facade.loadIssuesByAssignee('user-123');
+   * ```
+   */
+  async loadIssuesByAssignee(assigneeId: string): Promise<void> {
+    this.loading.set(true);
+    this.lastOperation.set('loadIssuesByAssignee');
+
+    try {
+      const issues = await this.issueService.getIssuesByAssignee(assigneeId);
+      this.issues.set(issues);
+    } catch (error) {
+      this.errorStateService.addError({
+        message: 'Failed to load issues by assignee',
+        category: 'Network',
+        severity: 'error',
+        context: `IssueFacade.loadIssuesByAssignee: ${assigneeId}`
+      });
+      throw error;
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  /**
    * Create new issue
    */
   async createIssue(data: IssueInsert): Promise<Issue> {

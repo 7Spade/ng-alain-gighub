@@ -386,4 +386,138 @@ export class IssueService {
   private resolveIssueId<T extends { issue_id: string } & { issueId?: string }>(payload: T): string {
     return payload.issueId ?? payload.issue_id;
   }
+
+  /**
+   * 搜索問題
+   *
+   * @param query 搜索查詢字串
+   * @param options 搜索選項
+   * @returns Promise<Issue[]>
+   */
+  async searchIssues(
+    query: string,
+    options?: {
+      status?: string;
+      priority?: string;
+      severity?: string;
+      blueprintId?: string;
+      assigneeId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Promise<Issue[]> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const issues = await firstValueFrom(this.issueRepository.search(query, options));
+      this.issuesState.set(issues);
+      return issues;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '搜索問題失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據狀態查詢問題
+   *
+   * @param status 問題狀態
+   * @returns Promise<Issue[]>
+   */
+  async getIssuesByStatus(status: string): Promise<Issue[]> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const issues = await firstValueFrom(this.issueRepository.findByStatus(status));
+      this.issuesState.set(issues);
+      return issues;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '查詢問題失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據優先級查詢問題
+   *
+   * @param priority 問題優先級
+   * @returns Promise<Issue[]>
+   */
+  async getIssuesByPriority(priority: string): Promise<Issue[]> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const issues = await firstValueFrom(
+        this.issueRepository.findAll({
+          filters: {
+            priority
+          }
+        })
+      );
+      this.issuesState.set(issues);
+      return issues;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '查詢問題失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據嚴重程度查詢問題
+   *
+   * @param severity 問題嚴重程度
+   * @returns Promise<Issue[]>
+   */
+  async getIssuesBySeverity(severity: string): Promise<Issue[]> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const issues = await firstValueFrom(this.issueRepository.findBySeverity(severity));
+      this.issuesState.set(issues);
+      return issues;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '查詢問題失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
+
+  /**
+   * 根據分配人查詢問題
+   *
+   * @param assigneeId 分配人 ID
+   * @returns Promise<Issue[]>
+   */
+  async getIssuesByAssignee(assigneeId: string): Promise<Issue[]> {
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    try {
+      const issues = await firstValueFrom(
+        this.issueRepository.findAll({
+          filters: {
+            assigneeId
+          }
+        })
+      );
+      this.issuesState.set(issues);
+      return issues;
+    } catch (error) {
+      this.errorState.set(error instanceof Error ? error.message : '查詢問題失敗');
+      throw error;
+    } finally {
+      this.loadingState.set(false);
+    }
+  }
 }
