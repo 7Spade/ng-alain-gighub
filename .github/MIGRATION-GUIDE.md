@@ -117,7 +117,14 @@
 |--------|--------|------|
 | `.github/agents/ng-alain-github-agent.md`（部分） | `.github/agents/core/agent-overview.md` | ✅ 已創建 |
 | `.github/agents/ng-alain-github-agent.md`（部分） | `.github/agents/core/startup-procedure.md` | ✅ 已創建 |
-| `.github/agents/ng-alain-github-agent.md`（其餘） | `.github/agents/core/*.md`（其他 6 個文件） | 📝 待完成 |
+| `.github/agents/ng-alain-github-agent.md`（技術棧） | `.github/agents/core/tech-stack.md` | ✅ 已創建 |
+| `.github/agents/ng-alain-github-agent.md`（架構原則） | `.github/agents/core/architecture-principles.md` | ✅ 已創建 |
+| `.github/agents/ng-alain-github-agent.md`（開發流程） | `.github/agents/core/development-workflow.md` | ✅ 已創建 |
+| `.github/agents/ng-alain-github-agent.md`（決策邏輯） | `.github/agents/core/decision-logic.md` | ✅ 已創建 |
+| `.github/agents/ng-alain-github-agent.md`（錯誤處理） | `.github/agents/core/error-handling.md` | ✅ 已創建 |
+| `.github/agents/ng-alain-github-agent.md`（檢查清單） | `.github/agents/core/checklists.md` | ✅ 已創建 |
+| `.github/agents/ng-alain-github-agent.md`（31KB 原文件） | `.github/agents/archive/ng-alain-github-agent-v2.0-backup.md` | ✅ 已備份 |
+| `.github/agents/ng-alain-github-agent.md`（新版本 12KB） | `.github/agents/ng-alain-github-agent.md` | ✅ 已創建 |
 
 ### agents/guides/ 目錄
 | 舊路徑 | 新路徑 | 狀態 |
@@ -193,7 +200,9 @@
 ## 🎯 後續工作
 
 ### 高優先級（P0）
-1. **完成 core/ 模組拆分**：從 `ng-alain-github-agent.md` 拆分剩餘 6 個文件
+1. ~~**完成 core/ 模組拆分**~~：✅ 已完成（2025-01-22）
+   - 已將 31KB 的 `ng-alain-github-agent.md` 拆分為 8 個模組化文件
+   - 新主文件大小：12KB（遠低於 30KB 限制）
 2. **更新內部連結**：修正所有文件中的路徑引用
 3. **驗證功能**：確保所有配置正常運作
 
