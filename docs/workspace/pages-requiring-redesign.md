@@ -103,7 +103,7 @@
 | 47 | `/communication/notifications/detail` | notification-detail.component | User/Org | 🔴 待處理 |
 | 48 | `/communication/notifications/rules` | notification-rules.component | Org | 🔴 待處理 |
 | 49 | `/communication/realtime` | realtime-notify.component | Org | 🔴 待處理 |
-| 50 | `/communication/todos` | todo-center.component | User/Org/Team | 🔴 待處理 |
+| 50 | `/communication/todos` | todo-center.component | User/Org/Team | ✅ 已整合 |
 | 51 | `/communication/team-notify` | team-notify.component | Org/Team | 🔴 待處理 |
 
 ### 數據分析模組（11 個）

@@ -2,8 +2,69 @@
 
 > 📋 **目的**：記錄所有文檔的重大更新，確保文檔與實際架構保持一致
 
-**最後更新**：2025-11-21
+**最後更新**：2025-11-22
 **維護者**：開發團隊
+
+- --
+
+## [2025-11-22] - 待辦中心功能完成
+
+### 📋 更新概述
+
+完成待辦中心 (todo-center.component) 的功能實現，包括個人待辦列表載入和標記完成功能。
+
+### ✅ 完成頁面（1 個）
+
+#### 溝通協作模組
+- ✅ **todo-center.component** - 待辦中心頁面
+  - 整合 PersonalTodoService
+  - 實現 loadTodos() 方法載入個人待辦列表
+  - 實現 complete() 方法標記待辦為已完成
+  - Realtime 即時更新支援
+  - 智能 UI（已完成項目自動隱藏完成按鈕）
+  - 完整的錯誤處理與用戶提示
+
+### 🎯 技術特性
+
+1. **服務整合**：
+   - 使用 PersonalTodoService 管理待辦業務邏輯
+   - 使用 WorkspaceContextFacade 取得當前用戶上下文
+   - PersonalTodo 到 TodoItem 的自動映射
+
+2. **Realtime 更新**：
+   - 訂閱 personal_todos 表的變更
+   - 自動更新 UI 無需手動刷新
+   - 正確的生命週期管理（ngOnDestroy 清理訂閱）
+
+3. **狀態管理**：
+   - 使用 Angular Signals 實現響應式狀態
+   - computed signals 自動映射和過濾數據
+   - 與服務共享 loading 狀態
+
+4. **用戶體驗**：
+   - 已完成的待辦不顯示「完成」按鈕
+   - 按狀態、類型、優先級過濾
+   - 成功/錯誤訊息提示
+
+### 📊 更新文檔（1 個文件）
+
+- ✅ **pages-requiring-redesign.md** - 頁面狀態更新
+  - 更新 todo-center.component 狀態為「已整合」
+  - 溝通協作模組進度：1/9 (11%)
+  - 整體進度：7/86 (8.1%)
+
+### 📈 進度統計
+
+| 指標 | 數值 | 變化 |
+|------|------|------|
+| 已整合頁面 | 7/86 | +1 |
+| 整體進度 | 8.1% | +1.1% |
+| 溝通協作模組 | 1/9 (11%) | +11% |
+
+### 🔗 相關文件
+
+- 實現文件：`src/app/routes/communication/todos/todo-center.component.ts`
+- 頁面清單：`docs/workspace/pages-requiring-redesign.md`
 
 - --
 

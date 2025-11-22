@@ -1,8 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { WorkspaceContextFacade } from '@core';
 import { STColumn } from '@delon/abc/st';
-import { SHARED_IMPORTS } from '@shared';
+import { PersonalTodoService, SHARED_IMPORTS } from '@shared';
+import type { PersonalTodo } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
+
+// Import PersonalTodo type from models
 
 interface TodoItem {
   readonly id: string;
@@ -141,16 +145,22 @@ interface TodoItem {
     </nz-card>
   `
 })
-export class TodoCenterComponent implements OnInit {
-  router = inject(Router);
-  message = inject(NzMessageService);
+export class TodoCenterComponent implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  private readonly message = inject(NzMessageService);
+  private readonly personalTodoService = inject(PersonalTodoService);
+  private readonly contextFacade = inject(WorkspaceContextFacade);
 
   // Component signals
-  loading = signal(false);
-  filterStatus = signal<string | null>(null);
-  filterType = signal<string | null>(null);
-  filterPriority = signal<string | null>(null);
-  todos = signal<TodoItem[]>([]);
+  readonly loading = this.personalTodoService.loading;
+  readonly filterStatus = signal<string | null>(null);
+  readonly filterType = signal<string | null>(null);
+  readonly filterPriority = signal<string | null>(null);
+
+  // Map PersonalTodo to TodoItem
+  private readonly todos = computed(() => {
+    return this.personalTodoService.todos().map(todo => this.mapToTodoItem(todo));
+  });
 
   // Computed filtered todos
   filteredTodos = computed(() => {
@@ -190,6 +200,7 @@ export class TodoCenterComponent implements OnInit {
         },
         {
           text: '完成',
+          iif: (record: TodoItem) => record.status !== 'completed',
           click: (record: TodoItem) => this.complete(record.id)
         }
       ]
@@ -200,10 +211,25 @@ export class TodoCenterComponent implements OnInit {
     this.loadTodos();
   }
 
-  loadTodos(): void {
-    // TODO: 加载待办列表
-    // 暂时使用空数组，实际开发时连接真实数据
-    this.todos.set([]);
+  ngOnDestroy(): void {
+    // 取消订阅 Realtime 更新
+    this.personalTodoService.unsubscribeFromUpdates();
+  }
+
+  async loadTodos(): Promise<void> {
+    const currentUserAccountId = this.contextFacade.currentUserAccountId();
+    if (!currentUserAccountId) {
+      this.message.warning('无法获取当前用户信息');
+      return;
+    }
+
+    try {
+      // 订阅 Realtime 更新（会自动载入初始数据）
+      await this.personalTodoService.subscribeToUpdates(currentUserAccountId);
+    } catch (error) {
+      console.error('加载待办列表失败:', error);
+      this.message.error('加载待办列表失败');
+    }
   }
 
   onTableChange(): void {
@@ -215,8 +241,36 @@ export class TodoCenterComponent implements OnInit {
     this.message.info('查看详情功能开发中');
   }
 
-  complete(id: string): void {
-    // TODO: 实现完成逻辑
-    this.message.info('完成功能开发中');
+  async complete(id: string): Promise<void> {
+    const currentUserAccountId = this.contextFacade.currentUserAccountId();
+    if (!currentUserAccountId) {
+      this.message.warning('无法获取当前用户信息');
+      return;
+    }
+
+    try {
+      await this.personalTodoService.completeTodo(id, currentUserAccountId);
+      this.message.success('待办已标记为完成');
+    } catch (error) {
+      console.error('完成待办失败:', error);
+      this.message.error('完成待办失败');
+    }
+  }
+
+  /**
+   * 将 PersonalTodo 映射为 TodoItem
+   */
+  private mapToTodoItem(todo: PersonalTodo): TodoItem {
+    return {
+      id: todo.id,
+      title: todo.title,
+      type: todo.todo_type,
+      status: todo.status || 'pending',
+      priority: todo.priority || 'medium',
+      dueDate: todo.due_date,
+      relatedResourceType: todo.related_type || '',
+      relatedResourceId: todo.related_id || '',
+      createdAt: todo.created_at
+    };
   }
 }
