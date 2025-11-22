@@ -203,4 +203,92 @@ export class IssueRepository extends BaseRepository<Issue, IssueInsert, IssueUpd
       }
     });
   }
+
+  /**
+   * 搜索问题（按标题和描述）
+   *
+   * 使用全文搜索功能在问题的标题和描述中查找匹配的关键字
+   *
+   * @param query 搜索关键字
+   * @param options 搜索选项
+   * @param options.status 按状态筛选
+   * @param options.priority 按优先级筛选
+   * @param options.severity 按严重程度筛选
+   * @param options.blueprintId 按蓝图筛选
+   * @param options.assigneeId 按指派人筛选
+   * @param options.page 页码（默认 1）
+   * @param options.pageSize 每页数量（默认 50）
+   * @returns Observable<Issue[]>
+   *
+   * @example
+   * ```typescript
+   * // 搜索包含"bug"的问题
+   * issueRepo.search('bug').subscribe(issues => {
+   *   console.log('Found issues:', issues);
+   * });
+   *
+   * // 搜索高优先级的问题
+   * issueRepo.search('bug', { priority: IssuePriority.HIGH }).subscribe(issues => {
+   *   console.log('High priority issues:', issues);
+   * });
+   * ```
+   */
+  search(
+    query: string,
+    options?: {
+      status?: string;
+      priority?: string;
+      severity?: string;
+      blueprintId?: string;
+      assigneeId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Observable<Issue[]> {
+    // 构建基础查询
+    let supabaseQuery = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .or(`title.ilike.%${query}%,description.ilike.%${query}%`) as any;
+
+    // 应用筛选条件
+    if (options?.status) {
+      supabaseQuery = supabaseQuery.eq('status', options.status);
+    }
+
+    if (options?.priority) {
+      supabaseQuery = supabaseQuery.eq('priority', options.priority);
+    }
+
+    if (options?.severity) {
+      supabaseQuery = supabaseQuery.eq('severity', options.severity);
+    }
+
+    if (options?.blueprintId) {
+      supabaseQuery = supabaseQuery.eq('blueprint_id', options.blueprintId);
+    }
+
+    if (options?.assigneeId) {
+      supabaseQuery = supabaseQuery.eq('assignee_id', options.assigneeId);
+    }
+
+    // 应用分页
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 50;
+    const fromIndex = (page - 1) * pageSize;
+    const toIndex = fromIndex + pageSize - 1;
+    supabaseQuery = supabaseQuery.range(fromIndex, toIndex);
+
+    // 按更新时间倒序排序
+    supabaseQuery = supabaseQuery.order('updated_at', { ascending: false });
+
+    return from(Promise.resolve(supabaseQuery) as Promise<{ data: any[] | null; error: any }>).pipe(
+      map((response: { data: any[] | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '搜索问题失败');
+        }
+        return (response.data || []).map(item => toCamelCaseData<Issue>(item));
+      })
+    );
+  }
 }

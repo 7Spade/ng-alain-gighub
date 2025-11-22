@@ -314,4 +314,84 @@ export class TaskRepository extends BaseRepository<Task, TaskInsert, TaskUpdate>
       })
     );
   }
+
+  /**
+   * 搜索任务（按标题和描述）
+   *
+   * 使用全文搜索功能在任务的标题和描述中查找匹配的关键字
+   *
+   * @param query 搜索关键字
+   * @param options 搜索选项
+   * @param options.status 按状态筛选
+   * @param options.priority 按优先级筛选
+   * @param options.blueprintId 按蓝图筛选
+   * @param options.assigneeId 按指派人筛选
+   * @param options.page 页码（默认 1）
+   * @param options.pageSize 每页数量（默认 50）
+   * @returns Observable<Task[]>
+   *
+   * @example
+   * ```typescript
+   * // 搜索包含"测试"的任务
+   * taskRepo.search('测试').subscribe(tasks => {
+   *   console.log('Found tasks:', tasks);
+   * });
+   *
+   * // 搜索待处理的任务
+   * taskRepo.search('测试', { status: TaskStatus.PENDING }).subscribe(tasks => {
+   *   console.log('Pending tasks:', tasks);
+   * });
+   * ```
+   */
+  search(
+    query: string,
+    options?: {
+      status?: TaskStatus;
+      priority?: TaskPriority;
+      blueprintId?: string;
+      assigneeId?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Observable<Task[]> {
+    // 构建基础查询
+    let supabaseQuery = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .or(`title.ilike.%${query}%,description.ilike.%${query}%`) as any;
+
+    // 应用筛选条件
+    if (options?.status) {
+      supabaseQuery = supabaseQuery.eq('status', options.status);
+    }
+
+    if (options?.priority) {
+      supabaseQuery = supabaseQuery.eq('priority', options.priority);
+    }
+
+    if (options?.blueprintId) {
+      supabaseQuery = supabaseQuery.eq('blueprint_id', options.blueprintId);
+    }
+
+    if (options?.assigneeId) {
+      supabaseQuery = supabaseQuery.eq('assignee_id', options.assigneeId);
+    }
+
+    // 应用分页
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 50;
+    const fromIndex = (page - 1) * pageSize;
+    const toIndex = fromIndex + pageSize - 1;
+    supabaseQuery = supabaseQuery.range(fromIndex, toIndex);
+
+    // 按更新时间倒序排序
+    supabaseQuery = supabaseQuery.order('updated_at', { ascending: false });
+
+    return from(Promise.resolve(supabaseQuery) as Promise<PostgrestResponse<any>>).pipe(
+      map((response: PostgrestResponse<any>) => {
+        const data = handleSupabaseResponse(response, `${this.constructor.name}.search`);
+        return Array.isArray(data) ? data.map(item => toCamelCaseData<Task>(item)) : [toCamelCaseData<Task>(data)];
+      })
+    );
+  }
 }

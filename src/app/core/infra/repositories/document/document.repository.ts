@@ -186,4 +186,87 @@ export class DocumentRepository extends BaseRepository<Document, DocumentInsert,
       })
     );
   }
+
+  /**
+   * 搜索文档（按文件名和描述）
+   *
+   * 使用全文搜索功能在文档的文件名和描述中查找匹配的关键字
+   *
+   * @param query 搜索关键字
+   * @param options 搜索选项
+   * @param options.documentType 按文档类型筛选
+   * @param options.uploadSource 按上传来源筛选
+   * @param options.blueprintId 按蓝图筛选
+   * @param options.uploadedBy 按上传者筛选
+   * @param options.page 页码（默认 1）
+   * @param options.pageSize 每页数量（默认 50）
+   * @returns Observable<Document[]>
+   *
+   * @example
+   * ```typescript
+   * // 搜索包含"设计图"的文档
+   * documentRepo.search('设计图').subscribe(documents => {
+   *   console.log('Found documents:', documents);
+   * });
+   *
+   * // 搜索PDF类型的文档
+   * documentRepo.search('设计图', { documentType: 'pdf' }).subscribe(documents => {
+   *   console.log('PDF documents:', documents);
+   * });
+   * ```
+   */
+  search(
+    query: string,
+    options?: {
+      documentType?: string;
+      uploadSource?: string;
+      blueprintId?: string;
+      uploadedBy?: string;
+      page?: number;
+      pageSize?: number;
+    }
+  ): Observable<Document[]> {
+    // 构建基础查询
+    let supabaseQuery = this.supabase
+      .from(this.tableName as any)
+      .select('*')
+      .or(`file_name.ilike.%${query}%,description.ilike.%${query}%`)
+      .is('soft_deleted_at', null) as any; // 排除软删除的文档
+
+    // 应用筛选条件
+    if (options?.documentType) {
+      supabaseQuery = supabaseQuery.eq('document_type', options.documentType);
+    }
+
+    if (options?.uploadSource) {
+      supabaseQuery = supabaseQuery.eq('upload_source', options.uploadSource);
+    }
+
+    if (options?.blueprintId) {
+      supabaseQuery = supabaseQuery.eq('blueprint_id', options.blueprintId);
+    }
+
+    if (options?.uploadedBy) {
+      supabaseQuery = supabaseQuery.eq('uploaded_by', options.uploadedBy);
+    }
+
+    // 应用分页
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 50;
+    const fromIndex = (page - 1) * pageSize;
+    const toIndex = fromIndex + pageSize - 1;
+    supabaseQuery = supabaseQuery.range(fromIndex, toIndex);
+
+    // 按上传时间倒序排序
+    supabaseQuery = supabaseQuery.order('uploaded_at', { ascending: false });
+
+    return from(Promise.resolve(supabaseQuery) as Promise<{ data: any[] | null; error: any }>).pipe(
+      map((response: { data: any[] | null; error: any }) => {
+        if (response.error) {
+          throw new Error(response.error.message || '搜索文档失败');
+        }
+        return (response.data || []).map(item => toCamelCaseData<Document>(item));
+      })
+    );
+  }
 }
