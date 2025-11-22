@@ -183,7 +183,8 @@ updates:
 
 - [ROLLBACK.md](../deployment/ROLLBACK.md) - 回滾指南
 - [DEPLOYMENT.md](../deployment/DEPLOYMENT.md) - 部署指南
-- [NEXT_ACTIONS.md](../../NEXT_ACTIONS.md) - 執行計劃
+- [NEXT_ACTIONS.md](../../docs/archive/workspace-tracking/NEXT_ACTIONS.md) - 執行計劃（已歸檔）
+- [WORK_PROGRESS_TRACKER.md](../../WORK_PROGRESS_TRACKER.md) - 當前進度追蹤
 
 ---
 

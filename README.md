@@ -46,8 +46,8 @@ English | [简体中文](README-zh_CN.md)
 ### Key Documents
 - [📊 Remaining Work Analysis](./docs/workspace/REMAINING_WORK_ANALYSIS.md) - Complete 191-item analysis
 - [💼 Executive Summary](./docs/workspace/EXECUTIVE_SUMMARY.md) - One-page overview for decision-makers
-- [🎯 Week 1 Completion Report](./docs/workspace/WEEK1_COMPLETION_REPORT.md) - Week 1 achievements
-- [📈 Week 2 Progress Report](./docs/workspace/WEEK2_PROGRESS_REPORT.md) - Week 2 progress tracking
+- [🎯 Week 1 Completion Report](./docs/archive/phase-completions/WEEK1_COMPLETION_REPORT.md) - Week 1 achievements (archived)
+- [📈 Week 2 Progress Report](./docs/archive/phase-completions/WEEK2_PROGRESS_REPORT.md) - Week 2 progress tracking (archived)
 - [🔑 Priority Decision Matrix](./docs/workspace/PRIORITY_DECISION_MATRIX.md) - Quick decision framework
 
 ---
