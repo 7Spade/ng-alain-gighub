@@ -75,7 +75,6 @@ Types → Repositories → Models → Services → Facades → Components → Te
 2. 檢查架構：打開系統架構思維導圖
 3. 設計時：參考架構原則和模式
 4. 實作時：遵循開發標準和檢查清單
-5. 完成後：建議更新記憶庫（如有新發現）
 
 **詳細說明**：
 - [memory-usage-guide.md](./memory-usage-guide.md) - 記憶庫使用指南

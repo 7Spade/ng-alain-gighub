@@ -134,23 +134,6 @@ docs/architecture/01-system-architecture-mindmap.mermaid.md
 - **品質把關**：參考每個 agent 的審查檢查清單
 - **進度追蹤**：使用 Software Planning Tool 的 `update_todo_status` 更新進度
 
-#### 第 6 步：任務完成後 - 更新 Redis 外掛大腦（必須）⭐⭐⭐⭐⭐
-```bash
-# 1. 保存決策
-redis-cli SET history:decisions:$(date +%Y%m%dT%H%M%S) '{"task":"...","decision":"..."}'
-
-# 2. 更新專案知識
-redis-cli SET project:knowledge:new_domain '{"pattern":"..."}'
-
-# 3. 更新統計
-redis-cli INCR stats:tasks:total_completed
-
-# 4. 記錄反饋
-redis-cli SET feedback:$(date +%Y%m%dT%H%M%S) '{"effective":true}'
-```
-
-**成長效果**：每次任務讓 Agent 更聰明，越用越熟悉專案 🌱
-
 ## 🧭 推薦閱讀順序
 
 ### 初次了解專案
